@@ -217,7 +217,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 }
 
 
-
+//
 
 
 //Converts an NSDictionary created from json representing a message into a message object
@@ -593,7 +593,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
 +(DCGuild *)convertJsonGuild:(NSDictionary*)jsonGuild{
 	NSMutableArray* userRoles;
-	
+	NSLog(@"%@", jsonGuild);
 	//Get roles of the current user
 	for(NSDictionary* member in [jsonGuild objectForKey:@"members"])
 		if([[member valueForKeyPath:@"user.id"] isEqualToString:DCServerCommunicator.sharedInstance.snowflake])

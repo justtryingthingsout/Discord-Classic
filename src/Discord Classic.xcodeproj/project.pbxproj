@@ -134,6 +134,7 @@
 		5B2105AB2D185CDC005B9596 /* iOS-7.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105AA2D185CDC005B9596 /* iOS-7.storyboard */; };
 		5B2105B62D1861DE005B9596 /* DCMissedCallCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105B52D1861DE005B9596 /* DCMissedCallCell.xib */; };
 		5B2105B92D186432005B9596 /* TestCallEmbed.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105B82D186431005B9596 /* TestCallEmbed.png */; };
+		5B2105BC2D1896F7005B9596 /* Sample in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105BB2D1896F7005B9596 /* Sample */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -301,6 +302,7 @@
 		5B2105AA2D185CDC005B9596 /* iOS-7.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "iOS-7.storyboard"; sourceTree = "<group>"; };
 		5B2105B52D1861DE005B9596 /* DCMissedCallCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DCMissedCallCell.xib; sourceTree = "<group>"; };
 		5B2105B82D186431005B9596 /* TestCallEmbed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TestCallEmbed.png; sourceTree = "<group>"; };
+		5B2105BB2D1896F7005B9596 /* Sample */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sample; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -327,6 +329,7 @@
 		09C6B915204A0F54007EAC26 = {
 			isa = PBXGroup;
 			children = (
+				5B2105BA2D1896EA005B9596 /* Test */,
 				5B21055A2D185B10005B9596 /* Classes */,
 				5B21047D2D185409005B9596 /* Libraries */,
 				5B2104782D185402005B9596 /* Assets */,
@@ -821,6 +824,14 @@
 			path = "Missed Call";
 			sourceTree = "<group>";
 		};
+		5B2105BA2D1896EA005B9596 /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				5B2105BB2D1896F7005B9596 /* Sample */,
+			);
+			path = Test;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -919,6 +930,7 @@
 				5B21050F2D1856E5005B9596 /* No-header.png in Resources */,
 				5B21052A2D1856E5005B9596 /* DefaultAvatar3.png in Resources */,
 				5B21054D2D1856E5005B9596 /* ToolbarBG.png in Resources */,
+				5B2105BC2D1896F7005B9596 /* Sample in Resources */,
 				5B2104A92D18540A005B9596 /* emoji.json in Resources */,
 				5B2104BB2D1856A7005B9596 /* DCChatReplyTableCell.xib in Resources */,
 				5B2105382D1856E5005B9596 /* TopLogo.png in Resources */,

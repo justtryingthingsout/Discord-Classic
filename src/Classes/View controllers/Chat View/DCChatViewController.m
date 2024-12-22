@@ -317,12 +317,14 @@ static dispatch_queue_t chat_messages_queue;
     [tableView registerNib:[UINib nibWithNibName:@"DCChatGroupedTableCell" bundle:nil] forCellReuseIdentifier:@"Grouped Message Cell"];
     [tableView registerNib:[UINib nibWithNibName:@"DCChatTableCell" bundle:nil] forCellReuseIdentifier:@"Message Cell"];
     [tableView registerNib:[UINib nibWithNibName:@"DCChatReplyTableCell" bundle:nil] forCellReuseIdentifier:@"Reply Message Cell"];
-    [tableView registerNib:[UINib nibWithNibName:@"DCMissedCallCell" bundle:nil] forCellReuseIdentifier:@"Reply Message Cell"];
+    [tableView registerNib:[UINib nibWithNibName:@"DCMissedCallCell" bundle:nil] forCellReuseIdentifier:@"Missed Call Message Cell"];
     
     if (messageAtRowIndex.isGrouped)
         cell = [tableView dequeueReusableCellWithIdentifier:@"Grouped Message Cell"];
     else if (messageAtRowIndex.referencedMessage != nil)
         cell = [tableView dequeueReusableCellWithIdentifier:@"Reply Message Cell"];
+    else if(messageAtRowIndex.missedCall)
+        cell = [tableView dequeueReusableCellWithIdentifier:@"Missed Call Message Cell"];
     else
         cell = [tableView dequeueReusableCellWithIdentifier:@"Message Cell"];
     

@@ -22,6 +22,7 @@
 @property NSString* prettyTimestamp;
 @property bool pingingUser;
 @property bool isGrouped;
+@property bool missedCall;
 @property DCMessage* referencedMessage;
 
 - (void)deleteMessage;
