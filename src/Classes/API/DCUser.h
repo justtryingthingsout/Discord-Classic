@@ -12,6 +12,7 @@
 @property NSString* snowflake;
 @property NSString* username;
 @property NSString* globalName;
+@property NSString* biography;
 @property UIImage* profileImage;
 @property NSString* discriminator;
 @property UIImage* avatarDecoration;

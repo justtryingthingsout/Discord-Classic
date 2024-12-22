@@ -156,7 +156,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 //Converts an NSDictionary created from json representing a user into a DCUser object
 //Also keeps the user in DCServerCommunicator.loadedUsers if cache:YES
 + (DCUser*)convertJsonUser:(NSDictionary*)jsonUser cache:(bool)cache{
-	
+	NSLog(@"%@", jsonUser);
 	DCUser* newUser = DCUser.new;
 	newUser.username = [jsonUser valueForKey:@"username"];
     newUser.globalName = newUser.username;
