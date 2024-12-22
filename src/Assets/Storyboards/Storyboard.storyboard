@@ -93,7 +93,6 @@
         <!--Info Page View Controller - Info-->
         <scene sceneID="lRo-65-Yz3">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="a8F-4i-Zjj" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController extendedLayoutIncludesOpaqueBars="YES" id="x67-ec-KPh" customClass="DCInfoPageViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="azh-QU-C2t">
                         <rect key="frame" x="0.0" y="20" width="320" height="548"/>
@@ -311,6 +310,7 @@
                         <barButtonItem key="backBarButtonItem" title="Back" id="4Wz-4J-k2d"/>
                     </navigationItem>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="a8F-4i-Zjj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1089" y="-954"/>
         </scene>

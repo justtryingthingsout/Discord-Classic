@@ -142,7 +142,6 @@
 -(void)viewWillAppear:(BOOL)animated{
     if (self.selectedGuild) {
         [self.channelTableView reloadData];
-        self.guildBanner.image = self.selectedGuild.banner;
         [DCServerCommunicator.sharedInstance setSelectedChannel:nil];
         [self.channelTableView reloadData];
         if ([self.navigationItem.title isEqualToString:@"Direct Messages"]) {
@@ -184,6 +183,11 @@
 	if(tableView == self.guildTableView){
 		self.selectedGuild = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:indexPath.row];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        if(self.selectedGuild.banner == nil) {
+            self.guildBanner.image = [UIImage imageNamed:@"No-Header"];
+        } else {
+            self.guildBanner.image = self.selectedGuild.banner;
+        }
         [self.navigationItem setTitle:self.selectedGuild.name];
         self.guildLabel.text = self.selectedGuild.name;
 		[self.channelTableView reloadData];
