@@ -593,7 +593,6 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
 +(DCGuild *)convertJsonGuild:(NSDictionary*)jsonGuild{
 	NSMutableArray* userRoles;
-	NSLog(@"%@", jsonGuild);
 	//Get roles of the current user
 	for(NSDictionary* member in [jsonGuild objectForKey:@"members"])
 		if([[member valueForKeyPath:@"user.id"] isEqualToString:DCServerCommunicator.sharedInstance.snowflake])
@@ -612,6 +611,9 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 	NSString* iconURL = [NSString stringWithFormat:@"https://cdn.discordapp.com/icons/%@/%@.png?size=80",
 											 newGuild.snowflake, [jsonGuild valueForKey:@"icon"]];
 	
+    NSString* bannerURL = [NSString stringWithFormat:@"https://cdn.discordapp.com/banners/%@/%@.png?size=128",
+                         newGuild.snowflake, [jsonGuild valueForKey:@"banner"]];
+    
     NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
     [f setNumberStyle:NSNumberFormatterDecimalStyle];
     NSNumber * longId = [f numberFromString:newGuild.snowflake];
@@ -638,7 +640,16 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
             newGuild.icon = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
         }
-		
+        
+	}];
+    
+    [DCTools processImageDataWithURLString:bannerURL andBlock:^(UIImage *bannerData) {
+        UIImage* banner = bannerData;
+        if (banner != nil) {
+            newGuild.banner = banner;
+            UIGraphicsEndImageContext();
+        }
+
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[NSNotificationCenter.defaultCenter postNotificationName:@"RELOAD GUILD LIST" object:DCServerCommunicator.sharedInstance];
 		});

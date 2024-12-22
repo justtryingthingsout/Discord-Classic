@@ -17,8 +17,9 @@
 @property NSString* snowflake;
 //Name
 @property NSString* name;
-//Icon for the guild
+//Icon and banner for the guild
 @property UIImage* icon;
+@property UIImage* banner;
 //Array of child DCCannel objects
 @property NSMutableArray* channels;
 //Whether or not the guild has any unread child channels

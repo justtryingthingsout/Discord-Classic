@@ -142,6 +142,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     if (self.selectedGuild) {
         [self.channelTableView reloadData];
+        self.guildBanner.image = self.selectedGuild.banner;
         [DCServerCommunicator.sharedInstance setSelectedChannel:nil];
         [self.channelTableView reloadData];
         if ([self.navigationItem.title isEqualToString:@"Direct Messages"]) {
