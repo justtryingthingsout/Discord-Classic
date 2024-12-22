@@ -7,30 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		091D28CA21A9D75700C60BEC /* DCInfoPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 091D28C921A9D75700C60BEC /* DCInfoPageViewController.m */; };
-		09260EC720575AE900083813 /* DCGuild.m in Sources */ = {isa = PBXBuildFile; fileRef = 09260EC620575AE900083813 /* DCGuild.m */; };
-		09260ECA20575BB200083813 /* DCChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 09260EC920575BB200083813 /* DCChannel.m */; };
-		09685287204D9D590089DE45 /* DCChannelListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09685286204D9D590089DE45 /* DCChannelListViewController.m */; };
-		09A3B6D321A0604500C2411F /* DCUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A3B6D221A0604400C2411F /* DCUser.m */; };
-		09A4EA6F2079266800DECFD6 /* DCChatTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A4EA6E2079266800DECFD6 /* DCChatTableCell.m */; };
-		09C344B721A0B984005F8CEE /* DCImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09C344B621A0B984005F8CEE /* DCImageViewController.m */; };
 		09C6B925204A0F54007EAC26 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09C6B924204A0F54007EAC26 /* UIKit.framework */; };
 		09C6B927204A0F54007EAC26 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09C6B926204A0F54007EAC26 /* Foundation.framework */; };
 		09C6B929204A0F54007EAC26 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09C6B928204A0F54007EAC26 /* CoreGraphics.framework */; };
-		09C6B92F204A0F54007EAC26 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 09C6B92D204A0F54007EAC26 /* InfoPlist.strings */; };
-		09C6B931204A0F54007EAC26 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B930204A0F54007EAC26 /* main.m */; };
-		09C6B935204A0F54007EAC26 /* DCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B934204A0F54007EAC26 /* DCAppDelegate.m */; };
 		09C6B995204A2614007EAC26 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09C6B994204A2614007EAC26 /* CFNetwork.framework */; };
 		09C6B997204A261B007EAC26 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09C6B996204A261B007EAC26 /* Security.framework */; };
-		09C8E28B204C2BFD006A1422 /* DCServerCommunicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 09C8E28A204C2BFD006A1422 /* DCServerCommunicator.m */; };
-		09D776992189427100609134 /* DCMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 09D776982189427100609134 /* DCMessage.m */; };
-		09D84D0C205F36B90070020A /* DCSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09D84D0B205F36B90070020A /* DCSettingsViewController.m */; };
-		09DD1FA2204F35FD00153EC7 /* DCChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09DD1FA1204F35FD00153EC7 /* DCChatViewController.m */; };
-		09E3ED262069F21200E90DA1 /* DCTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E3ED252069F21200E90DA1 /* DCTools.m */; };
-		09FF02F7205EF9DD00BCBA8D /* DCGuildListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E183BC205EF65000FE90E8 /* DCGuildListViewController.m */; };
-		09FF02F8205EF9DF00BCBA8D /* DCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E183B9205EF64700FE90E8 /* DCViewController.m */; };
 		2C11B4202AEAFA5000BE66F6 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C11B41F2AEAFA5000BE66F6 /* ImageIO.framework */; };
-		2C87A3D92AE99C3A00DA6C21 /* DCChatVideoAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C87A3D82AE99C3A00DA6C21 /* DCChatVideoAttachment.m */; };
 		2CEBF2982AE2FE2500EC7812 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CEBF2972AE2FE2500EC7812 /* AVFoundation.framework */; };
 		2CEBF29A2AE2FE4500EC7812 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CEBF2992AE2FE4500EC7812 /* MediaPlayer.framework */; };
 		2CF920112AF7F17B00249D6A /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF920102AF7F17B00249D6A /* QuickLook.framework */; };
@@ -127,57 +109,38 @@
 		5B2105522D18570D005B9596 /* Contactback.PNG in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105512D18570D005B9596 /* Contactback.PNG */; };
 		5B2105552D185735005B9596 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105542D185735005B9596 /* Images.xcassets */; };
 		5B2105592D185794005B9596 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105582D185794005B9596 /* Info.plist */; };
-		5B23D1272B658A77008B5587 /* DCWelcomeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23D1262B658A77008B5587 /* DCWelcomeController.m */; };
-		5B9269E92B654033003351BB /* DCContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B9269E82B654033003351BB /* DCContactViewController.m */; };
-		5BB417582B66761A00735AC3 /* DCIntroductionPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB417572B66761A00735AC3 /* DCIntroductionPage.m */; };
-		5BCE5F422B655EDF00F5E66B /* DCMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BCE5F412B655EDF00F5E66B /* DCMenuViewController.m */; };
-		7D672E232B0122FF003C1A78 /* DCCInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D672E222B0122FF003C1A78 /* DCCInfoViewController.m */; };
+		5B2105912D185B10005B9596 /* DCChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B21055D2D185B10005B9596 /* DCChannel.m */; };
+		5B2105922D185B10005B9596 /* DCGuild.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B21055F2D185B10005B9596 /* DCGuild.m */; };
+		5B2105932D185B10005B9596 /* DCMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105612D185B10005B9596 /* DCMessage.m */; };
+		5B2105942D185B10005B9596 /* DCServerCommunicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105632D185B10005B9596 /* DCServerCommunicator.m */; };
+		5B2105952D185B10005B9596 /* DCTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105652D185B10005B9596 /* DCTools.m */; };
+		5B2105962D185B10005B9596 /* DCUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105672D185B10005B9596 /* DCUser.m */; };
+		5B2105972D185B10005B9596 /* DCChatTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B21056A2D185B10005B9596 /* DCChatTableCell.m */; };
+		5B2105982D185B10005B9596 /* DCChatVideoAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B21056C2D185B10005B9596 /* DCChatVideoAttachment.m */; };
+		5B2105992D185B10005B9596 /* DCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B21056F2D185B10005B9596 /* DCAppDelegate.m */; };
+		5B21059A2D185B10005B9596 /* DCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105732D185B10005B9596 /* DCViewController.m */; };
+		5B21059B2D185B10005B9596 /* DCChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105762D185B10005B9596 /* DCChatViewController.m */; };
+		5B21059C2D185B10005B9596 /* DCChannelListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105792D185B10005B9596 /* DCChannelListViewController.m */; };
+		5B21059D2D185B10005B9596 /* DCGuildListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B21057B2D185B10005B9596 /* DCGuildListViewController.m */; };
+		5B21059E2D185B10005B9596 /* DCMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B21057D2D185B10005B9596 /* DCMenuViewController.m */; };
+		5B21059F2D185B10005B9596 /* DCImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105802D185B10005B9596 /* DCImageViewController.m */; };
+		5B2105A02D185B10005B9596 /* DCInfoPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105832D185B10005B9596 /* DCInfoPageViewController.m */; };
+		5B2105A12D185B10005B9596 /* DCCInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105862D185B10005B9596 /* DCCInfoViewController.m */; };
+		5B2105A22D185B10005B9596 /* DCContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105882D185B10005B9596 /* DCContactViewController.m */; };
+		5B2105A32D185B10005B9596 /* DCSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B21058B2D185B10005B9596 /* DCSettingsViewController.m */; };
+		5B2105A42D185B10005B9596 /* DCIntroductionPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B21058E2D185B10005B9596 /* DCIntroductionPage.m */; };
+		5B2105A52D185B10005B9596 /* DCWelcomeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105902D185B10005B9596 /* DCWelcomeController.m */; };
+		5B2105A92D185BD3005B9596 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105A82D185BD3005B9596 /* main.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		090C6BCF20784DDD00EC552F /* DCMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMessage.h; sourceTree = "<group>"; };
-		091D28C821A9D75700C60BEC /* DCInfoPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCInfoPageViewController.h; sourceTree = "<group>"; };
-		091D28C921A9D75700C60BEC /* DCInfoPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCInfoPageViewController.m; sourceTree = "<group>"; };
-		09260EC520575AE900083813 /* DCGuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCGuild.h; sourceTree = "<group>"; };
-		09260EC620575AE900083813 /* DCGuild.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCGuild.m; sourceTree = "<group>"; };
-		09260EC820575BB200083813 /* DCChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCChannel.h; sourceTree = "<group>"; };
-		09260EC920575BB200083813 /* DCChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCChannel.m; sourceTree = "<group>"; };
-		09685285204D9D590089DE45 /* DCChannelListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCChannelListViewController.h; sourceTree = "<group>"; };
-		09685286204D9D590089DE45 /* DCChannelListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCChannelListViewController.m; sourceTree = "<group>"; };
-		09A3B6D121A0604400C2411F /* DCUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCUser.h; sourceTree = "<group>"; };
-		09A3B6D221A0604400C2411F /* DCUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCUser.m; sourceTree = "<group>"; };
-		09A4EA6D2079266800DECFD6 /* DCChatTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCChatTableCell.h; sourceTree = "<group>"; };
-		09A4EA6E2079266800DECFD6 /* DCChatTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCChatTableCell.m; sourceTree = "<group>"; };
-		09C344B521A0B984005F8CEE /* DCImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCImageViewController.h; sourceTree = "<group>"; };
-		09C344B621A0B984005F8CEE /* DCImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCImageViewController.m; sourceTree = "<group>"; };
 		09C6B924204A0F54007EAC26 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		09C6B926204A0F54007EAC26 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		09C6B928204A0F54007EAC26 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		09C6B92C204A0F54007EAC26 /* Discord Classic-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Discord Classic-Info.plist"; sourceTree = "<group>"; };
-		09C6B92E204A0F54007EAC26 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		09C6B930204A0F54007EAC26 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		09C6B932204A0F54007EAC26 /* Discord Classic-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Discord Classic-Prefix.pch"; sourceTree = "<group>"; };
-		09C6B933204A0F54007EAC26 /* DCAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCAppDelegate.h; sourceTree = "<group>"; };
-		09C6B934204A0F54007EAC26 /* DCAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCAppDelegate.m; sourceTree = "<group>"; };
 		09C6B945204A0F55007EAC26 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		09C6B994204A2614007EAC26 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		09C6B996204A261B007EAC26 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		09C8E289204C2BFD006A1422 /* DCServerCommunicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCServerCommunicator.h; sourceTree = "<group>"; };
-		09C8E28A204C2BFD006A1422 /* DCServerCommunicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCServerCommunicator.m; sourceTree = "<group>"; };
-		09D776982189427100609134 /* DCMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMessage.m; sourceTree = "<group>"; };
-		09D84D0A205F36B90070020A /* DCSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCSettingsViewController.h; sourceTree = "<group>"; };
-		09D84D0B205F36B90070020A /* DCSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCSettingsViewController.m; sourceTree = "<group>"; };
-		09DD1FA0204F35FD00153EC7 /* DCChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCChatViewController.h; sourceTree = "<group>"; };
-		09DD1FA1204F35FD00153EC7 /* DCChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCChatViewController.m; sourceTree = "<group>"; };
-		09E183B8205EF64700FE90E8 /* DCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCViewController.h; sourceTree = "<group>"; };
-		09E183B9205EF64700FE90E8 /* DCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCViewController.m; sourceTree = "<group>"; };
-		09E183BB205EF65000FE90E8 /* DCGuildListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCGuildListViewController.h; sourceTree = "<group>"; };
-		09E183BC205EF65000FE90E8 /* DCGuildListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCGuildListViewController.m; sourceTree = "<group>"; };
-		09E3ED242069F21200E90DA1 /* DCTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTools.h; sourceTree = "<group>"; };
-		09E3ED252069F21200E90DA1 /* DCTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTools.m; sourceTree = "<group>"; };
 		2C11B41F2AEAFA5000BE66F6 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
-		2C87A3D72AE99C3A00DA6C21 /* DCChatVideoAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCChatVideoAttachment.h; sourceTree = "<group>"; };
-		2C87A3D82AE99C3A00DA6C21 /* DCChatVideoAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCChatVideoAttachment.m; sourceTree = "<group>"; };
 		2CEBF2972AE2FE2500EC7812 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		2CEBF2992AE2FE4500EC7812 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		2CF920102AF7F17B00249D6A /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
@@ -287,18 +250,51 @@
 		5B21050C2D1856E5005B9596 /* Video-play-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Video-play-button@2x.png"; sourceTree = "<group>"; };
 		5B2105512D18570D005B9596 /* Contactback.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Contactback.PNG; sourceTree = "<group>"; };
 		5B2105542D185735005B9596 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		5B2105562D18576A005B9596 /* Discord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Discord.app; path = "/Users/methamphetamine/Developer/GitHub/Discord/iOS-Discord-Classic/src/build/Debug-iphoneos/Discord.app"; sourceTree = "<absolute>"; };
 		5B2105582D185794005B9596 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5B23D1252B658A77008B5587 /* DCWelcomeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCWelcomeController.h; sourceTree = "<group>"; };
-		5B23D1262B658A77008B5587 /* DCWelcomeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCWelcomeController.m; sourceTree = "<group>"; };
-		5B9269E72B654033003351BB /* DCContactViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCContactViewController.h; sourceTree = "<group>"; };
-		5B9269E82B654033003351BB /* DCContactViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCContactViewController.m; sourceTree = "<group>"; };
-		5BB417562B66761A00735AC3 /* DCIntroductionPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCIntroductionPage.h; sourceTree = "<group>"; };
-		5BB417572B66761A00735AC3 /* DCIntroductionPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCIntroductionPage.m; sourceTree = "<group>"; };
-		5BCE5F402B655EDF00F5E66B /* DCMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMenuViewController.h; sourceTree = "<group>"; };
-		5BCE5F412B655EDF00F5E66B /* DCMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMenuViewController.m; sourceTree = "<group>"; };
-		7D672E212B0122FF003C1A78 /* DCCInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCCInfoViewController.h; sourceTree = "<group>"; };
-		7D672E222B0122FF003C1A78 /* DCCInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCCInfoViewController.m; sourceTree = "<group>"; };
+		5B21055C2D185B10005B9596 /* DCChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCChannel.h; sourceTree = "<group>"; };
+		5B21055D2D185B10005B9596 /* DCChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCChannel.m; sourceTree = "<group>"; };
+		5B21055E2D185B10005B9596 /* DCGuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCGuild.h; sourceTree = "<group>"; };
+		5B21055F2D185B10005B9596 /* DCGuild.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCGuild.m; sourceTree = "<group>"; };
+		5B2105602D185B10005B9596 /* DCMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMessage.h; sourceTree = "<group>"; };
+		5B2105612D185B10005B9596 /* DCMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMessage.m; sourceTree = "<group>"; };
+		5B2105622D185B10005B9596 /* DCServerCommunicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCServerCommunicator.h; sourceTree = "<group>"; };
+		5B2105632D185B10005B9596 /* DCServerCommunicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCServerCommunicator.m; sourceTree = "<group>"; };
+		5B2105642D185B10005B9596 /* DCTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTools.h; sourceTree = "<group>"; };
+		5B2105652D185B10005B9596 /* DCTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTools.m; sourceTree = "<group>"; };
+		5B2105662D185B10005B9596 /* DCUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCUser.h; sourceTree = "<group>"; };
+		5B2105672D185B10005B9596 /* DCUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCUser.m; sourceTree = "<group>"; };
+		5B2105692D185B10005B9596 /* DCChatTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCChatTableCell.h; sourceTree = "<group>"; };
+		5B21056A2D185B10005B9596 /* DCChatTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCChatTableCell.m; sourceTree = "<group>"; };
+		5B21056B2D185B10005B9596 /* DCChatVideoAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCChatVideoAttachment.h; sourceTree = "<group>"; };
+		5B21056C2D185B10005B9596 /* DCChatVideoAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCChatVideoAttachment.m; sourceTree = "<group>"; };
+		5B21056E2D185B10005B9596 /* DCAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCAppDelegate.h; sourceTree = "<group>"; };
+		5B21056F2D185B10005B9596 /* DCAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCAppDelegate.m; sourceTree = "<group>"; };
+		5B2105722D185B10005B9596 /* DCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCViewController.h; sourceTree = "<group>"; };
+		5B2105732D185B10005B9596 /* DCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCViewController.m; sourceTree = "<group>"; };
+		5B2105752D185B10005B9596 /* DCChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCChatViewController.h; sourceTree = "<group>"; };
+		5B2105762D185B10005B9596 /* DCChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCChatViewController.m; sourceTree = "<group>"; };
+		5B2105782D185B10005B9596 /* DCChannelListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCChannelListViewController.h; sourceTree = "<group>"; };
+		5B2105792D185B10005B9596 /* DCChannelListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCChannelListViewController.m; sourceTree = "<group>"; };
+		5B21057A2D185B10005B9596 /* DCGuildListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCGuildListViewController.h; sourceTree = "<group>"; };
+		5B21057B2D185B10005B9596 /* DCGuildListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCGuildListViewController.m; sourceTree = "<group>"; };
+		5B21057C2D185B10005B9596 /* DCMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMenuViewController.h; sourceTree = "<group>"; };
+		5B21057D2D185B10005B9596 /* DCMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMenuViewController.m; sourceTree = "<group>"; };
+		5B21057F2D185B10005B9596 /* DCImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCImageViewController.h; sourceTree = "<group>"; };
+		5B2105802D185B10005B9596 /* DCImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCImageViewController.m; sourceTree = "<group>"; };
+		5B2105822D185B10005B9596 /* DCInfoPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCInfoPageViewController.h; sourceTree = "<group>"; };
+		5B2105832D185B10005B9596 /* DCInfoPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCInfoPageViewController.m; sourceTree = "<group>"; };
+		5B2105852D185B10005B9596 /* DCCInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCCInfoViewController.h; sourceTree = "<group>"; };
+		5B2105862D185B10005B9596 /* DCCInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCCInfoViewController.m; sourceTree = "<group>"; };
+		5B2105872D185B10005B9596 /* DCContactViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCContactViewController.h; sourceTree = "<group>"; };
+		5B2105882D185B10005B9596 /* DCContactViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCContactViewController.m; sourceTree = "<group>"; };
+		5B21058A2D185B10005B9596 /* DCSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCSettingsViewController.h; sourceTree = "<group>"; };
+		5B21058B2D185B10005B9596 /* DCSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCSettingsViewController.m; sourceTree = "<group>"; };
+		5B21058D2D185B10005B9596 /* DCIntroductionPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCIntroductionPage.h; sourceTree = "<group>"; };
+		5B21058E2D185B10005B9596 /* DCIntroductionPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCIntroductionPage.m; sourceTree = "<group>"; };
+		5B21058F2D185B10005B9596 /* DCWelcomeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCWelcomeController.h; sourceTree = "<group>"; };
+		5B2105902D185B10005B9596 /* DCWelcomeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCWelcomeController.m; sourceTree = "<group>"; };
+		5B2105A72D185B82005B9596 /* Discord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Discord.app; path = "/Users/methamphetamine/Developer/GitHub/Discord/iOS-Discord-Classic/src/build/Debug-iphoneos/Discord.app"; sourceTree = "<absolute>"; };
+		5B2105A82D185BD3005B9596 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "Discord Classic/main.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -325,9 +321,10 @@
 		09C6B915204A0F54007EAC26 = {
 			isa = PBXGroup;
 			children = (
+				5B2105A82D185BD3005B9596 /* main.m */,
+				5B21055A2D185B10005B9596 /* Classes */,
 				5B21047D2D185409005B9596 /* Libraries */,
 				5B2104782D185402005B9596 /* Assets */,
-				09C6B92A204A0F54007EAC26 /* Discord Classic */,
 				09C6B923204A0F54007EAC26 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -348,67 +345,6 @@
 				09C6B945204A0F55007EAC26 /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		09C6B92A204A0F54007EAC26 /* Discord Classic */ = {
-			isa = PBXGroup;
-			children = (
-				09C6B933204A0F54007EAC26 /* DCAppDelegate.h */,
-				09C6B934204A0F54007EAC26 /* DCAppDelegate.m */,
-				09E183B8205EF64700FE90E8 /* DCViewController.h */,
-				09E183B9205EF64700FE90E8 /* DCViewController.m */,
-				5BCE5F402B655EDF00F5E66B /* DCMenuViewController.h */,
-				5BCE5F412B655EDF00F5E66B /* DCMenuViewController.m */,
-				09E183BB205EF65000FE90E8 /* DCGuildListViewController.h */,
-				09E183BC205EF65000FE90E8 /* DCGuildListViewController.m */,
-				09685285204D9D590089DE45 /* DCChannelListViewController.h */,
-				09685286204D9D590089DE45 /* DCChannelListViewController.m */,
-				09DD1FA0204F35FD00153EC7 /* DCChatViewController.h */,
-				09DD1FA1204F35FD00153EC7 /* DCChatViewController.m */,
-				09D84D0A205F36B90070020A /* DCSettingsViewController.h */,
-				09D84D0B205F36B90070020A /* DCSettingsViewController.m */,
-				091D28C821A9D75700C60BEC /* DCInfoPageViewController.h */,
-				091D28C921A9D75700C60BEC /* DCInfoPageViewController.m */,
-				09C344B521A0B984005F8CEE /* DCImageViewController.h */,
-				09C344B621A0B984005F8CEE /* DCImageViewController.m */,
-				2C87A3D72AE99C3A00DA6C21 /* DCChatVideoAttachment.h */,
-				2C87A3D82AE99C3A00DA6C21 /* DCChatVideoAttachment.m */,
-				09A4EA6D2079266800DECFD6 /* DCChatTableCell.h */,
-				09A4EA6E2079266800DECFD6 /* DCChatTableCell.m */,
-				5B23D1252B658A77008B5587 /* DCWelcomeController.h */,
-				5B23D1262B658A77008B5587 /* DCWelcomeController.m */,
-				5BB417562B66761A00735AC3 /* DCIntroductionPage.h */,
-				5BB417572B66761A00735AC3 /* DCIntroductionPage.m */,
-				09C8E289204C2BFD006A1422 /* DCServerCommunicator.h */,
-				09C8E28A204C2BFD006A1422 /* DCServerCommunicator.m */,
-				09E3ED242069F21200E90DA1 /* DCTools.h */,
-				09E3ED252069F21200E90DA1 /* DCTools.m */,
-				09260EC520575AE900083813 /* DCGuild.h */,
-				09260EC620575AE900083813 /* DCGuild.m */,
-				09260EC820575BB200083813 /* DCChannel.h */,
-				09260EC920575BB200083813 /* DCChannel.m */,
-				090C6BCF20784DDD00EC552F /* DCMessage.h */,
-				09D776982189427100609134 /* DCMessage.m */,
-				09A3B6D121A0604400C2411F /* DCUser.h */,
-				09A3B6D221A0604400C2411F /* DCUser.m */,
-				7D672E212B0122FF003C1A78 /* DCCInfoViewController.h */,
-				7D672E222B0122FF003C1A78 /* DCCInfoViewController.m */,
-				5B9269E72B654033003351BB /* DCContactViewController.h */,
-				5B9269E82B654033003351BB /* DCContactViewController.m */,
-				09C6B92B204A0F54007EAC26 /* Supporting Files */,
-			);
-			path = "Discord Classic";
-			sourceTree = "<group>";
-		};
-		09C6B92B204A0F54007EAC26 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				09C6B92C204A0F54007EAC26 /* Discord Classic-Info.plist */,
-				09C6B92D204A0F54007EAC26 /* InfoPlist.strings */,
-				09C6B930204A0F54007EAC26 /* main.m */,
-				09C6B932204A0F54007EAC26 /* Discord Classic-Prefix.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		5B2104782D185402005B9596 /* Assets */ = {
@@ -731,6 +667,151 @@
 			path = Plists;
 			sourceTree = "<group>";
 		};
+		5B21055A2D185B10005B9596 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				5B21055B2D185B10005B9596 /* API */,
+				5B2105682D185B10005B9596 /* Cells */,
+				5B21056D2D185B10005B9596 /* Delegate */,
+				5B2105702D185B10005B9596 /* View controllers */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		5B21055B2D185B10005B9596 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				5B21055C2D185B10005B9596 /* DCChannel.h */,
+				5B21055D2D185B10005B9596 /* DCChannel.m */,
+				5B21055E2D185B10005B9596 /* DCGuild.h */,
+				5B21055F2D185B10005B9596 /* DCGuild.m */,
+				5B2105602D185B10005B9596 /* DCMessage.h */,
+				5B2105612D185B10005B9596 /* DCMessage.m */,
+				5B2105622D185B10005B9596 /* DCServerCommunicator.h */,
+				5B2105632D185B10005B9596 /* DCServerCommunicator.m */,
+				5B2105642D185B10005B9596 /* DCTools.h */,
+				5B2105652D185B10005B9596 /* DCTools.m */,
+				5B2105662D185B10005B9596 /* DCUser.h */,
+				5B2105672D185B10005B9596 /* DCUser.m */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		5B2105682D185B10005B9596 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				5B2105692D185B10005B9596 /* DCChatTableCell.h */,
+				5B21056A2D185B10005B9596 /* DCChatTableCell.m */,
+				5B21056B2D185B10005B9596 /* DCChatVideoAttachment.h */,
+				5B21056C2D185B10005B9596 /* DCChatVideoAttachment.m */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		5B21056D2D185B10005B9596 /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				5B21056E2D185B10005B9596 /* DCAppDelegate.h */,
+				5B21056F2D185B10005B9596 /* DCAppDelegate.m */,
+			);
+			path = Delegate;
+			sourceTree = "<group>";
+		};
+		5B2105702D185B10005B9596 /* View controllers */ = {
+			isa = PBXGroup;
+			children = (
+				5B2105712D185B10005B9596 /* Base view controller */,
+				5B2105742D185B10005B9596 /* Chat View */,
+				5B2105772D185B10005B9596 /* Guild, channel and menu */,
+				5B21057E2D185B10005B9596 /* Image viewer */,
+				5B2105812D185B10005B9596 /* Info page */,
+				5B2105842D185B10005B9596 /* Profile and channel info views */,
+				5B2105892D185B10005B9596 /* Settings */,
+				5B21058C2D185B10005B9596 /* Welcome and login */,
+			);
+			path = "View controllers";
+			sourceTree = "<group>";
+		};
+		5B2105712D185B10005B9596 /* Base view controller */ = {
+			isa = PBXGroup;
+			children = (
+				5B2105722D185B10005B9596 /* DCViewController.h */,
+				5B2105732D185B10005B9596 /* DCViewController.m */,
+			);
+			path = "Base view controller";
+			sourceTree = "<group>";
+		};
+		5B2105742D185B10005B9596 /* Chat View */ = {
+			isa = PBXGroup;
+			children = (
+				5B2105752D185B10005B9596 /* DCChatViewController.h */,
+				5B2105762D185B10005B9596 /* DCChatViewController.m */,
+			);
+			path = "Chat View";
+			sourceTree = "<group>";
+		};
+		5B2105772D185B10005B9596 /* Guild, channel and menu */ = {
+			isa = PBXGroup;
+			children = (
+				5B2105782D185B10005B9596 /* DCChannelListViewController.h */,
+				5B2105792D185B10005B9596 /* DCChannelListViewController.m */,
+				5B21057A2D185B10005B9596 /* DCGuildListViewController.h */,
+				5B21057B2D185B10005B9596 /* DCGuildListViewController.m */,
+				5B21057C2D185B10005B9596 /* DCMenuViewController.h */,
+				5B21057D2D185B10005B9596 /* DCMenuViewController.m */,
+			);
+			path = "Guild, channel and menu";
+			sourceTree = "<group>";
+		};
+		5B21057E2D185B10005B9596 /* Image viewer */ = {
+			isa = PBXGroup;
+			children = (
+				5B21057F2D185B10005B9596 /* DCImageViewController.h */,
+				5B2105802D185B10005B9596 /* DCImageViewController.m */,
+			);
+			path = "Image viewer";
+			sourceTree = "<group>";
+		};
+		5B2105812D185B10005B9596 /* Info page */ = {
+			isa = PBXGroup;
+			children = (
+				5B2105822D185B10005B9596 /* DCInfoPageViewController.h */,
+				5B2105832D185B10005B9596 /* DCInfoPageViewController.m */,
+			);
+			path = "Info page";
+			sourceTree = "<group>";
+		};
+		5B2105842D185B10005B9596 /* Profile and channel info views */ = {
+			isa = PBXGroup;
+			children = (
+				5B2105852D185B10005B9596 /* DCCInfoViewController.h */,
+				5B2105862D185B10005B9596 /* DCCInfoViewController.m */,
+				5B2105872D185B10005B9596 /* DCContactViewController.h */,
+				5B2105882D185B10005B9596 /* DCContactViewController.m */,
+			);
+			path = "Profile and channel info views";
+			sourceTree = "<group>";
+		};
+		5B2105892D185B10005B9596 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				5B21058A2D185B10005B9596 /* DCSettingsViewController.h */,
+				5B21058B2D185B10005B9596 /* DCSettingsViewController.m */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		5B21058C2D185B10005B9596 /* Welcome and login */ = {
+			isa = PBXGroup;
+			children = (
+				5B21058D2D185B10005B9596 /* DCIntroductionPage.h */,
+				5B21058E2D185B10005B9596 /* DCIntroductionPage.m */,
+				5B21058F2D185B10005B9596 /* DCWelcomeController.h */,
+				5B2105902D185B10005B9596 /* DCWelcomeController.m */,
+			);
+			path = "Welcome and login";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -750,7 +831,7 @@
 			);
 			name = Discord;
 			productName = "Discord Classic";
-			productReference = 5B2105562D18576A005B9596 /* Discord.app */;
+			productReference = 5B2105A72D185B82005B9596 /* Discord.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -791,7 +872,6 @@
 				5B21054C2D1856E5005B9596 /* TbarBG@2x.png in Resources */,
 				5B2105392D1856E5005B9596 /* TopLogo@2x.png in Resources */,
 				5B21051F2D1856E5005B9596 /* BarButtonPressed@2x.png in Resources */,
-				09C6B92F204A0F54007EAC26 /* InfoPlist.strings in Resources */,
 				5B2104BD2D1856A7005B9596 /* DCChatVideoAttachment.xib in Resources */,
 				5B21052D2D1856E5005B9596 /* DefaultAvatar4@2x.png in Resources */,
 				5B21053C2D1856E5005B9596 /* PLVideoOverlayPlayDown.png in Resources */,
@@ -904,56 +984,45 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				09C6B931204A0F54007EAC26 /* main.m in Sources */,
-				09C6B935204A0F54007EAC26 /* DCAppDelegate.m in Sources */,
-				5B23D1272B658A77008B5587 /* DCWelcomeController.m in Sources */,
+				5B2105942D185B10005B9596 /* DCServerCommunicator.m in Sources */,
+				5B2105A12D185B10005B9596 /* DCCInfoViewController.m in Sources */,
 				5B2104AA2D18540A005B9596 /* NSString+Emojize.m in Sources */,
 				5B2104AF2D18540A005B9596 /* WSMessage.m in Sources */,
-				09C8E28B204C2BFD006A1422 /* DCServerCommunicator.m in Sources */,
-				09685287204D9D590089DE45 /* DCChannelListViewController.m in Sources */,
+				5B21059F2D185B10005B9596 /* DCImageViewController.m in Sources */,
+				5B2105A92D185BD3005B9596 /* main.m in Sources */,
+				5B21059D2D185B10005B9596 /* DCGuildListViewController.m in Sources */,
+				5B2105932D185B10005B9596 /* DCMessage.m in Sources */,
 				5B2104A52D185409005B9596 /* BButton.m in Sources */,
+				5B2105922D185B10005B9596 /* DCGuild.m in Sources */,
 				5B2104A62D185409005B9596 /* NSString+FontAwesome.m in Sources */,
-				09DD1FA2204F35FD00153EC7 /* DCChatViewController.m in Sources */,
-				09260EC720575AE900083813 /* DCGuild.m in Sources */,
-				5BCE5F422B655EDF00F5E66B /* DCMenuViewController.m in Sources */,
 				5B2104AB2D18540A005B9596 /* UIImage+animatedGIF.m in Sources */,
-				09260ECA20575BB200083813 /* DCChannel.m in Sources */,
 				5B2104AD2D18540A005B9596 /* NSString+Base64.m in Sources */,
-				5B9269E92B654033003351BB /* DCContactViewController.m in Sources */,
-				09FF02F7205EF9DD00BCBA8D /* DCGuildListViewController.m in Sources */,
-				2C87A3D92AE99C3A00DA6C21 /* DCChatVideoAttachment.m in Sources */,
+				5B2105A32D185B10005B9596 /* DCSettingsViewController.m in Sources */,
+				5B2105962D185B10005B9596 /* DCUser.m in Sources */,
 				5B2104B12D18540A005B9596 /* WSWebSocket.m in Sources */,
+				5B2105A22D185B10005B9596 /* DCContactViewController.m in Sources */,
+				5B2105992D185B10005B9596 /* DCAppDelegate.m in Sources */,
+				5B21059E2D185B10005B9596 /* DCMenuViewController.m in Sources */,
+				5B2105982D185B10005B9596 /* DCChatVideoAttachment.m in Sources */,
+				5B21059C2D185B10005B9596 /* DCChannelListViewController.m in Sources */,
+				5B21059A2D185B10005B9596 /* DCViewController.m in Sources */,
+				5B2105972D185B10005B9596 /* DCChatTableCell.m in Sources */,
 				5B2104AC2D18540A005B9596 /* TRMalleableFrameView.m in Sources */,
-				09FF02F8205EF9DF00BCBA8D /* DCViewController.m in Sources */,
-				09D84D0C205F36B90070020A /* DCSettingsViewController.m in Sources */,
-				09E3ED262069F21200E90DA1 /* DCTools.m in Sources */,
+				5B2105A52D185B10005B9596 /* DCWelcomeController.m in Sources */,
+				5B2105A02D185B10005B9596 /* DCInfoPageViewController.m in Sources */,
+				5B2105912D185B10005B9596 /* DCChannel.m in Sources */,
+				5B2105952D185B10005B9596 /* DCTools.m in Sources */,
 				5B2104B02D18540A005B9596 /* WSMessageProcessor.m in Sources */,
-				09A4EA6F2079266800DECFD6 /* DCChatTableCell.m in Sources */,
 				5B2104A82D185409005B9596 /* UIColor+BButton.m in Sources */,
-				09D776992189427100609134 /* DCMessage.m in Sources */,
 				5B2104A42D185409005B9596 /* APLSlideMenuViewController.m in Sources */,
 				5B2104AE2D18540A005B9596 /* WSFrame.m in Sources */,
-				09A3B6D321A0604500C2411F /* DCUser.m in Sources */,
-				09C344B721A0B984005F8CEE /* DCImageViewController.m in Sources */,
-				7D672E232B0122FF003C1A78 /* DCCInfoViewController.m in Sources */,
-				5BB417582B66761A00735AC3 /* DCIntroductionPage.m in Sources */,
 				5B2104A32D185409005B9596 /* APLSlideMenuSegue.m in Sources */,
-				091D28CA21A9D75700C60BEC /* DCInfoPageViewController.m in Sources */,
+				5B2105A42D185B10005B9596 /* DCIntroductionPage.m in Sources */,
+				5B21059B2D185B10005B9596 /* DCChatViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		09C6B92D204A0F54007EAC26 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				09C6B92E204A0F54007EAC26 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		09C6B954204A0F55007EAC26 /* Debug */ = {
