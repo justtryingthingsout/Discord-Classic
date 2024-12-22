@@ -132,6 +132,8 @@
 		5B2105A52D185B10005B9596 /* DCWelcomeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105902D185B10005B9596 /* DCWelcomeController.m */; };
 		5B2105A92D185BD3005B9596 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105A82D185BD3005B9596 /* main.m */; };
 		5B2105AB2D185CDC005B9596 /* iOS-7.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105AA2D185CDC005B9596 /* iOS-7.storyboard */; };
+		5B2105B62D1861DE005B9596 /* DCMissedCallCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105B52D1861DE005B9596 /* DCMissedCallCell.xib */; };
+		5B2105B92D186432005B9596 /* TestCallEmbed.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105B82D186431005B9596 /* TestCallEmbed.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -297,6 +299,8 @@
 		5B2105A72D185B82005B9596 /* Discord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Discord.app; path = "/Users/methamphetamine/Developer/GitHub/Discord/iOS-Discord-Classic/src/build/Debug-iphoneos/Discord.app"; sourceTree = "<absolute>"; };
 		5B2105A82D185BD3005B9596 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "../../Discord Classic/main.m"; sourceTree = "<group>"; };
 		5B2105AA2D185CDC005B9596 /* iOS-7.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "iOS-7.storyboard"; sourceTree = "<group>"; };
+		5B2105B52D1861DE005B9596 /* DCMissedCallCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DCMissedCallCell.xib; sourceTree = "<group>"; };
+		5B2105B82D186431005B9596 /* TestCallEmbed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TestCallEmbed.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -384,7 +388,6 @@
 				5B2104832D185409005B9596 /* BButton */,
 				5B21048C2D185409005B9596 /* Emojize */,
 				5B2104902D185409005B9596 /* GIF */,
-				5B2104932D185409005B9596 /* SVProgressHUD */,
 				5B2104942D185409005B9596 /* TRMalleableFrameView */,
 				5B2104972D185409005B9596 /* Websocket */,
 			);
@@ -443,13 +446,6 @@
 			path = GIF;
 			sourceTree = "<group>";
 		};
-		5B2104932D185409005B9596 /* SVProgressHUD */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = SVProgressHUD;
-			sourceTree = "<group>";
-		};
 		5B2104942D185409005B9596 /* TRMalleableFrameView */ = {
 			isa = PBXGroup;
 			children = (
@@ -489,6 +485,7 @@
 		5B2104B52D1856A7005B9596 /* XIBs */ = {
 			isa = PBXGroup;
 			children = (
+				5B2105B52D1861DE005B9596 /* DCMissedCallCell.xib */,
 				5B2104B62D1856A7005B9596 /* DCChatGroupedTableCell.xib */,
 				5B2104B72D1856A7005B9596 /* DCChatReplyTableCell.xib */,
 				5B2104B82D1856A7005B9596 /* DCChatTableCell.xib */,
@@ -500,6 +497,7 @@
 		5B2104BE2D1856E5005B9596 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				5B2105B72D18642A005B9596 /* Missed Call */,
 				5B2105512D18570D005B9596 /* Contactback.PNG */,
 				5B2104BF2D1856E5005B9596 /* Banner Resources */,
 				5B2104C42D1856E5005B9596 /* Button Glyphs */,
@@ -815,6 +813,14 @@
 			path = "Welcome and login";
 			sourceTree = "<group>";
 		};
+		5B2105B72D18642A005B9596 /* Missed Call */ = {
+			isa = PBXGroup;
+			children = (
+				5B2105B82D186431005B9596 /* TestCallEmbed.png */,
+			);
+			path = "Missed Call";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -882,6 +888,7 @@
 				5B2105252D1856E5005B9596 /* DefaultAvatar0@2x.png in Resources */,
 				5B21054F2D1856E5005B9596 /* Video-play-button.png in Resources */,
 				5B21053B2D1856E5005B9596 /* PLVideoOverlayPlay@2x.png in Resources */,
+				5B2105B92D186432005B9596 /* TestCallEmbed.png in Resources */,
 				5B21050D2D1856E5005B9596 /* Border.png in Resources */,
 				5B2105282D1856E5005B9596 /* DefaultAvatar2.png in Resources */,
 				5B2105122D1856E5005B9596 /* addbarglyph@2x.png in Resources */,
@@ -938,6 +945,7 @@
 				5B21054A2D1856E5005B9596 /* separator.png in Resources */,
 				5B2105482D1856E5005B9596 /* Discord.png in Resources */,
 				5B2105402D1856E5005B9596 /* DirectMessages@2x.png in Resources */,
+				5B2105B62D1861DE005B9596 /* DCMissedCallCell.xib in Resources */,
 				5B2105302D1856E5005B9596 /* Default-568h@2x.png in Resources */,
 				5B2105292D1856E5005B9596 /* DefaultAvatar2@2x.png in Resources */,
 				5B2105272D1856E5005B9596 /* DefaultAvatar1@2x.png in Resources */,
