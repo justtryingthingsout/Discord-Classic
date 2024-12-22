@@ -19,8 +19,16 @@
     self.window.backgroundColor = [UIColor clearColor];
     self.window.opaque = NO;
     self.shouldReload = false;
+    if(VERSION_MIN(@"7.0")) {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"iOS-7" bundle:nil];
+        UIViewController *initialViewController = [storyboard instantiateInitialViewController];
+        self.window.rootViewController = initialViewController;
+        [self.window makeKeyAndVisible];
+    } else if(VERSION_MIN(@"6.0")) {
+        //UI
+        [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
+    }
     
-    [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
     NSURLCache *urlCache = [[NSURLCache alloc] initWithMemoryCapacity:1024*1024*8  // 8MB mem cache
                                                          diskCapacity:1024*1024*60 // 60MB disk cache
                                                              diskPath:nil];

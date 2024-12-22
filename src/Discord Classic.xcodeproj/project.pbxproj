@@ -131,6 +131,7 @@
 		5B2105A42D185B10005B9596 /* DCIntroductionPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B21058E2D185B10005B9596 /* DCIntroductionPage.m */; };
 		5B2105A52D185B10005B9596 /* DCWelcomeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105902D185B10005B9596 /* DCWelcomeController.m */; };
 		5B2105A92D185BD3005B9596 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105A82D185BD3005B9596 /* main.m */; };
+		5B2105AB2D185CDC005B9596 /* iOS-7.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105AA2D185CDC005B9596 /* iOS-7.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -294,7 +295,8 @@
 		5B21058F2D185B10005B9596 /* DCWelcomeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCWelcomeController.h; sourceTree = "<group>"; };
 		5B2105902D185B10005B9596 /* DCWelcomeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCWelcomeController.m; sourceTree = "<group>"; };
 		5B2105A72D185B82005B9596 /* Discord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Discord.app; path = "/Users/methamphetamine/Developer/GitHub/Discord/iOS-Discord-Classic/src/build/Debug-iphoneos/Discord.app"; sourceTree = "<absolute>"; };
-		5B2105A82D185BD3005B9596 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "Discord Classic/main.m"; sourceTree = "<group>"; };
+		5B2105A82D185BD3005B9596 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "../../Discord Classic/main.m"; sourceTree = "<group>"; };
+		5B2105AA2D185CDC005B9596 /* iOS-7.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "iOS-7.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -321,7 +323,6 @@
 		09C6B915204A0F54007EAC26 = {
 			isa = PBXGroup;
 			children = (
-				5B2105A82D185BD3005B9596 /* main.m */,
 				5B21055A2D185B10005B9596 /* Classes */,
 				5B21047D2D185409005B9596 /* Libraries */,
 				5B2104782D185402005B9596 /* Assets */,
@@ -480,6 +481,7 @@
 			isa = PBXGroup;
 			children = (
 				5B2104B32D185680005B9596 /* Storyboard.storyboard */,
+				5B2105AA2D185CDC005B9596 /* iOS-7.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -711,6 +713,7 @@
 		5B21056D2D185B10005B9596 /* Delegate */ = {
 			isa = PBXGroup;
 			children = (
+				5B2105A82D185BD3005B9596 /* main.m */,
 				5B21056E2D185B10005B9596 /* DCAppDelegate.h */,
 				5B21056F2D185B10005B9596 /* DCAppDelegate.m */,
 			);
@@ -872,6 +875,7 @@
 				5B21054C2D1856E5005B9596 /* TbarBG@2x.png in Resources */,
 				5B2105392D1856E5005B9596 /* TopLogo@2x.png in Resources */,
 				5B21051F2D1856E5005B9596 /* BarButtonPressed@2x.png in Resources */,
+				5B2105AB2D185CDC005B9596 /* iOS-7.storyboard in Resources */,
 				5B2104BD2D1856A7005B9596 /* DCChatVideoAttachment.xib in Resources */,
 				5B21052D2D1856E5005B9596 /* DefaultAvatar4@2x.png in Resources */,
 				5B21053C2D1856E5005B9596 /* PLVideoOverlayPlayDown.png in Resources */,
