@@ -206,6 +206,7 @@ UIActivityIndicatorView *spinner;
 						weakSelf.guilds = NSMutableArray.new;
 						weakSelf.channels = NSMutableDictionary.new;
 						weakSelf.loadedUsers = NSMutableDictionary.new;
+                        
 						weakSelf.didRecieveHeartbeatResponse = true;
                         if ([UIApplication sharedApplication].networkActivityIndicatorVisible > 0)
                             [UIApplication sharedApplication].networkActivityIndicatorVisible--;
@@ -266,7 +267,7 @@ UIActivityIndicatorView *spinner;
                             //The user's DMs are treated like a guild, where the channels are different DM/groups
                             DCGuild* privateGuild = DCGuild.new;
                             privateGuild.name = @"Direct Messages";
-                            privateGuild.icon = [UIImage imageNamed:@"DefaultAvatar0"];
+                            privateGuild.icon = [UIImage imageNamed:@"DMLogo"];
                             privateGuild.channels = NSMutableArray.new;
                             
                             for(NSDictionary* privateChannel in [d valueForKey:@"private_channels"]){
@@ -274,20 +275,9 @@ UIActivityIndicatorView *spinner;
                                 //this may actually suck
                                 // Initialize users array for the member list
                                 NSMutableArray *users = NSMutableArray.new;
+                                NSLog(@"%@", privateChannel);
                                 NSMutableDictionary *usersDict;
-                                for (NSDictionary* user in [privateChannel objectForKey:@"recipients"]) {
-                                    usersDict = NSMutableDictionary.new;
-                                    [usersDict setObject:[user valueForKey:@"global_name"] forKey:@"global_name"];
-                                    [usersDict setObject:[user valueForKey:@"avatar"] forKey:@"avatar"];
-                                    [usersDict setObject:[user valueForKey:@"discriminator"] forKey:@"discriminator"];
-                                    [users addObject:usersDict];
-                                }
-                                // Add self to users list
-                                usersDict = NSMutableDictionary.new;
-                                [usersDict setObject:@"You" forKey:@"global_name"];
-                                [usersDict setObject:@"TEMP" forKey:@"avatar"];
-                                [users addObject:usersDict];
-                                //end
+
                                 
                                 DCChannel* newChannel = DCChannel.new;
                                 newChannel.snowflake = [privateChannel valueForKey:@"id"];
@@ -298,6 +288,26 @@ UIActivityIndicatorView *spinner;
                                 if ([privateChannel objectForKey:@"icon"] != nil || [privateChannel objectForKey:@"recipients"] != nil) {
                                     if (((NSArray*)[privateChannel valueForKey:@"recipients"]).count > 0) {
                                         NSDictionary *user = [[privateChannel valueForKey:@"recipients"] objectAtIndex:0];
+                                        for (NSDictionary* user in [privateChannel objectForKey:@"recipients"]) {
+                                            usersDict = NSMutableDictionary.new;
+                                            [usersDict setObject:[user valueForKey:@"username"] forKey:@"username"];
+                                            [usersDict setObject:[user valueForKey:@"avatar"] forKey:@"avatar"];
+                                            [usersDict setObject:[user valueForKey:@"discriminator"] forKey:@"discriminator"];
+                                            [users addObject:usersDict];
+                                        }
+                                        // Add self to users list
+                                        usersDict = NSMutableDictionary.new;
+                                        [usersDict setObject:[NSString stringWithFormat:@"You"] forKey:@"username"];
+                                        [usersDict setObject:@"TEMP" forKey:@"avatar"];
+                                        [users addObject:usersDict];
+                                        //end
+                                        /*NSMutableDictionary *usersDict;
+                                        for (NSDictionary* user in [privateChannel objectForKey:@"recipients"]) {
+                                            usersDict = NSMutableDictionary.new;
+                                            [usersDict setObject:[user valueForKey:@"username"] forKey:@"username"];
+                                            [usersDict setObject:[user valueForKey:@"avatar"] forKey:@"avatar"];
+                                            [users addObject:usersDict];
+                                        }*/
                                         NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
                                         [f setNumberStyle:NSNumberFormatterDecimalStyle];
                                         NSNumber * longId = [f numberFromString:[user valueForKey:@"id"]];
