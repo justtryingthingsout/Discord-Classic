@@ -290,9 +290,9 @@ UIActivityIndicatorView *spinner;
                                         NSDictionary *user = [[privateChannel valueForKey:@"recipients"] objectAtIndex:0];
                                         for (NSDictionary* user in [privateChannel objectForKey:@"recipients"]) {
                                             usersDict = NSMutableDictionary.new;
-                                            [usersDict setObject:[user valueForKey:@"username"] forKey:@"username"];
+                                            [usersDict setObject:[user valueForKey:@"global_name"] forKey:@"username"];
                                             [usersDict setObject:[user valueForKey:@"avatar"] forKey:@"avatar"];
-                                            [usersDict setObject:[user valueForKey:@"discriminator"] forKey:@"discriminator"];
+                                            [usersDict setObject:[user valueForKey:@"id"] forKey:@"snowflake"];
                                             [users addObject:usersDict];
                                         }
                                         // Add self to users list
