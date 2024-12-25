@@ -27,11 +27,15 @@
     } else if(VERSION_MIN(@"6.0")) {
         bool hackyMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
         
-        if(hackyMode)
-            exit(0);
+        if(hackyMode == true) {
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Throwback" bundle:nil];
+            UIViewController *initialViewController = [storyboard instantiateInitialViewController];
+            self.window.rootViewController = initialViewController;
+            [self.window makeKeyAndVisible];
+        } else {
+            [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
+        }
         
-        //UI
-        [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
     }
     
     NSURLCache *urlCache = [[NSURLCache alloc] initWithMemoryCapacity:1024*1024*8  // 8MB mem cache
