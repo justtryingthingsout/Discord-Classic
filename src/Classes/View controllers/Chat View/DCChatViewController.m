@@ -2,8 +2,8 @@
 //  DCChatViewController.m
 //  Discord Classic
 //
-//  Created by Julian Triveri on 3/6/18.
-//  Copyright (c) 2018 Julian Triveri. All rights reserved.
+//  Created by bag.xml on 3/6/18.
+//  Copyright (c) 2018 bag.xml. All rights reserved.
 //
 
 #import "DCChatViewController.h"
@@ -647,7 +647,6 @@ static dispatch_queue_t chat_messages_queue;
     
     if([segue.destinationViewController class] == [DCContactViewController class]){
         [((DCContactViewController*)segue.destinationViewController) setSelectedUser:self.selectedMessage.author];
-        [((DCContactViewController*)segue.destinationViewController) requestProfileInformation:self.selectedMessage.author];
     }
     
 }

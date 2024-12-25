@@ -484,15 +484,6 @@
                                     <rect key="frame" x="0.0" y="168" width="320" height="2"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </imageView>
-                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="username" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="h04-MN-RKA">
-                                    <rect key="frame" x="108" y="113" width="192" height="30"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <nil key="highlightedColor"/>
-                                    <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                    <size key="shadowOffset" width="0.0" height="1"/>
-                                </label>
                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="aaaaaaaa" selectable="NO" id="S6s-ob-HXj">
                                     <rect key="frame" x="20" y="199" width="278" height="171"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -539,6 +530,18 @@
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="113"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="F1z-Le-e7H">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="113"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bannerBottomShadow.png" id="97z-Hc-HV9">
+                                            <rect key="frame" x="0.0" y="83" width="320" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Border.png" id="MqR-CO-lLy">
+                                            <rect key="frame" x="0.0" y="111" width="320" height="2"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="phj-fM-jWJ">
                                             <rect key="frame" x="102" y="83" width="198" height="30"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
@@ -548,21 +551,26 @@
                                             <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                             <size key="shadowOffset" width="0.0" height="1"/>
                                         </label>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bannerBottomShadow.png" id="97z-Hc-HV9">
-                                            <rect key="frame" x="0.0" y="83" width="320" height="30"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Border.png" id="MqR-CO-lLy">
-                                            <rect key="frame" x="0.0" y="111" width="320" height="2"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
                                     </subviews>
-                                    <color key="backgroundColor" red="0.0" green="0.28383316532258063" blue="0.44376890120967744" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="backgroundColor" red="0.50196078430000002" green="0.51764705879999995" blue="0.56078431370000004" alpha="1" colorSpace="calibratedRGB"/>
                                 </view>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="DBL-lf-XJ2">
                                     <rect key="frame" x="20" y="73" width="80" height="80"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </imageView>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pfpOverlay.png" id="F3T-fa-lgA">
+                                    <rect key="frame" x="19" y="72" width="82" height="82"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                </imageView>
+                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="username" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="h04-MN-RKA">
+                                    <rect key="frame" x="109" y="112" width="192" height="30"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <nil key="highlightedColor"/>
+                                    <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    <size key="shadowOffset" width="0.0" height="2"/>
+                                </label>
                             </subviews>
                             <color key="backgroundColor" red="0.1215686275" green="0.12549019610000001" blue="0.14117647059999999" alpha="1" colorSpace="calibratedRGB"/>
                         </view>
@@ -582,10 +590,12 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Contact" id="CQe-Ky-RG8"/>
                     <connections>
+                        <outlet property="bannerView" destination="xHZ-he-dLT" id="xdZ-7X-Sy9"/>
                         <outlet property="chatButton" destination="bmH-k8-n4L" id="Njn-aK-HnC"/>
                         <outlet property="descriptionBox" destination="S6s-ob-HXj" id="2h5-6V-GF1"/>
                         <outlet property="handleLable" destination="h04-MN-RKA" id="eaV-GR-Q9L"/>
                         <outlet property="nameLabel" destination="phj-fM-jWJ" id="ge5-zG-van"/>
+                        <outlet property="profileBanner" destination="F1z-Le-e7H" id="P3r-nK-lw6"/>
                         <outlet property="profileImageView" destination="DBL-lf-XJ2" id="KbD-Eq-Cau"/>
                     </connections>
                 </tableViewController>
@@ -912,6 +922,7 @@
         <image name="bannerTopShadow.png" width="1" height="60"/>
         <image name="menu.png" width="24" height="24"/>
         <image name="newMessages.png" width="7" height="19"/>
+        <image name="pfpOverlay.png" width="82" height="82"/>
         <image name="separator.png" width="320" height="4"/>
     </resources>
     <color key="tintColor" red="0.054901960784313725" green="0.058823529411764705" blue="0.062745098039215685" alpha="1" colorSpace="calibratedRGB"/>
