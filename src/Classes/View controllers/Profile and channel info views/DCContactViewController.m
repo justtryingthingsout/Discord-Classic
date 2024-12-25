@@ -55,14 +55,29 @@
             NSDictionary* userProfile = [parsedResponse objectForKey:@"user_profile"];
             NSDictionary* userInfo = [parsedResponse objectForKey:@"user"];
             
-            //this is actual madness
-            NSString *bannerHexCode = [userInfo objectForKey:@"banner_color"];
-            UIColor *backgroundColor = [UIColorHex colorWithHexString:bannerHexCode];
-            if (backgroundColor)
-                NSLog(@"%@", backgroundColor);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.pronounLabel.text = [userProfile objectForKey:@"pronouns"];
+            });
+            
+            NSString *bannerHash = [userInfo objectForKey:@"banner"];
+            
+            if (bannerHash && ![bannerHash isKindOfClass:[NSNull class]]) {
+                NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://cdn.discordapp.com/banners/%@/%@.png?size=480", [userInfo objectForKey:@"id"], [userInfo objectForKey:@"banner"]]];
+                NSData *data = [NSData dataWithContentsOfURL:url];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.profileBanner.image = [UIImage imageWithData:data];
+                });
+                
+            } else {
+                //this is actual madness
+                NSString *bannerHexCode = [userInfo objectForKey:@"banner_color"];
+                UIColor *backgroundColor = [UIColorHex colorWithHexString:bannerHexCode];
+                if (backgroundColor)
+                    NSLog(@"%@", backgroundColor);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.bannerView.backgroundColor = backgroundColor;
                 });
+            }
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.descriptionBox.text = [userProfile valueForKey:@"bio"];
@@ -72,6 +87,19 @@
         }
     });
 }
+/*
+[DCTools processImageDataWithURLString:iconURL andBlock:^(UIImage *imageData) {
+    UIImage* icon = imageData;
+    
+    if (icon != nil) {
+        newChannel.icon = icon;
+        CGSize itemSize = CGSizeMake(32, 32);
+        UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
+        CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+        [newChannel.icon  drawInRect:imageRect];
+        newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+    }*/
 
 - (IBAction)throwToChat:(id)sender {
     [self performSegueWithIdentifier:@"guilds to chat" sender:self];

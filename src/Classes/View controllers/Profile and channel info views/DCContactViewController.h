@@ -16,6 +16,7 @@
 
 -(void)setSelectedUser:(DCUser*)user;
 
+@property (weak, nonatomic) IBOutlet UILabel *pronounLabel;
 @property (weak, nonatomic) IBOutlet UIButton *chatButton;
 @property NSString* snowflake;
 @end
