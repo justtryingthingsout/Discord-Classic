@@ -39,8 +39,11 @@
     NSError *error = nil;
     NSData *response = [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
     if(response){
-        NSArray* parsedResponse = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
-        NSLog(@"%@", parsedResponse);
+        NSDictionary* parsedResponse = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+        NSDictionary* userProfile = [parsedResponse objectForKey:@"user_profile"];
+        self.descriptionBox.text = [userProfile valueForKey:@"bio"];
+        
+        
     }
 }
 
@@ -50,10 +53,14 @@
     self.navigationItem.title = user.globalName;
     self.nameLabel.text = user.globalName;
     self.handleLable.text = user.username;
+    
+    //image
     self.profileImageView.image = user.profileImage;
-    self.profileBanner.image = user.profileBanner;
+    self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width / 2.0;
+    self.profileImageView.layer.masksToBounds = YES;
+    //self.profileBanner.image = user.profileBanner;
     self.user = user;
-    self.descriptionBox.text = user.description;
+    //self.descriptionBox.text = user.description;
 }
 
 - (IBAction)throwToChat:(id)sender {
