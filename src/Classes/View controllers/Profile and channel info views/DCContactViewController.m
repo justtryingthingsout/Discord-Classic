@@ -24,6 +24,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     //not done yet...
     self.chatButton.hidden = YES;
 }
@@ -54,15 +55,15 @@
             NSDictionary* userProfile = [parsedResponse objectForKey:@"user_profile"];
             NSDictionary* userInfo = [parsedResponse objectForKey:@"user"];
             
+            //this is actual madness
             NSString *bannerHexCode = [userInfo objectForKey:@"banner_color"];
             UIColor *backgroundColor = [UIColorHex colorWithHexString:bannerHexCode];
-            if (backgroundColor) {
+            if (backgroundColor)
                 NSLog(@"%@", backgroundColor);
-                self.bannerView.backgroundColor = [UIColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:1.0]; // For #E3E3E3
-
-            } else {
-                NSLog(@"Invalid hex string");
-            }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.bannerView.backgroundColor = backgroundColor;
+                });
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.descriptionBox.text = [userProfile valueForKey:@"bio"];
             });
