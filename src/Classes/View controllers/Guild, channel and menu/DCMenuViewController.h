@@ -31,6 +31,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *guildLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *guildBanner;
 
+@property (weak, nonatomic) IBOutlet UIView *totalView;
+
+
 @property NSOperationQueue* serverIconImageQueue;
 
 @end

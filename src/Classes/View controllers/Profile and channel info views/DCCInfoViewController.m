@@ -39,13 +39,7 @@
     NSDictionary *userIndex = [DCServerCommunicator.sharedInstance.selectedChannel.users objectAtIndex:indexPath.row];
 
     
-    id username = [userIndex valueForKey:@"username"];
-    if ([username isKindOfClass:[NSString class]]) {
-        cell.userName.text = (NSString *)username;
-    } else {
-        cell.userName.text = @"Deleted User";
-        cell.userPFP.image = [UIImage imageNamed:@"defaultAvatar1"];
-    }
+
     
     if([userIndex valueForKey:@"avatar"] == nil) {
         cell.userPFP.image = [UIImage imageNamed:@"defaultAvatar1"];
@@ -58,6 +52,17 @@
             });
         });
     }
+    
+    id username = [userIndex valueForKey:@"username"];
+    if ([username isKindOfClass:[NSString class]]) {
+        cell.userName.text = (NSString *)username;
+    } else {
+        cell.userName.text = @"Deleted User";
+        cell.userPFP.image = [UIImage imageNamed:@"defaultAvatar1"];
+    }
+    
+    cell.userPFP.layer.cornerRadius = cell.userPFP.frame.size.width / 2.0;
+    cell.userPFP.layer.masksToBounds = YES;
     return cell;
 }
 

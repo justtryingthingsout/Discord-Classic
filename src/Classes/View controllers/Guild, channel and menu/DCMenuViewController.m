@@ -168,6 +168,12 @@
         [self.navigationItem setTitle:self.selectedGuild.name];
         self.guildLabel.text = self.selectedGuild.name;
 		[self.channelTableView reloadData];
+        if (self.guildLabel && [self.guildLabel.text isEqualToString:@"Direct Messages"]) {
+            self.totalView.hidden = YES;
+        } else {
+            self.totalView.hidden = NO;
+        }
+
 	}
     
     if(tableView == self.channelTableView){
