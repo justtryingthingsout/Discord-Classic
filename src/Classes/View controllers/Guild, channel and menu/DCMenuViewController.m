@@ -38,12 +38,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotificationTap:) name:@"NavigateToChannel" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(exitedChatController) name:@"ChannelSelectionCleared" object:nil];
     //NOTIF OBSERVERS END
-    
-    //TOOLBAR IMAGE LOGIC
-    UIImage *toolbarBGImage = [UIImage imageNamed:@"ToolbarBG"];
-    
-    [self.toolbar setBackgroundImage:toolbarBGImage forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
-    //toolbar image logic end
 }
 
 
@@ -51,7 +45,6 @@
 
 
 - (void)handleNotificationTap:(NSNotification *)notification {
-    //NSLog(@"HANDLE NOTIFICATION TAP CALLED");
     NSString *channelId = notification.userInfo[@"channelId"];
     if (channelId) {
         //NSLog(@"Navigating to channel with ID: %@", channelId);
@@ -241,17 +234,24 @@
 }
 
 
-/*- (void)tableView:(UITableView *)tableView willDisplayCell:(DCGuildTableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-    // make guild icons a fixed size
-    if(tableView == self.guildTableView) {
-    cell.guildAvatar.frame = CGRectMake(0, 0, 32, 32);
-    cell.guildAvatar.layer.cornerRadius = cell.imageView.frame.size.height / 4.0;
-    cell.guildAvatar.layer.masksToBounds = YES;
-    [cell.guildAvatar setNeedsDisplay];
-    [cell layoutIfNeeded];
-    }
+- (void)handleMeRequest {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSURL* userProfileURL = [NSURL URLWithString: [NSString stringWithFormat:@"https://discordapp.com/api/v9/users/@me"]];
+        NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:userProfileURL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15];
+        [urlRequest setValue:@"no-store" forHTTPHeaderField:@"Cache-Control"];
+        [urlRequest addValue:DCServerCommunicator.sharedInstance.token forHTTPHeaderField:@"Authorization"];
+        [urlRequest addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        NSHTTPURLResponse *responseCode = nil;
+        
+        NSError *error = nil;
+        NSData *response = [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
+        if(response){
+            NSDictionary* parsedResponse = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+            NSLog(@"%@", parsedResponse);
+        }
+    });
 }
-*/
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return 1;
 }

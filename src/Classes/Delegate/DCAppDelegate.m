@@ -25,6 +25,11 @@
         self.window.rootViewController = initialViewController;
         [self.window makeKeyAndVisible];
     } else if(VERSION_MIN(@"6.0")) {
+        bool hackyMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
+        
+        if(hackyMode)
+            exit(0);
+        
         //UI
         [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
     }
