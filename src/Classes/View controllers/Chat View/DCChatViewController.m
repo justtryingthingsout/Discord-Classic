@@ -483,7 +483,7 @@ static dispatch_queue_t chat_messages_queue;
         [messageActionSheet setDelegate:self];
         [messageActionSheet showInView:self.view];
     } else {
-        UIActionSheet *messageActionSheet = [[UIActionSheet alloc] initWithTitle:self.selectedMessage.content delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Reply", @"View Profile", nil];
+        UIActionSheet *messageActionSheet = [[UIActionSheet alloc] initWithTitle:self.selectedMessage.content delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Reply", @"View Profile", @"Mention", nil];
         [messageActionSheet setTag:3];
         [messageActionSheet setDelegate:self];
         [messageActionSheet showInView:self.view];

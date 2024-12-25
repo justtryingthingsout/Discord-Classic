@@ -12,6 +12,7 @@
 
 @property DCUser* user;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *profileBanner;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *handleLable;
 @property (weak, nonatomic) IBOutlet UITextView *descriptionBox;
@@ -21,6 +22,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //not done yet...
+    self.chatButton.hidden = YES;
 }
 
 -(void)setSelectedUser:(DCUser*)user{
@@ -29,8 +33,16 @@
     self.nameLabel.text = user.globalName;
     self.handleLable.text = user.username;
     self.profileImageView.image = user.profileImage;
+    self.profileBanner.image = user.profileBanner;
     self.user = user;
     self.descriptionBox.text = user.description;
+    
+    self.userID = user.snowflake;
+
 }
 
+- (IBAction)throwToChat:(id)sender {
+    [self performSegueWithIdentifier:@"guilds to chat" sender:self];
+
+}
 @end

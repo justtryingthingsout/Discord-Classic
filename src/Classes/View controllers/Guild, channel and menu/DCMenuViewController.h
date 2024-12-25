@@ -14,6 +14,8 @@
 #import "DCServerCommunicator.h"
 #import "DCTools.h"
 #import "DCUser.h"
+#import "DCGuildTableViewCell.h"
+#import "DCChannelViewCell.h"
 
 #define VERSION_MIN(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 

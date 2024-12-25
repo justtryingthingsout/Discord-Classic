@@ -161,23 +161,7 @@
     [messageActionSheet setDelegate:self];
     [messageActionSheet showInView:self.view];
 }
-//BUTTON ACTIONS
 
-//BUTTON ACTIONS END
-//TABLEVIEW(S)
-/*
-- (void)initiatebannersequence {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        //NSLog(@"%@ rfuieopkrghiurfeogrtihgurojg", self.selectedGuild.snowflake);
-        NSString *mediaURL = @"https://cdn.discordapp.com/banners/624739448927682611/5278d848560205e7a90172339a315b8e.png?size=480";
-        NSURL *mediaImageUrl = [NSURL URLWithString:mediaURL];
-        NSData *mediaData = [NSData dataWithContentsOfURL:mediaImageUrl];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.guildBanner.image = [UIImage imageWithData:mediaData];
-        });
-    });
-}
-*/
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 	if(tableView == self.guildTableView){
@@ -202,23 +186,22 @@
         [DCServerCommunicator.sharedInstance.selectedChannel checkIfRead];
         
         //Remove the blue indicator since the channel has been read
-        [[self.channelTableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+        //[[self.channelTableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         [self performSegueWithIdentifier:@"guilds to chat" sender:self];
         
-        [tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        //[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
 }
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = nil;
-    
     if (tableView == self.guildTableView) {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"guild"];
+        // Use the DCGuildTableViewCell
+        DCGuildTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"guild"];
         if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"guild"];
+            cell = [[DCGuildTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"guild"];
         }
         
+        // Sorting guilds
         DCServerCommunicator.sharedInstance.guilds = [[DCServerCommunicator.sharedInstance.guilds sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
             NSString *first = [(DCGuild *)a name];
             NSString *second = [(DCGuild *)b name];
@@ -228,47 +211,47 @@
         
         DCGuild *guildAtRowIndex = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:indexPath.row];
         
+        // Show blue indicator if guild has any unread messages
+        cell.unreadMessages.hidden = !guildAtRowIndex.unread;
+        
         // Guild name and icon
-        cell.textLabel.text = @"";
-        [cell.imageView setImage:guildAtRowIndex.icon];
-        cell.imageView.frame = CGRectMake(0, 0, 32, 32);
-        cell.imageView.layer.cornerRadius = cell.imageView.frame.size.height / 2.0;
-        cell.imageView.layer.masksToBounds = YES;
-        cell.imageView.contentMode = UIViewContentModeScaleAspectFill;
-        cell.imageView.clipsToBounds = YES;
+        [cell.guildAvatar setImage:guildAtRowIndex.icon];
+        
+        // Set the frame for the image view (if not already set)
+        
+        cell.guildAvatar.layer.cornerRadius = cell.guildAvatar.frame.size.width / 6.0;
+        cell.guildAvatar.layer.masksToBounds = YES;
+        
+        return cell;
     }
     
     if (tableView == self.channelTableView) {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"channel"];
+        DCChannelViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"channel"];
         if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"channel"];
+            cell = [[DCChannelViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"channel"];
         }
-        
         DCChannel *channelAtRowIndex = [self.selectedGuild.channels objectAtIndex:indexPath.row];
-        if (channelAtRowIndex.unread) {
-            [cell setAccessoryType:UITableViewCellAccessoryDetailDisclosureButton];
-        } else {
-            [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
-        }
+        cell.messageIndicator.hidden = !channelAtRowIndex.unread;
+        [cell.channelName setText:channelAtRowIndex.name];
         
-        [cell.textLabel setText:channelAtRowIndex.name];
+        return cell;
     }
     
-    return cell;
+    return nil; // Default case (shouldn't happen in your scenario)
 }
 
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+/*- (void)tableView:(UITableView *)tableView willDisplayCell:(DCGuildTableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
     // make guild icons a fixed size
     if(tableView == self.guildTableView) {
-    cell.imageView.frame = CGRectMake(0, 0, 32, 32);
-    cell.imageView.layer.cornerRadius = cell.imageView.frame.size.height / 4.0;
-    cell.imageView.layer.masksToBounds = YES;
-    [cell.imageView setNeedsDisplay];
+    cell.guildAvatar.frame = CGRectMake(0, 0, 32, 32);
+    cell.guildAvatar.layer.cornerRadius = cell.imageView.frame.size.height / 4.0;
+    cell.guildAvatar.layer.masksToBounds = YES;
+    [cell.guildAvatar setNeedsDisplay];
     [cell layoutIfNeeded];
     }
 }
-
+*/
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return 1;
 }
@@ -295,6 +278,7 @@
                 //Initialize messages
                 chatViewController.messages = NSMutableArray.new;
                 NSString* formattedChannelName;
+                
                 if(DCServerCommunicator.sharedInstance.selectedChannel.type == 0)
                     formattedChannelName = [@"#" stringByAppendingString:DCServerCommunicator.sharedInstance.selectedChannel.name];
                 else

@@ -7,6 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DCRecipientTableCell.h"
+#import "DCContactViewController.h"
+#import "DCServerCommunicator.h"
+#import "DCChatViewController.h"
+#import "APLSlideMenuViewController.h"
 
 @interface DCCInfoViewController : UITableViewController
 

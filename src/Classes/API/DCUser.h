@@ -14,6 +14,7 @@
 @property NSString* globalName;
 @property NSString* biography;
 @property UIImage* profileImage;
+@property UIImage* profileBanner;
 @property NSString* discriminator;
 @property UIImage* avatarDecoration;
 

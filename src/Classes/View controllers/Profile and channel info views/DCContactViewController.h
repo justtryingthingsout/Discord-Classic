@@ -13,4 +13,6 @@
 
 -(void)setSelectedUser:(DCUser*)user;
 
+@property (weak, nonatomic) IBOutlet UIButton *chatButton;
+@property NSString *userID;
 @end

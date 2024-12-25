@@ -135,6 +135,19 @@
 		5B2105B62D1861DE005B9596 /* DCMissedCallCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105B52D1861DE005B9596 /* DCMissedCallCell.xib */; };
 		5B2105B92D186432005B9596 /* TestCallEmbed.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105B82D186431005B9596 /* TestCallEmbed.png */; };
 		5B2105BC2D1896F7005B9596 /* Sample in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105BB2D1896F7005B9596 /* Sample */; };
+		5B2105BF2D18B498005B9596 /* DCRecipientTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105BE2D18B498005B9596 /* DCRecipientTableCell.m */; };
+		5B2105C22D18C116005B9596 /* DCGuildTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105C12D18C116005B9596 /* DCGuildTableViewCell.m */; };
+		5B3890DB2D1C53CB002D3BBE /* GuildIconBase.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890DA2D1C53CB002D3BBE /* GuildIconBase.png */; };
+		5B3890DD2D1C54D8002D3BBE /* GuildIconBaseSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890DC2D1C54D8002D3BBE /* GuildIconBaseSelected.png */; };
+		5BB5D7362D19545B00C54C0A /* privateGuildLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D7342D19545B00C54C0A /* privateGuildLogo.png */; };
+		5BB5D7372D19545B00C54C0A /* privateGuildLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D7352D19545B00C54C0A /* privateGuildLogo@2x.png */; };
+		5BB5D73A2D1956F700C54C0A /* bannerTopShadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D7382D1956F700C54C0A /* bannerTopShadow.png */; };
+		5BB5D73B2D1956F700C54C0A /* bannerTopShadow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D7392D1956F700C54C0A /* bannerTopShadow@2x.png */; };
+		5BB5D73E2D19582700C54C0A /* bannerBottomShadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D73C2D19582700C54C0A /* bannerBottomShadow.png */; };
+		5BB5D73F2D19582700C54C0A /* bannerBottomShadow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D73D2D19582700C54C0A /* bannerBottomShadow@2x.png */; };
+		5BB5D7432D195B3400C54C0A /* newMessages.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D7412D195B3400C54C0A /* newMessages.png */; };
+		5BB5D7442D195B3400C54C0A /* newMessages@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D7422D195B3400C54C0A /* newMessages@2x.png */; };
+		5BB5D7472D195E6400C54C0A /* DCChannelViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB5D7462D195E6400C54C0A /* DCChannelViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -297,12 +310,28 @@
 		5B21058E2D185B10005B9596 /* DCIntroductionPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCIntroductionPage.m; sourceTree = "<group>"; };
 		5B21058F2D185B10005B9596 /* DCWelcomeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCWelcomeController.h; sourceTree = "<group>"; };
 		5B2105902D185B10005B9596 /* DCWelcomeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCWelcomeController.m; sourceTree = "<group>"; };
-		5B2105A72D185B82005B9596 /* Discord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Discord.app; path = "/Users/methamphetamine/Developer/GitHub/Discord/iOS-Discord-Classic/src/build/Debug-iphoneos/Discord.app"; sourceTree = "<absolute>"; };
 		5B2105A82D185BD3005B9596 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "../../Discord Classic/main.m"; sourceTree = "<group>"; };
 		5B2105AA2D185CDC005B9596 /* iOS-7.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "iOS-7.storyboard"; sourceTree = "<group>"; };
 		5B2105B52D1861DE005B9596 /* DCMissedCallCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DCMissedCallCell.xib; sourceTree = "<group>"; };
 		5B2105B82D186431005B9596 /* TestCallEmbed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TestCallEmbed.png; sourceTree = "<group>"; };
 		5B2105BB2D1896F7005B9596 /* Sample */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sample; sourceTree = "<group>"; };
+		5B2105BD2D18B498005B9596 /* DCRecipientTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCRecipientTableCell.h; sourceTree = "<group>"; };
+		5B2105BE2D18B498005B9596 /* DCRecipientTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCRecipientTableCell.m; sourceTree = "<group>"; };
+		5B2105C02D18C116005B9596 /* DCGuildTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCGuildTableViewCell.h; sourceTree = "<group>"; };
+		5B2105C12D18C116005B9596 /* DCGuildTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCGuildTableViewCell.m; sourceTree = "<group>"; };
+		5B3890DA2D1C53CB002D3BBE /* GuildIconBase.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GuildIconBase.png; sourceTree = "<group>"; };
+		5B3890DC2D1C54D8002D3BBE /* GuildIconBaseSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GuildIconBaseSelected.png; sourceTree = "<group>"; };
+		5BB5D72F2D19529800C54C0A /* Discord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Discord.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5BB5D7342D19545B00C54C0A /* privateGuildLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = privateGuildLogo.png; path = ../privateGuildLogo.png; sourceTree = "<group>"; };
+		5BB5D7352D19545B00C54C0A /* privateGuildLogo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "privateGuildLogo@2x.png"; path = "../privateGuildLogo@2x.png"; sourceTree = "<group>"; };
+		5BB5D7382D1956F700C54C0A /* bannerTopShadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bannerTopShadow.png; sourceTree = "<group>"; };
+		5BB5D7392D1956F700C54C0A /* bannerTopShadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bannerTopShadow@2x.png"; sourceTree = "<group>"; };
+		5BB5D73C2D19582700C54C0A /* bannerBottomShadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bannerBottomShadow.png; sourceTree = "<group>"; };
+		5BB5D73D2D19582700C54C0A /* bannerBottomShadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bannerBottomShadow@2x.png"; sourceTree = "<group>"; };
+		5BB5D7412D195B3400C54C0A /* newMessages.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = newMessages.png; sourceTree = "<group>"; };
+		5BB5D7422D195B3400C54C0A /* newMessages@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "newMessages@2x.png"; sourceTree = "<group>"; };
+		5BB5D7452D195E6400C54C0A /* DCChannelViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCChannelViewCell.h; sourceTree = "<group>"; };
+		5BB5D7462D195E6400C54C0A /* DCChannelViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCChannelViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -334,6 +363,7 @@
 				5B21047D2D185409005B9596 /* Libraries */,
 				5B2104782D185402005B9596 /* Assets */,
 				09C6B923204A0F54007EAC26 /* Frameworks */,
+				5BB5D72F2D19529800C54C0A /* Discord.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -500,6 +530,7 @@
 		5B2104BE2D1856E5005B9596 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				5BB5D7402D195B0C00C54C0A /* Guild Cell */,
 				5B2105B72D18642A005B9596 /* Missed Call */,
 				5B2105512D18570D005B9596 /* Contactback.PNG */,
 				5B2104BF2D1856E5005B9596 /* Banner Resources */,
@@ -522,6 +553,10 @@
 		5B2104BF2D1856E5005B9596 /* Banner Resources */ = {
 			isa = PBXGroup;
 			children = (
+				5BB5D73C2D19582700C54C0A /* bannerBottomShadow.png */,
+				5BB5D73D2D19582700C54C0A /* bannerBottomShadow@2x.png */,
+				5BB5D7382D1956F700C54C0A /* bannerTopShadow.png */,
+				5BB5D7392D1956F700C54C0A /* bannerTopShadow@2x.png */,
 				5B2104C02D1856E5005B9596 /* Border.png */,
 				5B2104C12D1856E5005B9596 /* Border@2x.png */,
 				5B2104C22D1856E5005B9596 /* No-header.png */,
@@ -707,6 +742,12 @@
 				5B21056A2D185B10005B9596 /* DCChatTableCell.m */,
 				5B21056B2D185B10005B9596 /* DCChatVideoAttachment.h */,
 				5B21056C2D185B10005B9596 /* DCChatVideoAttachment.m */,
+				5B2105BD2D18B498005B9596 /* DCRecipientTableCell.h */,
+				5B2105BE2D18B498005B9596 /* DCRecipientTableCell.m */,
+				5B2105C02D18C116005B9596 /* DCGuildTableViewCell.h */,
+				5B2105C12D18C116005B9596 /* DCGuildTableViewCell.m */,
+				5BB5D7452D195E6400C54C0A /* DCChannelViewCell.h */,
+				5BB5D7462D195E6400C54C0A /* DCChannelViewCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -832,6 +873,19 @@
 			path = Test;
 			sourceTree = "<group>";
 		};
+		5BB5D7402D195B0C00C54C0A /* Guild Cell */ = {
+			isa = PBXGroup;
+			children = (
+				5B3890DC2D1C54D8002D3BBE /* GuildIconBaseSelected.png */,
+				5B3890DA2D1C53CB002D3BBE /* GuildIconBase.png */,
+				5BB5D7412D195B3400C54C0A /* newMessages.png */,
+				5BB5D7422D195B3400C54C0A /* newMessages@2x.png */,
+				5BB5D7342D19545B00C54C0A /* privateGuildLogo.png */,
+				5BB5D7352D19545B00C54C0A /* privateGuildLogo@2x.png */,
+			);
+			path = "Guild Cell";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -851,7 +905,7 @@
 			);
 			name = Discord;
 			productName = "Discord Classic";
-			productReference = 5B2105A72D185B82005B9596 /* Discord.app */;
+			productReference = 5BB5D72F2D19529800C54C0A /* Discord.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -887,8 +941,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B21051D2D1856E5005B9596 /* BarButton@2x.png in Resources */,
+				5B3890DD2D1C54D8002D3BBE /* GuildIconBaseSelected.png in Resources */,
 				5B2105182D1856E5005B9596 /* Send.png in Resources */,
 				5B2104A72D185409005B9596 /* FontAwesome.ttf in Resources */,
+				5BB5D7372D19545B00C54C0A /* privateGuildLogo@2x.png in Resources */,
 				5B21054C2D1856E5005B9596 /* TbarBG@2x.png in Resources */,
 				5B2105392D1856E5005B9596 /* TopLogo@2x.png in Resources */,
 				5B21051F2D1856E5005B9596 /* BarButtonPressed@2x.png in Resources */,
@@ -897,16 +953,21 @@
 				5B21052D2D1856E5005B9596 /* DefaultAvatar4@2x.png in Resources */,
 				5B21053C2D1856E5005B9596 /* PLVideoOverlayPlayDown.png in Resources */,
 				5B2105252D1856E5005B9596 /* DefaultAvatar0@2x.png in Resources */,
+				5BB5D73A2D1956F700C54C0A /* bannerTopShadow.png in Resources */,
 				5B21054F2D1856E5005B9596 /* Video-play-button.png in Resources */,
 				5B21053B2D1856E5005B9596 /* PLVideoOverlayPlay@2x.png in Resources */,
 				5B2105B92D186432005B9596 /* TestCallEmbed.png in Resources */,
 				5B21050D2D1856E5005B9596 /* Border.png in Resources */,
+				5BB5D73F2D19582700C54C0A /* bannerBottomShadow@2x.png in Resources */,
 				5B2105282D1856E5005B9596 /* DefaultAvatar2.png in Resources */,
 				5B2105122D1856E5005B9596 /* addbarglyph@2x.png in Resources */,
+				5BB5D7432D195B3400C54C0A /* newMessages.png in Resources */,
 				5B2105242D1856E5005B9596 /* DefaultAvatar0.png in Resources */,
 				5B21054B2D1856E5005B9596 /* TbarBG.png in Resources */,
 				5B21051B2D1856E5005B9596 /* Sidebar_glyph@2x.png in Resources */,
 				5B21053F2D1856E5005B9596 /* DirectMessages.png in Resources */,
+				5B3890DB2D1C53CB002D3BBE /* GuildIconBase.png in Resources */,
+				5BB5D73E2D19582700C54C0A /* bannerBottomShadow.png in Resources */,
 				5B21050E2D1856E5005B9596 /* Border@2x.png in Resources */,
 				5B21052E2D1856E5005B9596 /* DefaultAvatar5.png in Resources */,
 				5B21052F2D1856E5005B9596 /* DefaultAvatar5@2x.png in Resources */,
@@ -941,6 +1002,7 @@
 				5B2105112D1856E5005B9596 /* addbarglyph.png in Resources */,
 				5B21052C2D1856E5005B9596 /* DefaultAvatar4.png in Resources */,
 				5B2105552D185735005B9596 /* Images.xcassets in Resources */,
+				5BB5D73B2D1956F700C54C0A /* bannerTopShadow@2x.png in Resources */,
 				5B2105222D1856E5005B9596 /* NavigationButtonPressed.png in Resources */,
 				5B2105162D1856E5005B9596 /* preferences.png in Resources */,
 				5B2105172D1856E5005B9596 /* preferences@2x.png in Resources */,
@@ -948,11 +1010,13 @@
 				5B2105412D1856E5005B9596 /* bag-xml.png in Resources */,
 				5B2104BA2D1856A7005B9596 /* DCChatGroupedTableCell.xib in Resources */,
 				5B2105342D1856E5005B9596 /* menu.png in Resources */,
+				5BB5D7362D19545B00C54C0A /* privateGuildLogo.png in Resources */,
 				5B21051E2D1856E5005B9596 /* BarButtonPressed.png in Resources */,
 				5B2105502D1856E5005B9596 /* Video-play-button@2x.png in Resources */,
 				5B2105492D1856E5005B9596 /* WelcomeBanner.png in Resources */,
 				5B2105362D1856E5005B9596 /* Sar izmeli Mehmet Aa.mp3 in Resources */,
 				5B2105422D1856E5005B9596 /* commandbar-bg.png in Resources */,
+				5BB5D7442D195B3400C54C0A /* newMessages@2x.png in Resources */,
 				5B21052B2D1856E5005B9596 /* DefaultAvatar3@2x.png in Resources */,
 				5B21054A2D1856E5005B9596 /* separator.png in Resources */,
 				5B2105482D1856E5005B9596 /* Discord.png in Resources */,
@@ -1015,9 +1079,11 @@
 				5B21059F2D185B10005B9596 /* DCImageViewController.m in Sources */,
 				5B2105A92D185BD3005B9596 /* main.m in Sources */,
 				5B21059D2D185B10005B9596 /* DCGuildListViewController.m in Sources */,
+				5B2105BF2D18B498005B9596 /* DCRecipientTableCell.m in Sources */,
 				5B2105932D185B10005B9596 /* DCMessage.m in Sources */,
 				5B2104A52D185409005B9596 /* BButton.m in Sources */,
 				5B2105922D185B10005B9596 /* DCGuild.m in Sources */,
+				5BB5D7472D195E6400C54C0A /* DCChannelViewCell.m in Sources */,
 				5B2104A62D185409005B9596 /* NSString+FontAwesome.m in Sources */,
 				5B2104AB2D18540A005B9596 /* UIImage+animatedGIF.m in Sources */,
 				5B2104AD2D18540A005B9596 /* NSString+Base64.m in Sources */,
@@ -1031,6 +1097,7 @@
 				5B21059C2D185B10005B9596 /* DCChannelListViewController.m in Sources */,
 				5B21059A2D185B10005B9596 /* DCViewController.m in Sources */,
 				5B2105972D185B10005B9596 /* DCChatTableCell.m in Sources */,
+				5B2105C22D18C116005B9596 /* DCGuildTableViewCell.m in Sources */,
 				5B2104AC2D18540A005B9596 /* TRMalleableFrameView.m in Sources */,
 				5B2105A52D185B10005B9596 /* DCWelcomeController.m in Sources */,
 				5B2105A02D185B10005B9596 /* DCInfoPageViewController.m in Sources */,

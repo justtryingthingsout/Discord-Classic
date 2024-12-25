@@ -59,6 +59,7 @@ UIActivityIndicatorView *spinner;
     
 }
 
+//this sucks
 
 - (void)showNonIntrusiveNotificationWithTitle:(NSString *)title {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -267,7 +268,7 @@ UIActivityIndicatorView *spinner;
                             //The user's DMs are treated like a guild, where the channels are different DM/groups
                             DCGuild* privateGuild = DCGuild.new;
                             privateGuild.name = @"Direct Messages";
-                            privateGuild.icon = [UIImage imageNamed:@"DMLogo"];
+                            privateGuild.icon = [UIImage imageNamed:@"privateGuildLogo"];
                             privateGuild.channels = NSMutableArray.new;
                             
                             for(NSDictionary* privateChannel in [d valueForKey:@"private_channels"]){
@@ -275,7 +276,7 @@ UIActivityIndicatorView *spinner;
                                 //this may actually suck
                                 // Initialize users array for the member list
                                 NSMutableArray *users = NSMutableArray.new;
-                                NSLog(@"%@", privateChannel);
+                                //NSLog(@"%@", privateChannel);
                                 NSMutableDictionary *usersDict;
 
                                 
@@ -298,7 +299,8 @@ UIActivityIndicatorView *spinner;
                                         // Add self to users list
                                         usersDict = NSMutableDictionary.new;
                                         [usersDict setObject:[NSString stringWithFormat:@"You"] forKey:@"username"];
-                                        [usersDict setObject:@"TEMP" forKey:@"avatar"];
+                                        [usersDict setObject:[user valueForKey:@"avatar"] forKey:@"avatar"];
+                                        [usersDict setObject:[user valueForKey:@"id"] forKey:@"snowflake"];
                                         [users addObject:usersDict];
                                         //end
                                         /*NSMutableDictionary *usersDict;
