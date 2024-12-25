@@ -209,23 +209,6 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 		
 	}];
     
-    //Load profile banner
-    if([jsonUser valueForKey:@"banner"] != nil) {
-        NSString* bannerURL = [NSString stringWithFormat:@"https://cdn.discordapp.com/banners/%@/%@.png?size=320", newUser.snowflake, [jsonUser valueForKey:@"banner"]];
-        [DCTools processImageDataWithURLString:bannerURL andBlock:^(UIImage *imageData){
-            UIImage *retrievedBanner = imageData;
-            
-            if(retrievedBanner != nil){
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSLog(@"GOT BANNER");
-                    newUser.profileBanner = retrievedBanner;
-                });
-            }
-            
-        }];
-    } else {
-    }
-	
 	//Save to DCServerCommunicator.loadedUsers
 	if(cache)
 		[DCServerCommunicator.sharedInstance.loadedUsers setValue:newUser forKey:newUser.snowflake];

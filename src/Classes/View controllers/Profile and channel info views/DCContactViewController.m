@@ -22,10 +22,28 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     //not done yet...
     self.chatButton.hidden = YES;
 }
+
+- (void)requestProfileInformation:(DCUser*)user {
+    NSURL* userProfileURL = [NSURL URLWithString: [NSString stringWithFormat:@"https://discordapp.com/api/v9/users/%@/profile?with_mutual_guilds=false&with_mutual_friends=true&with_mutual_friends_count=false", user.snowflake]];
+    NSLog(@"%@", userProfileURL);
+    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:userProfileURL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15];
+    [urlRequest setValue:@"no-store" forHTTPHeaderField:@"Cache-Control"];
+	
+	[urlRequest addValue:DCServerCommunicator.sharedInstance.token forHTTPHeaderField:@"Authorization"];
+	[urlRequest addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    NSHTTPURLResponse *responseCode = nil;
+
+    NSError *error = nil;
+    NSData *response = [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
+    if(response){
+        NSArray* parsedResponse = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+        NSLog(@"%@", parsedResponse);
+    }
+}
+
 
 -(void)setSelectedUser:(DCUser*)user{
     self.view = self.view;
@@ -36,13 +54,11 @@
     self.profileBanner.image = user.profileBanner;
     self.user = user;
     self.descriptionBox.text = user.description;
-    
-    self.userID = user.snowflake;
-
 }
 
 - (IBAction)throwToChat:(id)sender {
     [self performSegueWithIdentifier:@"guilds to chat" sender:self];
 
 }
+
 @end

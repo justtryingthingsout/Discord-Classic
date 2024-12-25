@@ -647,6 +647,7 @@ static dispatch_queue_t chat_messages_queue;
     
     if([segue.destinationViewController class] == [DCContactViewController class]){
         [((DCContactViewController*)segue.destinationViewController) setSelectedUser:self.selectedMessage.author];
+        [((DCContactViewController*)segue.destinationViewController) requestProfileInformation:self.selectedMessage.author];
     }
     
 }

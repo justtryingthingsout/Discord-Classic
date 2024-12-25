@@ -485,7 +485,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </imageView>
                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="phj-fM-jWJ">
-                                    <rect key="frame" x="0.0" y="120" width="320" height="23"/>
+                                    <rect key="frame" x="128" y="148" width="192" height="23"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                     <color key="textColor" white="0.99911794350000005" alpha="1" colorSpace="calibratedWhite"/>
@@ -494,7 +494,7 @@
                                     <size key="shadowOffset" width="0.0" height="1"/>
                                 </label>
                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="username" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="h04-MN-RKA">
-                                    <rect key="frame" x="0.0" y="138" width="320" height="22"/>
+                                    <rect key="frame" x="128" y="171" width="192" height="22"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -503,7 +503,7 @@
                                     <size key="shadowOffset" width="0.0" height="1"/>
                                 </label>
                                 <view contentMode="scaleToFill" id="UFx-8B-91N">
-                                    <rect key="frame" x="20" y="60" width="100" height="100"/>
+                                    <rect key="frame" x="20" y="121" width="100" height="100"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Contactback.PNG" id="l6F-jo-MHl">
@@ -559,10 +559,11 @@
                                         <action selector="throwToChat:" destination="1M6-vL-7Fc" eventType="touchUpInside" id="lv4-Wn-0kZ"/>
                                     </connections>
                                 </button>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="Zlh-Zs-VtE">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="112"/>
+                                <view contentMode="scaleToFill" id="xHZ-he-dLT">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="113"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                </imageView>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                </view>
                             </subviews>
                             <color key="backgroundColor" red="0.1215686275" green="0.12549019610000001" blue="0.14117647059999999" alpha="1" colorSpace="calibratedRGB"/>
                         </view>
@@ -586,7 +587,6 @@
                         <outlet property="descriptionBox" destination="S6s-ob-HXj" id="2h5-6V-GF1"/>
                         <outlet property="handleLable" destination="h04-MN-RKA" id="eaV-GR-Q9L"/>
                         <outlet property="nameLabel" destination="phj-fM-jWJ" id="ge5-zG-van"/>
-                        <outlet property="profileBanner" destination="Zlh-Zs-VtE" id="q1P-rg-mdH"/>
                         <outlet property="profileImageView" destination="DBL-lf-XJ2" id="KbD-Eq-Cau"/>
                     </connections>
                 </tableViewController>
