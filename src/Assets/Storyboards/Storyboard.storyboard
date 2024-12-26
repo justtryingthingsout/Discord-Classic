@@ -696,7 +696,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="ebn-fX-Bfx">
-                                            <rect key="frame" x="0.0" y="0.0" width="51" height="51"/>
+                                            <rect key="frame" x="11" y="7" width="40" height="40"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="3Fv-Hf-ZBj">
@@ -739,31 +739,31 @@
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" id="R2y-GZ-ugl">
+                            <view contentMode="scaleToFill" id="fvh-ti-9Y9">
                                 <rect key="frame" x="56" y="0.0" width="264" height="146"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" image="No-Header.png" id="QQ6-gO-kMI">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" image="No-Header.png" id="fP1-Ig-97L">
                                         <rect key="frame" x="0.0" y="0.0" width="264" height="146"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="QEe-Zc-j3L">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="HgO-pP-Lza">
                                         <rect key="frame" x="0.0" y="0.0" width="264" height="146"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bannerBottomShadow.png" id="pjb-1F-3rf">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bannerBottomShadow.png" id="Y1d-RW-FDt">
                                         <rect key="frame" x="0.0" y="115" width="264" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Border.png" id="GNU-AQ-dNs">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Border.png" id="xvU-5u-0v8">
                                         <rect key="frame" x="0.0" y="143" width="264" height="2"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bannerTopShadow.png" id="6iq-w3-lR9">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bannerTopShadow.png" id="Sp0-3L-fc7">
                                         <rect key="frame" x="0.0" y="0.0" width="264" height="60"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Direct Messages" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="wof-5W-Uoh">
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Direct Messages" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QNv-tq-sHX">
                                         <rect key="frame" x="19" y="14" width="207" height="22"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -772,7 +772,7 @@
                                         <color key="shadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                                         <size key="shadowOffset" width="0.0" height="1"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="zS0-ud-BGL">
+                                    <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="xug-FU-76T">
                                         <rect key="frame" x="222" y="7" width="36" height="36"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -786,7 +786,7 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="moreInfo:" destination="xVl-Lb-Tkb" eventType="touchUpInside" id="rEg-DZ-5hb"/>
+                                            <action selector="moreInfo:" destination="xVl-Lb-Tkb" eventType="touchUpInside" id="Lgs-Ug-Uf7"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -906,17 +906,18 @@
                     </navigationItem>
                     <connections>
                         <outlet property="channelTableView" destination="5oV-6z-2yU" id="IJc-9v-eif"/>
-                        <outlet property="guildBanner" destination="QQ6-gO-kMI" id="Qah-Nr-fhS"/>
-                        <outlet property="guildLabel" destination="wof-5W-Uoh" id="K8C-Oo-wxf"/>
+                        <outlet property="guildBanner" destination="HgO-pP-Lza" id="RZH-fG-TO8"/>
+                        <outlet property="guildLabel" destination="QNv-tq-sHX" id="3IW-lc-1is"/>
                         <outlet property="guildTableView" destination="lZb-WH-jwH" id="4fF-qg-6Fn"/>
-                        <outlet property="totalView" destination="R2y-GZ-ugl" id="vMJ-9n-bIf"/>
+                        <outlet property="guildTotalView" destination="fvh-ti-9Y9" id="icJ-6c-qym"/>
+                        <outlet property="totalView" destination="fvh-ti-9Y9" id="DEP-y5-hvW"/>
                         <segue destination="SPS-Go-Xtj" kind="push" identifier="guilds to chat" id="m4a-0d-dst"/>
                         <segue destination="Hrc-Cx-cle" kind="push" identifier="to Tokenpage" id="ia5-AC-gHa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oFG-yZ-xxS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-54" y="-46"/>
+            <point key="canvasLocation" x="18" y="-67"/>
         </scene>
     </scenes>
     <resources>

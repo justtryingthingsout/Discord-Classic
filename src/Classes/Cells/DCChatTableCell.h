@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *avatarDecoration;
 @property (strong, nonatomic) IBOutlet UITextView *contentTextView;
 @property (weak, nonatomic) IBOutlet UIImageView *referencedProfileImage;
+@property (weak, nonatomic) IBOutlet UIImageView *universalImageView;
 @property (strong, nonatomic) IBOutlet UILabel *referencedAuthorLabel;
 @property (strong, nonatomic) IBOutlet UILabel *referencedMessage;
 @end

@@ -33,6 +33,7 @@
 
 @property (weak, nonatomic) IBOutlet UIView *totalView;
 
+@property (weak, nonatomic) IBOutlet UIView *guildTotalView;
 
 @property NSOperationQueue* serverIconImageQueue;
 

@@ -330,10 +330,35 @@ static dispatch_queue_t channel_send_queue;
         dispatch_sync(dispatch_get_main_queue(), ^{
             NSError *error = nil;
             NSArray* parsedResponse = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+            NSLog(@"%@", parsedResponse);
             
-            if(parsedResponse.count > 0)
+            /*if(parsedResponse.count > 0)
                 for(NSDictionary* jsonMessage in parsedResponse)
-                    [messages insertObject:[DCTools convertJsonMessage:jsonMessage] atIndex:0];
+                    [messages insertObject:[DCTools convertJsonMessage:jsonMessage] atIndex:0];*/
+            if(parsedResponse.count > 0) {
+                for(NSDictionary* jsonMessage in parsedResponse) {
+                    DCMessage *convertedMessage = [DCTools convertJsonMessage:jsonMessage];
+                    
+                    NSString *messageType = [jsonMessage objectForKey:@"type"];
+                    
+                    if ([messageType intValue] == 1) {
+                        NSDictionary *mentions = [jsonMessage objectForKey:@"mentions"];
+                        //NSString *targetName = [mentions objectForKey:@"global_name"];
+                        convertedMessage.messageType = 1;
+                        convertedMessage.content = [NSString stringWithFormat:@"%@ added someone to the group conversation.", convertedMessage.author.globalName];
+                    }
+                    /*
+                     
+                     NSDictionary *callData = jsonMessage[@"call"];
+                     if (callData != nil) {
+                     converted.missedCall = YES;
+                     converted.content = @"Missed call";
+                     }
+                     */
+                    
+                    [messages insertObject:convertedMessage atIndex:0];
+                }
+            }
             
             for (int i=0; i < messages.count; i++)
             {

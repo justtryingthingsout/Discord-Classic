@@ -38,6 +38,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotificationTap:) name:@"NavigateToChannel" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(exitedChatController) name:@"ChannelSelectionCleared" object:nil];
     //NOTIF OBSERVERS END
+    
+    self.totalView.hidden = YES;
 }
 
 
@@ -169,9 +171,11 @@
         self.guildLabel.text = self.selectedGuild.name;
 		[self.channelTableView reloadData];
         if (self.guildLabel && [self.guildLabel.text isEqualToString:@"Direct Messages"]) {
-            self.totalView.hidden = YES;
-        } else {
             self.totalView.hidden = NO;
+            self.guildTotalView.hidden = YES;
+        } else {
+            self.totalView.hidden = YES;
+            self.guildTotalView.hidden = NO;
         }
 
 	}

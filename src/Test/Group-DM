@@ -1,79 +1,4 @@
-
-2024-12-26 13:15:27.805 Discord[8343:907] jsonMessage (
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 256;
-            "global_name" = "<null>";
-            id = 522819496675901451;
-            "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "polish letter !!";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321812888964567111;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T12:12:30.825000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 256;
-            "global_name" = "<null>";
-            id = 522819496675901451;
-            "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "Jas\U00f3n";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321812786862358559;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T12:12:06.482000+00:00";
-        tts = 0;
-        type = 0;
-    },
+2024-12-26 16:49:58.322 Discord[10405:907] (
         {
         attachments =         (
         );
@@ -86,87 +11,13 @@
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
+            "global_name" = "<null>";
             id = 574490948499800104;
             "primary_guild" = "<null>";
             "public_flags" = 0;
             username = "bag.xml";
         };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "client shits itself";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321811488046055465;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T12:06:56.820000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 256;
-            "global_name" = "<null>";
-            id = 522819496675901451;
-            "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = done;
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321811254549155951;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T12:06:01.150000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 256;
-            "global_name" = "<null>";
-            id = 522819496675901451;
-            "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
-        };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
         content = "";
@@ -174,42 +25,88 @@
         embeds =         (
         );
         flags = 0;
-        id = 1321811241626505267;
+        id = 1321866788518105180;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
+                        {
+                "accent_color" = "<null>";
+                avatar = d079a3cbdef6971a763d37ca46989c17;
+                "avatar_decoration_data" = "<null>";
+                banner = "<null>";
+                "banner_color" = "<null>";
+                clan = "<null>";
+                discriminator = 0;
+                flags = 0;
+                "global_name" = "Scientist Forstall";
+                id = 834024342865838091;
+                "primary_guild" = "<null>";
+                "public_flags" = 0;
+                username = "bag_xml";
+            }
         );
-        "message_reference" =         {
-            "channel_id" = 1312423637424406589;
-            "message_id" = 1321805302613676073;
-            type = 0;
-        };
         pinned = 0;
-        position = 0;
-        timestamp = "2024-12-26T12:05:58.069000+00:00";
+        timestamp = "2024-12-26T15:46:41.480000+00:00";
         tts = 0;
-        type = 6;
+        type = 1;
     },
         {
         attachments =         (
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
+            avatar = dabda0b41ba29cff30f6535864d2e3aa;
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
             discriminator = 0;
-            flags = 256;
+            flags = 0;
             "global_name" = "<null>";
-            id = 522819496675901451;
+            id = 574490948499800104;
             "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
+            "public_flags" = 0;
+            username = "bag.xml";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "-\n\n\n\n\n_\n\n\n\n-";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1321866771489095741;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2024-12-26T15:46:37.420000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 574490948499800104;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "bag.xml";
+        };
+        "channel_id" = 1148994429483487362;
         components =         (
         );
         content = "";
@@ -217,22 +114,31 @@
         embeds =         (
         );
         flags = 0;
-        id = 1321811174794461214;
+        id = 1321866763025252394;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
+                        {
+                "accent_color" = "<null>";
+                avatar = d079a3cbdef6971a763d37ca46989c17;
+                "avatar_decoration_data" = "<null>";
+                banner = "<null>";
+                "banner_color" = "<null>";
+                clan = "<null>";
+                discriminator = 0;
+                flags = 0;
+                "global_name" = "Scientist Forstall";
+                id = 834024342865838091;
+                "primary_guild" = "<null>";
+                "public_flags" = 0;
+                username = "bag_xml";
+            }
         );
-        "message_reference" =         {
-            "channel_id" = 1312423637424406589;
-            "message_id" = 1321806043336015916;
-            type = 0;
-        };
         pinned = 0;
-        position = 0;
-        timestamp = "2024-12-26T12:05:42.135000+00:00";
+        timestamp = "2024-12-26T15:46:35.402000+00:00";
         tts = 0;
-        type = 6;
+        type = 2;
     },
         {
         attachments =         (
@@ -246,28 +152,28 @@
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
+            "global_name" = "<null>";
             id = 574490948499800104;
             "primary_guild" = "<null>";
             "public_flags" = 0;
             username = "bag.xml";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = "can you pin a random message";
+        content = "if (messageAtRowIndex.missedCall) {\n        return 48.0f;\n    }";
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321810837895249984;
+        id = 1321866718435479642;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        timestamp = "2024-12-26T12:04:21.812000+00:00";
+        timestamp = "2024-12-26T15:46:24.771000+00:00";
         tts = 0;
         type = 0;
     },
@@ -283,13 +189,50 @@
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
+            "global_name" = "<null>";
             id = 574490948499800104;
             "primary_guild" = "<null>";
             "public_flags" = 0;
             username = "bag.xml";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = XML;
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1321830337436844064;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2024-12-26T13:21:50.865000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 574490948499800104;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "bag.xml";
+        };
+        "channel_id" = 1148994429483487362;
         components =         (
         );
         content = "";
@@ -297,22 +240,31 @@
         embeds =         (
         );
         flags = 0;
-        id = 1321810808644304938;
+        id = 1321822934356066345;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
+                        {
+                "accent_color" = "<null>";
+                avatar = d079a3cbdef6971a763d37ca46989c17;
+                "avatar_decoration_data" = "<null>";
+                banner = "<null>";
+                "banner_color" = "<null>";
+                clan = "<null>";
+                discriminator = 0;
+                flags = 0;
+                "global_name" = "Scientist Forstall";
+                id = 834024342865838091;
+                "primary_guild" = "<null>";
+                "public_flags" = 0;
+                username = "bag_xml";
+            }
         );
-        "message_reference" =         {
-            "channel_id" = 1312423637424406589;
-            "message_id" = 1321807815555158107;
-            type = 0;
-        };
         pinned = 0;
-        position = 0;
-        timestamp = "2024-12-26T12:04:14.838000+00:00";
+        timestamp = "2024-12-26T12:52:25.833000+00:00";
         tts = 0;
-        type = 6;
+        type = 1;
     },
         {
         attachments =         (
@@ -326,13 +278,13 @@
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
+            "global_name" = "<null>";
             id = 574490948499800104;
             "primary_guild" = "<null>";
             "public_flags" = 0;
             username = "bag.xml";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
         content = "";
@@ -340,22 +292,31 @@
         embeds =         (
         );
         flags = 0;
-        id = 1321810800834252913;
+        id = 1321822138088554559;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
+                        {
+                "accent_color" = "<null>";
+                avatar = "<null>";
+                "avatar_decoration_data" = "<null>";
+                banner = "<null>";
+                "banner_color" = "<null>";
+                clan = "<null>";
+                discriminator = 0000;
+                flags = 0;
+                "global_name" = "<null>";
+                id = 456226577798135808;
+                "primary_guild" = "<null>";
+                "public_flags" = 0;
+                username = "Deleted User";
+            }
         );
-        "message_reference" =         {
-            "channel_id" = 1312423637424406589;
-            "message_id" = 1321808363104763937;
-            type = 0;
-        };
         pinned = 0;
-        position = 0;
-        timestamp = "2024-12-26T12:04:12.976000+00:00";
+        timestamp = "2024-12-26T12:49:15.988000+00:00";
         tts = 0;
-        type = 6;
+        type = 2;
     },
         {
         attachments =         (
@@ -369,13 +330,13 @@
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
+            "global_name" = "<null>";
             id = 574490948499800104;
             "primary_guild" = "<null>";
             "public_flags" = 0;
             username = "bag.xml";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
         content = "";
@@ -383,22 +344,41 @@
         embeds =         (
         );
         flags = 0;
-        id = 1321810791548059668;
+        id = 1321822125366968420;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
+                        {
+                "accent_color" = "<null>";
+                avatar = 8b0ac18501a1453d78def8774b2b6570;
+                "avatar_decoration_data" = "<null>";
+                banner = "<null>";
+                "banner_color" = "<null>";
+                clan =                 {
+                    badge = 456ac4b04c20caf8c8dff900223751ff;
+                    "identity_enabled" = 1;
+                    "identity_guild_id" = 1106776916624687184;
+                    tag = NEKO;
+                };
+                discriminator = 0;
+                flags = 128;
+                "global_name" = Luna;
+                id = 545326647684104193;
+                "primary_guild" =                 {
+                    badge = 456ac4b04c20caf8c8dff900223751ff;
+                    "identity_enabled" = 1;
+                    "identity_guild_id" = 1106776916624687184;
+                    tag = NEKO;
+                };
+                "public_flags" = 128;
+                username = "watchos_arm64_32";
+            }
         );
-        "message_reference" =         {
-            "channel_id" = 1312423637424406589;
-            "message_id" = 1321808477726965830;
-            type = 0;
-        };
         pinned = 0;
-        position = 0;
-        timestamp = "2024-12-26T12:04:10.762000+00:00";
+        timestamp = "2024-12-26T12:49:12.955000+00:00";
         tts = 0;
-        type = 6;
+        type = 2;
     },
         {
         attachments =         (
@@ -412,13 +392,13 @@
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
+            "global_name" = "<null>";
             id = 574490948499800104;
             "primary_guild" = "<null>";
             "public_flags" = 0;
             username = "bag.xml";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
         content = "";
@@ -426,42 +406,61 @@
         embeds =         (
         );
         flags = 0;
-        id = 1321810779275530272;
+        id = 1321822113795145809;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
+                        {
+                "accent_color" = "<null>";
+                avatar = e72a76bd4908f6e3fe2a8527e4b83857;
+                "avatar_decoration_data" = "<null>";
+                banner = "<null>";
+                "banner_color" = "<null>";
+                clan =                 {
+                    badge = "<null>";
+                    "identity_enabled" = 0;
+                    "identity_guild_id" = "<null>";
+                    tag = "<null>";
+                };
+                discriminator = 0;
+                flags = 64;
+                "global_name" = Mineek;
+                id = 973840094488305698;
+                "primary_guild" =                 {
+                    badge = "<null>";
+                    "identity_enabled" = 0;
+                    "identity_guild_id" = "<null>";
+                    tag = "<null>";
+                };
+                "public_flags" = 64;
+                username = mineekdev;
+            }
         );
-        "message_reference" =         {
-            "channel_id" = 1312423637424406589;
-            "message_id" = 1321808477726965830;
-            type = 0;
-        };
         pinned = 0;
-        position = 0;
-        timestamp = "2024-12-26T12:04:07.836000+00:00";
+        timestamp = "2024-12-26T12:49:10.196000+00:00";
         tts = 0;
-        type = 6;
+        type = 2;
     },
         {
         attachments =         (
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            avatar = 033b710f53439140cf7c412cdde5643f;
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
+            "global_name" = Dublee;
+            id = 831422935960125440;
             "primary_guild" = "<null>";
             "public_flags" = 0;
-            username = "bag.xml";
+            username = fiqm;
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
         content = "";
@@ -469,131 +468,66 @@
         embeds =         (
         );
         flags = 0;
-        id = 1321810770996101171;
+        id = 1172914762804375642;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
+                        {
+                "accent_color" = "<null>";
+                avatar = 033b710f53439140cf7c412cdde5643f;
+                "avatar_decoration_data" = "<null>";
+                banner = "<null>";
+                "banner_color" = "<null>";
+                clan = "<null>";
+                discriminator = 0;
+                flags = 0;
+                "global_name" = Dublee;
+                id = 831422935960125440;
+                "primary_guild" = "<null>";
+                "public_flags" = 0;
+                username = fiqm;
+            }
         );
-        "message_reference" =         {
-            "channel_id" = 1312423637424406589;
-            "message_id" = 1321809430828028015;
-            type = 0;
-        };
         pinned = 0;
-        position = 0;
-        timestamp = "2024-12-26T12:04:05.862000+00:00";
+        timestamp = "2023-11-11T15:04:31.155000+00:00";
         tts = 0;
-        type = 6;
+        type = 2;
     },
         {
         attachments =         (
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            avatar = 033b710f53439140cf7c412cdde5643f;
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
+            "global_name" = Dublee;
+            id = 831422935960125440;
             "primary_guild" = "<null>";
             "public_flags" = 0;
-            username = "bag.xml";
+            username = fiqm;
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = "I dont fucking know";
+        content = t;
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321809430828028015;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 1;
-        timestamp = "2024-12-26T11:58:46.341000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 256;
-            "global_name" = "<null>";
-            id = 522819496675901451;
-            "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "left out from something ???";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321808477726965830;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 1;
-        timestamp = "2024-12-26T11:54:59.104000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 256;
-            "global_name" = "<null>";
-            id = 522819496675901451;
-            "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "i don't know what is he talking about";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321808450594017302;
+        id = 1172914752683528192;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        timestamp = "2024-12-26T11:54:52.635000+00:00";
+        timestamp = "2023-11-11T15:04:28.742000+00:00";
         tts = 0;
         type = 0;
     },
@@ -602,72 +536,35 @@
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            avatar = 033b710f53439140cf7c412cdde5643f;
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
+            "global_name" = Dublee;
+            id = 831422935960125440;
             "primary_guild" = "<null>";
             "public_flags" = 0;
-            username = "bag.xml";
+            username = fiqm;
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = "Do you";
+        content = a;
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321808363104763937;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 1;
-        timestamp = "2024-12-26T11:54:31.776000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 256;
-            "global_name" = "<null>";
-            id = 522819496675901451;
-            "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = idk;
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321807892193738802;
+        id = 1172914750171127909;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        timestamp = "2024-12-26T11:52:39.502000+00:00";
+        timestamp = "2023-11-11T15:04:28.143000+00:00";
         tts = 0;
         type = 0;
     },
@@ -676,35 +573,35 @@
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            avatar = 033b710f53439140cf7c412cdde5643f;
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
+            "global_name" = Dublee;
+            id = 831422935960125440;
             "primary_guild" = "<null>";
             "public_flags" = 0;
-            username = "bag.xml";
+            username = fiqm;
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = "am i dumb or why do i not understand cheese";
+        content = h;
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321807815555158107;
+        id = 1172914747902001253;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
-        pinned = 1;
-        timestamp = "2024-12-26T11:52:21.230000+00:00";
+        pinned = 0;
+        timestamp = "2023-11-11T15:04:27.602000+00:00";
         tts = 0;
         type = 0;
     },
@@ -713,35 +610,124 @@
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
+            avatar = 033b710f53439140cf7c412cdde5643f;
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
             discriminator = 0;
-            flags = 256;
-            "global_name" = "<null>";
-            id = 522819496675901451;
+            flags = 0;
+            "global_name" = Dublee;
+            id = 831422935960125440;
             "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
+            "public_flags" = 0;
+            username = fiqm;
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = "and it's possible with it?";
+        content = w;
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321806215294095370;
+        id = 1172914743963566191;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        timestamp = "2024-12-26T11:45:59.698000+00:00";
+        timestamp = "2023-11-11T15:04:26.663000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = 0a51284d418db7f84e2539446364d9f0;
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0;
+            flags = 0;
+            "global_name" = Brad04;
+            id = 843553426444779520;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = dsmos;
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1172914161102094349;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+                        {
+                "accent_color" = "<null>";
+                avatar = 0a51284d418db7f84e2539446364d9f0;
+                "avatar_decoration_data" = "<null>";
+                banner = "<null>";
+                "banner_color" = "<null>";
+                clan = "<null>";
+                discriminator = 0;
+                flags = 0;
+                "global_name" = Brad04;
+                id = 843553426444779520;
+                "primary_guild" = "<null>";
+                "public_flags" = 0;
+                username = dsmos;
+            }
+        );
+        pinned = 0;
+        timestamp = "2023-11-11T15:02:07.698000+00:00";
+        tts = 0;
+        type = 2;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = 0a51284d418db7f84e2539446364d9f0;
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0;
+            flags = 0;
+            "global_name" = Brad04;
+            id = 843553426444779520;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = dsmos;
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "Certified \U2705";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1168213542571348039;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-10-29T15:43:32.907000+00:00";
         tts = 0;
         type = 0;
     },
@@ -757,28 +743,28 @@
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
+            "global_name" = "<null>";
             id = 574490948499800104;
             "primary_guild" = "<null>";
             "public_flags" = 0;
             username = "bag.xml";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = "oh thats impossible without Skyglow's Notification tweak";
+        content = "this gc is over";
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321806134209806448;
+        id = 1168198256120037377;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        timestamp = "2024-12-26T11:45:40.366000+00:00";
+        timestamp = "2023-10-29T14:42:48.333000+00:00";
         tts = 0;
         type = 0;
     },
@@ -787,35 +773,460 @@
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
+            avatar = dabda0b41ba29cff30f6535864d2e3aa;
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
             discriminator = 0;
-            flags = 256;
+            flags = 0;
             "global_name" = "<null>";
-            id = 522819496675901451;
+            id = 574490948499800104;
             "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
+            "public_flags" = 0;
+            username = "bag.xml";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = "push notifications next";
+        content = "";
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321806043336015916;
+        id = 1168168484270780466;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+                        {
+                "accent_color" = "<null>";
+                avatar = "<null>";
+                "avatar_decoration_data" = "<null>";
+                banner = "<null>";
+                "banner_color" = "<null>";
+                clan = "<null>";
+                discriminator = 0000;
+                flags = 0;
+                "global_name" = "<null>";
+                id = 456226577798135808;
+                "primary_guild" = "<null>";
+                "public_flags" = 0;
+                username = "Deleted User";
+            }
+        );
+        pinned = 0;
+        timestamp = "2023-10-29T12:44:30.171000+00:00";
+        tts = 0;
+        type = 2;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 574490948499800104;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "bag.xml";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1168168464352030851;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+                        {
+                "accent_color" = "<null>";
+                avatar = "<null>";
+                "avatar_decoration_data" = "<null>";
+                banner = "<null>";
+                "banner_color" = "<null>";
+                clan = "<null>";
+                discriminator = 0000;
+                flags = 0;
+                "global_name" = "<null>";
+                id = 456226577798135808;
+                "primary_guild" = "<null>";
+                "public_flags" = 0;
+                username = "Deleted User";
+            }
+        );
+        pinned = 0;
+        timestamp = "2023-10-29T12:44:25.422000+00:00";
+        tts = 0;
+        type = 2;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 574490948499800104;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "bag.xml";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1168168454696734780;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+                        {
+                "accent_color" = "<null>";
+                avatar = b45780dbc64bcb214ca57ae1a880183f;
+                "avatar_decoration_data" = "<null>";
+                banner = "<null>";
+                "banner_color" = "<null>";
+                clan =                 {
+                    badge = 456ac4b04c20caf8c8dff900223751ff;
+                    "identity_enabled" = 1;
+                    "identity_guild_id" = 1106776916624687184;
+                    tag = NEKO;
+                };
+                discriminator = 0;
+                flags = 0;
+                "global_name" = "eepymeowers System";
+                id = 898789371589824513;
+                "primary_guild" =                 {
+                    badge = 456ac4b04c20caf8c8dff900223751ff;
+                    "identity_enabled" = 1;
+                    "identity_guild_id" = 1106776916624687184;
+                    tag = NEKO;
+                };
+                "public_flags" = 0;
+                username = eepymeowers;
+            }
+        );
+        pinned = 0;
+        timestamp = "2023-10-29T12:44:23.120000+00:00";
+        tts = 0;
+        type = 2;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = "<null>";
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0000;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 456226577798135808;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "Deleted User";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "so true";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1154449062297358456;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
-        pinned = 1;
-        timestamp = "2024-12-26T11:45:18.700000+00:00";
+        pinned = 0;
+        timestamp = "2023-09-21T16:08:25.078000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 574490948499800104;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "bag.xml";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "chief queef best";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1154449041325830356;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-21T16:08:20.078000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = "<null>";
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0000;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 456226577798135808;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "Deleted User";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = fucking;
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1154448007165644860;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-21T16:04:13.515000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = "<null>";
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0000;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 456226577798135808;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "Deleted User";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "chief queef just killed a dying acig";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1154447990262607962;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-21T16:04:09.485000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = "<null>";
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0000;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 456226577798135808;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "Deleted User";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "it was already dying";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1154447947568795871;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-21T16:03:59.306000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 574490948499800104;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "bag.xml";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "yay chief queef killed acig";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1154447143025774664;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-21T16:00:47.488000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = "<null>";
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0000;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 456226577798135808;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "Deleted User";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "no msgs since the 17th";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1154446866063294507;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-21T15:59:41.455000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = "<null>";
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0000;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 456226577798135808;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "Deleted User";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "its quite literally a wasteland";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1154446833305792623;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-21T15:59:33.645000+00:00";
         tts = 0;
         type = 0;
     },
@@ -823,123 +1234,47 @@
         attachments =         (
                         {
                 "content_scan_version" = 1;
-                "content_type" = "image/png";
-                filename = "upload.png";
-                height = 744;
-                id = 1321805951564775425;
-                placeholder = "DfiFCwAdm3oHxzuwSURPlgYGiIiEh0c=";
-                "placeholder_version" = 1;
-                "proxy_url" = "https://media.discordapp.net/attachments/1312423637424406589/1321805951564775425/upload.png?ex=676e9338&is=676d41b8&hm=48b05bb918679ac81d5bd8316ff2d45d610db68506e8628fd17fe6d866e5dc77&";
-                size = 199438;
-                url = "https://cdn.discordapp.com/attachments/1312423637424406589/1321805951564775425/upload.png?ex=676e9338&is=676d41b8&hm=48b05bb918679ac81d5bd8316ff2d45d610db68506e8628fd17fe6d866e5dc77&";
-                width = 396;
+                "content_type" = "image/jpeg";
+                filename = "IMG_2152.png";
+                height = 1792;
+                id = 1154446776447803424;
+                "proxy_url" = "https://media.discordapp.net/attachments/1148994429483487362/1154446776447803424/IMG_2152.png?ex=676e2618&is=676cd498&hm=177c0ceadb12f2c11bc66fc04777b43bf9798fd8d084f66716ebfde24770e7a2&";
+                size = 143258;
+                url = "https://cdn.discordapp.com/attachments/1148994429483487362/1154446776447803424/IMG_2152.png?ex=676e2618&is=676cd498&hm=177c0ceadb12f2c11bc66fc04777b43bf9798fd8d084f66716ebfde24770e7a2&";
+                width = 828;
             }
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            avatar = "<null>";
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
-            discriminator = 0;
+            discriminator = 0000;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
-            "primary_guild" = "<null>";
-            "public_flags" = 0;
-            username = "bag.xml";
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321805951900323870;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T11:44:56.900000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
-            "primary_guild" = "<null>";
-            "public_flags" = 0;
-            username = "bag.xml";
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "Wrong image";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321805788993556533;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T11:44:18.060000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 256;
             "global_name" = "<null>";
-            id = 522819496675901451;
+            id = 456226577798135808;
             "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
+            "public_flags" = 0;
+            username = "Deleted User";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = xD;
-        "edited_timestamp" = "<null>";
+        content = "this is it now";
+        "edited_timestamp" = "2023-09-21T15:59:23.197000+00:00";
         embeds =         (
         );
         flags = 0;
-        id = 1321805772606406656;
+        id = 1154446776758186076;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        timestamp = "2024-12-26T11:44:14.153000+00:00";
+        timestamp = "2023-09-21T15:59:20.163000+00:00";
         tts = 0;
         type = 0;
     },
@@ -948,35 +1283,35 @@
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
+            avatar = "<null>";
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
-            discriminator = 0;
-            flags = 256;
+            discriminator = 0000;
+            flags = 0;
             "global_name" = "<null>";
-            id = 522819496675901451;
+            id = 456226577798135808;
             "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
+            "public_flags" = 0;
+            username = "Deleted User";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = oh;
+        content = yes;
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321805755795505194;
+        id = 1154446695040553052;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        timestamp = "2024-12-26T11:44:10.145000+00:00";
+        timestamp = "2023-09-21T15:59:00.680000+00:00";
         tts = 0;
         type = 0;
     },
@@ -992,102 +1327,28 @@
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
-            "primary_guild" = "<null>";
-            "public_flags" = 0;
-            username = "bag.xml";
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "No i dont know why trevir and toru never bothered adding them lmfao";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321805729706934322;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T11:44:03.925000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 256;
             "global_name" = "<null>";
-            id = 522819496675901451;
-            "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "it's difficult?";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321805653190246433;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T11:43:45.682000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 0;
-            "global_name" = "Jas\U00f3n";
             id = 574490948499800104;
             "primary_guild" = "<null>";
             "public_flags" = 0;
             username = "bag.xml";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = "I figured out how now oh my god";
+        content = "stx are you still in acig";
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321805594486636586;
+        id = 1154444083813687419;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        timestamp = "2024-12-26T11:43:31.686000+00:00";
+        timestamp = "2023-09-21T15:48:38.115000+00:00";
         tts = 0;
         type = 0;
     },
@@ -1096,72 +1357,35 @@
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            avatar = "<null>";
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
-            discriminator = 0;
+            discriminator = 0000;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
-            "primary_guild" = "<null>";
-            "public_flags" = 0;
-            username = "bag.xml";
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "i will add embeds";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321805565042626602;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T11:43:24.666000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 256;
             "global_name" = "<null>";
-            id = 522819496675901451;
+            id = 456226577798135808;
             "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
+            "public_flags" = 0;
+            username = "Deleted User";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = anytime;
+        content = meow;
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321805311186833482;
+        id = 1154444074753982464;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        timestamp = "2024-12-26T11:42:24.142000+00:00";
+        timestamp = "2023-09-21T15:48:35.955000+00:00";
         tts = 0;
         type = 0;
     },
@@ -1170,72 +1394,109 @@
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
+            avatar = 0a51284d418db7f84e2539446364d9f0;
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
             discriminator = 0;
-            flags = 256;
+            flags = 0;
+            "global_name" = Brad04;
+            id = 843553426444779520;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = dsmos;
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "\Ud83d\Ude4f";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1152997250730053663;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-17T15:59:26.227000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = 0a51284d418db7f84e2539446364d9f0;
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0;
+            flags = 0;
+            "global_name" = Brad04;
+            id = 843553426444779520;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = dsmos;
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = pls;
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1152997244396654743;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-17T15:59:24.717000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = "<null>";
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0000;
+            flags = 0;
             "global_name" = "<null>";
-            id = 522819496675901451;
+            id = 456226577798135808;
             "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
+            "public_flags" = 0;
+            username = "Deleted User";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = KURWA;
+        content = "thought you were already there but sure";
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321805302613676073;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 1;
-        timestamp = "2024-12-26T11:42:22.098000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 256;
-            "global_name" = "<null>";
-            id = 522819496675901451;
-            "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = anyimt;
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321805296728801374;
+        id = 1152997074904825986;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        timestamp = "2024-12-26T11:42:20.695000+00:00";
+        timestamp = "2023-09-17T15:58:44.307000+00:00";
         tts = 0;
         type = 0;
     },
@@ -1244,35 +1505,35 @@
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            avatar = 0a51284d418db7f84e2539446364d9f0;
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
+            "global_name" = Brad04;
+            id = 843553426444779520;
             "primary_guild" = "<null>";
             "public_flags" = 0;
-            username = "bag.xml";
+            username = dsmos;
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = "okay awesome! thank you";
+        content = "chief queef tokenlog funny thats why";
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321805271529558098;
+        id = 1152996644195946676;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        timestamp = "2024-12-26T11:42:14.687000+00:00";
+        timestamp = "2023-09-17T15:57:01.618000+00:00";
         tts = 0;
         type = 0;
     },
@@ -1281,35 +1542,35 @@
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            avatar = 0a51284d418db7f84e2539446364d9f0;
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
+            "global_name" = Brad04;
+            id = 843553426444779520;
             "primary_guild" = "<null>";
             "public_flags" = 0;
-            username = "bag.xml";
+            username = dsmos;
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = "(okay i needed that mention)";
+        content = please;
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321805124162682890;
+        id = 1152996612365353031;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        timestamp = "2024-12-26T11:41:39.552000+00:00";
+        timestamp = "2023-09-17T15:56:54.029000+00:00";
         tts = 0;
         type = 0;
     },
@@ -1318,361 +1579,204 @@
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            avatar = 0a51284d418db7f84e2539446364d9f0;
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
+            "global_name" = Brad04;
+            id = 843553426444779520;
             "primary_guild" = "<null>";
             "public_flags" = 0;
-            username = "bag.xml";
+            username = dsmos;
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = "<@522819496675901451>";
+        content = "invited in colorfulstorm";
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321805098917040128;
+        id = 1152996607445442650;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-17T15:56:52.856000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = 0a51284d418db7f84e2539446364d9f0;
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0;
+            flags = 0;
+            "global_name" = Brad04;
+            id = 843553426444779520;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = dsmos;
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "can i be please";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1152996590286536704;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
                         {
                 "accent_color" = "<null>";
-                avatar = 53b7655134b60151033ec633ec27d166;
+                avatar = "<null>";
                 "avatar_decoration_data" = "<null>";
                 banner = "<null>";
                 "banner_color" = "<null>";
                 clan = "<null>";
-                discriminator = 0;
-                flags = 256;
+                discriminator = 0000;
+                flags = 0;
                 "global_name" = "<null>";
-                id = 522819496675901451;
+                id = 456226577798135808;
                 "primary_guild" = "<null>";
-                "public_flags" = 256;
-                username = plackowy;
+                "public_flags" = 0;
+                username = "Deleted User";
             }
         );
-        pinned = 0;
-        timestamp = "2024-12-26T11:41:33.533000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
-            "primary_guild" = "<null>";
-            "public_flags" = 0;
-            username = "bag.xml";
+        "message_reference" =         {
+            "channel_id" = 1148994429483487362;
+            "message_id" = 1152987639524380723;
+            type = 0;
         };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "Thanks!";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321805061923278899;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
         pinned = 0;
-        timestamp = "2024-12-26T11:41:24.713000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 256;
-            "global_name" = "<null>";
-            id = 522819496675901451;
-            "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "that's a neat file!";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321804844515721306;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T11:40:32.879000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-                        {
-                "content_scan_version" = 0;
-                "content_type" = "application/zip";
-                filename = "BButton-develop.zip";
-                id = 1321804813444448316;
-                "proxy_url" = "https://media.discordapp.net/attachments/1312423637424406589/1321804813444448316/BButton-develop.zip?ex=676e9229&is=676d40a9&hm=9b324282b98773166e2fb36e721598838ec5384c5465287a28526a74b46ed551&";
-                size = 235874;
-                url = "https://cdn.discordapp.com/attachments/1312423637424406589/1321804813444448316/BButton-develop.zip?ex=676e9229&is=676d40a9&hm=9b324282b98773166e2fb36e721598838ec5384c5465287a28526a74b46ed551&";
-            }
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
-            "primary_guild" = "<null>";
-            "public_flags" = 0;
-            username = "bag.xml";
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "this random upload";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321804813746442330;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T11:40:25.543000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
-            "primary_guild" = "<null>";
-            "public_flags" = 0;
-            username = "bag.xml";
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "ok i need that call indicator";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321804762705956886;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T11:40:13.374000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
-            "primary_guild" = "<null>";
-            "public_flags" = 0;
-            username = "bag.xml";
-        };
-        call =         {
-            "ended_timestamp" = "2024-12-26T11:40:08.858000+00:00";
-            participants =             (
-                574490948499800104
+        position = 0;
+        "referenced_message" =         {
+            attachments =             (
             );
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321804737414430780;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T11:40:07.344000+00:00";
-        tts = 0;
-        type = 3;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
+            author =             {
+                "accent_color" = "<null>";
+                avatar = "<null>";
+                "avatar_decoration_data" = "<null>";
+                banner = "<null>";
+                "banner_color" = "<null>";
+                clan = "<null>";
+                discriminator = 0000;
+                flags = 0;
+                "global_name" = "<null>";
+                id = 456226577798135808;
+                "primary_guild" = "<null>";
+                "public_flags" = 0;
+                username = "Deleted User";
+            };
+            "channel_id" = 1148994429483487362;
+            components =             (
+            );
+            content = "it became pretty clear to me as soon as i joined but prob not for earlier joiners lol";
+            "edited_timestamp" = "<null>";
+            embeds =             (
+            );
             flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
-            "primary_guild" = "<null>";
-            "public_flags" = 0;
-            username = "bag.xml";
+            id = 1152987639524380723;
+            "mention_everyone" = 0;
+            "mention_roles" =             (
+            );
+            mentions =             (
+            );
+            pinned = 0;
+            timestamp = "2023-09-17T15:21:14.737000+00:00";
+            tts = 0;
+            type = 0;
         };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "just play along";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321804731244351540;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T11:40:05.873000+00:00";
+        timestamp = "2023-09-17T15:56:48.765000+00:00";
         tts = 0;
-        type = 0;
+        type = 19;
     },
         {
         attachments =         (
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            avatar = "<null>";
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
-            discriminator = 0;
+            discriminator = 0000;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
-            id = 574490948499800104;
-            "primary_guild" = "<null>";
-            "public_flags" = 0;
-            username = "bag.xml";
-        };
-        "channel_id" = 1312423637424406589;
-        components =         (
-        );
-        content = "i need you to uh";
-        "edited_timestamp" = "<null>";
-        embeds =         (
-        );
-        flags = 0;
-        id = 1321804708284727409;
-        "mention_everyone" = 0;
-        "mention_roles" =         (
-        );
-        mentions =         (
-        );
-        pinned = 0;
-        timestamp = "2024-12-26T11:40:00.399000+00:00";
-        tts = 0;
-        type = 0;
-    },
-        {
-        attachments =         (
-        );
-        author =         {
-            "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
-            "avatar_decoration_data" = "<null>";
-            banner = "<null>";
-            "banner_color" = "<null>";
-            clan = "<null>";
-            discriminator = 0;
-            flags = 256;
             "global_name" = "<null>";
-            id = 522819496675901451;
+            id = 456226577798135808;
             "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
+            "public_flags" = 0;
+            username = "Deleted User";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = "'kay";
+        content = "it became pretty clear to me as soon as i joined but prob not for earlier joiners lol";
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321804695181983754;
+        id = 1152987639524380723;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        timestamp = "2024-12-26T11:39:57.275000+00:00";
+        timestamp = "2023-09-17T15:21:14.737000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = "<null>";
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0000;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 456226577798135808;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "Deleted User";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "fyi im there but only bc i got invited before it was clear";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1152987510952173668;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-17T15:20:44.083000+00:00";
         tts = 0;
         type = 0;
     },
@@ -1688,28 +1792,28 @@
             clan = "<null>";
             discriminator = 0;
             flags = 0;
-            "global_name" = "Jas\U00f3n";
+            "global_name" = "<null>";
             id = 574490948499800104;
             "primary_guild" = "<null>";
             "public_flags" = 0;
             username = "bag.xml";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = "hello i need a test chat with almost no messages";
+        content = "about the report thing";
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1321804654602092615;
+        id = 1152986073480298537;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        timestamp = "2024-12-26T11:39:47.600000+00:00";
+        timestamp = "2023-09-17T15:15:01.363000+00:00";
         tts = 0;
         type = 0;
     },
@@ -1718,42 +1822,304 @@
         );
         author =         {
             "accent_color" = "<null>";
-            avatar = 53b7655134b60151033ec633ec27d166;
+            avatar = dabda0b41ba29cff30f6535864d2e3aa;
             "avatar_decoration_data" = "<null>";
             banner = "<null>";
             "banner_color" = "<null>";
             clan = "<null>";
             discriminator = 0;
-            flags = 256;
+            flags = 0;
             "global_name" = "<null>";
-            id = 522819496675901451;
+            id = 574490948499800104;
             "primary_guild" = "<null>";
-            "public_flags" = 256;
-            username = plackowy;
+            "public_flags" = 0;
+            username = "bag.xml";
         };
-        "channel_id" = 1312423637424406589;
+        "channel_id" = 1148994429483487362;
         components =         (
         );
-        content = "";
+        content = "just talked wih wor";
         "edited_timestamp" = "<null>";
         embeds =         (
         );
         flags = 0;
-        id = 1312424084688076841;
+        id = 1152986058267574364;
         "mention_everyone" = 0;
         "mention_roles" =         (
         );
         mentions =         (
         );
         pinned = 0;
-        "sticker_items" =         (
+        timestamp = "2023-09-17T15:14:57.736000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = "<null>";
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0000;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 456226577798135808;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "Deleted User";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "i dont spend 21 hours btw a lot of that is just afking for exp";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1152955443086368819;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-17T13:13:18.508000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
                         {
-                "format_type" = 3;
-                id = 749054660769218631;
-                name = Wave;
+                "content_type" = "image/png";
+                filename = "IMG_6291.png";
+                height = 2436;
+                id = 1152955320449110066;
+                "proxy_url" = "https://media.discordapp.net/attachments/1148994429483487362/1152955320449110066/IMG_6291.png?ex=676ea7d1&is=676d5651&hm=9ecbde405b5c0ee68fe74babffc1388bf1e9335eed3a78fffd5c66d94e53be27&";
+                size = 605486;
+                url = "https://cdn.discordapp.com/attachments/1148994429483487362/1152955320449110066/IMG_6291.png?ex=676ea7d1&is=676d5651&hm=9ecbde405b5c0ee68fe74babffc1388bf1e9335eed3a78fffd5c66d94e53be27&";
+                width = 1125;
             }
         );
-        timestamp = "2024-11-30T14:24:45.450000+00:00";
+        author =         {
+            "accent_color" = "<null>";
+            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 574490948499800104;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "bag.xml";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1152955321057288293;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-17T13:12:49.414000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 574490948499800104;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "bag.xml";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "oh ok";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1152952759168016444;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-17T13:02:38.612000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = "<null>";
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0000;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 456226577798135808;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "Deleted User";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "btw invites to blacksunsh1ne are filtered in colorfulst0rm";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1152952606109466624;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-17T13:02:02.120000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = dabda0b41ba29cff30f6535864d2e3aa;
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 574490948499800104;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "bag.xml";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "i am dumb";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1152952502342406145;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-17T13:01:37.380000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = "<null>";
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0000;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 456226577798135808;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "Deleted User";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "i was saying to others not you";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1152952437410381934;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-17T13:01:21.899000+00:00";
+        tts = 0;
+        type = 0;
+    },
+        {
+        attachments =         (
+        );
+        author =         {
+            "accent_color" = "<null>";
+            avatar = "<null>";
+            "avatar_decoration_data" = "<null>";
+            banner = "<null>";
+            "banner_color" = "<null>";
+            clan = "<null>";
+            discriminator = 0000;
+            flags = 0;
+            "global_name" = "<null>";
+            id = 456226577798135808;
+            "primary_guild" = "<null>";
+            "public_flags" = 0;
+            username = "Deleted User";
+        };
+        "channel_id" = 1148994429483487362;
+        components =         (
+        );
+        content = "for those who dont know this is effectively yet another \"anti colorfulst0rm\" server with banned members";
+        "edited_timestamp" = "<null>";
+        embeds =         (
+        );
+        flags = 0;
+        id = 1152952365008310302;
+        "mention_everyone" = 0;
+        "mention_roles" =         (
+        );
+        mentions =         (
+        );
+        pinned = 0;
+        timestamp = "2023-09-17T13:01:04.637000+00:00";
         tts = 0;
         type = 0;
     }

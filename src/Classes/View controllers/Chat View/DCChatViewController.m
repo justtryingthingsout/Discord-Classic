@@ -308,8 +308,6 @@ static dispatch_queue_t chat_messages_queue;
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	//static NSString *guildCellIdentifier = @"Channel Cell";
-	
 	DCChatTableCell* cell;
 	
 	DCMessage* messageAtRowIndex = [self.messages objectAtIndex:indexPath.row];
@@ -317,14 +315,14 @@ static dispatch_queue_t chat_messages_queue;
     [tableView registerNib:[UINib nibWithNibName:@"DCChatGroupedTableCell" bundle:nil] forCellReuseIdentifier:@"Grouped Message Cell"];
     [tableView registerNib:[UINib nibWithNibName:@"DCChatTableCell" bundle:nil] forCellReuseIdentifier:@"Message Cell"];
     [tableView registerNib:[UINib nibWithNibName:@"DCChatReplyTableCell" bundle:nil] forCellReuseIdentifier:@"Reply Message Cell"];
-    [tableView registerNib:[UINib nibWithNibName:@"DCMissedCallCell" bundle:nil] forCellReuseIdentifier:@"Missed Call Message Cell"];
+    [tableView registerNib:[UINib nibWithNibName:@"DCUniversalTableCell" bundle:nil] forCellReuseIdentifier:@"Universal Typehandler Cell"];
     
-    if (messageAtRowIndex.isGrouped)
+    if (messageAtRowIndex.isGrouped && !messageAtRowIndex.messageType == 1)
         cell = [tableView dequeueReusableCellWithIdentifier:@"Grouped Message Cell"];
     else if (messageAtRowIndex.referencedMessage != nil)
         cell = [tableView dequeueReusableCellWithIdentifier:@"Reply Message Cell"];
-    else if(messageAtRowIndex.missedCall)
-        cell = [tableView dequeueReusableCellWithIdentifier:@"Missed Call Message Cell"];
+    else if(messageAtRowIndex.messageType == 1)
+        cell = [tableView dequeueReusableCellWithIdentifier:@"Universal Typehandler Cell"];
     else
         cell = [tableView dequeueReusableCellWithIdentifier:@"Message Cell"];
     
@@ -470,6 +468,9 @@ static dispatch_queue_t chat_messages_queue;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	DCMessage* messageAtRowIndex = [self.messages objectAtIndex:indexPath.row];
     
+    if(messageAtRowIndex.messageType == 1)
+        return 38.0f;
+    
 	return messageAtRowIndex.contentHeight + (messageAtRowIndex.attachmentCount * 224) + (messageAtRowIndex.attachmentCount > 0 ? 11 : 0);
 }
 
@@ -483,7 +484,7 @@ static dispatch_queue_t chat_messages_queue;
         [messageActionSheet setDelegate:self];
         [messageActionSheet showInView:self.view];
     } else {
-        UIActionSheet *messageActionSheet = [[UIActionSheet alloc] initWithTitle:self.selectedMessage.content delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Reply", @"View Profile", @"Mention", nil];
+        UIActionSheet *messageActionSheet = [[UIActionSheet alloc] initWithTitle:self.selectedMessage.content delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Reply", @"Mention", @"View Profile", nil];
         [messageActionSheet setTag:3];
         [messageActionSheet setDelegate:self];
         [messageActionSheet showInView:self.view];
@@ -528,6 +529,8 @@ static dispatch_queue_t chat_messages_queue;
             self.inputField.text = [NSString stringWithFormat:@"> %@\n<@%@> ", self.selectedMessage.content, self.selectedMessage.author.snowflake];
             
         } else if(buttonIndex == 1) {
+            self.inputField.text = [NSString stringWithFormat:@"%@<@%@> ", self.inputField.text, self.selectedMessage.author.snowflake];
+        } else if(buttonIndex == 2) {
             [self performSegueWithIdentifier:@"chat to contact" sender:self];
         }
         
