@@ -317,11 +317,13 @@ static dispatch_queue_t chat_messages_queue;
     [tableView registerNib:[UINib nibWithNibName:@"DCChatReplyTableCell" bundle:nil] forCellReuseIdentifier:@"Reply Message Cell"];
     [tableView registerNib:[UINib nibWithNibName:@"DCUniversalTableCell" bundle:nil] forCellReuseIdentifier:@"Universal Typehandler Cell"];
     
-    if (messageAtRowIndex.isGrouped && !messageAtRowIndex.messageType == 1)
+    NSSet *specialMessageTypes = [NSSet setWithArray:@[@1, @2, @3, @4, @5, @6, @7, @8, @18]];
+    
+    if (messageAtRowIndex.isGrouped && ![specialMessageTypes containsObject:@(messageAtRowIndex.messageType)])
         cell = [tableView dequeueReusableCellWithIdentifier:@"Grouped Message Cell"];
     else if (messageAtRowIndex.referencedMessage != nil)
         cell = [tableView dequeueReusableCellWithIdentifier:@"Reply Message Cell"];
-    else if(messageAtRowIndex.messageType == 1)
+    else if ([specialMessageTypes containsObject:@(messageAtRowIndex.messageType)])
         cell = [tableView dequeueReusableCellWithIdentifier:@"Universal Typehandler Cell"];
     else
         cell = [tableView dequeueReusableCellWithIdentifier:@"Message Cell"];
@@ -371,7 +373,7 @@ static dispatch_queue_t chat_messages_queue;
     
 	[cell.contentView setBackgroundColor:messageAtRowIndex.pingingUser? [UIColor grayColor] : [UIColor clearColor]];
     
-    cell.contentView.layer.cornerRadius = 4;
+    cell.contentView.layer.cornerRadius = 0;
     cell.contentView.layer.masksToBounds = YES;
 	
 	for (UIView *subView in cell.subviews) {
@@ -467,9 +469,6 @@ static dispatch_queue_t chat_messages_queue;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	DCMessage* messageAtRowIndex = [self.messages objectAtIndex:indexPath.row];
-    
-    if(messageAtRowIndex.messageType == 1)
-        return 38.0f;
     
 	return messageAtRowIndex.contentHeight + (messageAtRowIndex.attachmentCount * 224) + (messageAtRowIndex.attachmentCount > 0 ? 11 : 0);
 }

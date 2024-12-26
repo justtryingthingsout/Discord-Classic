@@ -346,17 +346,22 @@ static dispatch_queue_t channel_send_queue;
                         NSDictionary *mention = mentions.firstObject;
                         //NSString *targetName = [mentions objectForKey:@"global_name"];
                         convertedMessage.messageType = 1;
-                        convertedMessage.content = [NSString stringWithFormat:@"%@ added %@ to the group conversation.", convertedMessage.author.globalName, [mention objectForKey:@"global_name"]];
+                        NSString *targetUsername = [mention objectForKey:@"global_name"];
+                        if([targetUsername isKindOfClass:[NSNull class]])
+                            targetUsername = @"Deleted User";
+                        convertedMessage.content = [NSString stringWithFormat:@"%@ added %@ to the group conversation.", convertedMessage.author.globalName, targetUsername];
+                        float contentWidth = UIScreen.mainScreen.bounds.size.width - 63;
+                        CGSize textSize = [convertedMessage.content sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:NSLineBreakByWordWrapping];
+                        convertedMessage.contentHeight = textSize.height + 40;
+                        
+                    } else if([messageType intValue] == 2) {
+                        convertedMessage.messageType = 1;
+                        convertedMessage.content = [NSString stringWithFormat:@"%@ left the group conversation.", convertedMessage.author.globalName];
+                        float contentWidth = UIScreen.mainScreen.bounds.size.width - 63;
+                        CGSize textSize = [convertedMessage.content sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:NSLineBreakByWordWrapping];
+                        convertedMessage.contentHeight = textSize.height + 40;
+                        
                     }
-                    /*
-                     
-                     NSDictionary *callData = jsonMessage[@"call"];
-                     if (callData != nil) {
-                     converted.missedCall = YES;
-                     converted.content = @"Missed call";
-                     }
-                     */
-                    
                     [messages insertObject:convertedMessage atIndex:0];
                 }
             }
