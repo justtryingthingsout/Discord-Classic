@@ -73,7 +73,6 @@
                 NSString *bannerHexCode = [userInfo objectForKey:@"banner_color"];
                 UIColor *backgroundColor = [UIColorHex colorWithHexString:bannerHexCode];
                 if (backgroundColor)
-                    NSLog(@"%@", backgroundColor);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.bannerView.backgroundColor = backgroundColor;
                 });
