@@ -342,10 +342,11 @@ static dispatch_queue_t channel_send_queue;
                     NSString *messageType = [jsonMessage objectForKey:@"type"];
                     
                     if ([messageType intValue] == 1) {
-                        NSDictionary *mentions = [jsonMessage objectForKey:@"mentions"];
+                        NSArray *mentions = [jsonMessage objectForKey:@"mentions"];
+                        NSDictionary *mention = mentions.firstObject;
                         //NSString *targetName = [mentions objectForKey:@"global_name"];
                         convertedMessage.messageType = 1;
-                        convertedMessage.content = [NSString stringWithFormat:@"%@ added someone to the group conversation.", convertedMessage.author.globalName];
+                        convertedMessage.content = [NSString stringWithFormat:@"%@ added %@ to the group conversation.", convertedMessage.author.globalName, [mention objectForKey:@"global_name"]];
                     }
                     /*
                      
