@@ -37,16 +37,29 @@
     //pns observers
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotificationTap:) name:@"NavigateToChannel" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(exitedChatController) name:@"ChannelSelectionCleared" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handlePresenceRefresh)
+                                                 name:@"USER_PRESENCE_UPDATED"
+                                               object:nil];
     //NOTIF OBSERVERS END
     
-    self.totalView.hidden = YES;
+    //TOOLBAR IMAGE LOGIC
+    UIImage *toolbarBGImage = [UIImage imageNamed:@"ToolbarBG"];
+    
+    [self.toolbar setBackgroundImage:toolbarBGImage forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+    //toolbar image logic end
 }
 
 
 //block that handles what the app does if you open it via a push ntoification
 
+- (void)handlePresenceRefresh {
+    // This will force the channel list table to re-fetch each DM buddy’s status from loadedUsers
+    [self.channelTableView reloadData];
+}
 
 - (void)handleNotificationTap:(NSNotification *)notification {
+    //NSLog(@"HANDLE NOTIFICATION TAP CALLED");
     NSString *channelId = notification.userInfo[@"channelId"];
     if (channelId) {
         //NSLog(@"Navigating to channel with ID: %@", channelId);
@@ -84,9 +97,9 @@
 
 //reload
 /*- (void)handleReady {
-    [self.guildTableView reloadData];
-    [self.channelTableView reloadData];
-}*/
+ [self.guildTableView reloadData];
+ [self.channelTableView reloadData];
+ }*/
 
 - (void)handleReady {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -163,21 +176,13 @@
 		self.selectedGuild = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:indexPath.row];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         if(self.selectedGuild.banner == nil) {
-            self.guildBanner.image = [UIImage imageNamed:@"No-Header"];
+            self.guildBanner.image = [UIImage imageNamed:@"ServerBanner"];
         } else {
             self.guildBanner.image = self.selectedGuild.banner;
         }
         [self.navigationItem setTitle:self.selectedGuild.name];
         self.guildLabel.text = self.selectedGuild.name;
 		[self.channelTableView reloadData];
-        if (self.guildLabel && [self.guildLabel.text isEqualToString:@"Direct Messages"]) {
-            self.totalView.hidden = NO;
-            self.guildTotalView.hidden = YES;
-        } else {
-            self.totalView.hidden = YES;
-            self.guildTotalView.hidden = NO;
-        }
-
 	}
     
     if(tableView == self.channelTableView){
@@ -196,6 +201,7 @@
         //[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
 }
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.guildTableView) {
         // Use the DCGuildTableViewCell
@@ -220,8 +226,27 @@
         // Guild name and icon
         [cell.guildAvatar setImage:guildAtRowIndex.icon];
         
-        // Set the frame for the image view (if not already set)
+        cell.guildAvatar.layer.cornerRadius = cell.guildAvatar.frame.size.width / 6.0;
+        cell.guildAvatar.layer.masksToBounds = YES;
         
+        return cell;
+    }
+    
+    if (tableView == self.guildTableView) {
+        DCGuildTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"guild"];
+        if (cell == nil) {
+            cell = [[DCGuildTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"guild"];
+        }
+        
+        DCServerCommunicator.sharedInstance.guilds = [[DCServerCommunicator.sharedInstance.guilds sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+            NSString *first = [(DCGuild *)a name];
+            NSString *second = [(DCGuild *)b name];
+            return ([first compare:@"Direct Messages"] == 0) ? NSOrderedAscending : [first compare:second];
+        }] mutableCopy];
+        
+        DCGuild *guildAtRowIndex = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:indexPath.row];
+        cell.unreadMessages.hidden = !guildAtRowIndex.unread;
+        [cell.guildAvatar setImage:guildAtRowIndex.icon];
         cell.guildAvatar.layer.cornerRadius = cell.guildAvatar.frame.size.width / 6.0;
         cell.guildAvatar.layer.masksToBounds = YES;
         
@@ -233,35 +258,53 @@
         if (cell == nil) {
             cell = [[DCChannelViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"channel"];
         }
+        
         DCChannel *channelAtRowIndex = [self.selectedGuild.channels objectAtIndex:indexPath.row];
         cell.messageIndicator.hidden = !channelAtRowIndex.unread;
         [cell.channelName setText:channelAtRowIndex.name];
         
+        // Check if the channel is a DM (type 1) and has exactly two users
+        if (channelAtRowIndex.type == 1 && channelAtRowIndex.users.count == 2) {
+            DCUser *buddy = nil;
+            
+            // Identify the other user in the DM
+            for (NSDictionary *userDict in channelAtRowIndex.users) {
+                NSString *userId = [userDict valueForKey:@"snowflake"];
+                if (![userId isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
+                    buddy = [DCServerCommunicator.sharedInstance.loadedUsers objectForKey:userId];
+                    break;
+                }
+            }
+            
+            if (buddy) {
+                UIColor *dotColor = [self colorForUserStatus:buddy.status ?: @"offline"];
+                UIImage *coloredImage = [self loadAndTintImageWithColor:dotColor];
+                cell.activityIndicatorLed.image = coloredImage;
+            } else {
+                cell.activityIndicatorLed.image = [self loadAndTintImageWithColor:[UIColor grayColor]];
+            }
+        } else {
+            // Hide status indicator for group DMs or non-DM channels
+            cell.activityIndicatorLed.image = nil;
+        }
+        
         return cell;
     }
     
-    return nil; // Default case (shouldn't happen in your scenario)
+    return nil;
 }
 
-
-- (void)handleMeRequest {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSURL* userProfileURL = [NSURL URLWithString: [NSString stringWithFormat:@"https://discordapp.com/api/v9/users/@me"]];
-        NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:userProfileURL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15];
-        [urlRequest setValue:@"no-store" forHTTPHeaderField:@"Cache-Control"];
-        [urlRequest addValue:DCServerCommunicator.sharedInstance.token forHTTPHeaderField:@"Authorization"];
-        [urlRequest addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-        NSHTTPURLResponse *responseCode = nil;
-        
-        NSError *error = nil;
-        NSData *response = [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
-        if(response){
-            NSDictionary* parsedResponse = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
-            NSLog(@"%@", parsedResponse);
-        }
-    });
-}
-
+/*- (void)tableView:(UITableView *)tableView willDisplayCell:(DCGuildTableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+ // make guild icons a fixed size
+ if(tableView == self.guildTableView) {
+ cell.guildAvatar.frame = CGRectMake(0, 0, 32, 32);
+ cell.guildAvatar.layer.cornerRadius = cell.imageView.frame.size.height / 4.0;
+ cell.guildAvatar.layer.masksToBounds = YES;
+ [cell.guildAvatar setNeedsDisplay];
+ [cell layoutIfNeeded];
+ }
+ }
+ */
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return 1;
 }
@@ -302,4 +345,68 @@
     }
 }
 //SEGUE END
+
+- (UIImage *)loadAndTintImageWithColor:(UIColor *)color {
+    NSString *imageName = @"statusIndicator";
+    UIImage *image = [UIImage imageNamed:imageName];
+    
+    // Begin a new image context to colorize the image
+    UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Flip the context, images are drawn upside down by default in UIKit, thanks ChagGPT for this
+    CGContextTranslateCTM(context, 0.0, image.size.height);
+    CGContextScaleCTM(context, 1.0, -1.0);
+    
+    [color setFill];
+    
+    CGContextDrawImage(context, CGRectMake(0.0, 0.0, image.size.width, image.size.height), image.CGImage);
+    
+    // Apply the color over the image using the blend mode (this will tint the image), also thanks gpt
+    CGContextSetBlendMode(context, kCGBlendModeSourceIn);
+    CGContextFillRect(context, CGRectMake(0.0, 0.0, image.size.width, image.size.height));
+    
+    UIImage *coloredImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return coloredImage;
+}
+
+- (UIImage *)colorizeImage:(UIImage *)image withColor:(UIColor *)color {
+    // Create an image context with the size of the original image
+    UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Set the fill color (the desired color for the status indicator)
+    CGContextTranslateCTM(context, 0, image.size.height);
+    CGContextScaleCTM(context, 1.0, -1.0);  // Flip the context
+    
+    // Set blend mode to apply the color over the original image
+    CGContextSetBlendMode(context, kCGBlendModeSourceIn);
+    CGContextDrawImage(context, CGRectMake(0, 0, image.size.width, image.size.height), image.CGImage);
+    
+    // Apply the color filter
+    [color setFill];
+    CGContextFillRect(context, CGRectMake(0, 0, image.size.width, image.size.height));
+    
+    // Get the colorized image from the context
+    UIImage *colorizedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return colorizedImage;
+}
+
+- (UIColor *)colorForUserStatus:(NSString *)status {
+    if ([status isEqualToString:@"online"]) {
+        return [UIColor colorWithRed:0.0 green:1.0 blue:0.0 alpha:1.0];  // Green
+    } else if ([status isEqualToString:@"dnd"]) {
+        return [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0];  // Red
+    } else if ([status isEqualToString:@"idle"]) {
+        return [UIColor colorWithRed:1.0 green:0.65 blue:0.0 alpha:1.0]; // Orange
+    } else {
+        return [UIColor colorWithWhite:0.6 alpha:1.0];  // Gray (offline)
+    }
+}
+
 @end

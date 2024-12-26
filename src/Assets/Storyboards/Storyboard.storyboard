@@ -847,6 +847,10 @@
                                                     <rect key="frame" x="0.0" y="12" width="7" height="19"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="statusIndicator.png" id="cS3-hT-kuW">
+                                                    <rect key="frame" x="255" y="12" width="8" height="19"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="#" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="e23-n6-a0E">
                                                     <rect key="frame" x="15" y="11" width="10" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -874,6 +878,7 @@
                                         </view>
                                         <color key="backgroundColor" red="0.16078431369999999" green="0.16862745100000001" blue="0.18039215689999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
+                                            <outlet property="activityIndicatorLed" destination="cS3-hT-kuW" id="8rg-pP-cQM"/>
                                             <outlet property="channelName" destination="fd3-tG-kA3" id="iiJ-Qg-210"/>
                                             <outlet property="messageIndicator" destination="Uqs-1O-c5f" id="a5z-Uh-K50"/>
                                             <outlet property="type" destination="e23-n6-a0E" id="M1G-iX-JRt"/>
@@ -936,6 +941,7 @@
         <image name="newMessages.png" width="7" height="19"/>
         <image name="pfpOverlay.png" width="82" height="82"/>
         <image name="separator.png" width="320" height="4"/>
+        <image name="statusIndicator.png" width="7" height="19"/>
     </resources>
     <color key="tintColor" red="0.054901960784313725" green="0.058823529411764705" blue="0.062745098039215685" alpha="1" colorSpace="calibratedRGB"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

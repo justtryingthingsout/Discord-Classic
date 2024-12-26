@@ -17,6 +17,7 @@
 @property UIImage* profileBanner;
 @property NSString* discriminator;
 @property UIImage* avatarDecoration;
+@property (strong, nonatomic) NSString *status;
 
 +(NSArray *)defaultAvatars;
 
