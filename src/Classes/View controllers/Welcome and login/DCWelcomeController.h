@@ -10,10 +10,6 @@
 
 @interface DCWelcomeController : UITableViewController
 
-@property (weak, nonatomic) IBOutlet UITextField *tokenTextField;
-@property (weak, nonatomic) IBOutlet UIButton *loginButton;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *loginIndicator;
-
-@property bool authenticated;
 
 @end

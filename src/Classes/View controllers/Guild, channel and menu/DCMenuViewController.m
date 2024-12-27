@@ -50,7 +50,6 @@
     //toolbar image logic end
 }
 
-
 //block that handles what the app does if you open it via a push ntoification
 
 - (void)handlePresenceRefresh {

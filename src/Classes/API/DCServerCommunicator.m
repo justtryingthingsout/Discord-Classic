@@ -49,6 +49,12 @@ UIActivityIndicatorView *spinner;
         
         sharedInstance.gatewayURL = @"wss://gateway.discord.gg/?encoding=json&v=9";
         
+        NSString *token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
+        
+        if ([token length] == 0) {
+            return;
+        }
+        
         sharedInstance.token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
         
         [sharedInstance showNonIntrusiveNotificationWithTitle:@"Connecting"];
@@ -64,43 +70,56 @@ UIActivityIndicatorView *spinner;
 - (void)showNonIntrusiveNotificationWithTitle:(NSString *)title {
     dispatch_async(dispatch_get_main_queue(), ^{
         CGFloat screenWidth = UIScreen.mainScreen.bounds.size.width;
-        CGFloat notificationWidth = screenWidth - 130; // Increased padding to 60 points on each side
-        CGFloat notificationHeight = 40;
-        CGFloat notificationX = (screenWidth - notificationWidth) / 2; // Center the notification
-        CGFloat notificationY = -notificationHeight; // Start above the visible screen area
+        CGFloat notificationPadding = 58; // Padding to give a sleeker look
+        CGFloat notificationWidth = screenWidth - (notificationPadding * 2);
+        CGFloat notificationHeight = 50; // Increased for better tactile feel
+        CGFloat notificationX = notificationPadding; // Left and right padding
+        CGFloat notificationY = -notificationHeight; // Start above screen
         
         if (self.notificationView != nil) {
-            [self.notificationView removeFromSuperview]; // Remove existing view if any
+            [self.notificationView removeFromSuperview];
             self.notificationView = nil;
         }
         
         self.notificationView = [[UIView alloc] initWithFrame:CGRectMake(notificationX, notificationY, notificationWidth, notificationHeight)];
-        self.notificationView.backgroundColor = [UIColor grayColor]; // Background color
-        self.notificationView.layer.cornerRadius = 13; // Rounded corners
-        self.notificationView.layer.masksToBounds = YES;
         
-        // Create and configure the label for the notification with dynamic title
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, notificationWidth, notificationHeight)];
-        label.text = title; // Use the passed title
-        label.textColor = [UIColor blackColor]; // Text color
-        label.textAlignment = NSTextAlignmentCenter;
+        // Background with subtle texture or gradient for skeuomorphic feel
+        self.notificationView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"no-header"]];
+        self.notificationView.layer.cornerRadius = 15; // More rounded corners
+        self.notificationView.layer.shadowColor = [UIColor blackColor].CGColor;
+        self.notificationView.layer.shadowOffset = CGSizeMake(0, 2);
+        self.notificationView.layer.shadowOpacity = 0.6;
+        self.notificationView.layer.shadowRadius = 5;
+        self.notificationView.layer.borderColor = [UIColor darkGrayColor].CGColor;
+        self.notificationView.layer.borderWidth = 1.0;
         
-        // Create and position the activity indicator
-        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        spinner.center = CGPointMake(notificationWidth - 30, notificationHeight / 2); // Position spinner
+        // Label to display the notification text
+        CGFloat spinnerWidth = 30;
+        CGFloat labelWidth = notificationWidth - spinnerWidth - 20; // Dynamic label width
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, labelWidth, notificationHeight)];
+        label.text = title;
+        label.backgroundColor = [UIColor clearColor];
+        label.textColor = [UIColor whiteColor];
+        label.font = [UIFont boldSystemFontOfSize:16];
+        label.textAlignment = NSTextAlignmentLeft;
+        label.lineBreakMode = NSLineBreakByTruncatingTail; // Truncate if too long
+        
+        // Spinner
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        spinner.center = CGPointMake(notificationWidth - (spinnerWidth / 2) - 10, notificationHeight / 2);
         [spinner startAnimating];
         
-        // Add the label and spinner to the notification view
+        // Add subviews
         [self.notificationView addSubview:label];
         [self.notificationView addSubview:spinner];
         
-        // Add the notification view to the window
+        // Add to window
         UIWindow *window = [[[UIApplication sharedApplication] windows] lastObject];
         [window addSubview:self.notificationView];
         
-        // Animate the notification to slide in from the top
+        // Slide in animation
         [UIView animateWithDuration:0.6 animations:^{
-            self.notificationView.frame = CGRectMake(notificationX, 72, notificationWidth, notificationHeight); // Move to the final position
+            self.notificationView.frame = CGRectMake(notificationX, 64, notificationWidth, notificationHeight);
         }];
     });
 }
@@ -132,15 +151,6 @@ UIActivityIndicatorView *spinner;
 }
 
 - (void)startCommunicator{
-	
-	[self.alertView show];
-    if (spinner == nil)
-        spinner = [UIActivityIndicatorView.alloc initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    [spinner setCenter:CGPointMake(139.5, 57.5)];
-    
-    [self.alertView addSubview:spinner];
-    [spinner startAnimating];
-	
 	self.didAuthenticate = false;
 	
 	if(self.token!=nil){
@@ -658,7 +668,7 @@ UIActivityIndicatorView *spinner;
 		double timeRemaining = self.cooldownTimer.fireDate.timeIntervalSinceNow;
 		//NSLog(@"Cooldown in effect. Time left %f", timeRemaining);
 		//[self.notificationView setTitle:@"Waiting for auth cooldown..."];
-        [self showNonIntrusiveNotificationWithTitle:@"Waiting for auth cooldown..."];
+        [self showNonIntrusiveNotificationWithTitle:@"Re-Authenticating"];
 		[self performSelector:@selector(startCommunicator) withObject:nil afterDelay:timeRemaining + 1];
 	}
 	
