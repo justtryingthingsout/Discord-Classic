@@ -10,4 +10,9 @@
 
 @interface DCIntroductionPage : UITableViewController
 
+@property (weak, nonatomic) IBOutlet UITextField *tokenTextField;
+@property (weak, nonatomic) IBOutlet UIButton *loginButton;
+
+@property bool authenticated;
+
 @end
