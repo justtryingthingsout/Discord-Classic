@@ -10,6 +10,7 @@
 
 @interface DCChannelViewCell : UITableViewCell
 
+@property (weak, nonatomic) IBOutlet UIImageView *activityIndicatorLed;
 @property (weak, nonatomic) IBOutlet UIImageView *messageIndicator;
 @property (weak, nonatomic) IBOutlet UILabel *type;
 @property (weak, nonatomic) IBOutlet UILabel *channelName;
