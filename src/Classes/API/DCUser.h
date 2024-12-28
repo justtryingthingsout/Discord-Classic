@@ -14,7 +14,7 @@
 @property NSString* globalName;
 @property NSString* biography;
 @property NSString* onlineStatus;
-@property NSString* status;
+@property (strong, nonatomic) NSString *status;
 @property UIImage* profileImage;
 @property UIImage* profileBanner;
 @property NSString* discriminator;

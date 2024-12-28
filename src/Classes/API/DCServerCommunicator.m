@@ -426,6 +426,7 @@ UIActivityIndicatorView *spinner;
                                                     UIGraphicsEndImageContext();
                                                 }
                                                 
+                                                // Process user presences from READY payload
                                                 NSArray *presences = [d valueForKey:@"presences"];
                                                 for (NSDictionary *presence in presences) {
                                                     NSString *userId = [presence valueForKeyPath:@"user.id"];
@@ -434,6 +435,7 @@ UIActivityIndicatorView *spinner;
                                                     if (userId && status) {
                                                         DCUser *user = [weakSelf.loadedUsers objectForKey:userId];
                                                         if (user) {
+                                                            
                                                             user.status = status;
                                                             NSLog(@"%@", user.status);
                                                             //NSLog(@"[READY] Updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
@@ -534,7 +536,7 @@ UIActivityIndicatorView *spinner;
                                     user = [DCTools convertJsonUser:userDict cache:YES];
                                     [weakSelf.loadedUsers setObject:user forKey:userId];
                                     user.status = status;
-                                    //NSLog(@"[PRESENCE_UPDATE] Cached and updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
+                                    NSLog(@"[PRESENCE_UPDATE] Cached and updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
                                 }
                             }
                             
@@ -542,7 +544,7 @@ UIActivityIndicatorView *spinner;
                             [NSNotificationCenter.defaultCenter postNotificationName:@"USER_PRESENCE_UPDATED" object:nil];
                         }
                         else {
-                            //NSLog(@"[PRESENCE_UPDATE] Missing user ID or status in payload: %@", d);
+                            NSLog(@"[PRESENCE_UPDATE] Missing user ID or status in payload: %@", d);
                         }
                     }
 					
