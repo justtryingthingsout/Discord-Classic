@@ -317,27 +317,70 @@ static dispatch_queue_t chat_messages_queue;
     
     if(self.oldMode == YES) {
         [tableView registerNib:[UINib nibWithNibName:@"O-DCChatTableCell" bundle:nil] forCellReuseIdentifier:@"OldMode Message Cell"];
-        cell = [tableView dequeueReusableCellWithIdentifier:@"OldMode Message Cell"];
+        [tableView registerNib:[UINib nibWithNibName:@"O-DCChatGroupedTableCell" bundle:nil] forCellReuseIdentifier:@"OldMode Grouped Message Cell"];
+        [tableView registerNib:[UINib nibWithNibName:@"O-DCChatReplyTableCell" bundle:nil] forCellReuseIdentifier:@"OldMode Reply Message Cell"];
+        [tableView registerNib:[UINib nibWithNibName:@"O-DCUniversalTableCell" bundle:nil] forCellReuseIdentifier:@"OldMode Universal Typehandler Cell"];
+        NSSet *specialMessageTypes = [NSSet setWithArray:@[@1, @2, @3, @4, @5, @6, @7, @8, @18]];
         
-        [cell.authorLabel setText:messageAtRowIndex.author.username];
+        if (messageAtRowIndex.isGrouped && ![specialMessageTypes containsObject:@(messageAtRowIndex.messageType)])
+            cell = [tableView dequeueReusableCellWithIdentifier:@"OldMode Grouped Message Cell"];
+        else if (messageAtRowIndex.referencedMessage != nil)
+            cell = [tableView dequeueReusableCellWithIdentifier:@"OldMode Reply Message Cell"];
+        else if ([specialMessageTypes containsObject:@(messageAtRowIndex.messageType)])
+            cell = [tableView dequeueReusableCellWithIdentifier:@"OldMode Universal Typehandler Cell"];
+        else
+            cell = [tableView dequeueReusableCellWithIdentifier:@"OldMode Message Cell"];
         
-        [cell.contentTextView setText:messageAtRowIndex.content];
+        if (messageAtRowIndex.referencedMessage != nil) {
+            [cell.referencedAuthorLabel setText:messageAtRowIndex.referencedMessage.author.username];
+            [cell.referencedMessage setText:messageAtRowIndex.referencedMessage.content];
+            [cell.referencedMessage setFrame:CGRectMake(messageAtRowIndex.referencedMessage.authorNameWidth, cell.referencedMessage.y, self.chatTableView.width-messageAtRowIndex.authorNameWidth, cell.referencedMessage.height)];
+            
+            [cell.referencedProfileImage setImage:messageAtRowIndex.referencedMessage.author.profileImage];
+        }
+        
+        if (!messageAtRowIndex.isGrouped) {
+            [cell.authorLabel setText:messageAtRowIndex.author.username];
+        }
+        
+        if(messageAtRowIndex.messageType == 6) {
+            cell.universalImageView.image = [UIImage imageNamed:@"pinMessage"];
+        }
+        
+        NSString* content = [messageAtRowIndex.content emojizedString];
+        
+        content = [content stringByReplacingOccurrencesOfString:@"\u2122\uFE0F" withString:@"™"];
+        content = [content stringByReplacingOccurrencesOfString:@"\u00AE\uFE0F" withString:@"®"];
+        
+        if (messageAtRowIndex.editedTimestamp != nil) {
+            content = [content stringByAppendingString:@" (edited)"];
+        }
+        
+        [cell.contentTextView setText:content];
         
         [cell.contentTextView setHeight:[cell.contentTextView sizeThatFits:CGSizeMake(cell.contentTextView.width, MAXFLOAT)].height];
         
-        [cell.profileImage setImage:messageAtRowIndex.author.profileImage];
+        if (!messageAtRowIndex.isGrouped) {
+            [cell.profileImage setImage:messageAtRowIndex.author.profileImage];
+        }
+        
         
         [cell.contentView setBackgroundColor:messageAtRowIndex.pingingUser? [UIColor redColor] : [UIColor clearColor]];
+        
         
         for (UIView *subView in cell.subviews) {
             if ([subView isKindOfClass:[UIImageView class]]) {
                 [subView removeFromSuperview];
             }
+            if ([subView isKindOfClass:[DCChatVideoAttachment class]]) {
+                [subView removeFromSuperview];
+            }
+            if ([subView isKindOfClass:[QLPreviewController class]]) {
+                [subView removeFromSuperview];
+            }
         }
-        
+        //dispatch_async(dispatch_get_main_queue(), ^{
         int imageViewOffset = cell.contentTextView.height + 37;
-        
-
         
         for(id attachment in messageAtRowIndex.attachments){
             if([attachment isKindOfClass:[UIImage class]]) {
@@ -399,6 +442,26 @@ static dispatch_queue_t chat_messages_queue;
             }
             
         }
+        //});
+        return cell;
+        
+        /*[cell.authorLabel setText:messageAtRowIndex.author.username];
+        
+        [cell.contentTextView setText:messageAtRowIndex.content];
+        
+        [cell.contentTextView setHeight:[cell.contentTextView sizeThatFits:CGSizeMake(cell.contentTextView.width, MAXFLOAT)].height];
+        
+        [cell.profileImage setImage:messageAtRowIndex.author.profileImage];
+        
+        [cell.contentView setBackgroundColor:messageAtRowIndex.pingingUser? [UIColor redColor] : [UIColor clearColor]];
+        
+        for (UIView *subView in cell.subviews) {
+            if ([subView isKindOfClass:[UIImageView class]]) {
+                [subView removeFromSuperview];
+            }
+        }
+        
+               }*/
         return cell;
     } else if(self.oldMode == NO) {
         [tableView registerNib:[UINib nibWithNibName:@"DCChatGroupedTableCell" bundle:nil] forCellReuseIdentifier:@"Grouped Message Cell"];

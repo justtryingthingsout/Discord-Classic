@@ -157,8 +157,9 @@
 		5BC7F3062D20BB3C00CA6F3F /* O-DCChatGroupedTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F3012D20BB3C00CA6F3F /* O-DCChatGroupedTableCell.xib */; };
 		5BC7F3072D20BB3C00CA6F3F /* O-DCChatReplyTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F3022D20BB3C00CA6F3F /* O-DCChatReplyTableCell.xib */; };
 		5BC7F3082D20BB3C00CA6F3F /* O-DCChatTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F3032D20BB3C00CA6F3F /* O-DCChatTableCell.xib */; };
-		5BC7F3092D20BB3C00CA6F3F /* O-DCChatVideoAttachment.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F3042D20BB3C00CA6F3F /* O-DCChatVideoAttachment.xib */; };
 		5BC7F30A2D20BB3C00CA6F3F /* O-DCUniversalTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F3052D20BB3C00CA6F3F /* O-DCUniversalTableCell.xib */; };
+		5BC7F30D2D20BC0500CA6F3F /* oldDiscord.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F30B2D20BC0500CA6F3F /* oldDiscord.png */; };
+		5BC7F30E2D20BC0500CA6F3F /* oldDiscord@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F30C2D20BC0500CA6F3F /* oldDiscord@2x.png */; };
 		5BDD37422D2038DF00C6482C /* OldTitlebarTexture.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD37402D2038DF00C6482C /* OldTitlebarTexture.png */; };
 		5BDD37432D2038DF00C6482C /* OldTitlebarTexture@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD37412D2038DF00C6482C /* OldTitlebarTexture@2x.png */; };
 		5BDD37462D20402700C6482C /* DCPrivateChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BDD37452D20402700C6482C /* DCPrivateChannelTableCell.m */; };
@@ -360,8 +361,9 @@
 		5BC7F3012D20BB3C00CA6F3F /* O-DCChatGroupedTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "O-DCChatGroupedTableCell.xib"; sourceTree = "<group>"; };
 		5BC7F3022D20BB3C00CA6F3F /* O-DCChatReplyTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "O-DCChatReplyTableCell.xib"; sourceTree = "<group>"; };
 		5BC7F3032D20BB3C00CA6F3F /* O-DCChatTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "O-DCChatTableCell.xib"; sourceTree = "<group>"; };
-		5BC7F3042D20BB3C00CA6F3F /* O-DCChatVideoAttachment.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "O-DCChatVideoAttachment.xib"; sourceTree = "<group>"; };
 		5BC7F3052D20BB3C00CA6F3F /* O-DCUniversalTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "O-DCUniversalTableCell.xib"; sourceTree = "<group>"; };
+		5BC7F30B2D20BC0500CA6F3F /* oldDiscord.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = oldDiscord.png; sourceTree = "<group>"; };
+		5BC7F30C2D20BC0500CA6F3F /* oldDiscord@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "oldDiscord@2x.png"; sourceTree = "<group>"; };
 		5BDD37402D2038DF00C6482C /* OldTitlebarTexture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = OldTitlebarTexture.png; sourceTree = "<group>"; };
 		5BDD37412D2038DF00C6482C /* OldTitlebarTexture@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "OldTitlebarTexture@2x.png"; sourceTree = "<group>"; };
 		5BDD37442D20402700C6482C /* DCPrivateChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCPrivateChannelTableCell.h; sourceTree = "<group>"; };
@@ -667,6 +669,8 @@
 		5B2104E82D1856E5005B9596 /* New */ = {
 			isa = PBXGroup;
 			children = (
+				5BC7F30B2D20BC0500CA6F3F /* oldDiscord.png */,
+				5BC7F30C2D20BC0500CA6F3F /* oldDiscord@2x.png */,
 				5B2104E92D1856E5005B9596 /* border.png */,
 				5B2104EA2D1856E5005B9596 /* DirectMessages.png */,
 				5B2104EB2D1856E5005B9596 /* DirectMessages@2x.png */,
@@ -951,7 +955,6 @@
 				5BC7F3012D20BB3C00CA6F3F /* O-DCChatGroupedTableCell.xib */,
 				5BC7F3022D20BB3C00CA6F3F /* O-DCChatReplyTableCell.xib */,
 				5BC7F3032D20BB3C00CA6F3F /* O-DCChatTableCell.xib */,
-				5BC7F3042D20BB3C00CA6F3F /* O-DCChatVideoAttachment.xib */,
 				5BC7F3052D20BB3C00CA6F3F /* O-DCUniversalTableCell.xib */,
 			);
 			path = OldMode;
@@ -1063,9 +1066,11 @@
 				5BB5D73E2D19582700C54C0A /* bannerBottomShadow.png in Resources */,
 				5B21050E2D1856E5005B9596 /* Border@2x.png in Resources */,
 				5B21052E2D1856E5005B9596 /* DefaultAvatar5.png in Resources */,
+				5BC7F30D2D20BC0500CA6F3F /* oldDiscord.png in Resources */,
 				5B21052F2D1856E5005B9596 /* DefaultAvatar5@2x.png in Resources */,
 				5BDD37512D20496500C6482C /* sinkInMask@2x.png in Resources */,
 				5B2105132D1856E5005B9596 /* CBarButtonMap.png in Resources */,
+				5BC7F30E2D20BC0500CA6F3F /* oldDiscord@2x.png in Resources */,
 				5B2105312D1856E5005B9596 /* border.png in Resources */,
 				5B2105102D1856E5005B9596 /* No-Header@2x.png in Resources */,
 				5B2105202D1856E5005B9596 /* NavigationButton.png in Resources */,
@@ -1082,7 +1087,6 @@
 				5B2105142D1856E5005B9596 /* CBarButtonMap@2x.png in Resources */,
 				5B2105352D1856E5005B9596 /* menu@2x.png in Resources */,
 				5B21053A2D1856E5005B9596 /* PLVideoOverlayPlay.png in Resources */,
-				5BC7F3092D20BB3C00CA6F3F /* O-DCChatVideoAttachment.xib in Resources */,
 				5B21050F2D1856E5005B9596 /* No-header.png in Resources */,
 				5BDD374B2D20486500C6482C /* absent.png in Resources */,
 				5BDD37432D2038DF00C6482C /* OldTitlebarTexture@2x.png in Resources */,
