@@ -130,7 +130,6 @@
 		5B2105A42D185B10005B9596 /* DCIntroductionPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B21058E2D185B10005B9596 /* DCIntroductionPage.m */; };
 		5B2105A92D185BD3005B9596 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105A82D185BD3005B9596 /* main.m */; };
 		5B2105AB2D185CDC005B9596 /* iOS-7.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105AA2D185CDC005B9596 /* iOS-7.storyboard */; };
-		5B2105B62D1861DE005B9596 /* DCMissedCallCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105B52D1861DE005B9596 /* DCMissedCallCell.xib */; };
 		5B2105B92D186432005B9596 /* TestCallEmbed.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105B82D186431005B9596 /* TestCallEmbed.png */; };
 		5B2105BF2D18B498005B9596 /* DCRecipientTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105BE2D18B498005B9596 /* DCRecipientTableCell.m */; };
 		5B2105C22D18C116005B9596 /* DCGuildTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105C12D18C116005B9596 /* DCGuildTableViewCell.m */; };
@@ -138,7 +137,6 @@
 		5B3890DD2D1C54D8002D3BBE /* GuildIconBaseSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890DC2D1C54D8002D3BBE /* GuildIconBaseSelected.png */; };
 		5B3890E12D1C7A11002D3BBE /* pfpOverlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890DF2D1C7A11002D3BBE /* pfpOverlay.png */; };
 		5B3890E22D1C7A11002D3BBE /* pfpOverlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890E02D1C7A11002D3BBE /* pfpOverlay@2x.png */; };
-		5B774E5C2D20A0D60053086C /* O-DCChatTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5B774E5B2D20A0D60053086C /* O-DCChatTableCell.xib */; };
 		5B81E6DE2D20656200E0C4BE /* offline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B81E6DD2D20656200E0C4BE /* offline@2x.png */; };
 		5BA0983F2D205E15009F7726 /* offline.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BA0983E2D205E15009F7726 /* offline.png */; };
 		5BAE842B2D1C84AE00C021F9 /* UIColorHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BAE842A2D1C84AE00C021F9 /* UIColorHex.m */; };
@@ -156,6 +154,11 @@
 		5BB5D7432D195B3400C54C0A /* newMessages.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D7412D195B3400C54C0A /* newMessages.png */; };
 		5BB5D7442D195B3400C54C0A /* newMessages@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D7422D195B3400C54C0A /* newMessages@2x.png */; };
 		5BB5D7472D195E6400C54C0A /* DCChannelViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB5D7462D195E6400C54C0A /* DCChannelViewCell.m */; };
+		5BC7F3062D20BB3C00CA6F3F /* O-DCChatGroupedTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F3012D20BB3C00CA6F3F /* O-DCChatGroupedTableCell.xib */; };
+		5BC7F3072D20BB3C00CA6F3F /* O-DCChatReplyTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F3022D20BB3C00CA6F3F /* O-DCChatReplyTableCell.xib */; };
+		5BC7F3082D20BB3C00CA6F3F /* O-DCChatTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F3032D20BB3C00CA6F3F /* O-DCChatTableCell.xib */; };
+		5BC7F3092D20BB3C00CA6F3F /* O-DCChatVideoAttachment.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F3042D20BB3C00CA6F3F /* O-DCChatVideoAttachment.xib */; };
+		5BC7F30A2D20BB3C00CA6F3F /* O-DCUniversalTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F3052D20BB3C00CA6F3F /* O-DCUniversalTableCell.xib */; };
 		5BDD37422D2038DF00C6482C /* OldTitlebarTexture.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD37402D2038DF00C6482C /* OldTitlebarTexture.png */; };
 		5BDD37432D2038DF00C6482C /* OldTitlebarTexture@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD37412D2038DF00C6482C /* OldTitlebarTexture@2x.png */; };
 		5BDD37462D20402700C6482C /* DCPrivateChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BDD37452D20402700C6482C /* DCPrivateChannelTableCell.m */; };
@@ -325,7 +328,6 @@
 		5B21058E2D185B10005B9596 /* DCIntroductionPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCIntroductionPage.m; sourceTree = "<group>"; };
 		5B2105A82D185BD3005B9596 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "../../Discord Classic/main.m"; sourceTree = "<group>"; };
 		5B2105AA2D185CDC005B9596 /* iOS-7.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "iOS-7.storyboard"; sourceTree = "<group>"; };
-		5B2105B52D1861DE005B9596 /* DCMissedCallCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DCMissedCallCell.xib; sourceTree = "<group>"; };
 		5B2105B82D186431005B9596 /* TestCallEmbed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TestCallEmbed.png; sourceTree = "<group>"; };
 		5B2105BD2D18B498005B9596 /* DCRecipientTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCRecipientTableCell.h; sourceTree = "<group>"; };
 		5B2105BE2D18B498005B9596 /* DCRecipientTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCRecipientTableCell.m; sourceTree = "<group>"; };
@@ -335,7 +337,6 @@
 		5B3890DC2D1C54D8002D3BBE /* GuildIconBaseSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GuildIconBaseSelected.png; sourceTree = "<group>"; };
 		5B3890DF2D1C7A11002D3BBE /* pfpOverlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pfpOverlay.png; sourceTree = "<group>"; };
 		5B3890E02D1C7A11002D3BBE /* pfpOverlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pfpOverlay@2x.png"; sourceTree = "<group>"; };
-		5B774E5B2D20A0D60053086C /* O-DCChatTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "O-DCChatTableCell.xib"; sourceTree = "<group>"; };
 		5B81E6DD2D20656200E0C4BE /* offline@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline@2x.png"; sourceTree = "<group>"; };
 		5BA0983D2D2058E4009F7726 /* Discord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Discord.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BA0983E2D205E15009F7726 /* offline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = offline.png; sourceTree = "<group>"; };
@@ -356,6 +357,11 @@
 		5BB5D7422D195B3400C54C0A /* newMessages@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "newMessages@2x.png"; sourceTree = "<group>"; };
 		5BB5D7452D195E6400C54C0A /* DCChannelViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCChannelViewCell.h; sourceTree = "<group>"; };
 		5BB5D7462D195E6400C54C0A /* DCChannelViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCChannelViewCell.m; sourceTree = "<group>"; };
+		5BC7F3012D20BB3C00CA6F3F /* O-DCChatGroupedTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "O-DCChatGroupedTableCell.xib"; sourceTree = "<group>"; };
+		5BC7F3022D20BB3C00CA6F3F /* O-DCChatReplyTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "O-DCChatReplyTableCell.xib"; sourceTree = "<group>"; };
+		5BC7F3032D20BB3C00CA6F3F /* O-DCChatTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "O-DCChatTableCell.xib"; sourceTree = "<group>"; };
+		5BC7F3042D20BB3C00CA6F3F /* O-DCChatVideoAttachment.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "O-DCChatVideoAttachment.xib"; sourceTree = "<group>"; };
+		5BC7F3052D20BB3C00CA6F3F /* O-DCUniversalTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "O-DCUniversalTableCell.xib"; sourceTree = "<group>"; };
 		5BDD37402D2038DF00C6482C /* OldTitlebarTexture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = OldTitlebarTexture.png; sourceTree = "<group>"; };
 		5BDD37412D2038DF00C6482C /* OldTitlebarTexture@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "OldTitlebarTexture@2x.png"; sourceTree = "<group>"; };
 		5BDD37442D20402700C6482C /* DCPrivateChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCPrivateChannelTableCell.h; sourceTree = "<group>"; };
@@ -391,7 +397,6 @@
 		09C6B915204A0F54007EAC26 = {
 			isa = PBXGroup;
 			children = (
-				5B2105BA2D1896EA005B9596 /* Test */,
 				5B21055A2D185B10005B9596 /* Classes */,
 				5B21047D2D185409005B9596 /* Libraries */,
 				5B2104782D185402005B9596 /* Assets */,
@@ -545,10 +550,9 @@
 		5B2104B52D1856A7005B9596 /* XIBs */ = {
 			isa = PBXGroup;
 			children = (
-				5B774E5B2D20A0D60053086C /* O-DCChatTableCell.xib */,
+				5BC7F3002D20BAAA00CA6F3F /* OldMode */,
 				5BAE84342D1D916700C021F9 /* DCUniversalTableCell.xib */,
 				5BAE84322D1D90FF00C021F9 /* DCChatGroupedTableCell.xib */,
-				5B2105B52D1861DE005B9596 /* DCMissedCallCell.xib */,
 				5B2104B72D1856A7005B9596 /* DCChatReplyTableCell.xib */,
 				5B2104B82D1856A7005B9596 /* DCChatTableCell.xib */,
 				5B2104B92D1856A7005B9596 /* DCChatVideoAttachment.xib */,
@@ -901,13 +905,6 @@
 			path = "Missed Call";
 			sourceTree = "<group>";
 		};
-		5B2105BA2D1896EA005B9596 /* Test */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Test;
-			sourceTree = "<group>";
-		};
 		5B3890DE2D1C7A05002D3BBE /* Profile Page */ = {
 			isa = PBXGroup;
 			children = (
@@ -946,6 +943,18 @@
 				5BB5D7352D19545B00C54C0A /* privateGuildLogo@2x.png */,
 			);
 			path = "Guild Cell";
+			sourceTree = "<group>";
+		};
+		5BC7F3002D20BAAA00CA6F3F /* OldMode */ = {
+			isa = PBXGroup;
+			children = (
+				5BC7F3012D20BB3C00CA6F3F /* O-DCChatGroupedTableCell.xib */,
+				5BC7F3022D20BB3C00CA6F3F /* O-DCChatReplyTableCell.xib */,
+				5BC7F3032D20BB3C00CA6F3F /* O-DCChatTableCell.xib */,
+				5BC7F3042D20BB3C00CA6F3F /* O-DCChatVideoAttachment.xib */,
+				5BC7F3052D20BB3C00CA6F3F /* O-DCUniversalTableCell.xib */,
+			);
+			path = OldMode;
 			sourceTree = "<group>";
 		};
 		5BDD37472D20485300C6482C /* States */ = {
@@ -1019,6 +1028,7 @@
 				5B3890DD2D1C54D8002D3BBE /* GuildIconBaseSelected.png in Resources */,
 				5B2105182D1856E5005B9596 /* Send.png in Resources */,
 				5BDD37422D2038DF00C6482C /* OldTitlebarTexture.png in Resources */,
+				5BC7F3082D20BB3C00CA6F3F /* O-DCChatTableCell.xib in Resources */,
 				5B3890E12D1C7A11002D3BBE /* pfpOverlay.png in Resources */,
 				5B2104A72D185409005B9596 /* FontAwesome.ttf in Resources */,
 				5BB5D7372D19545B00C54C0A /* privateGuildLogo@2x.png in Resources */,
@@ -1028,6 +1038,7 @@
 				5B21051F2D1856E5005B9596 /* BarButtonPressed@2x.png in Resources */,
 				5B2105AB2D185CDC005B9596 /* iOS-7.storyboard in Resources */,
 				5B2104BD2D1856A7005B9596 /* DCChatVideoAttachment.xib in Resources */,
+				5BC7F3072D20BB3C00CA6F3F /* O-DCChatReplyTableCell.xib in Resources */,
 				5B21052D2D1856E5005B9596 /* DefaultAvatar4@2x.png in Resources */,
 				5B21053C2D1856E5005B9596 /* PLVideoOverlayPlayDown.png in Resources */,
 				5B2105252D1856E5005B9596 /* DefaultAvatar0@2x.png in Resources */,
@@ -1071,6 +1082,7 @@
 				5B2105142D1856E5005B9596 /* CBarButtonMap@2x.png in Resources */,
 				5B2105352D1856E5005B9596 /* menu@2x.png in Resources */,
 				5B21053A2D1856E5005B9596 /* PLVideoOverlayPlay.png in Resources */,
+				5BC7F3092D20BB3C00CA6F3F /* O-DCChatVideoAttachment.xib in Resources */,
 				5B21050F2D1856E5005B9596 /* No-header.png in Resources */,
 				5BDD374B2D20486500C6482C /* absent.png in Resources */,
 				5BDD37432D2038DF00C6482C /* OldTitlebarTexture@2x.png in Resources */,
@@ -1083,7 +1095,6 @@
 				5B21053D2D1856E5005B9596 /* PLVideoOverlayPlayDown@2x.png in Resources */,
 				5B2105592D185794005B9596 /* Info.plist in Resources */,
 				5B21053E2D1856E5005B9596 /* reply.png in Resources */,
-				5B774E5C2D20A0D60053086C /* O-DCChatTableCell.xib in Resources */,
 				5B2105112D1856E5005B9596 /* addbarglyph.png in Resources */,
 				5B21052C2D1856E5005B9596 /* DefaultAvatar4.png in Resources */,
 				5B2105552D185735005B9596 /* Images.xcassets in Resources */,
@@ -1103,18 +1114,19 @@
 				5BDD374D2D20486500C6482C /* online.png in Resources */,
 				5B2105362D1856E5005B9596 /* Sar izmeli Mehmet Aa.mp3 in Resources */,
 				5B2105422D1856E5005B9596 /* commandbar-bg.png in Resources */,
+				5BC7F3062D20BB3C00CA6F3F /* O-DCChatGroupedTableCell.xib in Resources */,
 				5BB5D7442D195B3400C54C0A /* newMessages@2x.png in Resources */,
 				5B21052B2D1856E5005B9596 /* DefaultAvatar3@2x.png in Resources */,
 				5B21054A2D1856E5005B9596 /* separator.png in Resources */,
 				5B2105482D1856E5005B9596 /* Discord.png in Resources */,
 				5B2105402D1856E5005B9596 /* DirectMessages@2x.png in Resources */,
-				5B2105B62D1861DE005B9596 /* DCMissedCallCell.xib in Resources */,
 				5B2105302D1856E5005B9596 /* Default-568h@2x.png in Resources */,
 				5B2105292D1856E5005B9596 /* DefaultAvatar2@2x.png in Resources */,
 				5B2105272D1856E5005B9596 /* DefaultAvatar1@2x.png in Resources */,
 				5B2105432D1856E5005B9596 /* commandbar-bg@2x.png in Resources */,
 				5BAE843A2D1DE55500C021F9 /* pinMessage.png in Resources */,
 				5B2105232D1856E5005B9596 /* NavigationButtonPressed@2x.png in Resources */,
+				5BC7F30A2D20BB3C00CA6F3F /* O-DCUniversalTableCell.xib in Resources */,
 				5B2105452D1856E5005B9596 /* ContactsBar@2x.png in Resources */,
 				5BAE84332D1D90FF00C021F9 /* DCChatGroupedTableCell.xib in Resources */,
 				5B21051A2D1856E5005B9596 /* Sidebar_glyph.png in Resources */,

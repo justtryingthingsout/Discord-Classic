@@ -318,18 +318,87 @@ static dispatch_queue_t chat_messages_queue;
     if(self.oldMode == YES) {
         [tableView registerNib:[UINib nibWithNibName:@"O-DCChatTableCell" bundle:nil] forCellReuseIdentifier:@"OldMode Message Cell"];
         cell = [tableView dequeueReusableCellWithIdentifier:@"OldMode Message Cell"];
-        DCGuild* guildAtRowIndex = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:indexPath.row];
         
-        //Show blue indicator if guild has any unread messages
-        if(guildAtRowIndex.unread)
-            [cell setAccessoryType:UITableViewCellAccessoryDetailDisclosureButton];
-        else
-            [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+        [cell.authorLabel setText:messageAtRowIndex.author.username];
         
-        //Guild name and icon
-        [cell.textLabel setText:guildAtRowIndex.name];
-        [cell.imageView setImage:guildAtRowIndex.icon];
+        [cell.contentTextView setText:messageAtRowIndex.content];
         
+        [cell.contentTextView setHeight:[cell.contentTextView sizeThatFits:CGSizeMake(cell.contentTextView.width, MAXFLOAT)].height];
+        
+        [cell.profileImage setImage:messageAtRowIndex.author.profileImage];
+        
+        [cell.contentView setBackgroundColor:messageAtRowIndex.pingingUser? [UIColor redColor] : [UIColor clearColor]];
+        
+        for (UIView *subView in cell.subviews) {
+            if ([subView isKindOfClass:[UIImageView class]]) {
+                [subView removeFromSuperview];
+            }
+        }
+        
+        int imageViewOffset = cell.contentTextView.height + 37;
+        
+
+        
+        for(id attachment in messageAtRowIndex.attachments){
+            if([attachment isKindOfClass:[UIImage class]]) {
+                UIImageView* imageView = UIImageView.new;
+                [imageView setFrame:CGRectMake(11, imageViewOffset, self.chatTableView.width - 22, 200)];
+                [imageView setImage:attachment];
+                imageViewOffset += 210;
+                
+                [imageView setContentMode: UIViewContentModeScaleAspectFit];
+                
+                UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedImage:)];
+                singleTap.numberOfTapsRequired = 1;
+                imageView.userInteractionEnabled = YES;
+                [imageView addGestureRecognizer:singleTap];
+                
+                [cell addSubview:imageView];
+            } else if ([attachment isKindOfClass:[DCChatVideoAttachment class]]) {
+                ////NSLog(@"add video!");
+                DCChatVideoAttachment *video = attachment;
+                
+                UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedVideo:)];
+                singleTap.numberOfTapsRequired = 1;
+                [video.playButton addGestureRecognizer:singleTap];
+                video.playButton.userInteractionEnabled = YES;
+                
+                CGFloat aspectRatio = video.thumbnail.image.size.width / video.thumbnail.image.size.height;
+                int newWidth = 200 * aspectRatio;
+                int newHeight = 200;
+                if (newWidth > self.chatTableView.width - 66) {
+                    newWidth = self.chatTableView.width - 66;
+                    newHeight = newWidth / aspectRatio;
+                }
+                [video setFrame:CGRectMake(55, imageViewOffset, newWidth, newHeight)];
+                
+                imageViewOffset += 210;
+                
+                [cell addSubview:video];
+            } else if ([attachment isKindOfClass:[QLPreviewController class]]) {
+                ////NSLog(@"Add QuickLook!");
+                QLPreviewController *preview = attachment;
+                
+                /*UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedVideo:)];
+                 singleTap.numberOfTapsRequired = 1;
+                 [video.playButton addGestureRecognizer:singleTap];
+                 video.playButton.userInteractionEnabled = YES;
+                 
+                 CGFloat aspectRatio = video.thumbnail.image.size.width / video.thumbnail.image.size.height;
+                 int newWidth = 200 * aspectRatio;
+                 int newHeight = 200;
+                 if (newWidth > self.chatTableView.width - 66) {
+                 newWidth = self.chatTableView.width - 66;
+                 newHeight = newWidth / aspectRatio;
+                 }
+                 [video setFrame:CGRectMake(55, imageViewOffset, newWidth, newHeight)];*/
+                
+                imageViewOffset += 210;
+                
+                [cell addSubview:preview.view];
+            }
+            
+        }
         return cell;
     } else if(self.oldMode == NO) {
         [tableView registerNib:[UINib nibWithNibName:@"DCChatGroupedTableCell" bundle:nil] forCellReuseIdentifier:@"Grouped Message Cell"];

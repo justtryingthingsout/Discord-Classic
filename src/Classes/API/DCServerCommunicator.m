@@ -67,7 +67,7 @@ UIActivityIndicatorView *spinner;
             [sharedInstance.alertView addSubview:spinner];
             [spinner startAnimating];
         } else {
-            [sharedInstance showNonIntrusiveNotificationWithTitle:@"Connecting"];
+            [sharedInstance showNonIntrusiveNotificationWithTitle:@"Connecting..."];
         }
         
         
@@ -294,7 +294,8 @@ UIActivityIndicatorView *spinner;
                             //The user's DMs are treated like a guild, where the channels are different DM/groups
                             DCGuild* privateGuild = DCGuild.new;
                             privateGuild.name = @"Direct Messages";
-                            privateGuild.icon = [UIImage imageNamed:@"privateGuildLogo"];
+                            if(self.oldMode == NO)
+                                privateGuild.icon = [UIImage imageNamed:@"privateGuildLogo"];
                             privateGuild.channels = NSMutableArray.new;
                             
                             
@@ -319,6 +320,7 @@ UIActivityIndicatorView *spinner;
                                         for (NSDictionary* user in [privateChannel objectForKey:@"recipients"]) {
                                             usersDict = NSMutableDictionary.new;
                                             [usersDict setObject:[user valueForKey:@"global_name"] forKey:@"username"];
+                                            [usersDict setObject:[user valueForKey:@"username"] forKey:@"handle"];
                                             [usersDict setObject:[user valueForKey:@"avatar"] forKey:@"avatar"];
                                             [usersDict setObject:[user valueForKey:@"id"] forKey:@"snowflake"];
                                             [users addObject:usersDict];
@@ -466,7 +468,7 @@ UIActivityIndicatorView *spinner;
                                     newChannel.name = privateChannelName;
                                 }else{
                                     //If no name, create a name from channel members
-                                    NSMutableString* fullChannelName = [@"@" mutableCopy];
+                                    NSMutableString* fullChannelName = [@"" mutableCopy];
                                     
                                     NSArray* privateChannelMembers = [privateChannel valueForKey:@"recipients"];
                                     for(NSDictionary* privateChannelMember in privateChannelMembers){
@@ -663,7 +665,9 @@ UIActivityIndicatorView *spinner;
 
 
 - (void)sendResume{
-	[self showNonIntrusiveNotificationWithTitle:@"Resuming"];
+    if(self.oldMode == NO)
+        [self showNonIntrusiveNotificationWithTitle:@"Resuming..."];
+    [self.alertView setTitle:@"Resuming"];
 	self.didTryResume = true;
 	self.shouldResume = true;
 	[self startCommunicator];
@@ -687,8 +691,9 @@ UIActivityIndicatorView *spinner;
 	}else{
 		double timeRemaining = self.cooldownTimer.fireDate.timeIntervalSinceNow;
 		//NSLog(@"Cooldown in effect. Time left %f", timeRemaining);
-		//[self.notificationView setTitle:@"Waiting for auth cooldown..."];
-        [self showNonIntrusiveNotificationWithTitle:@"Re-Authenticating"];
+		[self.alertView setTitle:@"Waiting for auth cooldown..."];
+        if(self.oldMode == NO)
+            [self showNonIntrusiveNotificationWithTitle:@"Re-Authenticating"];
 		[self performSelector:@selector(startCommunicator) withObject:nil afterDelay:timeRemaining + 1];
 	}
 	
