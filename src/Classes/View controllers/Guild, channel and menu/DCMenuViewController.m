@@ -261,7 +261,7 @@
                     }
                 }
                 if (buddy) {
-                    NSLog(@"%@", buddy.status);
+                    NSLog(@"%@", buddy.onlineStatus);
                 } else {
                     //cell.activityIndicatorLed.image = [self loadAndTintImageWithColor:[UIColor grayColor]];
                 }

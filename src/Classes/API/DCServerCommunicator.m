@@ -436,8 +436,8 @@ UIActivityIndicatorView *spinner;
                                                         DCUser *user = [weakSelf.loadedUsers objectForKey:userId];
                                                         if (user) {
                                                             
-                                                            user.status = status;
-                                                            NSLog(@"%@", user.status);
+                                                            user.onlineStatus = status;
+                                                            NSLog(@"%@", user.onlineStatus);
                                                             //NSLog(@"[READY] Updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
                                                         } else {
                                                             //NSLog(@"[READY] Presence received for unknown user ID: %@", userId);
@@ -527,7 +527,7 @@ UIActivityIndicatorView *spinner;
                         if (userId && status) {
                             DCUser *user = [weakSelf.loadedUsers objectForKey:userId];
                             if (user) {
-                                user.status = status;
+                                user.onlineStatus = status;
                                 //NSLog(@"[PRESENCE_UPDATE] Updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
                             } else {
                                 // Cache user if not already in loadedUsers
@@ -535,8 +535,8 @@ UIActivityIndicatorView *spinner;
                                 if (userDict) {
                                     user = [DCTools convertJsonUser:userDict cache:YES];
                                     [weakSelf.loadedUsers setObject:user forKey:userId];
-                                    user.status = status;
-                                    NSLog(@"[PRESENCE_UPDATE] Cached and updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
+                                    user.onlineStatus = status;
+                                    //NSLog(@"[PRESENCE_UPDATE] Cached and updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
                                 }
                             }
                             
@@ -544,7 +544,7 @@ UIActivityIndicatorView *spinner;
                             [NSNotificationCenter.defaultCenter postNotificationName:@"USER_PRESENCE_UPDATED" object:nil];
                         }
                         else {
-                            NSLog(@"[PRESENCE_UPDATE] Missing user ID or status in payload: %@", d);
+                            //NSLog(@"[PRESENCE_UPDATE] Missing user ID or status in payload: %@", d);
                         }
                     }
 					

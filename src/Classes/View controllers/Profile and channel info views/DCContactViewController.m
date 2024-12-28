@@ -36,7 +36,8 @@
     self.navigationItem.title = user.globalName;
     self.nameLabel.text = user.globalName;
     self.handleLable.text = user.username;
-    NSLog(@"status %@", user.status);
+    self.statusLabel.text = user.onlineStatus;
+    NSLog(@"status %@", user.onlineStatus);
     
     //image
     self.profileImageView.image = user.profileImage;
