@@ -396,24 +396,20 @@ static dispatch_queue_t chat_messages_queue;
 	//dispatch_async(dispatch_get_main_queue(), ^{
 	int imageViewOffset = cell.contentTextView.height + (messageAtRowIndex.isGrouped ? 12 : 36);
 	
-    for(id attachment in messageAtRowIndex.attachments){
+	for(id attachment in messageAtRowIndex.attachments){
         if([attachment isKindOfClass:[UIImage class]]) {
             UIImageView* imageView = UIImageView.new;
             UIImage* image = attachment;
             CGFloat aspectRatio = image.size.width / image.size.height;
-            
-            CGFloat maxWidth = self.chatTableView.width - 66;
-            CGFloat newWidth = maxWidth;
-            CGFloat newHeight = maxWidth / aspectRatio;
-            
-            // Cap to avoid excessively tall images
-            if (newHeight > 400) {
-                newHeight = 400;
-                newWidth = newHeight * aspectRatio;
+            int newWidth = 200 * aspectRatio;
+            int newHeight = 200;
+            if (newWidth > self.chatTableView.width - 66) {
+                newWidth = self.chatTableView.width - 66;
+                newHeight = newWidth / aspectRatio;
             }
-            
             [imageView setFrame:CGRectMake(55, imageViewOffset, newWidth, newHeight)];
             [imageView setImage:attachment];
+            imageViewOffset += 210;
             
             [imageView setContentMode: UIViewContentModeScaleAspectFit];
             
@@ -427,15 +423,6 @@ static dispatch_queue_t chat_messages_queue;
             imageView.layer.masksToBounds = YES;
             
             [cell addSubview:imageView];
-            
-            imageViewOffset += newHeight;
-            
-            // If this is the last image, add consistent bottom padding
-            if (attachment == [messageAtRowIndex.attachments lastObject]) {
-                imageViewOffset += 12;  // Padding below the last image
-            } else {
-                imageViewOffset += 12;  // Padding between images
-            }
             
         } else if ([attachment isKindOfClass:[DCChatVideoAttachment class]]) {
             ////NSLog(@"add video!");
@@ -584,36 +571,23 @@ static dispatch_queue_t chat_messages_queue;
 
 
 - (void)keyboardWillShow:(NSNotification *)notification {
-    
+	
 	//thx to Pierre Legrain
 	//http://pyl.io/2015/08/17/animating-in-sync-with-ios-keyboard/
-    
-    //horizontal mode fixed by BAGMAY904
-    
-	float keyboardHeight = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
+	
+	int keyboardHeight = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
 	float keyboardAnimationDuration = [[notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
 	int keyboardAnimationCurve = [[notification.userInfo objectForKey: UIKeyboardAnimationCurveUserInfoKey] integerValue];
-    int orientation = (int)[[UIDevice currentDevice] orientation];
-    
-    [UIView beginAnimations:nil context:NULL];
+	
+	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:keyboardAnimationDuration];
 	[UIView setAnimationCurve:keyboardAnimationCurve];
 	[UIView setAnimationBeginsFromCurrentState:YES];
-    
-    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
-    float horizontalKeyboard = screenWidth * 0.2;
-    
-    if (UIDeviceOrientationIsPortrait(orientation)) {
-        [self.chatTableView setHeight:self.view.height - keyboardHeight - self.toolbar.height];
-        [self.toolbar setY:self.view.height - keyboardHeight - self.toolbar.height];	[UIView commitAnimations];
-    } else {
-        [self.chatTableView setHeight:horizontalKeyboard];
-        [self.toolbar setY:horizontalKeyboard];
-    }
-    
-    [UIView commitAnimations];
-    
-    
+	[self.chatTableView setHeight:self.view.height - keyboardHeight - self.toolbar.height];
+	[self.toolbar setY:self.view.height - keyboardHeight - self.toolbar.height];
+	[UIView commitAnimations];
+	
+	
 	if(self.viewingPresentTime)
 		[self.chatTableView setContentOffset:CGPointMake(0, self.chatTableView.contentSize.height - self.chatTableView.frame.size.height) animated:NO];
 }

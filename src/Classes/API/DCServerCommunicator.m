@@ -50,20 +50,24 @@ UIActivityIndicatorView *spinner;
         
         sharedInstance.gatewayURL = @"wss://gateway.discord.gg/?encoding=json&v=9";
         
+        sharedInstance.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
         sharedInstance.token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
+        
         if ([sharedInstance.token length] == 0) {
             return;
         }
         
-        sharedInstance.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"oldMode"];
-        sharedInstance.token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
-        
         if(sharedInstance.oldMode == YES) {
+            sharedInstance.alertView = [UIAlertView.alloc initWithTitle:@"Connecting" message:@"\n" delegate:self cancelButtonTitle:nil otherButtonTitles:nil];
             
+            UIActivityIndicatorView *spinner = [UIActivityIndicatorView.alloc initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+            [spinner setCenter:CGPointMake(139.5, 75.5)];
+            
+            [sharedInstance.alertView addSubview:spinner];
+            [spinner startAnimating];
         } else {
-            [sharedInstance showNonIntrusiveNotificationWithTitle:@"Connecting"];
+            [sharedInstance showNonIntrusiveNotificationWithTitle:@"Connecting..."];
         }
-        
         
     });
     
@@ -71,25 +75,16 @@ UIActivityIndicatorView *spinner;
     
 }
 
-//this no longer sucks
+//this sucks
 
 - (void)showNonIntrusiveNotificationWithTitle:(NSString *)title {
     dispatch_async(dispatch_get_main_queue(), ^{
         CGFloat screenWidth = UIScreen.mainScreen.bounds.size.width;
-        CGFloat minimumPadding = 0; // Minimum padding threshold
-        CGFloat maxPadding = 120; // Maximum padding
-        CGFloat notificationHeight = 50;
-        
-        // Calculate title width for iOS 6 compatibility
-        CGSize titleSize = [title sizeWithFont:[UIFont boldSystemFontOfSize:16]];
-        CGFloat titleWidth = titleSize.width;
-        
-        // Calculate dynamic padding - decrease padding as title gets longer, up to minimumPadding
-        CGFloat dynamicPadding = MAX(minimumPadding, maxPadding - (titleWidth / screenWidth) * (maxPadding - minimumPadding));
-        dynamicPadding = MAX(40, dynamicPadding);
-        CGFloat notificationWidth = screenWidth - (dynamicPadding * 2);
-        CGFloat notificationX = dynamicPadding;
-        CGFloat notificationY = -notificationHeight;
+        CGFloat notificationPadding = 58; // Padding to give a sleeker look
+        CGFloat notificationWidth = screenWidth - (notificationPadding * 2);
+        CGFloat notificationHeight = 50; // Increased for better tactile feel
+        CGFloat notificationX = notificationPadding; // Left and right padding
+        CGFloat notificationY = -notificationHeight; // Start above screen
         
         if (self.notificationView != nil) {
             [self.notificationView removeFromSuperview];
@@ -98,8 +93,9 @@ UIActivityIndicatorView *spinner;
         
         self.notificationView = [[UIView alloc] initWithFrame:CGRectMake(notificationX, notificationY, notificationWidth, notificationHeight)];
         
-        self.notificationView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"No-header"]];
-        self.notificationView.layer.cornerRadius = 15;
+        // Background with subtle texture or gradient for skeuomorphic feel
+        self.notificationView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"no-header"]];
+        self.notificationView.layer.cornerRadius = 15; // More rounded corners
         self.notificationView.layer.shadowColor = [UIColor blackColor].CGColor;
         self.notificationView.layer.shadowOffset = CGSizeMake(0, 2);
         self.notificationView.layer.shadowOpacity = 0.6;
@@ -107,26 +103,33 @@ UIActivityIndicatorView *spinner;
         self.notificationView.layer.borderColor = [UIColor darkGrayColor].CGColor;
         self.notificationView.layer.borderWidth = 1.0;
         
+        // Label to display the notification text
         CGFloat spinnerWidth = 30;
-        CGFloat labelWidth = notificationWidth - spinnerWidth - 10; // Reduce space between label and spinner
+        CGFloat labelWidth = notificationWidth - spinnerWidth - 20; // Dynamic label width
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, labelWidth, notificationHeight)];
         label.text = title;
         label.backgroundColor = [UIColor clearColor];
         label.textColor = [UIColor whiteColor];
         label.font = [UIFont boldSystemFontOfSize:16];
+        label.shadowOffset = CGSizeMake(0, 1);
+        label.shadowColor = [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
         label.textAlignment = NSTextAlignmentLeft;
-        label.lineBreakMode = NSLineBreakByTruncatingTail;
+        label.lineBreakMode = NSLineBreakByTruncatingTail; // Truncate if too long
         
+        // Spinner
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-        spinner.center = CGPointMake(notificationWidth - (spinnerWidth / 2) - 5, notificationHeight / 2); // Adjust spinner closer to text
+        spinner.center = CGPointMake(notificationWidth - (spinnerWidth / 2) - 10, notificationHeight / 2);
         [spinner startAnimating];
         
+        // Add subviews
         [self.notificationView addSubview:label];
         [self.notificationView addSubview:spinner];
         
+        // Add to window
         UIWindow *window = [[[UIApplication sharedApplication] windows] lastObject];
         [window addSubview:self.notificationView];
         
+        // Slide in animation
         [UIView animateWithDuration:0.6 animations:^{
             self.notificationView.frame = CGRectMake(notificationX, 64, notificationWidth, notificationHeight);
         }];
@@ -160,8 +163,11 @@ UIActivityIndicatorView *spinner;
 }
 
 - (void)startCommunicator{
+	
+	[self.alertView show];
+	
 	self.didAuthenticate = false;
-	self.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
+	
 	if(self.token!=nil){
 		
 		//Establish websocket connection with Discord
@@ -175,7 +181,6 @@ UIActivityIndicatorView *spinner;
 			
 			//Parse JSON to a dictionary
 			NSDictionary *parsedJsonResponse = [DCTools parseJSON:responseString];
-            //NSLog(responseString);
 			
 			//Data values for easy access
 			int op = [[parsedJsonResponse valueForKey:@"op"] integerValue];
@@ -273,6 +278,7 @@ UIActivityIndicatorView *spinner;
 						dispatch_async(dispatch_get_main_queue(), ^{
                             weakSelf.didAuthenticate = true;
                             //NSLog(@"Did authenticate!");
+                            [weakSelf.alertView dismissWithClickedButtonIndex:0 animated:YES];
                             [weakSelf dismissNotification];
                             
                             //Grab session id (used for RESUME) and user id
@@ -290,7 +296,6 @@ UIActivityIndicatorView *spinner;
                             privateGuild.name = @"Direct Messages";
                             privateGuild.icon = [UIImage imageNamed:@"privateGuildLogo"];
                             privateGuild.channels = NSMutableArray.new;
-                            
                             
                             for(NSDictionary* privateChannel in [d valueForKey:@"private_channels"]){
                                 
@@ -316,16 +321,7 @@ UIActivityIndicatorView *spinner;
                                             [usersDict setObject:[user valueForKey:@"avatar"] forKey:@"avatar"];
                                             [usersDict setObject:[user valueForKey:@"id"] forKey:@"snowflake"];
                                             [users addObject:usersDict];
-                                            
-                                            // Ensure user is added to loadedUsers
-                                            NSString *userId = [user valueForKey:@"id"];
-                                            if (userId && ![weakSelf.loadedUsers objectForKey:userId]) {
-                                                DCUser *dcUser = [DCTools convertJsonUser:user cache:YES]; // Add to loadedUsers
-                                                [weakSelf.loadedUsers setObject:dcUser forKey:userId];
-                                                //NSLog(@"[READY] Cached user: %@ (ID: %@)", dcUser.username, dcUser.snowflake);
-                                            }
                                         }
-                                        
                                         // Add self to users list
                                         usersDict = NSMutableDictionary.new;
                                         [usersDict setObject:[NSString stringWithFormat:@"You"] forKey:@"username"];
@@ -430,7 +426,6 @@ UIActivityIndicatorView *spinner;
                                                     UIGraphicsEndImageContext();
                                                 }
                                                 
-                                                // Process user presences from READY payload
                                                 NSArray *presences = [d valueForKey:@"presences"];
                                                 for (NSDictionary *presence in presences) {
                                                     NSString *userId = [presence valueForKeyPath:@"user.id"];
@@ -440,6 +435,7 @@ UIActivityIndicatorView *spinner;
                                                         DCUser *user = [weakSelf.loadedUsers objectForKey:userId];
                                                         if (user) {
                                                             user.status = status;
+                                                            NSLog(@"%@", user.status);
                                                             //NSLog(@"[READY] Updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
                                                         } else {
                                                             //NSLog(@"[READY] Presence received for unknown user ID: %@", userId);
@@ -471,12 +467,7 @@ UIActivityIndicatorView *spinner;
                                         NSString* memberName = [privateChannelMember valueForKey:@"username"];
                                         @try {
                                             if ([privateChannelMember objectForKey:@"global_name"] &&  [[privateChannelMember valueForKey:@"global_name"] isKindOfClass:[NSString class]])
-                                                if(self.oldMode == YES) {
-                                                    memberName = [privateChannelMember valueForKey:@"username"];
-                                                } else {
-                                                    memberName = [privateChannelMember valueForKey:@"global_name"];
-                                                }
-                                            
+                                                memberName = [privateChannelMember valueForKey:@"global_name"];
                                         } @catch (NSException* e) {}
                                         
                                         [fullChannelName appendString:memberName];
@@ -555,9 +546,11 @@ UIActivityIndicatorView *spinner;
                         }
                     }
 					
+					
 					if([t isEqualToString:@"RESUMED"]){
 						weakSelf.didAuthenticate = true;
 						dispatch_async(dispatch_get_main_queue(), ^{
+                            [weakSelf.alertView dismissWithClickedButtonIndex:0 animated:YES];
 							[weakSelf dismissNotification];
 						});
 					}
@@ -657,7 +650,10 @@ UIActivityIndicatorView *spinner;
 
 
 - (void)sendResume{
-	[self showNonIntrusiveNotificationWithTitle:@"Resuming"];
+    if(self.oldMode == NO)
+        [self showNonIntrusiveNotificationWithTitle:@"Reconnecting..."];
+    
+    [self.alertView setTitle:@"Resuming"];
 	self.didTryResume = true;
 	self.shouldResume = true;
 	[self startCommunicator];
@@ -667,9 +663,7 @@ UIActivityIndicatorView *spinner;
 
 - (void)reconnect{
 	
-	//NSLog(@"Identify cooldown %s", self.identifyCooldown ? "true" : "false");
-	
-	//Begin new session
+	//NSLog(@"Identify cooldown %s", self.identifyCooldown ? "true" : "false");//Begin new session
 	[self.websocket close];
 	
 	//If an identify cooldown is in effect, wait for the time needed until sending another IDENTIFY
@@ -681,8 +675,10 @@ UIActivityIndicatorView *spinner;
 	}else{
 		double timeRemaining = self.cooldownTimer.fireDate.timeIntervalSinceNow;
 		//NSLog(@"Cooldown in effect. Time left %f", timeRemaining);
-		//[self.notificationView setTitle:@"Waiting for auth cooldown..."];
-        [self showNonIntrusiveNotificationWithTitle:@"Re-Authenticating"];
+		[self.alertView setTitle:@"Waiting for auth cooldown"];
+        if(self.oldMode == NO)
+            [self showNonIntrusiveNotificationWithTitle:@"Reconnecting..."];
+        
 		[self performSelector:@selector(startCommunicator) withObject:nil afterDelay:timeRemaining + 1];
 	}
 	
