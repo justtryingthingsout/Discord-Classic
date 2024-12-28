@@ -161,7 +161,7 @@ UIActivityIndicatorView *spinner;
 
 - (void)startCommunicator{
 	self.didAuthenticate = false;
-	
+	self.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
 	if(self.token!=nil){
 		
 		//Establish websocket connection with Discord
@@ -471,7 +471,12 @@ UIActivityIndicatorView *spinner;
                                         NSString* memberName = [privateChannelMember valueForKey:@"username"];
                                         @try {
                                             if ([privateChannelMember objectForKey:@"global_name"] &&  [[privateChannelMember valueForKey:@"global_name"] isKindOfClass:[NSString class]])
-                                                memberName = [privateChannelMember valueForKey:@"global_name"];
+                                                if(self.oldMode == YES) {
+                                                    memberName = [privateChannelMember valueForKey:@"username"];
+                                                } else {
+                                                    memberName = [privateChannelMember valueForKey:@"global_name"];
+                                                }
+                                            
                                         } @catch (NSException* e) {}
                                         
                                         [fullChannelName appendString:memberName];
