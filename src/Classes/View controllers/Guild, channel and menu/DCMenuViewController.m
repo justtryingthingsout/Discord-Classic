@@ -261,7 +261,7 @@
                     }
                 }
                 if (buddy) {
-                    cell.statusImage.image = [UIImage imageNamed:@"dnd"];
+                    cell.statusImage.image = [UIImage imageNamed:@"online"];
                 } else {
                     cell.statusImage.image = [UIImage imageNamed:@"offline"];
                 }

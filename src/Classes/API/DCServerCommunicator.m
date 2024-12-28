@@ -537,7 +537,7 @@ UIActivityIndicatorView *spinner;
                                     user = [DCTools convertJsonUser:userDict cache:YES];
                                     [weakSelf.loadedUsers setObject:user forKey:userId];
                                     user.status = status;
-                                    NSLog(@"[PRESENCE_UPDATE] Cached and updated user %@ (ID: %@) to status: %@", user.globalName, userId, user.status);
+                                    //NSLog(@"[PRESENCE_UPDATE] Cached and updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
                                 }
                             }
                             
@@ -545,7 +545,7 @@ UIActivityIndicatorView *spinner;
                             [NSNotificationCenter.defaultCenter postNotificationName:@"USER_PRESENCE_UPDATED" object:nil];
                         }
                         else {
-                            NSLog(@"[PRESENCE_UPDATE] Missing user ID or status in payload: %@", d);
+                            //NSLog(@"[PRESENCE_UPDATE] Missing user ID or status in payload: %@", d);
                         }
                     }
 					
