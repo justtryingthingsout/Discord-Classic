@@ -584,23 +584,36 @@ static dispatch_queue_t chat_messages_queue;
 
 
 - (void)keyboardWillShow:(NSNotification *)notification {
-	
+    
 	//thx to Pierre Legrain
 	//http://pyl.io/2015/08/17/animating-in-sync-with-ios-keyboard/
-	
-	int keyboardHeight = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
+    
+    //horizontal mode fixed by BAGMAY904
+    
+	float keyboardHeight = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
 	float keyboardAnimationDuration = [[notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
 	int keyboardAnimationCurve = [[notification.userInfo objectForKey: UIKeyboardAnimationCurveUserInfoKey] integerValue];
-	
-	[UIView beginAnimations:nil context:NULL];
+    int orientation = (int)[[UIDevice currentDevice] orientation];
+    
+    [UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:keyboardAnimationDuration];
 	[UIView setAnimationCurve:keyboardAnimationCurve];
 	[UIView setAnimationBeginsFromCurrentState:YES];
-	[self.chatTableView setHeight:self.view.height - keyboardHeight - self.toolbar.height];
-	[self.toolbar setY:self.view.height - keyboardHeight - self.toolbar.height];
-	[UIView commitAnimations];
-	
-	
+    
+    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+    float horizontalKeyboard = screenWidth * 0.2;
+    
+    if (UIDeviceOrientationIsPortrait(orientation)) {
+        [self.chatTableView setHeight:self.view.height - keyboardHeight - self.toolbar.height];
+        [self.toolbar setY:self.view.height - keyboardHeight - self.toolbar.height];	[UIView commitAnimations];
+    } else {
+        [self.chatTableView setHeight:horizontalKeyboard];
+        [self.toolbar setY:horizontalKeyboard];
+    }
+    
+    [UIView commitAnimations];
+    
+    
 	if(self.viewingPresentTime)
 		[self.chatTableView setContentOffset:CGPointMake(0, self.chatTableView.contentSize.height - self.chatTableView.frame.size.height) animated:NO];
 }

@@ -460,7 +460,7 @@ UIActivityIndicatorView *spinner;
                                     newChannel.name = privateChannelName;
                                 }else{
                                     //If no name, create a name from channel members
-                                    NSMutableString* fullChannelName = [@"@" mutableCopy];
+                                    NSMutableString* fullChannelName = [@"" mutableCopy];
                                     
                                     NSArray* privateChannelMembers = [privateChannel valueForKey:@"recipients"];
                                     for(NSDictionary* privateChannelMember in privateChannelMembers){
