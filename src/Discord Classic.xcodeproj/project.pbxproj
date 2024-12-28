@@ -132,7 +132,6 @@
 		5B2105AB2D185CDC005B9596 /* iOS-7.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105AA2D185CDC005B9596 /* iOS-7.storyboard */; };
 		5B2105B62D1861DE005B9596 /* DCMissedCallCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105B52D1861DE005B9596 /* DCMissedCallCell.xib */; };
 		5B2105B92D186432005B9596 /* TestCallEmbed.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105B82D186431005B9596 /* TestCallEmbed.png */; };
-		5B2105BC2D1896F7005B9596 /* Sample in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105BB2D1896F7005B9596 /* Sample */; };
 		5B2105BF2D18B498005B9596 /* DCRecipientTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105BE2D18B498005B9596 /* DCRecipientTableCell.m */; };
 		5B2105C22D18C116005B9596 /* DCGuildTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2105C12D18C116005B9596 /* DCGuildTableViewCell.m */; };
 		5B3890DB2D1C53CB002D3BBE /* GuildIconBase.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890DA2D1C53CB002D3BBE /* GuildIconBase.png */; };
@@ -142,7 +141,6 @@
 		5BA0983F2D205E15009F7726 /* offline.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BA0983E2D205E15009F7726 /* offline.png */; };
 		5BAE842B2D1C84AE00C021F9 /* UIColorHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BAE842A2D1C84AE00C021F9 /* UIColorHex.m */; };
 		5BAE842D2D1C9FDB00C021F9 /* Throwback.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BAE842C2D1C9FDB00C021F9 /* Throwback.storyboard */; };
-		5BAE842F2D1D882F00C021F9 /* Group-DM in Resources */ = {isa = PBXBuildFile; fileRef = 5BAE842E2D1D882F00C021F9 /* Group-DM */; };
 		5BAE84332D1D90FF00C021F9 /* DCChatGroupedTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BAE84322D1D90FF00C021F9 /* DCChatGroupedTableCell.xib */; };
 		5BAE84352D1D916700C021F9 /* DCUniversalTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BAE84342D1D916700C021F9 /* DCUniversalTableCell.xib */; };
 		5BAE843A2D1DE55500C021F9 /* pinMessage.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BAE84382D1DE55500C021F9 /* pinMessage.png */; };
@@ -327,7 +325,6 @@
 		5B2105AA2D185CDC005B9596 /* iOS-7.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "iOS-7.storyboard"; sourceTree = "<group>"; };
 		5B2105B52D1861DE005B9596 /* DCMissedCallCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DCMissedCallCell.xib; sourceTree = "<group>"; };
 		5B2105B82D186431005B9596 /* TestCallEmbed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TestCallEmbed.png; sourceTree = "<group>"; };
-		5B2105BB2D1896F7005B9596 /* Sample */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sample; sourceTree = "<group>"; };
 		5B2105BD2D18B498005B9596 /* DCRecipientTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCRecipientTableCell.h; sourceTree = "<group>"; };
 		5B2105BE2D18B498005B9596 /* DCRecipientTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCRecipientTableCell.m; sourceTree = "<group>"; };
 		5B2105C02D18C116005B9596 /* DCGuildTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCGuildTableViewCell.h; sourceTree = "<group>"; };
@@ -341,7 +338,6 @@
 		5BAE84292D1C84AE00C021F9 /* UIColorHex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIColorHex.h; sourceTree = "<group>"; };
 		5BAE842A2D1C84AE00C021F9 /* UIColorHex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIColorHex.m; sourceTree = "<group>"; };
 		5BAE842C2D1C9FDB00C021F9 /* Throwback.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Throwback.storyboard; sourceTree = "<group>"; };
-		5BAE842E2D1D882F00C021F9 /* Group-DM */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Group-DM"; sourceTree = "<group>"; };
 		5BAE84322D1D90FF00C021F9 /* DCChatGroupedTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DCChatGroupedTableCell.xib; sourceTree = "<group>"; };
 		5BAE84342D1D916700C021F9 /* DCUniversalTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DCUniversalTableCell.xib; sourceTree = "<group>"; };
 		5BAE84382D1DE55500C021F9 /* pinMessage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pinMessage.png; sourceTree = "<group>"; };
@@ -903,8 +899,6 @@
 		5B2105BA2D1896EA005B9596 /* Test */ = {
 			isa = PBXGroup;
 			children = (
-				5B2105BB2D1896F7005B9596 /* Sample */,
-				5BAE842E2D1D882F00C021F9 /* Group-DM */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -1075,7 +1069,6 @@
 				5BDD37432D2038DF00C6482C /* OldTitlebarTexture@2x.png in Resources */,
 				5B21052A2D1856E5005B9596 /* DefaultAvatar3.png in Resources */,
 				5B21054D2D1856E5005B9596 /* ToolbarBG.png in Resources */,
-				5B2105BC2D1896F7005B9596 /* Sample in Resources */,
 				5B2104A92D18540A005B9596 /* emoji.json in Resources */,
 				5B2104BB2D1856A7005B9596 /* DCChatReplyTableCell.xib in Resources */,
 				5B2105382D1856E5005B9596 /* TopLogo.png in Resources */,
@@ -1095,7 +1088,6 @@
 				5B2105412D1856E5005B9596 /* bag-xml.png in Resources */,
 				5B3890E22D1C7A11002D3BBE /* pfpOverlay@2x.png in Resources */,
 				5B2105342D1856E5005B9596 /* menu.png in Resources */,
-				5BAE842F2D1D882F00C021F9 /* Group-DM in Resources */,
 				5BB5D7362D19545B00C54C0A /* privateGuildLogo.png in Resources */,
 				5B21051E2D1856E5005B9596 /* BarButtonPressed.png in Resources */,
 				5B2105502D1856E5005B9596 /* Video-play-button@2x.png in Resources */,

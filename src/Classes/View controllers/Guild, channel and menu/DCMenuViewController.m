@@ -33,7 +33,6 @@
 	[NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleReady) name:@"RELOAD GUILD LIST" object:nil];
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleMessageAck) name:@"MESSAGE ACK" object:nil];
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleMessageAck) name:@"RELOAD CHANNEL LIST" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePresenceRefresh) name:@"USER_PRESENCE_UPDATED" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotificationTap:) name:@"NavigateToChannel" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(exitedChatController) name:@"ChannelSelectionCleared" object:nil];
     //NOTIF OBSERVERS END
@@ -86,9 +85,6 @@
     [self.channelTableView reloadData];
 }*/
 
-- (void)handlePresenceRefresh {
-    [self.channelTableView reloadData];
-}
 
 - (void)handleReady {
     dispatch_async(dispatch_get_main_queue(), ^{
