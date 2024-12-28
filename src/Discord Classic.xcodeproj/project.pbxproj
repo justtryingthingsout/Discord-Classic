@@ -138,6 +138,7 @@
 		5B3890DD2D1C54D8002D3BBE /* GuildIconBaseSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890DC2D1C54D8002D3BBE /* GuildIconBaseSelected.png */; };
 		5B3890E12D1C7A11002D3BBE /* pfpOverlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890DF2D1C7A11002D3BBE /* pfpOverlay.png */; };
 		5B3890E22D1C7A11002D3BBE /* pfpOverlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890E02D1C7A11002D3BBE /* pfpOverlay@2x.png */; };
+		5B774E5C2D20A0D60053086C /* O-DCChatTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5B774E5B2D20A0D60053086C /* O-DCChatTableCell.xib */; };
 		5B81E6DE2D20656200E0C4BE /* offline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B81E6DD2D20656200E0C4BE /* offline@2x.png */; };
 		5BA0983F2D205E15009F7726 /* offline.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BA0983E2D205E15009F7726 /* offline.png */; };
 		5BAE842B2D1C84AE00C021F9 /* UIColorHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BAE842A2D1C84AE00C021F9 /* UIColorHex.m */; };
@@ -334,6 +335,7 @@
 		5B3890DC2D1C54D8002D3BBE /* GuildIconBaseSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GuildIconBaseSelected.png; sourceTree = "<group>"; };
 		5B3890DF2D1C7A11002D3BBE /* pfpOverlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pfpOverlay.png; sourceTree = "<group>"; };
 		5B3890E02D1C7A11002D3BBE /* pfpOverlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pfpOverlay@2x.png"; sourceTree = "<group>"; };
+		5B774E5B2D20A0D60053086C /* O-DCChatTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "O-DCChatTableCell.xib"; sourceTree = "<group>"; };
 		5B81E6DD2D20656200E0C4BE /* offline@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline@2x.png"; sourceTree = "<group>"; };
 		5BA0983D2D2058E4009F7726 /* Discord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Discord.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BA0983E2D205E15009F7726 /* offline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = offline.png; sourceTree = "<group>"; };
@@ -543,6 +545,7 @@
 		5B2104B52D1856A7005B9596 /* XIBs */ = {
 			isa = PBXGroup;
 			children = (
+				5B774E5B2D20A0D60053086C /* O-DCChatTableCell.xib */,
 				5BAE84342D1D916700C021F9 /* DCUniversalTableCell.xib */,
 				5BAE84322D1D90FF00C021F9 /* DCChatGroupedTableCell.xib */,
 				5B2105B52D1861DE005B9596 /* DCMissedCallCell.xib */,
@@ -1080,6 +1083,7 @@
 				5B21053D2D1856E5005B9596 /* PLVideoOverlayPlayDown@2x.png in Resources */,
 				5B2105592D185794005B9596 /* Info.plist in Resources */,
 				5B21053E2D1856E5005B9596 /* reply.png in Resources */,
+				5B774E5C2D20A0D60053086C /* O-DCChatTableCell.xib in Resources */,
 				5B2105112D1856E5005B9596 /* addbarglyph.png in Resources */,
 				5B21052C2D1856E5005B9596 /* DefaultAvatar4.png in Resources */,
 				5B2105552D185735005B9596 /* Images.xcassets in Resources */,

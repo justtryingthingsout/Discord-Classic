@@ -460,33 +460,27 @@
                                     <outlet property="delegate" destination="7wZ-CZ-amg" id="hnR-Ks-kWE"/>
                                 </connections>
                             </tableView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" id="DvN-QY-aPM">
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" id="Vh2-fe-toJ">
                                 <rect key="frame" x="0.0" y="460" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="mM5-vD-iFl"/>
-                                    <barButtonItem systemItem="camera" id="aCE-YX-MQD">
-                                        <connections>
-                                            <action selector="chooseImage:" destination="7wZ-CZ-amg" id="zwT-RZ-VGC"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Lge-R9-vda"/>
-                                    <barButtonItem style="plain" id="TQo-Sr-JZv">
-                                        <textField key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" minimumFontSize="17" id="CqT-1u-YpO">
-                                            <rect key="frame" x="107" y="7" width="97" height="30"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                            <textInputTraits key="textInputTraits"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="SBs-34-meX"/>
+                                    <barButtonItem systemItem="camera" id="xWN-Wr-L3c"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="d2d-HI-wCY"/>
+                                    <barButtonItem title="Item" id="Sfe-cV-Z2N">
+                                        <textField key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="bezel" placeholder="Message" minimumFontSize="17" clearButtonMode="whileEditing" id="z7m-LQ-sv0">
+                                            <rect key="frame" x="52" y="7" width="207" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                         </textField>
                                     </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Q3X-uT-Rpp"/>
-                                    <barButtonItem title="Send" style="done" id="y4h-br-iGH">
-                                        <connections>
-                                            <action selector="sendMessage:" destination="7wZ-CZ-amg" id="Rjo-N4-uCp"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="arJ-vx-czG"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Fac-NC-aL5"/>
+                                    <barButtonItem title="Send" style="done" id="vlJ-6K-qVJ"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="ku7-xr-j5L"/>
                                 </items>
+                                <color key="tintColor" red="0.7843137255" green="0.7843137255" blue="0.7843137255" alpha="0.0" colorSpace="calibratedRGB"/>
                             </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -500,9 +494,13 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="chatTableView" destination="fyj-vD-nEe" id="v0t-bf-cee"/>
+                        <outlet property="chatTableView" destination="fyj-vD-nEe" id="TAT-iG-AAQ"/>
+                        <outlet property="inputTextField" destination="Sfe-cV-Z2N" id="c54-lb-cH9"/>
+                        <outlet property="memberButton" destination="Lvw-Ti-t2U" id="u5Y-6o-1cR"/>
+                        <outlet property="photoButton" destination="xWN-Wr-L3c" id="cYs-Ge-4M5"/>
                         <outlet property="searchDisplayController" destination="BSK-lM-kUu" id="wiD-mf-avA"/>
-                        <outlet property="toolbar" destination="DvN-QY-aPM" id="n39-R4-4Or"/>
+                        <outlet property="sendButton" destination="vlJ-6K-qVJ" id="x2U-3m-JgP"/>
+                        <outlet property="toolbar" destination="Vh2-fe-toJ" id="NT8-if-Mjt"/>
                         <segue destination="hgm-3F-Lt3" kind="push" identifier="Chat to Gallery" id="PJo-rd-ei4"/>
                     </connections>
                 </viewController>
@@ -583,19 +581,6 @@
             </objects>
             <point key="canvasLocation" x="2883" y="-591"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="8jN-IC-Iq5">
-            <objects>
-                <viewController id="1BG-rd-ljD" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="AYf-cZ-Ro1">
-                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ta6-uK-ksI" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-        </scene>
     </scenes>
     <color key="tintColor" red="0.0" green="0.0" blue="0.99911797046661377" alpha="1" colorSpace="calibratedRGB"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
@@ -604,7 +589,7 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="ZzT-Kr-HYl"/>
+        <segue reference="8zt-AT-ULl"/>
         <segue reference="P83-bk-eKR"/>
     </inferredMetricsTieBreakers>
 </document>
