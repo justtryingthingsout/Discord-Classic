@@ -59,7 +59,13 @@ UIActivityIndicatorView *spinner;
         sharedInstance.token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
         
         if(sharedInstance.oldMode == YES) {
+            sharedInstance.alertView = [UIAlertView.alloc initWithTitle:@"Connecting" message:@"\n" delegate:self cancelButtonTitle:nil otherButtonTitles:nil];
             
+            UIActivityIndicatorView *spinner = [UIActivityIndicatorView.alloc initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+            [spinner setCenter:CGPointMake(139.5, 75.5)];
+            
+            [sharedInstance.alertView addSubview:spinner];
+            [spinner startAnimating];
         } else {
             [sharedInstance showNonIntrusiveNotificationWithTitle:@"Connecting"];
         }
