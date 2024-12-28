@@ -25,9 +25,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    //not done yet...
-    self.chatButton.hidden = YES;
 }
 
 -(void)setSelectedUser:(DCUser*)user{
@@ -36,6 +33,7 @@
     self.navigationItem.title = user.globalName;
     self.nameLabel.text = user.globalName;
     self.handleLable.text = user.username;
+    self.snowflake = user.snowflake;
     
     //image
     self.profileImageView.image = user.profileImage;
@@ -63,7 +61,7 @@
             NSString *bannerHash = [userInfo objectForKey:@"banner"];
             
             if (bannerHash && ![bannerHash isKindOfClass:[NSNull class]]) {
-                NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://cdn.discordapp.com/banners/%@/%@.png?size=480", [userInfo objectForKey:@"id"], [userInfo objectForKey:@"banner"]]];
+                NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://cdn.discordapp.com/banners/%@/%@.png?size=568", [userInfo objectForKey:@"id"], [userInfo objectForKey:@"banner"]]];
                 NSData *data = [NSData dataWithContentsOfURL:url];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.profileBanner.image = [UIImage imageWithData:data];
@@ -87,23 +85,47 @@
         }
     });
 }
-/*
-[DCTools processImageDataWithURLString:iconURL andBlock:^(UIImage *imageData) {
-    UIImage* icon = imageData;
-    
-    if (icon != nil) {
-        newChannel.icon = icon;
-        CGSize itemSize = CGSizeMake(32, 32);
-        UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
-        CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
-        [newChannel.icon  drawInRect:imageRect];
-        newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-    }*/
 
 - (IBAction)throwToChat:(id)sender {
-    [self performSegueWithIdentifier:@"guilds to chat" sender:self];
+    [self performSegueWithIdentifier:@"about to chat" sender:self];
+}
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"about to chat"]) {
+        DCChatViewController *chatViewController = [segue destinationViewController];
+        if ([chatViewController isKindOfClass:DCChatViewController.class]) {
+            DCChannel *privateChannel = [self findPrivateChannelForUser:self.snowflake];
+            
+            if (privateChannel) {
+                DCServerCommunicator.sharedInstance.selectedChannel = privateChannel;
+                NSString *formattedChannelName = privateChannel.name;
+                [chatViewController.navigationItem setTitle:formattedChannelName];
+
+                if (!chatViewController.messages) {
+                    chatViewController.messages = [NSMutableArray array];
+                }
+                
+                [chatViewController getMessages:50 beforeMessage:nil];
+                [chatViewController setViewingPresentTime:true];
+            } else {
+            }
+        }
+    }
+}
+
+- (DCChannel *)findPrivateChannelForUser:(NSString *)userId {
+    for (DCGuild *guild in DCServerCommunicator.sharedInstance.guilds) {
+        if ([guild.name isEqualToString:@"Direct Messages"]) {
+            for (DCChannel *channel in guild.channels) {
+                for (NSDictionary *userDict in channel.users) {
+                    if ([userDict[@"snowflake"] isEqualToString:userId]) {
+                        return channel;
+                    }
+                }
+            }
+        }
+    }
+    return nil;
 }
 
 @end

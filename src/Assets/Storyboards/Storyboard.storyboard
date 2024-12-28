@@ -638,6 +638,7 @@
                         <outlet property="profileImageView" destination="DBL-lf-XJ2" id="KbD-Eq-Cau"/>
                         <outlet property="pronounLabel" destination="92s-52-zdk" id="euE-qn-r5Z"/>
                         <outlet property="statusLabel" destination="pWw-nC-IeS" id="nht-eI-zXR"/>
+                        <segue destination="SPS-Go-Xtj" kind="push" identifier="about to chat" id="YEs-zn-a75"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gix-yU-SKh" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -976,4 +977,7 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="YEs-zn-a75"/>
+    </inferredMetricsTieBreakers>
 </document>
