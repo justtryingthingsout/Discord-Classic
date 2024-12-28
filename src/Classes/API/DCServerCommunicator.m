@@ -80,11 +80,20 @@ UIActivityIndicatorView *spinner;
 - (void)showNonIntrusiveNotificationWithTitle:(NSString *)title {
     dispatch_async(dispatch_get_main_queue(), ^{
         CGFloat screenWidth = UIScreen.mainScreen.bounds.size.width;
-        CGFloat notificationPadding = 58; // Padding to give a sleeker look
-        CGFloat notificationWidth = screenWidth - (notificationPadding * 2);
-        CGFloat notificationHeight = 50; // Increased for better tactile feel
-        CGFloat notificationX = notificationPadding; // Left and right padding
-        CGFloat notificationY = -notificationHeight; // Start above screen
+        CGFloat minimumPadding = 0; // Minimum padding threshold
+        CGFloat maxPadding = 120; // Maximum padding
+        CGFloat notificationHeight = 50;
+        
+        // Calculate title width for iOS 6 compatibility
+        CGSize titleSize = [title sizeWithFont:[UIFont boldSystemFontOfSize:16]];
+        CGFloat titleWidth = titleSize.width;
+        
+        // Calculate dynamic padding - decrease padding as title gets longer, up to minimumPadding
+        CGFloat dynamicPadding = MAX(minimumPadding, maxPadding - (titleWidth / screenWidth) * (maxPadding - minimumPadding));
+        dynamicPadding = MAX(40, dynamicPadding);
+        CGFloat notificationWidth = screenWidth - (dynamicPadding * 2);
+        CGFloat notificationX = dynamicPadding;
+        CGFloat notificationY = -notificationHeight;
         
         if (self.notificationView != nil) {
             [self.notificationView removeFromSuperview];
@@ -93,9 +102,8 @@ UIActivityIndicatorView *spinner;
         
         self.notificationView = [[UIView alloc] initWithFrame:CGRectMake(notificationX, notificationY, notificationWidth, notificationHeight)];
         
-        // Background with subtle texture or gradient for skeuomorphic feel
-        self.notificationView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"no-header"]];
-        self.notificationView.layer.cornerRadius = 15; // More rounded corners
+        self.notificationView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"No-header"]];
+        self.notificationView.layer.cornerRadius = 15;
         self.notificationView.layer.shadowColor = [UIColor blackColor].CGColor;
         self.notificationView.layer.shadowOffset = CGSizeMake(0, 2);
         self.notificationView.layer.shadowOpacity = 0.6;
@@ -103,33 +111,26 @@ UIActivityIndicatorView *spinner;
         self.notificationView.layer.borderColor = [UIColor darkGrayColor].CGColor;
         self.notificationView.layer.borderWidth = 1.0;
         
-        // Label to display the notification text
         CGFloat spinnerWidth = 30;
-        CGFloat labelWidth = notificationWidth - spinnerWidth - 20; // Dynamic label width
+        CGFloat labelWidth = notificationWidth - spinnerWidth - 10; // Reduce space between label and spinner
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, labelWidth, notificationHeight)];
         label.text = title;
         label.backgroundColor = [UIColor clearColor];
         label.textColor = [UIColor whiteColor];
         label.font = [UIFont boldSystemFontOfSize:16];
-        label.shadowOffset = CGSizeMake(0, 1);
-        label.shadowColor = [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
         label.textAlignment = NSTextAlignmentLeft;
-        label.lineBreakMode = NSLineBreakByTruncatingTail; // Truncate if too long
+        label.lineBreakMode = NSLineBreakByTruncatingTail;
         
-        // Spinner
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-        spinner.center = CGPointMake(notificationWidth - (spinnerWidth / 2) - 10, notificationHeight / 2);
+        spinner.center = CGPointMake(notificationWidth - (spinnerWidth / 2) - 5, notificationHeight / 2); // Adjust spinner closer to text
         [spinner startAnimating];
         
-        // Add subviews
         [self.notificationView addSubview:label];
         [self.notificationView addSubview:spinner];
         
-        // Add to window
         UIWindow *window = [[[UIApplication sharedApplication] windows] lastObject];
         [window addSubview:self.notificationView];
         
-        // Slide in animation
         [UIView animateWithDuration:0.6 animations:^{
             self.notificationView.frame = CGRectMake(notificationX, 64, notificationWidth, notificationHeight);
         }];
@@ -167,7 +168,7 @@ UIActivityIndicatorView *spinner;
 	[self.alertView show];
 	
 	self.didAuthenticate = false;
-	
+	self.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
 	if(self.token!=nil){
 		
 		//Establish websocket connection with Discord
