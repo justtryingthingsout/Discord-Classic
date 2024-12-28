@@ -21,8 +21,8 @@
 #import "DCCInfoViewController.h"
 @interface DCChatViewController()
 @property int numberOfMessagesLoaded;
-@property bool oldMode;
 @property UIImage* selectedImage;
+@property bool oldMode;
 @property UIRefreshControl *refreshControl;
 @end
 
@@ -60,10 +60,8 @@ static dispatch_queue_t chat_messages_queue;
 	
 	[NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 	
-    self.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
     
-    if(self.oldMode == NO)
-        [self.toolbar setBackgroundImage:[UIImage imageNamed:@"ToolbarBG"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+    [self.toolbar setBackgroundImage:[UIImage imageNamed:@"ToolbarBG"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
     
     //bgimgs
     [self.memberButton setBackgroundImage:[UIImage imageNamed:@"BarButton"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
@@ -309,6 +307,7 @@ static dispatch_queue_t chat_messages_queue;
     });
 }
 
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	DCChatTableCell* cell;
 	
@@ -423,7 +422,6 @@ static dispatch_queue_t chat_messages_queue;
             imageView.layer.masksToBounds = YES;
             
             [cell addSubview:imageView];
-            
         } else if ([attachment isKindOfClass:[DCChatVideoAttachment class]]) {
             ////NSLog(@"add video!");
             DCChatVideoAttachment *video = attachment;
@@ -473,29 +471,13 @@ static dispatch_queue_t chat_messages_queue;
 	return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    DCMessage *messageAtRowIndex = [self.messages objectAtIndex:indexPath.row];
-    CGFloat height = messageAtRowIndex.contentHeight;
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+	DCMessage* messageAtRowIndex = [self.messages objectAtIndex:indexPath.row];
     
-    for (id attachment in messageAtRowIndex.attachments) {
-        if ([attachment isKindOfClass:[UIImage class]]) {
-            UIImage *image = attachment;
-            CGFloat maxWidth = self.chatTableView.width - 66;
-            CGFloat scaleFactor = maxWidth / image.size.width;
-            CGFloat scaledHeight = image.size.height * scaleFactor;
-            
-            // Add height for each image
-            height += scaledHeight;
-            
-            if (attachment == [messageAtRowIndex.attachments lastObject]) {
-                height += 12;
-            } else {
-                height += 12;  // Padding between stacked images
-            }
-        }
-    }
-    return height + (messageAtRowIndex.attachmentCount > 0 ? 11 : 0);
+	return messageAtRowIndex.contentHeight + (messageAtRowIndex.attachmentCount * 224) + (messageAtRowIndex.attachmentCount > 0 ? 11 : 0);
 }
+
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.selectedMessage = self.messages[indexPath.row];
