@@ -13,7 +13,7 @@
 @property NSString* username;
 @property NSString* globalName;
 @property NSString* biography;
-@property int* onlineStatus;
+@property NSString *customStatus;
 @property NSString *status;
 @property UIImage* profileImage;
 @property UIImage* profileBanner;

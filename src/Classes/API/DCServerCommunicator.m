@@ -25,6 +25,7 @@
 
 @property NSTimer* cooldownTimer;
 @property UIAlertView* alertView;
+@property bool oldMode;
 + (DCServerCommunicator *)sharedInstance;
 - (void)showNonIntrusiveNotificationWithTitle:(NSString *)title;
 - (void)dismissNotification;
@@ -49,15 +50,20 @@ UIActivityIndicatorView *spinner;
         
         sharedInstance.gatewayURL = @"wss://gateway.discord.gg/?encoding=json&v=9";
         
-        NSString *token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
-        
-        if ([token length] == 0) {
+        sharedInstance.token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
+        if ([sharedInstance.token length] == 0) {
             return;
         }
         
+        sharedInstance.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"oldMode"];
         sharedInstance.token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
         
-        [sharedInstance showNonIntrusiveNotificationWithTitle:@"Connecting"];
+        if(sharedInstance.oldMode == YES) {
+            
+        } else {
+            [sharedInstance showNonIntrusiveNotificationWithTitle:@"Connecting"];
+        }
+        
         
     });
     

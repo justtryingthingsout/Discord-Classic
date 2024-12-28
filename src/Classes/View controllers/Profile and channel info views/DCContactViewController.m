@@ -16,9 +16,9 @@
 @property (weak, nonatomic) IBOutlet UIView *bannerView;
 @property (weak, nonatomic) IBOutlet UIImageView *profileBanner;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *statusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *handleLable;
 @property (weak, nonatomic) IBOutlet UITextView *descriptionBox;
+@property (weak, nonatomic) IBOutlet UIImageView *statusIcon;
 @end
 
 @implementation DCContactViewController
@@ -34,7 +34,7 @@
     self.nameLabel.text = user.globalName;
     self.handleLable.text = user.username;
     self.snowflake = user.snowflake;
-    
+    self.statusIcon.image = [UIImage imageNamed:[self imageNameForStatus:user.status]];
     //image
     self.profileImageView.image = user.profileImage;
     self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width / 2.0;
@@ -84,6 +84,23 @@
             
         }
     });
+}
+
+
+
+
+
+
+- (NSString *)imageNameForStatus:(NSString *)status {
+    if ([status isEqualToString:@"online"]) {
+        return @"online";
+    } else if ([status isEqualToString:@"dnd"]) {
+        return @"dnd";
+    } else if ([status isEqualToString:@"idle"]) {
+        return @"absent";
+    } else {
+        return @"offline";
+    }
 }
 
 - (IBAction)throwToChat:(id)sender {

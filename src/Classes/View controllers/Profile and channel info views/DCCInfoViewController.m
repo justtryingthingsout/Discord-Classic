@@ -61,7 +61,7 @@
         cell.userPFP.image = [UIImage imageNamed:@"defaultAvatar1"];
     }
     
-    cell.userPFP.layer.cornerRadius = cell.userPFP.frame.size.width / 6.0;
+    cell.userPFP.layer.cornerRadius = cell.userPFP.frame.size.width / 2.0;
     cell.userPFP.layer.masksToBounds = YES;
     return cell;
 }

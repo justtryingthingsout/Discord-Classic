@@ -306,7 +306,7 @@
     } else if ([status isEqualToString:@"idle"]) {
         return @"absent";
     } else {
-        return @"absent";
+        return @"offline";
     }
 }
 
