@@ -219,8 +219,6 @@
         // Guild name and icon
         [cell.guildAvatar setImage:guildAtRowIndex.icon];
         
-        // Set the frame for the image view (if not already set)
-        
         cell.guildAvatar.layer.cornerRadius = cell.guildAvatar.frame.size.width / 6.0;
         cell.guildAvatar.layer.masksToBounds = YES;
         
@@ -244,6 +242,44 @@
                 cell.pfp.layer.masksToBounds = YES;
             }
             
+            // Presence indicator logic for DM channels (type 1, one-on-one)
+            if (channelAtRowIndex.type == 1 && channelAtRowIndex.users.count == 2) {
+                DCUser *buddy = nil;
+                
+                // Iterate over users to find the DM partner
+                for (NSDictionary *userDict in channelAtRowIndex.users) {
+                    NSString *userId = [userDict valueForKey:@"snowflake"];
+                    
+                    // Exclude self from buddy selection
+                    if (![userId isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
+                        // Attempt to fetch from cache
+                        buddy = [DCServerCommunicator.sharedInstance.loadedUsers objectForKey:userId];
+                        
+                        // If not in cache, construct user manually from dictionary
+                        if (!buddy) {
+                            buddy = [[DCUser alloc] init];
+                            buddy.snowflake = userId;
+                            buddy.username = [userDict valueForKey:@"username"];
+                            buddy.status = [userDict valueForKey:@"status"] ?: @"offline";
+                        }
+                        break;
+                    }
+                }
+                
+                // Update the status image based on the buddy's status
+                if (buddy) {
+                    NSString *statusImageName = [self imageNameForStatus:buddy.status];
+                    cell.statusImage.image = [UIImage imageNamed:statusImageName];
+                } else {
+                    cell.statusImage.image = [UIImage imageNamed:@"offline"];
+                }
+                
+                cell.statusImage.hidden = NO;
+            } else {
+                // Hide status indicator for non-DM or group channels
+                cell.statusImage.hidden = YES;
+            }
+            
             return cell;
             
         } else {
@@ -255,12 +291,23 @@
             cell.messageIndicator.hidden = !channelAtRowIndex.unread;
             [cell.channelName setText:channelAtRowIndex.name];
             
-            
             return cell;
         }
     }
     
-    return nil; // Default case (shouldn't happen in your scenario)
+    return nil;
+}
+
+- (NSString *)imageNameForStatus:(NSString *)status {
+    if ([status isEqualToString:@"online"]) {
+        return @"online";
+    } else if ([status isEqualToString:@"dnd"]) {
+        return @"dnd";
+    } else if ([status isEqualToString:@"idle"]) {
+        return @"absent";
+    } else {
+        return @"absent";
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
