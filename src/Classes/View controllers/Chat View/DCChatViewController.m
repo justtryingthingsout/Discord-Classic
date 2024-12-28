@@ -394,20 +394,24 @@ static dispatch_queue_t chat_messages_queue;
 	//dispatch_async(dispatch_get_main_queue(), ^{
 	int imageViewOffset = cell.contentTextView.height + (messageAtRowIndex.isGrouped ? 12 : 36);
 	
-	for(id attachment in messageAtRowIndex.attachments){
+    for(id attachment in messageAtRowIndex.attachments){
         if([attachment isKindOfClass:[UIImage class]]) {
             UIImageView* imageView = UIImageView.new;
             UIImage* image = attachment;
             CGFloat aspectRatio = image.size.width / image.size.height;
-            int newWidth = 200 * aspectRatio;
-            int newHeight = 200;
-            if (newWidth > self.chatTableView.width - 66) {
-                newWidth = self.chatTableView.width - 66;
-                newHeight = newWidth / aspectRatio;
+            
+            CGFloat maxWidth = self.chatTableView.width - 66;
+            CGFloat newWidth = maxWidth;
+            CGFloat newHeight = maxWidth / aspectRatio;
+            
+            // Cap to avoid excessively tall images
+            if (newHeight > 400) {
+                newHeight = 400;
+                newWidth = newHeight * aspectRatio;
             }
+            
             [imageView setFrame:CGRectMake(55, imageViewOffset, newWidth, newHeight)];
             [imageView setImage:attachment];
-            imageViewOffset += 210;
             
             [imageView setContentMode: UIViewContentModeScaleAspectFit];
             
@@ -421,6 +425,16 @@ static dispatch_queue_t chat_messages_queue;
             imageView.layer.masksToBounds = YES;
             
             [cell addSubview:imageView];
+            
+            imageViewOffset += newHeight;
+            
+            // If this is the last image, add consistent bottom padding
+            if (attachment == [messageAtRowIndex.attachments lastObject]) {
+                imageViewOffset += 12;  // Padding below the last image
+            } else {
+                imageViewOffset += 12;  // Padding between images
+            }
+            
         } else if ([attachment isKindOfClass:[DCChatVideoAttachment class]]) {
             ////NSLog(@"add video!");
             DCChatVideoAttachment *video = attachment;
@@ -470,13 +484,29 @@ static dispatch_queue_t chat_messages_queue;
 	return cell;
 }
 
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-	DCMessage* messageAtRowIndex = [self.messages objectAtIndex:indexPath.row];
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    DCMessage *messageAtRowIndex = [self.messages objectAtIndex:indexPath.row];
+    CGFloat height = messageAtRowIndex.contentHeight;
     
-	return messageAtRowIndex.contentHeight + (messageAtRowIndex.attachmentCount * 224) + (messageAtRowIndex.attachmentCount > 0 ? 11 : 0);
+    for (id attachment in messageAtRowIndex.attachments) {
+        if ([attachment isKindOfClass:[UIImage class]]) {
+            UIImage *image = attachment;
+            CGFloat maxWidth = self.chatTableView.width - 66;
+            CGFloat scaleFactor = maxWidth / image.size.width;
+            CGFloat scaledHeight = image.size.height * scaleFactor;
+            
+            // Add height for each image
+            height += scaledHeight;
+            
+            if (attachment == [messageAtRowIndex.attachments lastObject]) {
+                height += 12;
+            } else {
+                height += 12;  // Padding between stacked images
+            }
+        }
+    }
+    return height + (messageAtRowIndex.attachmentCount > 0 ? 11 : 0);
 }
-
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.selectedMessage = self.messages[indexPath.row];
