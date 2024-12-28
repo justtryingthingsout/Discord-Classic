@@ -343,6 +343,10 @@ static dispatch_queue_t chat_messages_queue;
         [cell.timestampLabel setText:messageAtRowIndex.prettyTimestamp];
         [cell.timestampLabel setFrame:CGRectMake(messageAtRowIndex.authorNameWidth, cell.timestampLabel.y, self.chatTableView.width-messageAtRowIndex.authorNameWidth, cell.timestampLabel.height)];
     }
+    
+    if(messageAtRowIndex.messageType == 6) {
+        cell.universalImageView.image = [UIImage imageNamed:@"pinMessage"];
+    }
 	
     NSString* content = [messageAtRowIndex.content emojizedString];
     
