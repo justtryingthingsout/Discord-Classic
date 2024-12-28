@@ -606,6 +606,10 @@
                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="offline.png" id="HP3-bd-Ntv">
+                                    <rect key="frame" x="76" y="129" width="24" height="24"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                </imageView>
                             </subviews>
                             <color key="backgroundColor" red="0.1215686275" green="0.12549019610000001" blue="0.14117647059999999" alpha="1" colorSpace="calibratedRGB"/>
                         </view>
@@ -890,7 +894,7 @@
                                                     <color key="shadowColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <size key="shadowOffset" width="0.0" height="1"/>
                                                 </label>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dnd.png" id="BiF-vt-Uh4">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="offline.png" id="BiF-vt-Uh4">
                                                     <rect key="frame" x="27" y="27" width="13" height="13"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
@@ -959,9 +963,9 @@
         <image name="addbarglyph.png" width="25" height="25"/>
         <image name="bannerBottomShadow.png" width="1" height="30"/>
         <image name="bannerTopShadow.png" width="1" height="60"/>
-        <image name="dnd.png" width="24" height="24"/>
         <image name="menu.png" width="24" height="24"/>
         <image name="newMessages.png" width="7" height="19"/>
+        <image name="offline.png" width="24" height="24"/>
         <image name="pfpOverlay.png" width="82" height="82"/>
         <image name="separator.png" width="320" height="4"/>
         <image name="sinkInMask.png" width="30" height="31"/>

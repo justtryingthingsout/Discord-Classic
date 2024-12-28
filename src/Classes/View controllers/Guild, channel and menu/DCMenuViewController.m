@@ -261,13 +261,13 @@
                     }
                 }
                 if (buddy) {
-                    NSLog(@"%@", buddy.onlineStatus);
+                    cell.statusImage.image = [UIImage imageNamed:@"dnd"];
                 } else {
-                    //cell.activityIndicatorLed.image = [self loadAndTintImageWithColor:[UIColor grayColor]];
+                    cell.statusImage.image = [UIImage imageNamed:@"offline"];
                 }
             } else {
                 // Hide status indicator for group DMs or non-DM channels
-                //cell.activityIndicatorLed.image = nil;
+                cell.statusImage.hidden = YES;
             }
             
             return cell;
