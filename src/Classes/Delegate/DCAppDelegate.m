@@ -7,7 +7,7 @@
 //
 
 #import "DCAppDelegate.h"
-#import "DCServerCommunicator.h"
+
 
 @interface DCAppDelegate()
 @property bool shouldReload;
@@ -32,6 +32,7 @@
             UIViewController *initialViewController = [storyboard instantiateInitialViewController];
             self.window.rootViewController = initialViewController;
             [self.window makeKeyAndVisible];
+            [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"OldTitlebarTexture"] forBarMetrics:UIBarMetricsDefault];
         } else {
             [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
         }

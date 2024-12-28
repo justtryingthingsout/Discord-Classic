@@ -16,6 +16,7 @@
 #import "DCUser.h"
 #import "DCGuildTableViewCell.h"
 #import "DCChannelViewCell.h"
+#import "DCPrivateChannelTableCell.h"
 
 #define VERSION_MIN(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
@@ -30,6 +31,8 @@
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UILabel *guildLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *guildBanner;
+
+@property UIImage* dmIcon; //Icon for a DM
 
 @property (weak, nonatomic) IBOutlet UIView *totalView;
 

@@ -13,11 +13,12 @@
 @property NSString* username;
 @property NSString* globalName;
 @property NSString* biography;
+@property NSString* onlineStatus;
+@property NSString* status;
 @property UIImage* profileImage;
 @property UIImage* profileBanner;
 @property NSString* discriminator;
 @property UIImage* avatarDecoration;
-@property (strong, nonatomic) NSString *status;
 
 +(NSArray *)defaultAvatars;
 

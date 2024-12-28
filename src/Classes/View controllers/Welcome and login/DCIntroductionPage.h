@@ -7,10 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DCServerCommunicator.h"
 
 @interface DCIntroductionPage : UITableViewController
 
-@property (weak, nonatomic) IBOutlet UITextField *tokenTextField;
+
+@property (weak, nonatomic) IBOutlet UITextField *tokenInputField;
 @property (weak, nonatomic) IBOutlet UIButton *loginButton;
 
 @property bool authenticated;

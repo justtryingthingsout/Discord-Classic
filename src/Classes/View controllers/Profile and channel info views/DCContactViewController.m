@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UIView *bannerView;
 @property (weak, nonatomic) IBOutlet UIImageView *profileBanner;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *statusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *handleLable;
 @property (weak, nonatomic) IBOutlet UITextView *descriptionBox;
 @end
@@ -35,6 +36,7 @@
     self.navigationItem.title = user.globalName;
     self.nameLabel.text = user.globalName;
     self.handleLable.text = user.username;
+    NSLog(@"status %@", user.status);
     
     //image
     self.profileImageView.image = user.profileImage;

@@ -31,14 +31,16 @@
 
 -(void)viewWillAppear:(BOOL)animated{
 	[self.navigationItem setTitle:self.selectedGuild.name];
-    [self.tableView reloadData];
+    //[self.tableView reloadData];
 	[DCServerCommunicator.sharedInstance setSelectedChannel:nil];
-    if ([self.navigationItem.title isEqualToString:@"Direct Messages"]) {
+    
+    //nono we wouldnt want rebels getting BASIC FEATURES!111111 :devious:
+    /*if ([self.navigationItem.title isEqualToString:@"Direct Messages"]) { n
         // Sort the DMs list by most recent...
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastMessageId" ascending:NO selector:@selector(localizedStandardCompare:)];
         [self.selectedGuild.channels sortUsingDescriptors:@[sortDescriptor]];
         [self.tableView reloadData];
-    }
+    }*/
 }
 
 
@@ -61,18 +63,6 @@
     
 	//Channel name
 	[cell.textLabel setText:channelAtRowIndex.name];
-    
-    if (channelAtRowIndex.icon != nil && [channelAtRowIndex.icon class] == [UIImage class]) {
-        [cell.imageView setImage:channelAtRowIndex.icon];
-        cell.imageView.contentMode = UIViewContentModeScaleAspectFill;
-        cell.imageView.clipsToBounds = YES;
-        
-        cell.imageView.frame = CGRectMake(0, 0, 32, 32);
-        cell.imageView.layer.cornerRadius = cell.imageView.frame.size.height / 2.0;
-        cell.imageView.layer.masksToBounds = YES;
-        [cell.imageView setNeedsDisplay];
-        [cell layoutIfNeeded];
-    }
 	
 	return cell;
 }

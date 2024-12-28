@@ -25,6 +25,7 @@
 
 @property NSTimer* cooldownTimer;
 @property UIAlertView* alertView;
+@property bool oldMode;
 + (DCServerCommunicator *)sharedInstance;
 - (void)showNonIntrusiveNotificationWithTitle:(NSString *)title;
 - (void)dismissNotification;
@@ -49,15 +50,24 @@ UIActivityIndicatorView *spinner;
         
         sharedInstance.gatewayURL = @"wss://gateway.discord.gg/?encoding=json&v=9";
         
-        NSString *token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
+        sharedInstance.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
+        sharedInstance.token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
         
-        if ([token length] == 0) {
+        if ([sharedInstance.token length] == 0) {
             return;
         }
         
-        sharedInstance.token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
-        
-        [sharedInstance showNonIntrusiveNotificationWithTitle:@"Connecting"];
+        if(sharedInstance.oldMode == YES) {
+            sharedInstance.alertView = [UIAlertView.alloc initWithTitle:@"Connecting" message:@"\n" delegate:self cancelButtonTitle:nil otherButtonTitles:nil];
+            
+            UIActivityIndicatorView *spinner = [UIActivityIndicatorView.alloc initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+            [spinner setCenter:CGPointMake(139.5, 75.5)];
+            
+            [sharedInstance.alertView addSubview:spinner];
+            [spinner startAnimating];
+        } else {
+            [sharedInstance showNonIntrusiveNotificationWithTitle:@"Connecting..."];
+        }
         
     });
     
@@ -101,6 +111,8 @@ UIActivityIndicatorView *spinner;
         label.backgroundColor = [UIColor clearColor];
         label.textColor = [UIColor whiteColor];
         label.font = [UIFont boldSystemFontOfSize:16];
+        label.shadowOffset = CGSizeMake(0, 1);
+        label.shadowColor = [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
         label.textAlignment = NSTextAlignmentLeft;
         label.lineBreakMode = NSLineBreakByTruncatingTail; // Truncate if too long
         
@@ -151,6 +163,9 @@ UIActivityIndicatorView *spinner;
 }
 
 - (void)startCommunicator{
+	
+	[self.alertView show];
+	
 	self.didAuthenticate = false;
 	
 	if(self.token!=nil){
@@ -166,7 +181,6 @@ UIActivityIndicatorView *spinner;
 			
 			//Parse JSON to a dictionary
 			NSDictionary *parsedJsonResponse = [DCTools parseJSON:responseString];
-            //NSLog(responseString);
 			
 			//Data values for easy access
 			int op = [[parsedJsonResponse valueForKey:@"op"] integerValue];
@@ -264,6 +278,7 @@ UIActivityIndicatorView *spinner;
 						dispatch_async(dispatch_get_main_queue(), ^{
                             weakSelf.didAuthenticate = true;
                             //NSLog(@"Did authenticate!");
+                            [weakSelf.alertView dismissWithClickedButtonIndex:0 animated:YES];
                             [weakSelf dismissNotification];
                             
                             //Grab session id (used for RESUME) and user id
@@ -282,7 +297,6 @@ UIActivityIndicatorView *spinner;
                             privateGuild.icon = [UIImage imageNamed:@"privateGuildLogo"];
                             privateGuild.channels = NSMutableArray.new;
                             
-                            
                             for(NSDictionary* privateChannel in [d valueForKey:@"private_channels"]){
                                 
                                 //this may actually suck
@@ -290,7 +304,7 @@ UIActivityIndicatorView *spinner;
                                 NSMutableArray *users = NSMutableArray.new;
                                 //NSLog(@"%@", privateChannel);
                                 NSMutableDictionary *usersDict;
-                                
+
                                 
                                 DCChannel* newChannel = DCChannel.new;
                                 newChannel.snowflake = [privateChannel valueForKey:@"id"];
@@ -307,16 +321,7 @@ UIActivityIndicatorView *spinner;
                                             [usersDict setObject:[user valueForKey:@"avatar"] forKey:@"avatar"];
                                             [usersDict setObject:[user valueForKey:@"id"] forKey:@"snowflake"];
                                             [users addObject:usersDict];
-                                            
-                                            // Ensure user is added to loadedUsers
-                                            NSString *userId = [user valueForKey:@"id"];
-                                            if (userId && ![weakSelf.loadedUsers objectForKey:userId]) {
-                                                DCUser *dcUser = [DCTools convertJsonUser:user cache:YES]; // Add to loadedUsers
-                                                [weakSelf.loadedUsers setObject:dcUser forKey:userId];
-                                                //NSLog(@"[READY] Cached user: %@ (ID: %@)", dcUser.username, dcUser.snowflake);
-                                            }
                                         }
-                                        
                                         // Add self to users list
                                         usersDict = NSMutableDictionary.new;
                                         [usersDict setObject:[NSString stringWithFormat:@"You"] forKey:@"username"];
@@ -325,12 +330,12 @@ UIActivityIndicatorView *spinner;
                                         [users addObject:usersDict];
                                         //end
                                         /*NSMutableDictionary *usersDict;
-                                         for (NSDictionary* user in [privateChannel objectForKey:@"recipients"]) {
-                                         usersDict = NSMutableDictionary.new;
-                                         [usersDict setObject:[user valueForKey:@"username"] forKey:@"username"];
-                                         [usersDict setObject:[user valueForKey:@"avatar"] forKey:@"avatar"];
-                                         [users addObject:usersDict];
-                                         }*/
+                                        for (NSDictionary* user in [privateChannel objectForKey:@"recipients"]) {
+                                            usersDict = NSMutableDictionary.new;
+                                            [usersDict setObject:[user valueForKey:@"username"] forKey:@"username"];
+                                            [usersDict setObject:[user valueForKey:@"avatar"] forKey:@"avatar"];
+                                            [users addObject:usersDict];
+                                        }*/
                                         NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
                                         [f setNumberStyle:NSNumberFormatterDecimalStyle];
                                         NSNumber * longId = [f numberFromString:[user valueForKey:@"id"]];
@@ -421,7 +426,6 @@ UIActivityIndicatorView *spinner;
                                                     UIGraphicsEndImageContext();
                                                 }
                                                 
-                                                // Process user presences from READY payload
                                                 NSArray *presences = [d valueForKey:@"presences"];
                                                 for (NSDictionary *presence in presences) {
                                                     NSString *userId = [presence valueForKeyPath:@"user.id"];
@@ -431,6 +435,7 @@ UIActivityIndicatorView *spinner;
                                                         DCUser *user = [weakSelf.loadedUsers objectForKey:userId];
                                                         if (user) {
                                                             user.status = status;
+                                                            NSLog(@"%@", user.status);
                                                             //NSLog(@"[READY] Updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
                                                         } else {
                                                             //NSLog(@"[READY] Presence received for unknown user ID: %@", userId);
@@ -451,7 +456,7 @@ UIActivityIndicatorView *spinner;
                                     newChannel.name = privateChannelName;
                                 }else{
                                     //If no name, create a name from channel members
-                                    NSMutableString* fullChannelName = [@"@" mutableCopy];
+                                    NSMutableString* fullChannelName = [@"" mutableCopy];
                                     
                                     NSArray* privateChannelMembers = [privateChannel valueForKey:@"recipients"];
                                     for(NSDictionary* privateChannelMember in privateChannelMembers){
@@ -541,9 +546,11 @@ UIActivityIndicatorView *spinner;
                         }
                     }
 					
+					
 					if([t isEqualToString:@"RESUMED"]){
 						weakSelf.didAuthenticate = true;
 						dispatch_async(dispatch_get_main_queue(), ^{
+                            [weakSelf.alertView dismissWithClickedButtonIndex:0 animated:YES];
 							[weakSelf dismissNotification];
 						});
 					}
@@ -643,7 +650,10 @@ UIActivityIndicatorView *spinner;
 
 
 - (void)sendResume{
-	[self showNonIntrusiveNotificationWithTitle:@"Resuming"];
+    if(self.oldMode == NO)
+        [self showNonIntrusiveNotificationWithTitle:@"Reconnecting..."];
+    
+    [self.alertView setTitle:@"Resuming"];
 	self.didTryResume = true;
 	self.shouldResume = true;
 	[self startCommunicator];
@@ -653,9 +663,7 @@ UIActivityIndicatorView *spinner;
 
 - (void)reconnect{
 	
-	//NSLog(@"Identify cooldown %s", self.identifyCooldown ? "true" : "false");
-	
-	//Begin new session
+	//NSLog(@"Identify cooldown %s", self.identifyCooldown ? "true" : "false");//Begin new session
 	[self.websocket close];
 	
 	//If an identify cooldown is in effect, wait for the time needed until sending another IDENTIFY
@@ -667,8 +675,10 @@ UIActivityIndicatorView *spinner;
 	}else{
 		double timeRemaining = self.cooldownTimer.fireDate.timeIntervalSinceNow;
 		//NSLog(@"Cooldown in effect. Time left %f", timeRemaining);
-		//[self.notificationView setTitle:@"Waiting for auth cooldown..."];
-        [self showNonIntrusiveNotificationWithTitle:@"Re-Authenticating"];
+		[self.alertView setTitle:@"Waiting for auth cooldown"];
+        if(self.oldMode == NO)
+            [self showNonIntrusiveNotificationWithTitle:@"Reconnecting..."];
+        
 		[self performSelector:@selector(startCommunicator) withObject:nil afterDelay:timeRemaining + 1];
 	}
 	
