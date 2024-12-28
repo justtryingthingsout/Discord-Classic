@@ -248,28 +248,6 @@
                 cell.pfp.layer.masksToBounds = YES;
             }
             
-            // Check if the channel is a DM (type 1) and has exactly two users
-            if (channelAtRowIndex.type == 1 && channelAtRowIndex.users.count == 2) {
-                DCUser *buddy = nil;
-                
-                // Identify the other user in the DM
-                for (NSDictionary *userDict in channelAtRowIndex.users) {
-                    NSString *userId = [userDict valueForKey:@"snowflake"];
-                    if (![userId isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
-                        buddy = [DCServerCommunicator.sharedInstance.loadedUsers objectForKey:userId];
-                        break;
-                    }
-                }
-                if (buddy) {
-                    cell.statusImage.image = [UIImage imageNamed:@"online"];
-                } else {
-                    cell.statusImage.image = [UIImage imageNamed:@"offline"];
-                }
-            } else {
-                // Hide status indicator for group DMs or non-DM channels
-                cell.statusImage.hidden = YES;
-            }
-            
             return cell;
             
         } else {
