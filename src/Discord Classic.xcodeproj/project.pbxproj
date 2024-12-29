@@ -163,6 +163,11 @@
 		5BC7F3102D20C97300CA6F3F /* oldTextFieldBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F30F2D20C97300CA6F3F /* oldTextFieldBG.png */; };
 		5BC7F3122D213F7B00CA6F3F /* chatButtonInset.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F3112D213F7B00CA6F3F /* chatButtonInset.png */; };
 		5BC7F31F2D2148F100CA6F3F /* DCMutualGuildTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BC7F31E2D2148F100CA6F3F /* DCMutualGuildTableViewController.m */; };
+		5BD7433D2D21914B00300565 /* DCConnectedAccountsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD7433C2D21914B00300565 /* DCConnectedAccountsCell.m */; };
+		5BD7433F2D21A0C900300565 /* chatButtonInset@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BD7433E2D21A0C900300565 /* chatButtonInset@2x.png */; };
+		5BD743472D21A76500300565 /* Group 99.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BD743462D21A76500300565 /* Group 99.png */; };
+		5BD7434A2D21AC0B00300565 /* ConnectionCellBase.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BD743482D21AC0B00300565 /* ConnectionCellBase.png */; };
+		5BD7434B2D21AC0B00300565 /* ConnectionCellBase@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BD743492D21AC0B00300565 /* ConnectionCellBase@2x.png */; };
 		5BDD37422D2038DF00C6482C /* OldTitlebarTexture.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD37402D2038DF00C6482C /* OldTitlebarTexture.png */; };
 		5BDD37432D2038DF00C6482C /* OldTitlebarTexture@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD37412D2038DF00C6482C /* OldTitlebarTexture@2x.png */; };
 		5BDD37462D20402700C6482C /* DCPrivateChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BDD37452D20402700C6482C /* DCPrivateChannelTableCell.m */; };
@@ -371,6 +376,12 @@
 		5BC7F3112D213F7B00CA6F3F /* chatButtonInset.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chatButtonInset.png; sourceTree = "<group>"; };
 		5BC7F31D2D2148F100CA6F3F /* DCMutualGuildTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMutualGuildTableViewController.h; sourceTree = "<group>"; };
 		5BC7F31E2D2148F100CA6F3F /* DCMutualGuildTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMutualGuildTableViewController.m; sourceTree = "<group>"; };
+		5BD7433B2D21914B00300565 /* DCConnectedAccountsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCConnectedAccountsCell.h; sourceTree = "<group>"; };
+		5BD7433C2D21914B00300565 /* DCConnectedAccountsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCConnectedAccountsCell.m; sourceTree = "<group>"; };
+		5BD7433E2D21A0C900300565 /* chatButtonInset@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chatButtonInset@2x.png"; sourceTree = "<group>"; };
+		5BD743462D21A76500300565 /* Group 99.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Group 99.png"; sourceTree = "<group>"; };
+		5BD743482D21AC0B00300565 /* ConnectionCellBase.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ConnectionCellBase.png; sourceTree = "<group>"; };
+		5BD743492D21AC0B00300565 /* ConnectionCellBase@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ConnectionCellBase@2x.png"; sourceTree = "<group>"; };
 		5BDD37402D2038DF00C6482C /* OldTitlebarTexture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = OldTitlebarTexture.png; sourceTree = "<group>"; };
 		5BDD37412D2038DF00C6482C /* OldTitlebarTexture@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "OldTitlebarTexture@2x.png"; sourceTree = "<group>"; };
 		5BDD37442D20402700C6482C /* DCPrivateChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCPrivateChannelTableCell.h; sourceTree = "<group>"; };
@@ -572,6 +583,8 @@
 		5B2104BE2D1856E5005B9596 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				5BD743402D21A4C500300565 /* Connections Cell */,
+				5BD7433E2D21A0C900300565 /* chatButtonInset@2x.png */,
 				5BC7F3112D213F7B00CA6F3F /* chatButtonInset.png */,
 				5BC7F30F2D20C97300CA6F3F /* oldTextFieldBG.png */,
 				5BDD374E2D20496500C6482C /* sinkInMask.png */,
@@ -803,6 +816,8 @@
 				5BB5D7462D195E6400C54C0A /* DCChannelViewCell.m */,
 				5BDD37442D20402700C6482C /* DCPrivateChannelTableCell.h */,
 				5BDD37452D20402700C6482C /* DCPrivateChannelTableCell.m */,
+				5BD7433B2D21914B00300565 /* DCConnectedAccountsCell.h */,
+				5BD7433C2D21914B00300565 /* DCConnectedAccountsCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -979,6 +994,24 @@
 			path = Subpages;
 			sourceTree = "<group>";
 		};
+		5BD743402D21A4C500300565 /* Connections Cell */ = {
+			isa = PBXGroup;
+			children = (
+				5BD743482D21AC0B00300565 /* ConnectionCellBase.png */,
+				5BD743492D21AC0B00300565 /* ConnectionCellBase@2x.png */,
+				5BD743452D21A75D00300565 /* Social Media */,
+			);
+			path = "Connections Cell";
+			sourceTree = "<group>";
+		};
+		5BD743452D21A75D00300565 /* Social Media */ = {
+			isa = PBXGroup;
+			children = (
+				5BD743462D21A76500300565 /* Group 99.png */,
+			);
+			path = "Social Media";
+			sourceTree = "<group>";
+		};
 		5BDD37472D20485300C6482C /* States */ = {
 			isa = PBXGroup;
 			children = (
@@ -1046,6 +1079,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B81E6DE2D20656200E0C4BE /* offline@2x.png in Resources */,
+				5BD7434B2D21AC0B00300565 /* ConnectionCellBase@2x.png in Resources */,
 				5B21051D2D1856E5005B9596 /* BarButton@2x.png in Resources */,
 				5B3890DD2D1C54D8002D3BBE /* GuildIconBaseSelected.png in Resources */,
 				5B2105182D1856E5005B9596 /* Send.png in Resources */,
@@ -1071,7 +1105,9 @@
 				5B21053B2D1856E5005B9596 /* PLVideoOverlayPlay@2x.png in Resources */,
 				5B2105B92D186432005B9596 /* TestCallEmbed.png in Resources */,
 				5B21050D2D1856E5005B9596 /* Border.png in Resources */,
+				5BD7434A2D21AC0B00300565 /* ConnectionCellBase.png in Resources */,
 				5BB5D73F2D19582700C54C0A /* bannerBottomShadow@2x.png in Resources */,
+				5BD7433F2D21A0C900300565 /* chatButtonInset@2x.png in Resources */,
 				5BAE84352D1D916700C021F9 /* DCUniversalTableCell.xib in Resources */,
 				5B2105282D1856E5005B9596 /* DefaultAvatar2.png in Resources */,
 				5B2105122D1856E5005B9596 /* addbarglyph@2x.png in Resources */,
@@ -1096,6 +1132,7 @@
 				5B2105102D1856E5005B9596 /* No-Header@2x.png in Resources */,
 				5B2105202D1856E5005B9596 /* NavigationButton.png in Resources */,
 				5B2105462D1856E5005B9596 /* DescIntroducer.png in Resources */,
+				5BD743472D21A76500300565 /* Group 99.png in Resources */,
 				5B2105372D1856E5005B9596 /* ServerBanner.png in Resources */,
 				5B2105322D1856E5005B9596 /* DirectMessages.png in Resources */,
 				5B21051C2D1856E5005B9596 /* BarButton.png in Resources */,
@@ -1215,6 +1252,7 @@
 				5B2104AD2D18540A005B9596 /* NSString+Base64.m in Sources */,
 				5B2105A32D185B10005B9596 /* DCSettingsViewController.m in Sources */,
 				5B2105962D185B10005B9596 /* DCUser.m in Sources */,
+				5BD7433D2D21914B00300565 /* DCConnectedAccountsCell.m in Sources */,
 				5B2104B12D18540A005B9596 /* WSWebSocket.m in Sources */,
 				5B2105A22D185B10005B9596 /* DCContactViewController.m in Sources */,
 				5B2105992D185B10005B9596 /* DCAppDelegate.m in Sources */,

@@ -27,7 +27,7 @@
     [super viewDidLoad];
 }
 
--(void)setSelectedUser:(DCUser*)user{
+-(void)setSelectedUser:(DCUser*)user {
     //pre-init
     self.view = self.view;
     self.navigationItem.title = user.globalName;
@@ -40,70 +40,99 @@
     if([[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"] == NO)
         self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width / 2.0;
     self.profileImageView.layer.masksToBounds = YES;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSURL* userProfileURL = [NSURL URLWithString: [NSString stringWithFormat:@"https://discordapp.com/api/v9/users/%@/profile?with_mutual_guilds=true&with_mutual_friends=true&with_mutual_friends_count=false", user.snowflake]];
-        NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:userProfileURL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15];
-        [urlRequest setValue:@"no-store" forHTTPHeaderField:@"Cache-Control"];
-        [urlRequest addValue:DCServerCommunicator.sharedInstance.token forHTTPHeaderField:@"Authorization"];
-        [urlRequest addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-        NSHTTPURLResponse *responseCode = nil;
-        
-        NSError *error = nil;
-        NSData *response = [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
-        if(response){
+    
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"] == NO) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSURL *userProfileURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://discordapp.com/api/v9/users/%@/profile?with_mutual_guilds=true&with_mutual_friends=true&with_mutual_friends_count=false", user.snowflake]];
+            NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:userProfileURL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15];
+            [urlRequest setValue:@"no-store" forHTTPHeaderField:@"Cache-Control"];
+            [urlRequest addValue:DCServerCommunicator.sharedInstance.token forHTTPHeaderField:@"Authorization"];
+            [urlRequest addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+            NSHTTPURLResponse *responseCode = nil;
             
-            NSDictionary* parsedResponse = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
-            NSLog(@"%@", parsedResponse);
-            
-            NSDictionary* userProfile = [parsedResponse objectForKey:@"user_profile"];
-            NSDictionary* userInfo = [parsedResponse objectForKey:@"user"];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.pronounLabel.text = [userProfile objectForKey:@"pronouns"];
-                self.descriptionBox.text = [userProfile valueForKey:@"bio"];
-            });
-            
-            NSString *bannerHash = [userInfo objectForKey:@"banner"];
-            NSString *bannerHexCode = [userInfo objectForKey:@"banner_color"];
-            
-            if (bannerHash && ![bannerHash isKindOfClass:[NSNull class]]) {
-                NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://cdn.discordapp.com/banners/%@/%@.png?size=480", [userInfo objectForKey:@"id"], [userInfo objectForKey:@"banner"]]];
-                NSData *data = [NSData dataWithContentsOfURL:url];
+            NSError *error = nil;
+            NSData *response = [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
+            if (response) {
+                NSDictionary *parsedResponse = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+                if (error) {
+                    NSLog(@"Error parsing JSON: %@", error);
+                    return;
+                }
+                
+                NSDictionary *userProfile = [parsedResponse objectForKey:@"user_profile"];
+                NSDictionary *userInfo = [parsedResponse objectForKey:@"user"];
+                
+                self.mutualFriends = [parsedResponse objectForKey:@"mutual_friends"];
+                self.mutualGuilds = [parsedResponse objectForKey:@"mutual_guilds"];
+                self.connectedAccounts = [parsedResponse objectForKey:@"connected_accounts"];
+                
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    self.profileBanner.image = [UIImage imageWithData:data];
-                    
+                    self.pronounLabel.text = [userProfile objectForKey:@"pronouns"];
+                    self.descriptionBox.text = [userProfile valueForKey:@"bio"];
+                    [self.tableView reloadData]; // Reload the table view on the main thread
                 });
                 
-            } else {
-                //this is actual madness
-                if([bannerHexCode isKindOfClass:[NSNull class]]) {
+                NSString *bannerHash = [userInfo objectForKey:@"banner"];
+                NSString *bannerHexCode = [userInfo objectForKey:@"banner_color"];
+                
+                if (bannerHash && ![bannerHash isKindOfClass:[NSNull class]]) {
+                    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://cdn.discordapp.com/banners/%@/%@.png?size=480", [userInfo objectForKey:@"id"], [userInfo objectForKey:@"banner"]]];
+                    NSData *data = [NSData dataWithContentsOfURL:url];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.profileBanner.image = [UIImage imageWithData:data];
+                    });
                 } else {
-                    
-                    UIColor *backgroundColor = [UIColorHex colorWithHexString:bannerHexCode];
-                    if (backgroundColor)
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            self.bannerView.backgroundColor = backgroundColor;
-                            [self.tableView reloadData];
-                        });
+                    if (![bannerHexCode isKindOfClass:[NSNull class]]) {
+                        UIColor *backgroundColor = [UIColorHex colorWithHexString:bannerHexCode];
+                        if (backgroundColor) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                self.bannerView.backgroundColor = backgroundColor;
+                                [self.tableView reloadData];
+                            });
+                        }
+                    }
                 }
+            } else {
             }
-            
-            self.mutualFriends = [parsedResponse objectForKey:@"mutual_friends"];
-            self.mutualGuilds = [parsedResponse objectForKey:@"mutual_guilds"];
-            NSLog(@"%@", self.mutualFriends);
-            
-
-            
-            
-        }
-    });
+        });
+    }
 }
 
 /*table view*/
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    NSLog(@"self.connected acc count you cunt %@", self.connectedAccounts.count);
-    return self.connectedAccounts.count;
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if(self.connectedAccounts.count == 0) {
+        self.noConnections = YES;
+        return 1;
+    } else {
+        self.noConnections = NO;
+        return self.connectedAccounts.count;
+    }
+    return nil;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if(self.noConnections == NO) {
+        NSLog(@"nop");
+        DCConnectedAccountsCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Connection"];
+        
+        NSArray *accountsArray = (NSArray *)self.connectedAccounts;
+        NSLog(@"%@", self.connectedAccounts);
+        NSDictionary *accountDict = accountsArray[indexPath.row];
+        cell.name.text = accountDict[@"name"];
+        cell.type.text = accountDict[@"type"];
+        
+        return cell;
+    } else if(self.noConnections == YES) {
+        NSLog(@"wtf");
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"No-Connection"];
+        if (!cell) cell = UITableViewCell.new;
+        return cell;
+    }
+    return nil;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 120;
 }
 
 
