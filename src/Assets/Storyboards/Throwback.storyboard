@@ -14,67 +14,12 @@
                         <color key="tintColor" red="0.270588249" green="0.35294118520000001" blue="0.70588237050000002" alpha="1" colorSpace="deviceRGB"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="Xn5-1e-sxB" kind="relationship" relationship="rootViewController" id="lmV-JV-7Fh"/>
+                        <segue destination="q7z-ca-fDO" kind="relationship" relationship="rootViewController" id="enM-92-LhH"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="21O-R7-utZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1077" y="-327"/>
-        </scene>
-        <!--Guild List View Controller - Servers-->
-        <scene sceneID="X5d-kk-Uvc">
-            <objects>
-                <tableViewController id="Xn5-1e-sxB" customClass="DCGuildListViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="3HW-fR-rXd">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.1228475765" green="0.1228475765" blue="0.1228475765" alpha="1" colorSpace="calibratedRGB"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Guild Cell" textLabel="yon-TX-x1R" style="IBUITableViewCellStyleDefault" id="ZV5-sF-Hnv">
-                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZV5-sF-Hnv" id="jGn-7L-tgM">
-                                    <rect key="frame" x="0.0" y="0.0" width="300" height="44"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yon-TX-x1R">
-                                            <rect key="frame" x="10" y="0.0" width="280" height="44"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <color key="backgroundColor" red="0.1228475765" green="0.1228475765" blue="0.1228475765" alpha="1" colorSpace="calibratedRGB"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="shadowColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                        </label>
-                                    </subviews>
-                                </tableViewCellContentView>
-                                <color key="backgroundColor" red="0.1228475765" green="0.1228475765" blue="0.1228475765" alpha="1" colorSpace="calibratedRGB"/>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="Xn5-1e-sxB" id="hCd-yg-ORc"/>
-                            <outlet property="delegate" destination="Xn5-1e-sxB" id="4PP-SJ-JuY"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Servers" id="76T-dM-dhM">
-                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="1ca-f8-bM7">
-                            <connections>
-                                <action selector="joinGuildPrompt:" destination="Xn5-1e-sxB" id="jkj-dd-dTD"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Settings" id="1Ki-ae-uj1">
-                            <connections>
-                                <segue destination="1ES-Pi-Wh2" kind="push" identifier="to Settings" id="uri-1N-oeP"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <connections>
-                        <segue destination="jAd-Qq-36w" kind="push" identifier="Guilds to Channels" id="K8h-Y2-FD1"/>
-                    </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Q0t-ag-OUo" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-270" y="-335"/>
         </scene>
         <!--Settings View Controller - Settings-->
         <scene sceneID="lCk-R9-SMU">
@@ -666,6 +611,58 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="m4O-Mf-AA9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2977" y="1161"/>
+        </scene>
+        <!--Guild List View Controller - Servers-->
+        <scene sceneID="rzG-fR-TIf">
+            <objects>
+                <tableViewController id="q7z-ca-fDO" customClass="DCGuildListViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="UDG-qo-01P">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.1228475765" green="0.1228475765" blue="0.1228475765" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Guild Cell" textLabel="aJ6-AJ-imw" style="IBUITableViewCellStyleDefault" id="KeA-MK-rvi">
+                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KeA-MK-rvi" id="mmg-mD-dQm">
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="44"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aJ6-AJ-imw">
+                                            <rect key="frame" x="10" y="0.0" width="280" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <color key="backgroundColor" red="0.1228475765" green="0.1228475765" blue="0.1228475765" alpha="1" colorSpace="calibratedRGB"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="shadowColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" red="0.1228475765" green="0.1228475765" blue="0.1228475765" alpha="1" colorSpace="calibratedRGB"/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="q7z-ca-fDO" id="vJF-ik-DCg"/>
+                            <outlet property="delegate" destination="q7z-ca-fDO" id="unb-zW-dUv"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Servers" id="vHP-5g-Q5s">
+                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="KGt-n0-uCD">
+                            <connections>
+                                <action selector="joinGuildPrompt:" destination="q7z-ca-fDO" id="xG4-HI-K1J"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Settings" id="qEe-n7-fb4"/>
+                    </navigationItem>
+                    <connections>
+                        <segue destination="1ES-Pi-Wh2" kind="push" identifier="to Settings" id="0AB-Hm-itI"/>
+                        <segue destination="jAd-Qq-36w" kind="push" identifier="Guilds to Channels" id="D0i-UP-Ra6"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wvl-dy-fQL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-30" y="-295"/>
         </scene>
     </scenes>
     <resources>

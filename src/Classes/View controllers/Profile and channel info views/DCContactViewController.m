@@ -105,12 +105,15 @@
 
 /*table view*/
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if(self.connectedAccounts.count == 0) {
-        self.noConnections = YES;
-        return 1;
-    } else {
-        self.noConnections = NO;
-        return self.connectedAccounts.count;
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"] == NO) {
+        if(self.connectedAccounts.count == 0) {
+            self.noConnections = YES;
+            return 1;
+        } else {
+            self.noConnections = NO;
+            return self.connectedAccounts.count;
+        }
+        return nil;
     }
     return nil;
 }
