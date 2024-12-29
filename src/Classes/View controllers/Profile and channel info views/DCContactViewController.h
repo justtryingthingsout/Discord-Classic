@@ -18,5 +18,9 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *pronounLabel;
 @property (weak, nonatomic) IBOutlet UIButton *chatButton;
+
 @property NSString* snowflake;
+@property NSDictionary* connectedAccounts;
+@property NSDictionary* mutualGuilds;
+@property NSDictionary* mutualFriends;
 @end

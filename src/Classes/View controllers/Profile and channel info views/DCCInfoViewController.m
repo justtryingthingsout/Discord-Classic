@@ -35,39 +35,50 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    DCRecipientTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Members cell"];
     NSDictionary *userIndex = [DCServerCommunicator.sharedInstance.selectedChannel.users objectAtIndex:indexPath.row];
-
-    
-
-    
-    if([userIndex valueForKey:@"avatar"] == nil) {
-        cell.userPFP.image = [UIImage imageNamed:@"defaultAvatar1"];
-    } else {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://cdn.discordapp.com/avatars/%@/%@.png?size=80", [userIndex valueForKey:@"snowflake"], [userIndex valueForKey:@"avatar"]]];
-            NSData *data = [NSData dataWithContentsOfURL:url];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                cell.userPFP.image = [UIImage imageWithData:data];
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"] == NO) {
+        DCRecipientTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Members cell"];
+        
+        
+        
+        
+        if([userIndex valueForKey:@"avatar"] == nil) {
+            cell.userPFP.image = [UIImage imageNamed:@"defaultAvatar1"];
+        } else {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://cdn.discordapp.com/avatars/%@/%@.png?size=80", [userIndex valueForKey:@"snowflake"], [userIndex valueForKey:@"avatar"]]];
+                NSData *data = [NSData dataWithContentsOfURL:url];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    cell.userPFP.image = [UIImage imageWithData:data];
+                });
             });
-        });
-    }
-    
-    id username = [userIndex valueForKey:@"username"];
-    if ([username isKindOfClass:[NSString class]]) {
-        cell.userName.text = (NSString *)username;
+        }
+        
+        id username = [userIndex valueForKey:@"username"];
+        if ([username isKindOfClass:[NSString class]]) {
+            cell.userName.text = (NSString *)username;
+        } else {
+            cell.userName.text = @"Deleted User";
+            cell.userPFP.image = [UIImage imageNamed:@"defaultAvatar1"];
+        }
+        
+        cell.userPFP.layer.cornerRadius = cell.userPFP.frame.size.width / 2.0;
+        cell.userPFP.layer.masksToBounds = YES;
+        return cell;
     } else {
-        cell.userName.text = @"Deleted User";
-        cell.userPFP.image = [UIImage imageNamed:@"defaultAvatar1"];
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Members Cell"];
+        if (!cell) cell = UITableViewCell.new;
+        // Configure the cell...
+        cell.textLabel.text = [userIndex valueForKey:@"handle"];
+        return cell;
     }
+    return nil;
     
-    cell.userPFP.layer.cornerRadius = cell.userPFP.frame.size.width / 2.0;
-    cell.userPFP.layer.masksToBounds = YES;
-    return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
 
 }
 

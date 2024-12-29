@@ -31,7 +31,6 @@
 - (void)dismissNotification;
 @end
 
-
 @implementation DCServerCommunicator
 
 UIActivityIndicatorView *spinner;
@@ -50,13 +49,12 @@ UIActivityIndicatorView *spinner;
         
         sharedInstance.gatewayURL = @"wss://gateway.discord.gg/?encoding=json&v=9";
         
+        sharedInstance.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
         sharedInstance.token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
+        
         if ([sharedInstance.token length] == 0) {
             return;
         }
-        
-        sharedInstance.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"oldMode"];
-        sharedInstance.token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
         
         if(sharedInstance.oldMode == YES) {
             sharedInstance.alertView = [UIAlertView.alloc initWithTitle:@"Connecting" message:@"\n" delegate:self cancelButtonTitle:nil otherButtonTitles:nil];
@@ -69,7 +67,6 @@ UIActivityIndicatorView *spinner;
         } else {
             [sharedInstance showNonIntrusiveNotificationWithTitle:@"Connecting..."];
         }
-        
         
     });
     
@@ -166,6 +163,7 @@ UIActivityIndicatorView *spinner;
 }
 
 - (void)startCommunicator{
+    [self.alertView show];
 	self.didAuthenticate = false;
 	self.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
 	if(self.token!=nil){
@@ -566,6 +564,7 @@ UIActivityIndicatorView *spinner;
 					if([t isEqualToString:@"RESUMED"]){
 						weakSelf.didAuthenticate = true;
 						dispatch_async(dispatch_get_main_queue(), ^{
+                            [weakSelf.alertView dismissWithClickedButtonIndex:0 animated:YES];
 							[weakSelf dismissNotification];
 						});
 					}

@@ -19,7 +19,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	if(indexPath.row == 1 && indexPath.section == 1){
-		[DCTools joinGuild:@"A93uJh3"];
+		[DCTools joinGuild:@"9WjXhTPyRf"];
 		[self performSegueWithIdentifier:@"Settings to Test Channel" sender:self];
 	}
 }
@@ -42,7 +42,7 @@
 		
 		if ([chatViewController isKindOfClass:DCChatViewController.class]){
 			
-			DCServerCommunicator.sharedInstance.selectedChannel = [DCServerCommunicator.sharedInstance.channels valueForKey:@"1162446567488364627"];
+			DCServerCommunicator.sharedInstance.selectedChannel = [DCServerCommunicator.sharedInstance.channels valueForKey:@"1184464173795651594"];
 			
 			//Initialize messages
 			chatViewController.messages = NSMutableArray.new;

@@ -160,6 +160,9 @@
 		5BC7F30A2D20BB3C00CA6F3F /* O-DCUniversalTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F3052D20BB3C00CA6F3F /* O-DCUniversalTableCell.xib */; };
 		5BC7F30D2D20BC0500CA6F3F /* oldDiscord.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F30B2D20BC0500CA6F3F /* oldDiscord.png */; };
 		5BC7F30E2D20BC0500CA6F3F /* oldDiscord@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F30C2D20BC0500CA6F3F /* oldDiscord@2x.png */; };
+		5BC7F3102D20C97300CA6F3F /* oldTextFieldBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F30F2D20C97300CA6F3F /* oldTextFieldBG.png */; };
+		5BC7F3122D213F7B00CA6F3F /* chatButtonInset.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BC7F3112D213F7B00CA6F3F /* chatButtonInset.png */; };
+		5BC7F31F2D2148F100CA6F3F /* DCMutualGuildTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BC7F31E2D2148F100CA6F3F /* DCMutualGuildTableViewController.m */; };
 		5BDD37422D2038DF00C6482C /* OldTitlebarTexture.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD37402D2038DF00C6482C /* OldTitlebarTexture.png */; };
 		5BDD37432D2038DF00C6482C /* OldTitlebarTexture@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD37412D2038DF00C6482C /* OldTitlebarTexture@2x.png */; };
 		5BDD37462D20402700C6482C /* DCPrivateChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BDD37452D20402700C6482C /* DCPrivateChannelTableCell.m */; };
@@ -364,6 +367,10 @@
 		5BC7F3052D20BB3C00CA6F3F /* O-DCUniversalTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "O-DCUniversalTableCell.xib"; sourceTree = "<group>"; };
 		5BC7F30B2D20BC0500CA6F3F /* oldDiscord.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = oldDiscord.png; sourceTree = "<group>"; };
 		5BC7F30C2D20BC0500CA6F3F /* oldDiscord@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "oldDiscord@2x.png"; sourceTree = "<group>"; };
+		5BC7F30F2D20C97300CA6F3F /* oldTextFieldBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = oldTextFieldBG.png; sourceTree = "<group>"; };
+		5BC7F3112D213F7B00CA6F3F /* chatButtonInset.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chatButtonInset.png; sourceTree = "<group>"; };
+		5BC7F31D2D2148F100CA6F3F /* DCMutualGuildTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMutualGuildTableViewController.h; sourceTree = "<group>"; };
+		5BC7F31E2D2148F100CA6F3F /* DCMutualGuildTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMutualGuildTableViewController.m; sourceTree = "<group>"; };
 		5BDD37402D2038DF00C6482C /* OldTitlebarTexture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = OldTitlebarTexture.png; sourceTree = "<group>"; };
 		5BDD37412D2038DF00C6482C /* OldTitlebarTexture@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "OldTitlebarTexture@2x.png"; sourceTree = "<group>"; };
 		5BDD37442D20402700C6482C /* DCPrivateChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCPrivateChannelTableCell.h; sourceTree = "<group>"; };
@@ -565,6 +572,8 @@
 		5B2104BE2D1856E5005B9596 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				5BC7F3112D213F7B00CA6F3F /* chatButtonInset.png */,
+				5BC7F30F2D20C97300CA6F3F /* oldTextFieldBG.png */,
 				5BDD374E2D20496500C6482C /* sinkInMask.png */,
 				5BDD374F2D20496500C6482C /* sinkInMask@2x.png */,
 				5BDD37472D20485300C6482C /* States */,
@@ -875,6 +884,7 @@
 		5B2105842D185B10005B9596 /* Profile and channel info views */ = {
 			isa = PBXGroup;
 			children = (
+				5BC7F31C2D2148DB00CA6F3F /* Subpages */,
 				5B2105852D185B10005B9596 /* DCCInfoViewController.h */,
 				5B2105862D185B10005B9596 /* DCCInfoViewController.m */,
 				5B2105872D185B10005B9596 /* DCContactViewController.h */,
@@ -960,6 +970,15 @@
 			path = OldMode;
 			sourceTree = "<group>";
 		};
+		5BC7F31C2D2148DB00CA6F3F /* Subpages */ = {
+			isa = PBXGroup;
+			children = (
+				5BC7F31D2D2148F100CA6F3F /* DCMutualGuildTableViewController.h */,
+				5BC7F31E2D2148F100CA6F3F /* DCMutualGuildTableViewController.m */,
+			);
+			path = Subpages;
+			sourceTree = "<group>";
+		};
 		5BDD37472D20485300C6482C /* States */ = {
 			isa = PBXGroup;
 			children = (
@@ -1041,6 +1060,7 @@
 				5B21051F2D1856E5005B9596 /* BarButtonPressed@2x.png in Resources */,
 				5B2105AB2D185CDC005B9596 /* iOS-7.storyboard in Resources */,
 				5B2104BD2D1856A7005B9596 /* DCChatVideoAttachment.xib in Resources */,
+				5BC7F3122D213F7B00CA6F3F /* chatButtonInset.png in Resources */,
 				5BC7F3072D20BB3C00CA6F3F /* O-DCChatReplyTableCell.xib in Resources */,
 				5B21052D2D1856E5005B9596 /* DefaultAvatar4@2x.png in Resources */,
 				5B21053C2D1856E5005B9596 /* PLVideoOverlayPlayDown.png in Resources */,
@@ -1057,6 +1077,7 @@
 				5B2105122D1856E5005B9596 /* addbarglyph@2x.png in Resources */,
 				5BB5D7432D195B3400C54C0A /* newMessages.png in Resources */,
 				5BDD37502D20496500C6482C /* sinkInMask.png in Resources */,
+				5BC7F3102D20C97300CA6F3F /* oldTextFieldBG.png in Resources */,
 				5B2105242D1856E5005B9596 /* DefaultAvatar0.png in Resources */,
 				5BA0983F2D205E15009F7726 /* offline.png in Resources */,
 				5B21054B2D1856E5005B9596 /* TbarBG.png in Resources */,
@@ -1201,6 +1222,7 @@
 				5B2105982D185B10005B9596 /* DCChatVideoAttachment.m in Sources */,
 				5B21059C2D185B10005B9596 /* DCChannelListViewController.m in Sources */,
 				5BAE842B2D1C84AE00C021F9 /* UIColorHex.m in Sources */,
+				5BC7F31F2D2148F100CA6F3F /* DCMutualGuildTableViewController.m in Sources */,
 				5B21059A2D185B10005B9596 /* DCViewController.m in Sources */,
 				5B2105972D185B10005B9596 /* DCChatTableCell.m in Sources */,
 				5B2105C22D18C116005B9596 /* DCGuildTableViewCell.m in Sources */,
@@ -1297,8 +1319,9 @@
 				);
 				INFOPLIST_FILE = Assets/Plists/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos6.1;
+				SDKROOT = iphoneos7.1;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s";
@@ -1325,8 +1348,9 @@
 				);
 				INFOPLIST_FILE = Assets/Plists/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos6.1;
+				SDKROOT = iphoneos7.1;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s";
