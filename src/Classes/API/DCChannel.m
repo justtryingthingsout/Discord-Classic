@@ -330,6 +330,7 @@ static dispatch_queue_t channel_send_queue;
         dispatch_sync(dispatch_get_main_queue(), ^{
             NSError *error = nil;
             NSArray* parsedResponse = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+            NSLog(@"%@", parsedResponse);
             
             /*if(parsedResponse.count > 0)
                 for(NSDictionary* jsonMessage in parsedResponse)

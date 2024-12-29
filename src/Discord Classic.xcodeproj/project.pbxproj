@@ -148,6 +148,8 @@
 		5BB2C3E52D21D7CE002432EE /* absent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB2C3E22D21D7CE002432EE /* absent@2x.png */; };
 		5BB2C3E62D21D7CE002432EE /* dnd@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB2C3E32D21D7CE002432EE /* dnd@2x.png */; };
 		5BB2C3E72D21D7CE002432EE /* online@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB2C3E42D21D7CE002432EE /* online@2x.png */; };
+		5BB2C3E92D21E8D7002432EE /* PFPInset.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB2C3E82D21E8D6002432EE /* PFPInset.png */; };
+		5BB2C3EB2D21E9A1002432EE /* PFPInset@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB2C3EA2D21E9A1002432EE /* PFPInset@2x.png */; };
 		5BB5D7362D19545B00C54C0A /* privateGuildLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D7342D19545B00C54C0A /* privateGuildLogo.png */; };
 		5BB5D7372D19545B00C54C0A /* privateGuildLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D7352D19545B00C54C0A /* privateGuildLogo@2x.png */; };
 		5BB5D73A2D1956F700C54C0A /* bannerTopShadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D7382D1956F700C54C0A /* bannerTopShadow.png */; };
@@ -360,6 +362,8 @@
 		5BB2C3E22D21D7CE002432EE /* absent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "absent@2x.png"; sourceTree = "<group>"; };
 		5BB2C3E32D21D7CE002432EE /* dnd@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dnd@2x.png"; sourceTree = "<group>"; };
 		5BB2C3E42D21D7CE002432EE /* online@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "online@2x.png"; sourceTree = "<group>"; };
+		5BB2C3E82D21E8D6002432EE /* PFPInset.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PFPInset.png; sourceTree = "<group>"; };
+		5BB2C3EA2D21E9A1002432EE /* PFPInset@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PFPInset@2x.png"; sourceTree = "<group>"; };
 		5BB5D7342D19545B00C54C0A /* privateGuildLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = privateGuildLogo.png; path = ../privateGuildLogo.png; sourceTree = "<group>"; };
 		5BB5D7352D19545B00C54C0A /* privateGuildLogo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "privateGuildLogo@2x.png"; path = "../privateGuildLogo@2x.png"; sourceTree = "<group>"; };
 		5BB5D7382D1956F700C54C0A /* bannerTopShadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bannerTopShadow.png; sourceTree = "<group>"; };
@@ -710,6 +714,8 @@
 		5B2104F72D1856E5005B9596 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				5BB2C3EA2D21E9A1002432EE /* PFPInset@2x.png */,
+				5BB2C3E82D21E8D6002432EE /* PFPInset.png */,
 				5B2104F82D1856E5005B9596 /* DirectMessages.png */,
 				5B2104F92D1856E5005B9596 /* DirectMessages@2x.png */,
 				5B2104FA2D1856E5005B9596 /* Helpers */,
@@ -1099,6 +1105,7 @@
 				5B2105B92D186432005B9596 /* TestCallEmbed.png in Resources */,
 				5B21050D2D1856E5005B9596 /* Border.png in Resources */,
 				5BD7434A2D21AC0B00300565 /* ConnectionCellBase.png in Resources */,
+				5BB2C3E92D21E8D7002432EE /* PFPInset.png in Resources */,
 				5BB5D73F2D19582700C54C0A /* bannerBottomShadow@2x.png in Resources */,
 				5BD7433F2D21A0C900300565 /* chatButtonInset@2x.png in Resources */,
 				5BAE84352D1D916700C021F9 /* DCUniversalTableCell.xib in Resources */,
@@ -1125,6 +1132,7 @@
 				5BC7F30E2D20BC0500CA6F3F /* oldDiscord@2x.png in Resources */,
 				5B2105312D1856E5005B9596 /* border.png in Resources */,
 				5B2105102D1856E5005B9596 /* No-Header@2x.png in Resources */,
+				5BB2C3EB2D21E9A1002432EE /* PFPInset@2x.png in Resources */,
 				5B2105202D1856E5005B9596 /* NavigationButton.png in Resources */,
 				5B2105462D1856E5005B9596 /* DescIntroducer.png in Resources */,
 				5B2105372D1856E5005B9596 /* ServerBanner.png in Resources */,
