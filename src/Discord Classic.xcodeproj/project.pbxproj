@@ -145,6 +145,9 @@
 		5BAE84352D1D916700C021F9 /* DCUniversalTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BAE84342D1D916700C021F9 /* DCUniversalTableCell.xib */; };
 		5BAE843A2D1DE55500C021F9 /* pinMessage.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BAE84382D1DE55500C021F9 /* pinMessage.png */; };
 		5BAE843B2D1DE55500C021F9 /* pinMessage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BAE84392D1DE55500C021F9 /* pinMessage@2x.png */; };
+		5BB2C3E52D21D7CE002432EE /* absent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB2C3E22D21D7CE002432EE /* absent@2x.png */; };
+		5BB2C3E62D21D7CE002432EE /* dnd@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB2C3E32D21D7CE002432EE /* dnd@2x.png */; };
+		5BB2C3E72D21D7CE002432EE /* online@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB2C3E42D21D7CE002432EE /* online@2x.png */; };
 		5BB5D7362D19545B00C54C0A /* privateGuildLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D7342D19545B00C54C0A /* privateGuildLogo.png */; };
 		5BB5D7372D19545B00C54C0A /* privateGuildLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D7352D19545B00C54C0A /* privateGuildLogo@2x.png */; };
 		5BB5D73A2D1956F700C54C0A /* bannerTopShadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BB5D7382D1956F700C54C0A /* bannerTopShadow.png */; };
@@ -354,6 +357,9 @@
 		5BAE84342D1D916700C021F9 /* DCUniversalTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DCUniversalTableCell.xib; sourceTree = "<group>"; };
 		5BAE84382D1DE55500C021F9 /* pinMessage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pinMessage.png; sourceTree = "<group>"; };
 		5BAE84392D1DE55500C021F9 /* pinMessage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pinMessage@2x.png"; sourceTree = "<group>"; };
+		5BB2C3E22D21D7CE002432EE /* absent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "absent@2x.png"; sourceTree = "<group>"; };
+		5BB2C3E32D21D7CE002432EE /* dnd@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dnd@2x.png"; sourceTree = "<group>"; };
+		5BB2C3E42D21D7CE002432EE /* online@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "online@2x.png"; sourceTree = "<group>"; };
 		5BB5D7342D19545B00C54C0A /* privateGuildLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = privateGuildLogo.png; path = ../privateGuildLogo.png; sourceTree = "<group>"; };
 		5BB5D7352D19545B00C54C0A /* privateGuildLogo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "privateGuildLogo@2x.png"; path = "../privateGuildLogo@2x.png"; sourceTree = "<group>"; };
 		5BB5D7382D1956F700C54C0A /* bannerTopShadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bannerTopShadow.png; sourceTree = "<group>"; };
@@ -999,6 +1005,9 @@
 		5BDD37472D20485300C6482C /* States */ = {
 			isa = PBXGroup;
 			children = (
+				5BB2C3E22D21D7CE002432EE /* absent@2x.png */,
+				5BB2C3E32D21D7CE002432EE /* dnd@2x.png */,
+				5BB2C3E42D21D7CE002432EE /* online@2x.png */,
 				5B81E6DD2D20656200E0C4BE /* offline@2x.png */,
 				5BA0983E2D205E15009F7726 /* offline.png */,
 				5BDD37482D20486500C6482C /* absent.png */,
@@ -1095,11 +1104,13 @@
 				5BAE84352D1D916700C021F9 /* DCUniversalTableCell.xib in Resources */,
 				5B2105282D1856E5005B9596 /* DefaultAvatar2.png in Resources */,
 				5B2105122D1856E5005B9596 /* addbarglyph@2x.png in Resources */,
+				5BB2C3E52D21D7CE002432EE /* absent@2x.png in Resources */,
 				5BB5D7432D195B3400C54C0A /* newMessages.png in Resources */,
 				5BDD37502D20496500C6482C /* sinkInMask.png in Resources */,
 				5BC7F3102D20C97300CA6F3F /* oldTextFieldBG.png in Resources */,
 				5B2105242D1856E5005B9596 /* DefaultAvatar0.png in Resources */,
 				5BA0983F2D205E15009F7726 /* offline.png in Resources */,
+				5BB2C3E62D21D7CE002432EE /* dnd@2x.png in Resources */,
 				5B21054B2D1856E5005B9596 /* TbarBG.png in Resources */,
 				5B21051B2D1856E5005B9596 /* Sidebar_glyph@2x.png in Resources */,
 				5B21053F2D1856E5005B9596 /* DirectMessages.png in Resources */,
@@ -1163,6 +1174,7 @@
 				5BB5D7442D195B3400C54C0A /* newMessages@2x.png in Resources */,
 				5B21052B2D1856E5005B9596 /* DefaultAvatar3@2x.png in Resources */,
 				5B21054A2D1856E5005B9596 /* separator.png in Resources */,
+				5BB2C3E72D21D7CE002432EE /* online@2x.png in Resources */,
 				5B2105482D1856E5005B9596 /* Discord.png in Resources */,
 				5B2105402D1856E5005B9596 /* DirectMessages@2x.png in Resources */,
 				5B2105302D1856E5005B9596 /* Default-568h@2x.png in Resources */,
