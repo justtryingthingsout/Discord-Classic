@@ -12,7 +12,6 @@
 #import "DCServerCommunicator.h"
 #import "UIColorHex.h"
 #import "DCConnectedAccountsCell.h"
-
 @interface DCContactViewController : UITableViewController
 
 -(void)setSelectedUser:(DCUser*)user;
@@ -23,6 +22,4 @@
 @property bool noConnections;
 @property NSString* snowflake;
 @property NSDictionary* connectedAccounts;
-@property NSDictionary* mutualGuilds;
-@property NSDictionary* mutualFriends;
 @end

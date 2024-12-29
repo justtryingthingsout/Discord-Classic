@@ -223,7 +223,7 @@ static dispatch_queue_t channel_send_queue;
         if (error) {
             //NSLog(@"Error sending video: %@", error.localizedDescription);
         } else {
-            //NSLog(@"Response: %@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+            NSLog(@"Response: %@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
         }
         
         dispatch_sync(dispatch_get_main_queue(), ^{

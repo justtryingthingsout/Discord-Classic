@@ -43,7 +43,7 @@
     
     if([[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"] == NO) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSURL *userProfileURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://discordapp.com/api/v9/users/%@/profile?with_mutual_guilds=true&with_mutual_friends=true&with_mutual_friends_count=false", user.snowflake]];
+            NSURL *userProfileURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://discordapp.com/api/v9/users/%@/profile?with_mutual_guilds=false&with_mutual_friends=false&with_mutual_friends_count=false", user.snowflake]];
             NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:userProfileURL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15];
             [urlRequest setValue:@"no-store" forHTTPHeaderField:@"Cache-Control"];
             [urlRequest addValue:DCServerCommunicator.sharedInstance.token forHTTPHeaderField:@"Authorization"];
@@ -62,8 +62,6 @@
                 NSDictionary *userProfile = [parsedResponse objectForKey:@"user_profile"];
                 NSDictionary *userInfo = [parsedResponse objectForKey:@"user"];
                 
-                self.mutualFriends = [parsedResponse objectForKey:@"mutual_friends"];
-                self.mutualGuilds = [parsedResponse objectForKey:@"mutual_guilds"];
                 self.connectedAccounts = [parsedResponse objectForKey:@"connected_accounts"];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -98,6 +96,13 @@
     }
 }
 
+
+
+//buttons
+- (IBAction)throwToChat:(id)sender {
+    [self performSegueWithIdentifier:@"about to chat" sender:self];
+}
+
 /*table view*/
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(self.connectedAccounts.count == 0) {
@@ -112,18 +117,65 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if(self.noConnections == NO) {
-        NSLog(@"nop");
         DCConnectedAccountsCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Connection"];
         
         NSArray *accountsArray = (NSArray *)self.connectedAccounts;
-        NSLog(@"%@", self.connectedAccounts);
         NSDictionary *accountDict = accountsArray[indexPath.row];
         cell.name.text = accountDict[@"name"];
-        cell.type.text = accountDict[@"type"];
+        
+        //steam, playstation, domain
+        
+        if([accountDict[@"type"] isEqualToString:@"youtube"]) {
+            cell.type.text = @"YouTube";
+            cell.typeIcon.image = [UIImage imageNamed:@"C-YouTube"];
+            
+        } else if([accountDict[@"type"] isEqualToString:@"twitter"]) {
+            cell.type.text = @"Twitter";
+            cell.typeIcon.image = [UIImage imageNamed:@"C-Twitter"];
+            
+        } else if([accountDict[@"type"] isEqualToString:@"bluesky"]) {
+            cell.type.text = @"BlueSky";
+            cell.typeIcon.image = [UIImage imageNamed:@"C-BlueSky"];
+            
+        } else if([accountDict[@"type"] isEqualToString:@"twitch"]) {
+            cell.type.text = @"Twitch";
+            cell.typeIcon.image = [UIImage imageNamed:@"C-Twitch"];
+            
+        } else if([accountDict[@"type"] isEqualToString:@"reddit"]) {
+            cell.type.text = @"Reddit";
+            cell.typeIcon.image = [UIImage imageNamed:@"C-Reddit"];
+            
+        } else if([accountDict[@"type"] isEqualToString:@"xbox"]) {
+            cell.type.text = @"Xbox-Live";
+            cell.typeIcon.image = [UIImage imageNamed:@"C-Xbox"];
+            
+        } else if([accountDict[@"type"] isEqualToString:@"steam"]) {
+            cell.type.text = @"Steam";
+            cell.typeIcon.image = [UIImage imageNamed:@"C-Steam"];
+            
+        } else if([accountDict[@"type"] isEqualToString:@"playstation"]) {
+            cell.type.text = @"PlayStationNetwork";
+            cell.typeIcon.image = [UIImage imageNamed:@"C-PSN"];
+            
+        } else if([accountDict[@"type"] isEqualToString:@"domain"]) {
+            cell.type.text = @"Domain/Website";
+            cell.typeIcon.image = [UIImage imageNamed:@"C-Web"];
+        
+        } else if([accountDict[@"type"] isEqualToString:@"spotify"]) {
+            cell.type.text = @"Spotify";
+            cell.typeIcon.image = [UIImage imageNamed:@"C-Spotify"];
+        
+        } else if([accountDict[@"type"] isEqualToString:@"github"]) {
+            cell.type.text = @"GitHub";
+            cell.typeIcon.image = [UIImage imageNamed:@"C-GitHub"];
+        
+        } else {
+             cell.typeIcon.image = [UIImage imageNamed:@"C-Web"];
+            cell.type.text = accountDict[@"type"];
+        }
         
         return cell;
     } else if(self.noConnections == YES) {
-        NSLog(@"wtf");
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"No-Connection"];
         if (!cell) cell = UITableViewCell.new;
         return cell;
@@ -147,10 +199,6 @@
     } else {
         return @"offline";
     }
-}
-
-- (IBAction)throwToChat:(id)sender {
-    [self performSegueWithIdentifier:@"about to chat" sender:self];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
