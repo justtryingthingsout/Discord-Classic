@@ -469,6 +469,7 @@ UIActivityIndicatorView *spinner;
                                     NSMutableString* fullChannelName = [@"" mutableCopy];
                                     
                                     NSArray* privateChannelMembers = [privateChannel valueForKey:@"recipients"];
+                                    
                                     for(NSDictionary* privateChannelMember in privateChannelMembers){
                                         //add comma between member names
                                         if([privateChannelMembers indexOfObject:privateChannelMember] != 0)
@@ -545,6 +546,7 @@ UIActivityIndicatorView *spinner;
                             } else {
                                 // Cache user if not already in loadedUsers
                                 NSDictionary *userDict = [d valueForKey:@"user"];
+                                NSLog(@"%@", userDict);
                                 if (userDict) {
                                     user = [DCTools convertJsonUser:userDict cache:YES];
                                     [weakSelf.loadedUsers setObject:user forKey:userId];
