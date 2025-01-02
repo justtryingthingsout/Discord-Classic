@@ -34,7 +34,7 @@
             </objects>
             <point key="canvasLocation" x="-1147" y="-40"/>
         </scene>
-        <!--Introduction Page - bag.xml-->
+        <!--Introduction Page - Welcome-->
         <scene sceneID="EZs-Wv-Cwe">
             <objects>
                 <tableViewController id="Hrc-Cx-cle" customClass="DCIntroductionPage" sceneMemberID="viewController">
@@ -57,7 +57,7 @@
                                 <cells/>
                             </tableViewSection>
                             <tableViewSection headerTitle="Log in" id="ywP-bU-8ga">
-                                <string key="footerTitle">Make sure to paste your token. Information on how to get the token of your account is on the welcome page. If you ever change your mind about what account you want to use in this app, or if you changed passwords, you can always re-change the token in the settings app.</string>
+                                <string key="footerTitle">Make sure to paste your token. If you ever change your mind about what account you want to use in this app, or if you changed passwords, you can always re-change the token in the settings app.</string>
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="tiH-bY-mXv">
                                         <rect key="frame" x="0.0" y="184" width="320" height="46"/>
@@ -101,7 +101,7 @@
                             <outlet property="delegate" destination="Hrc-Cx-cle" id="Oks-q6-648"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="bag.xml" id="ywH-G4-Zvp"/>
+                    <navigationItem key="navigationItem" title="Welcome" id="ywH-G4-Zvp"/>
                     <connections>
                         <outlet property="loginButton" destination="3lu-lm-mPq" id="dpf-tQ-NiS"/>
                         <outlet property="tokenInputField" destination="hOo-2c-eow" id="wUY-YQ-l5W"/>
@@ -268,7 +268,7 @@
             <objects>
                 <tableViewController id="1M6-vL-7Fc" customClass="DCContactViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="50" sectionHeaderHeight="22" sectionFooterHeight="22" id="SLD-TF-CXO">
-                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.12156862745098039" green="0.12549019607843137" blue="0.14117647058823529" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="separatorColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="calibratedRGB"/>
@@ -507,7 +507,7 @@
             <objects>
                 <tableViewController id="Q91-6Y-rD0" customClass="DCCInfoViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="52" sectionHeaderHeight="22" sectionFooterHeight="22" id="PLX-qY-QsQ">
-                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.15686274509803921" green="0.16078431372549018" blue="0.1803921568627451" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
@@ -856,6 +856,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="YEs-zn-a75"/>
+        <segue reference="m4a-0d-dst"/>
     </inferredMetricsTieBreakers>
 </document>

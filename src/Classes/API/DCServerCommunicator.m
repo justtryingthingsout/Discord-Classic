@@ -281,7 +281,11 @@ UIActivityIndicatorView *spinner;
                             
                             //Grab session id (used for RESUME) and user id
                             weakSelf.sessionId = [NSString stringWithFormat:@"%@", [d valueForKeyPath:@"session_id"]];
+                            //THIS IS US, hey hey hey this is MEEEEE BITCCCH MORTY DID YOU HEAR, THIS IS ME, AND MY USER ID, YES MORT(BUÜÜÜRPP)Y, THIS IS ME. BITCCHHHH. 100 YEARS OF DISCORD CLASSIC MORTYY YOU AND MEEEE
                             weakSelf.snowflake = [NSString stringWithFormat:@"%@", [d valueForKeyPath:@"user.id"]];
+                            
+                            NSLog(@" AAATAEAEEAEAEEAEA %@", [d valueForKeyPath:@"user.id"]);
+                            
                             
                             weakSelf.userChannelSettings = NSMutableDictionary.new;
                             for(NSDictionary* guildSettings in [d valueForKey:@"user_guild_settings"])
@@ -546,7 +550,6 @@ UIActivityIndicatorView *spinner;
                             } else {
                                 // Cache user if not already in loadedUsers
                                 NSDictionary *userDict = [d valueForKey:@"user"];
-                                NSLog(@"%@", userDict);
                                 if (userDict) {
                                     user = [DCTools convertJsonUser:userDict cache:YES];
                                     [weakSelf.loadedUsers setObject:user forKey:userId];
