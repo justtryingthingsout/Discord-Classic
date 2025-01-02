@@ -284,8 +284,9 @@ UIActivityIndicatorView *spinner;
                             //THIS IS US, hey hey hey this is MEEEEE BITCCCH MORTY DID YOU HEAR, THIS IS ME, AND MY USER ID, YES MORT(BUÜÜÜRPP)Y, THIS IS ME. BITCCHHHH. 100 YEARS OF DISCORD CLASSIC MORTYY YOU AND MEEEE
                             weakSelf.snowflake = [NSString stringWithFormat:@"%@", [d valueForKeyPath:@"user.id"]];
                             
-                            NSLog(@" AAATAEAEEAEAEEAEA %@", [d valueForKeyPath:@"user.id"]);
                             
+                            
+
                             
                             weakSelf.userChannelSettings = NSMutableDictionary.new;
                             for(NSDictionary* guildSettings in [d valueForKey:@"user_guild_settings"])
@@ -293,6 +294,8 @@ UIActivityIndicatorView *spinner;
                                     [weakSelf.userChannelSettings setValue:@((bool)[channelSetting valueForKey:@"muted"]) forKey:[channelSetting valueForKey:@"channel_id"]];
                             
                             //Get user DMs and DM groups
+                            
+                            
                             //The user's DMs are treated like a guild, where the channels are different DM/groups
                             DCGuild* privateGuild = DCGuild.new;
                             privateGuild.name = @"Direct Messages";

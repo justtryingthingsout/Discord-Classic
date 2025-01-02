@@ -179,7 +179,6 @@
 		5BDD37502D20496500C6482C /* sinkInMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD374E2D20496500C6482C /* sinkInMask.png */; };
 		5BDD37512D20496500C6482C /* sinkInMask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD374F2D20496500C6482C /* sinkInMask@2x.png */; };
 		5BEAA6ED2D26097200CBDB2A /* Experimental.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BEAA6EC2D26097200CBDB2A /* Experimental.storyboard */; };
-		5BEAA6EF2D26B76400CBDB2A /* File in Resources */ = {isa = PBXBuildFile; fileRef = 5BEAA6EE2D26B76400CBDB2A /* File */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -397,7 +396,6 @@
 		5BDD374E2D20496500C6482C /* sinkInMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sinkInMask.png; sourceTree = "<group>"; };
 		5BDD374F2D20496500C6482C /* sinkInMask@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sinkInMask@2x.png"; sourceTree = "<group>"; };
 		5BEAA6EC2D26097200CBDB2A /* Experimental.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Experimental.storyboard; sourceTree = "<group>"; };
-		5BEAA6EE2D26B76400CBDB2A /* File */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = File; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -424,7 +422,6 @@
 		09C6B915204A0F54007EAC26 = {
 			isa = PBXGroup;
 			children = (
-				5BEAA6EE2D26B76400CBDB2A /* File */,
 				5B21055A2D185B10005B9596 /* Classes */,
 				5B21047D2D185409005B9596 /* Libraries */,
 				5B2104782D185402005B9596 /* Assets */,
@@ -1085,7 +1082,6 @@
 				5B21051D2D1856E5005B9596 /* BarButton@2x.png in Resources */,
 				5B3890DD2D1C54D8002D3BBE /* GuildIconBaseSelected.png in Resources */,
 				5B2105182D1856E5005B9596 /* Send.png in Resources */,
-				5BEAA6EF2D26B76400CBDB2A /* File in Resources */,
 				5BDD37422D2038DF00C6482C /* OldTitlebarTexture.png in Resources */,
 				5BC7F3082D20BB3C00CA6F3F /* O-DCChatTableCell.xib in Resources */,
 				5B3890E12D1C7A11002D3BBE /* pfpOverlay.png in Resources */,
