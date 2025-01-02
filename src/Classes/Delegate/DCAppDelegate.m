@@ -25,16 +25,25 @@
         self.window.rootViewController = initialViewController;
         [self.window makeKeyAndVisible];
     } else if(VERSION_MIN(@"6.0")) {
+        bool experiment = [[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"];
         bool hackyMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
         
-        if(hackyMode == true) {
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Throwback" bundle:nil];
+        if(experiment == YES) {
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Experimental" bundle:nil];
             UIViewController *initialViewController = [storyboard instantiateInitialViewController];
             self.window.rootViewController = initialViewController;
             [self.window makeKeyAndVisible];
-            [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"OldTitlebarTexture"] forBarMetrics:UIBarMetricsDefault];
-        } else {
             [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
+        } else {
+            if(hackyMode == true) {
+                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Throwback" bundle:nil];
+                UIViewController *initialViewController = [storyboard instantiateInitialViewController];
+                self.window.rootViewController = initialViewController;
+                [self.window makeKeyAndVisible];
+                [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"OldTitlebarTexture"] forBarMetrics:UIBarMetricsDefault];
+            } else {
+                [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
+            }
         }
         
     }
@@ -83,6 +92,7 @@
             });
         } else {
             //NSLog(@"FUCK YOU LJB I HATE YOU");
+            //ok requis
         }
     }
 }

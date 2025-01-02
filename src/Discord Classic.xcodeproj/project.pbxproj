@@ -105,7 +105,6 @@
 		5B21054E2D1856E5005B9596 /* ToolbarBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B21050A2D1856E5005B9596 /* ToolbarBG@2x.png */; };
 		5B21054F2D1856E5005B9596 /* Video-play-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B21050B2D1856E5005B9596 /* Video-play-button.png */; };
 		5B2105502D1856E5005B9596 /* Video-play-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B21050C2D1856E5005B9596 /* Video-play-button@2x.png */; };
-		5B2105522D18570D005B9596 /* Contactback.PNG in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105512D18570D005B9596 /* Contactback.PNG */; };
 		5B2105552D185735005B9596 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105542D185735005B9596 /* Images.xcassets */; };
 		5B2105592D185794005B9596 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5B2105582D185794005B9596 /* Info.plist */; };
 		5B2105912D185B10005B9596 /* DCChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B21055D2D185B10005B9596 /* DCChannel.m */; };
@@ -179,6 +178,7 @@
 		5BDD374D2D20486500C6482C /* online.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD374A2D20486500C6482C /* online.png */; };
 		5BDD37502D20496500C6482C /* sinkInMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD374E2D20496500C6482C /* sinkInMask.png */; };
 		5BDD37512D20496500C6482C /* sinkInMask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD374F2D20496500C6482C /* sinkInMask@2x.png */; };
+		5BEAA6ED2D26097200CBDB2A /* Experimental.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BEAA6EC2D26097200CBDB2A /* Experimental.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -295,7 +295,6 @@
 		5B21050A2D1856E5005B9596 /* ToolbarBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ToolbarBG@2x.png"; sourceTree = "<group>"; };
 		5B21050B2D1856E5005B9596 /* Video-play-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Video-play-button.png"; sourceTree = "<group>"; };
 		5B21050C2D1856E5005B9596 /* Video-play-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Video-play-button@2x.png"; sourceTree = "<group>"; };
-		5B2105512D18570D005B9596 /* Contactback.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Contactback.PNG; sourceTree = "<group>"; };
 		5B2105542D185735005B9596 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		5B2105582D185794005B9596 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5B21055C2D185B10005B9596 /* DCChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCChannel.h; sourceTree = "<group>"; };
@@ -396,6 +395,7 @@
 		5BDD374A2D20486500C6482C /* online.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = online.png; sourceTree = "<group>"; };
 		5BDD374E2D20496500C6482C /* sinkInMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sinkInMask.png; sourceTree = "<group>"; };
 		5BDD374F2D20496500C6482C /* sinkInMask@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sinkInMask@2x.png"; sourceTree = "<group>"; };
+		5BEAA6EC2D26097200CBDB2A /* Experimental.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Experimental.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -565,6 +565,7 @@
 		5B2104B22D185680005B9596 /* Storyboards */ = {
 			isa = PBXGroup;
 			children = (
+				5BEAA6EC2D26097200CBDB2A /* Experimental.storyboard */,
 				5B2104B32D185680005B9596 /* Storyboard.storyboard */,
 				5B2105AA2D185CDC005B9596 /* iOS-7.storyboard */,
 				5BAE842C2D1C9FDB00C021F9 /* Throwback.storyboard */,
@@ -599,7 +600,6 @@
 				5B3890DE2D1C7A05002D3BBE /* Profile Page */,
 				5BB5D7402D195B0C00C54C0A /* Guild Cell */,
 				5B2105B72D18642A005B9596 /* Missed Call */,
-				5B2105512D18570D005B9596 /* Contactback.PNG */,
 				5B2104BF2D1856E5005B9596 /* Banner Resources */,
 				5B2104C42D1856E5005B9596 /* Button Glyphs */,
 				5B2104D92D1856E5005B9596 /* Default Avatars */,
@@ -1115,6 +1115,7 @@
 				5BB5D7432D195B3400C54C0A /* newMessages.png in Resources */,
 				5BDD37502D20496500C6482C /* sinkInMask.png in Resources */,
 				5BC7F3102D20C97300CA6F3F /* oldTextFieldBG.png in Resources */,
+				5BEAA6ED2D26097200CBDB2A /* Experimental.storyboard in Resources */,
 				5B2105242D1856E5005B9596 /* DefaultAvatar0.png in Resources */,
 				5BA0983F2D205E15009F7726 /* offline.png in Resources */,
 				5BB2C3E62D21D7CE002432EE /* dnd@2x.png in Resources */,
@@ -1142,7 +1143,6 @@
 				5B2105192D1856E5005B9596 /* Send@2x.png in Resources */,
 				5B2105212D1856E5005B9596 /* NavigationButton@2x.png in Resources */,
 				5B21047C2D185402005B9596 /* Settings.bundle in Resources */,
-				5B2105522D18570D005B9596 /* Contactback.PNG in Resources */,
 				5B2105472D1856E5005B9596 /* DescIntroducer@2x.png in Resources */,
 				5B2105142D1856E5005B9596 /* CBarButtonMap@2x.png in Resources */,
 				5B2105352D1856E5005B9596 /* menu@2x.png in Resources */,
