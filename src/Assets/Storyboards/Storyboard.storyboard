@@ -526,9 +526,16 @@
                             <outlet property="delegate" destination="SeX-T3-7zD" id="ErL-Iw-O4m"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Me (&lt;@????>" id="sC4-AV-Rmc"/>
+                    <navigationItem key="navigationItem" title="Me (&lt;@????>" id="sC4-AV-Rmc">
+                        <barButtonItem key="rightBarButtonItem" title="Done" id="89w-wl-uHs">
+                            <connections>
+                                <action selector="return:" destination="SeX-T3-7zD" id="XEp-a1-77S"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
-                        <segue destination="I1M-Vv-1nm" kind="modal" identifier="own view to guilds" id="3JU-mh-AWl"/>
+                        <outlet property="doneButton" destination="89w-wl-uHs" id="ql0-ko-oIh"/>
+                        <segue destination="I1M-Vv-1nm" kind="modal" identifier="own view to guilds" modalTransitionStyle="flipHorizontal" id="3JU-mh-AWl"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Og4-cN-R47" userLabel="First Responder" sceneMemberID="firstResponder"/>
