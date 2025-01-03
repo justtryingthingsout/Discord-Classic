@@ -8,7 +8,29 @@
 
 #import <UIKit/UIKit.h>
 #import "DCServerCommunicator.h"
+#import "DCConnectedAccountsCell.h"
+#import "UIColorHex.h"
+
 @interface DCOwnAccountInfoManagementController : UITableViewController
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
+
+@property (weak, nonatomic) IBOutlet UIImageView *pfp;
+@property (weak, nonatomic) IBOutlet UIImageView *banner;
+
+@property (weak, nonatomic) IBOutlet UIView *bannerView;
+
+@property (weak, nonatomic) IBOutlet UILabel *pronouns;
+@property (weak, nonatomic) IBOutlet UILabel *username;
+@property (weak, nonatomic) IBOutlet UILabel *trueusername;
+
+@property (weak, nonatomic) IBOutlet UITextView *bio;
+
+@property (weak, nonatomic) IBOutlet UILabel *email;
+@property (weak, nonatomic) IBOutlet UILabel *phoneNumber;
+@property (weak, nonatomic) IBOutlet UILabel *userID;
+@property (weak, nonatomic) IBOutlet UILabel *token;
+
+@property NSDictionary* activeConnections;
+@property bool noConnections;
 
 @end

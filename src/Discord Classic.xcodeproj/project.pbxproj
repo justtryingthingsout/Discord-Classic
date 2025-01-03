@@ -136,6 +136,7 @@
 		5B3890DD2D1C54D8002D3BBE /* GuildIconBaseSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890DC2D1C54D8002D3BBE /* GuildIconBaseSelected.png */; };
 		5B3890E12D1C7A11002D3BBE /* pfpOverlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890DF2D1C7A11002D3BBE /* pfpOverlay.png */; };
 		5B3890E22D1C7A11002D3BBE /* pfpOverlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890E02D1C7A11002D3BBE /* pfpOverlay@2x.png */; };
+		5B5F5FD92D28A8FF00D227DE /* DCMutualFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B5F5FD82D28A8FF00D227DE /* DCMutualFriendsViewController.m */; };
 		5B60AF222D27E6B7000A43B5 /* userInfoButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B60AF202D27E6B6000A43B5 /* userInfoButton.png */; };
 		5B60AF232D27E6B7000A43B5 /* userInfoButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B60AF212D27E6B6000A43B5 /* userInfoButton@2x.png */; };
 		5B60AF272D282987000A43B5 /* DCOwnAccountInfoManagementController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B60AF262D282987000A43B5 /* DCOwnAccountInfoManagementController.m */; };
@@ -351,6 +352,8 @@
 		5B3890DC2D1C54D8002D3BBE /* GuildIconBaseSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GuildIconBaseSelected.png; sourceTree = "<group>"; };
 		5B3890DF2D1C7A11002D3BBE /* pfpOverlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pfpOverlay.png; sourceTree = "<group>"; };
 		5B3890E02D1C7A11002D3BBE /* pfpOverlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pfpOverlay@2x.png"; sourceTree = "<group>"; };
+		5B5F5FD72D28A8FF00D227DE /* DCMutualFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMutualFriendsViewController.h; sourceTree = "<group>"; };
+		5B5F5FD82D28A8FF00D227DE /* DCMutualFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMutualFriendsViewController.m; sourceTree = "<group>"; };
 		5B60AF202D27E6B6000A43B5 /* userInfoButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userInfoButton.png; sourceTree = "<group>"; };
 		5B60AF212D27E6B6000A43B5 /* userInfoButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "userInfoButton@2x.png"; sourceTree = "<group>"; };
 		5B60AF252D282987000A43B5 /* DCOwnAccountInfoManagementController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCOwnAccountInfoManagementController.h; sourceTree = "<group>"; };
@@ -915,6 +918,7 @@
 		5B2105842D185B10005B9596 /* Profile and channel info views */ = {
 			isa = PBXGroup;
 			children = (
+				5B5F5FD62D28A8E100D227DE /* Mutual */,
 				5B2105852D185B10005B9596 /* DCCInfoViewController.h */,
 				5B2105862D185B10005B9596 /* DCCInfoViewController.m */,
 				5B2105872D185B10005B9596 /* DCContactViewController.h */,
@@ -956,6 +960,15 @@
 				5B3890E02D1C7A11002D3BBE /* pfpOverlay@2x.png */,
 			);
 			path = "Profile Page";
+			sourceTree = "<group>";
+		};
+		5B5F5FD62D28A8E100D227DE /* Mutual */ = {
+			isa = PBXGroup;
+			children = (
+				5B5F5FD72D28A8FF00D227DE /* DCMutualFriendsViewController.h */,
+				5B5F5FD82D28A8FF00D227DE /* DCMutualFriendsViewController.m */,
+			);
+			path = Mutual;
 			sourceTree = "<group>";
 		};
 		5B60AF1F2D27E6B0000A43B5 /* Buttons */ = {
@@ -1296,6 +1309,7 @@
 				5B21059A2D185B10005B9596 /* DCViewController.m in Sources */,
 				5B2105972D185B10005B9596 /* DCChatTableCell.m in Sources */,
 				5B2105C22D18C116005B9596 /* DCGuildTableViewCell.m in Sources */,
+				5B5F5FD92D28A8FF00D227DE /* DCMutualFriendsViewController.m in Sources */,
 				5B2104AC2D18540A005B9596 /* TRMalleableFrameView.m in Sources */,
 				5B2105A02D185B10005B9596 /* DCInfoPageViewController.m in Sources */,
 				5B2105912D185B10005B9596 /* DCChannel.m in Sources */,

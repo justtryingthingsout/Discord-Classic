@@ -288,6 +288,8 @@ UIActivityIndicatorView *spinner;
                             NSMutableDictionary *userInfo = [NSMutableDictionary new];
                             userInfo[@"username"] = [d valueForKeyPath:@"user.username"];
                             userInfo[@"global_name"] = [d valueForKeyPath:@"user.global_name"];
+                            userInfo[@"pronouns"] = [d valueForKeyPath:@"user.pronouns"];
+                            userInfo[@"avatar"] = [d valueForKeyPath:@"user.avatar"];
                             userInfo[@"phone"] = [d valueForKeyPath:@"user.phone"];
                             userInfo[@"email"] = [d valueForKeyPath:@"user.email"];
                             userInfo[@"bio"] = [d valueForKeyPath:@"user.bio"];
@@ -295,6 +297,10 @@ UIActivityIndicatorView *spinner;
                             userInfo[@"banner_color"] = [d valueForKeyPath:@"user.banner_color"];
                             userInfo[@"clan"] = [d valueForKeyPath:@"user.clan"];
                             userInfo[@"id"] = [d valueForKeyPath:@"user.id"];
+                            
+                            userInfo[@"connectedAccounts"] = [d valueForKeyPath:@"connected_accounts"];
+                            
+                            NSLog(@"userinfo %@", userInfo);
                             weakSelf.currentUserInfo = userInfo;
 
                             
