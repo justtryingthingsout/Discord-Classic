@@ -505,6 +505,9 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Members" id="8rU-1T-b3C"/>
+                    <connections>
+                        <segue destination="oVH-Nk-7JT" kind="push" identifier="channelinfo to contact" id="f2S-RP-OPt"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jki-YD-Euh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -680,5 +683,6 @@
     <inferredMetricsTieBreakers>
         <segue reference="ZzT-Kr-HYl"/>
         <segue reference="P83-bk-eKR"/>
+        <segue reference="f2S-RP-OPt"/>
     </inferredMetricsTieBreakers>
 </document>
