@@ -527,7 +527,7 @@ static dispatch_queue_t chat_messages_queue;
         }
         
         
-        [cell.contentView setBackgroundColor:messageAtRowIndex.pingingUser? [UIColor grayColor] : [UIColor clearColor]];
+        [cell.contentView setBackgroundColor:messageAtRowIndex.pingingUser? [UIColor colorWithRed:0.18f green:0.176f blue:0.157f alpha:1.00f] : [UIColor clearColor]];
         
         cell.contentView.layer.cornerRadius = 0;
         cell.contentView.layer.masksToBounds = YES;
