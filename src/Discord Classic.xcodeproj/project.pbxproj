@@ -138,6 +138,7 @@
 		5B3890E22D1C7A11002D3BBE /* pfpOverlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890E02D1C7A11002D3BBE /* pfpOverlay@2x.png */; };
 		5B60AF222D27E6B7000A43B5 /* userInfoButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B60AF202D27E6B6000A43B5 /* userInfoButton.png */; };
 		5B60AF232D27E6B7000A43B5 /* userInfoButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B60AF212D27E6B6000A43B5 /* userInfoButton@2x.png */; };
+		5B60AF272D282987000A43B5 /* DCOwnAccountInfoManagementController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B60AF262D282987000A43B5 /* DCOwnAccountInfoManagementController.m */; };
 		5B81E6DE2D20656200E0C4BE /* offline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B81E6DD2D20656200E0C4BE /* offline@2x.png */; };
 		5BA0983F2D205E15009F7726 /* offline.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BA0983E2D205E15009F7726 /* offline.png */; };
 		5BAE842B2D1C84AE00C021F9 /* UIColorHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BAE842A2D1C84AE00C021F9 /* UIColorHex.m */; };
@@ -352,6 +353,8 @@
 		5B3890E02D1C7A11002D3BBE /* pfpOverlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pfpOverlay@2x.png"; sourceTree = "<group>"; };
 		5B60AF202D27E6B6000A43B5 /* userInfoButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userInfoButton.png; sourceTree = "<group>"; };
 		5B60AF212D27E6B6000A43B5 /* userInfoButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "userInfoButton@2x.png"; sourceTree = "<group>"; };
+		5B60AF252D282987000A43B5 /* DCOwnAccountInfoManagementController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCOwnAccountInfoManagementController.h; sourceTree = "<group>"; };
+		5B60AF262D282987000A43B5 /* DCOwnAccountInfoManagementController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCOwnAccountInfoManagementController.m; sourceTree = "<group>"; };
 		5B81E6DD2D20656200E0C4BE /* offline@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline@2x.png"; sourceTree = "<group>"; };
 		5BA0983D2D2058E4009F7726 /* Discord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Discord.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BA0983E2D205E15009F7726 /* offline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = offline.png; sourceTree = "<group>"; };
@@ -847,6 +850,7 @@
 		5B2105702D185B10005B9596 /* View controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5B60AF242D28296E000A43B5 /* Account Management */,
 				5B2105812D185B10005B9596 /* Info page */,
 				5B2105712D185B10005B9596 /* Base view controller */,
 				5B2105742D185B10005B9596 /* Chat View */,
@@ -961,6 +965,15 @@
 				5B60AF212D27E6B6000A43B5 /* userInfoButton@2x.png */,
 			);
 			path = Buttons;
+			sourceTree = "<group>";
+		};
+		5B60AF242D28296E000A43B5 /* Account Management */ = {
+			isa = PBXGroup;
+			children = (
+				5B60AF252D282987000A43B5 /* DCOwnAccountInfoManagementController.h */,
+				5B60AF262D282987000A43B5 /* DCOwnAccountInfoManagementController.m */,
+			);
+			path = "Account Management";
 			sourceTree = "<group>";
 		};
 		5BAE84282D1C849E00C021F9 /* UIColor+Hex */ = {
@@ -1259,6 +1272,7 @@
 				5B2104AA2D18540A005B9596 /* NSString+Emojize.m in Sources */,
 				5B2104AF2D18540A005B9596 /* WSMessage.m in Sources */,
 				5B21059F2D185B10005B9596 /* DCImageViewController.m in Sources */,
+				5B60AF272D282987000A43B5 /* DCOwnAccountInfoManagementController.m in Sources */,
 				5B2105A92D185BD3005B9596 /* main.m in Sources */,
 				5B21059D2D185B10005B9596 /* DCGuildListViewController.m in Sources */,
 				5B2105BF2D18B498005B9596 /* DCRecipientTableCell.m in Sources */,

@@ -502,10 +502,10 @@
             </objects>
             <point key="canvasLocation" x="1626" y="708"/>
         </scene>
-        <!--Table View Controller - Me (<@????>-->
+        <!--Own Account Info Management Controller - Me (<@????>-->
         <scene sceneID="47a-8I-WMN">
             <objects>
-                <tableViewController id="SeX-T3-7zD" sceneMemberID="viewController">
+                <tableViewController id="SeX-T3-7zD" customClass="DCOwnAccountInfoManagementController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="I3d-gd-1MR">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -548,7 +548,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f2d-Ac-r7A" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-411" y="1777"/>
+            <point key="canvasLocation" x="-269" y="1777"/>
         </scene>
         <!--Info View Controller - Members-->
         <scene sceneID="8hE-6e-T5s">
@@ -705,8 +705,35 @@
                                         <color key="shadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                                         <size key="shadowOffset" width="0.0" height="1"/>
                                     </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Global Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="na8-zI-T0o">
+                                        <rect key="frame" x="19" y="104" width="193" height="22"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                        <color key="shadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                                        <size key="shadowOffset" width="0.0" height="1"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="You are" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TnA-Sq-w18">
+                                        <rect key="frame" x="19" y="91" width="193" height="22"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                        <color key="shadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                                        <size key="shadowOffset" width="0.0" height="1"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Username" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="UV9-uW-2CQ">
+                                        <rect key="frame" x="20" y="121" width="207" height="17"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <color key="shadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                                        <size key="shadowOffset" width="0.0" height="1"/>
+                                    </label>
                                     <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="y2d-wp-qWF">
-                                        <rect key="frame" x="222" y="7" width="36" height="36"/>
+                                        <rect key="frame" x="222" y="98" width="36" height="36"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -905,11 +932,13 @@
                     </navigationItem>
                     <connections>
                         <outlet property="channelTableView" destination="5oV-6z-2yU" id="IJc-9v-eif"/>
+                        <outlet property="globalName" destination="UV9-uW-2CQ" id="I06-ZG-iwW"/>
                         <outlet property="guildBanner" destination="HgO-pP-Lza" id="RZH-fG-TO8"/>
                         <outlet property="guildLabel" destination="QNv-tq-sHX" id="3IW-lc-1is"/>
                         <outlet property="guildTableView" destination="lZb-WH-jwH" id="4fF-qg-6Fn"/>
                         <outlet property="guildTotalView" destination="fvh-ti-9Y9" id="LYn-xs-Rgy"/>
                         <outlet property="totalView" destination="a8v-pY-N7C" id="gyM-Ms-J8S"/>
+                        <outlet property="userName" destination="na8-zI-T0o" id="6M4-id-VMf"/>
                         <segue destination="SPS-Go-Xtj" kind="push" identifier="guilds to chat" id="m4a-0d-dst"/>
                         <segue destination="Hrc-Cx-cle" kind="push" identifier="to Tokenpage" id="ia5-AC-gHa"/>
                         <segue destination="q3S-9a-ACX" kind="modal" identifier="guilds to own info" modalTransitionStyle="flipHorizontal" id="Hv9-H7-XWV"/>

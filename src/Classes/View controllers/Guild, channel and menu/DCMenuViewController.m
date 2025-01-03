@@ -176,6 +176,8 @@
 		[self.channelTableView reloadData];
         if (self.guildLabel && [self.guildLabel.text isEqualToString:@"Direct Messages"]) {
             self.totalView.hidden = NO;
+            self.userName.text = [[DCServerCommunicator.sharedInstance currentUserInfo] objectForKey:@"username"];
+            self.globalName.text = [[DCServerCommunicator.sharedInstance currentUserInfo] objectForKey:@"global_name"];
             self.guildTotalView.hidden = YES;
         } else {
             self.totalView.hidden = YES;
