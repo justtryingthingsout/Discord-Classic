@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "DCServerCommunicator.h"
 @interface DCOwnAccountInfoManagementController : UITableViewController
 
 @end

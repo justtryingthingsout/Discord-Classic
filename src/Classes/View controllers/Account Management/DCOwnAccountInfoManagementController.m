@@ -23,6 +23,9 @@
     return self;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    self.navigationItem.title = [NSString stringWithFormat:@"Me (%@)",[[DCServerCommunicator.sharedInstance currentUserInfo] objectForKey:@"global_name"]];
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
