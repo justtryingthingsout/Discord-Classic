@@ -51,6 +51,7 @@ UIActivityIndicatorView *spinner;
         
         sharedInstance.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
         sharedInstance.token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
+        sharedInstance.currentUserInfo = nil;
         
         if ([sharedInstance.token length] == 0) {
             return;
@@ -284,7 +285,18 @@ UIActivityIndicatorView *spinner;
                             //THIS IS US, hey hey hey this is MEEEEE BITCCCH MORTY DID YOU HEAR, THIS IS ME, AND MY USER ID, YES MORT(BUÜÜÜRPP)Y, THIS IS ME. BITCCHHHH. 100 YEARS OF DISCORD CLASSIC MORTYY YOU AND MEEEE
                             weakSelf.snowflake = [NSString stringWithFormat:@"%@", [d valueForKeyPath:@"user.id"]];
                             
-                            NSLog(@"You are %@ (also known as %@), your phone number is %@, your email %@, and your bio is %@. Additionally to that, your banner is %@, and it's color is %@. Your clan is %@. Your ID also, is %@. I know everything about you bitch. You can't escape me. I will find you. I know where your house lives, and where your bed sleeps. Be careful!", [d valueForKeyPath:@"user.username"], [d valueForKeyPath:@"user.global_name"], [d valueForKeyPath:@"user.phone"], [d valueForKeyPath:@"user.email"], [d valueForKeyPath:@"user.bio"], [d valueForKeyPath:@"user.banner"], [d valueForKeyPath:@"user.banner_color"], [d valueForKeyPath:@"user.clan"], [d valueForKeyPath:@"user.id"]);
+                            NSMutableDictionary *userInfo = [NSMutableDictionary new];
+                            userInfo[@"username"] = [d valueForKeyPath:@"user.username"];
+                            userInfo[@"global_name"] = [d valueForKeyPath:@"user.global_name"];
+                            userInfo[@"phone"] = [d valueForKeyPath:@"user.phone"];
+                            userInfo[@"email"] = [d valueForKeyPath:@"user.email"];
+                            userInfo[@"bio"] = [d valueForKeyPath:@"user.bio"];
+                            userInfo[@"banner"] = [d valueForKeyPath:@"user.banner"];
+                            userInfo[@"banner_color"] = [d valueForKeyPath:@"user.banner_color"];
+                            userInfo[@"clan"] = [d valueForKeyPath:@"user.clan"];
+                            userInfo[@"id"] = [d valueForKeyPath:@"user.id"];
+                            weakSelf.currentUserInfo = userInfo;
+
                             
                             
                             

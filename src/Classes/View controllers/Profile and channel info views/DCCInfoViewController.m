@@ -19,6 +19,7 @@
     [super viewDidLoad];
     self.recipients = [NSMutableArray array];
     NSArray *recipientDictionaries = [DCServerCommunicator.sharedInstance.selectedChannel recipients];
+    NSLog(@"dddddd %@", [DCServerCommunicator.sharedInstance currentUserInfo]);
     for (NSDictionary *recipient in recipientDictionaries) {
         DCUser *dcUser = [DCTools convertJsonUser:recipient cache:YES];
         [self.recipients addObject:dcUser];

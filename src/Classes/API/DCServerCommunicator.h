@@ -16,6 +16,7 @@
 
 @property WSWebSocket* websocket;
 @property NSString* token;
+@property NSDictionary* currentUserInfo;
 @property NSString* gatewayURL;
 @property NSMutableDictionary* userChannelSettings;
 
