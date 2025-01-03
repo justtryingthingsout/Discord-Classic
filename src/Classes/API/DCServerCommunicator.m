@@ -325,6 +325,7 @@ UIActivityIndicatorView *spinner;
                                     if (((NSArray*)[privateChannel valueForKey:@"recipients"]).count > 0) {
                                         NSDictionary *user = [[privateChannel valueForKey:@"recipients"] objectAtIndex:0];
                                         for (NSDictionary* user in [privateChannel objectForKey:@"recipients"]) {
+                                            newChannel.recipients = [privateChannel objectForKey:@"recipients"];
                                             usersDict = NSMutableDictionary.new;
                                             [usersDict setObject:[user valueForKey:@"global_name"] forKey:@"username"];
                                             [usersDict setObject:[user valueForKey:@"username"] forKey:@"handle"];

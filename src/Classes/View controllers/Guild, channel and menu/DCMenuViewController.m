@@ -156,6 +156,11 @@
     [messageActionSheet showInView:self.view];
 }
 
+- (IBAction)userInfo:(id)sender {
+    [self performSegueWithIdentifier:@"guilds to own info" sender:self];
+}
+
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 	if(tableView == self.guildTableView){
@@ -191,7 +196,6 @@
         //[[self.channelTableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         [self performSegueWithIdentifier:@"guilds to chat" sender:self];
-        
         //[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
 }

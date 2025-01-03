@@ -23,6 +23,7 @@
 @property bool unread;
 @property bool muted;
 @property int type;
+@property NSMutableDictionary *recipients;
 @property DCGuild* parentGuild;
 @property NSArray* users;
 

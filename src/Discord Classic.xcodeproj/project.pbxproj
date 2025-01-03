@@ -136,6 +136,8 @@
 		5B3890DD2D1C54D8002D3BBE /* GuildIconBaseSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890DC2D1C54D8002D3BBE /* GuildIconBaseSelected.png */; };
 		5B3890E12D1C7A11002D3BBE /* pfpOverlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890DF2D1C7A11002D3BBE /* pfpOverlay.png */; };
 		5B3890E22D1C7A11002D3BBE /* pfpOverlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890E02D1C7A11002D3BBE /* pfpOverlay@2x.png */; };
+		5B60AF222D27E6B7000A43B5 /* userInfoButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B60AF202D27E6B6000A43B5 /* userInfoButton.png */; };
+		5B60AF232D27E6B7000A43B5 /* userInfoButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B60AF212D27E6B6000A43B5 /* userInfoButton@2x.png */; };
 		5B81E6DE2D20656200E0C4BE /* offline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B81E6DD2D20656200E0C4BE /* offline@2x.png */; };
 		5BA0983F2D205E15009F7726 /* offline.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BA0983E2D205E15009F7726 /* offline.png */; };
 		5BAE842B2D1C84AE00C021F9 /* UIColorHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BAE842A2D1C84AE00C021F9 /* UIColorHex.m */; };
@@ -348,6 +350,8 @@
 		5B3890DC2D1C54D8002D3BBE /* GuildIconBaseSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GuildIconBaseSelected.png; sourceTree = "<group>"; };
 		5B3890DF2D1C7A11002D3BBE /* pfpOverlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pfpOverlay.png; sourceTree = "<group>"; };
 		5B3890E02D1C7A11002D3BBE /* pfpOverlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pfpOverlay@2x.png"; sourceTree = "<group>"; };
+		5B60AF202D27E6B6000A43B5 /* userInfoButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userInfoButton.png; sourceTree = "<group>"; };
+		5B60AF212D27E6B6000A43B5 /* userInfoButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "userInfoButton@2x.png"; sourceTree = "<group>"; };
 		5B81E6DD2D20656200E0C4BE /* offline@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline@2x.png"; sourceTree = "<group>"; };
 		5BA0983D2D2058E4009F7726 /* Discord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Discord.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BA0983E2D205E15009F7726 /* offline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = offline.png; sourceTree = "<group>"; };
@@ -589,6 +593,7 @@
 		5B2104BE2D1856E5005B9596 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				5B60AF1F2D27E6B0000A43B5 /* Buttons */,
 				5BD743402D21A4C500300565 /* Connections Cell */,
 				5BD7433E2D21A0C900300565 /* chatButtonInset@2x.png */,
 				5BC7F3112D213F7B00CA6F3F /* chatButtonInset.png */,
@@ -949,6 +954,15 @@
 			path = "Profile Page";
 			sourceTree = "<group>";
 		};
+		5B60AF1F2D27E6B0000A43B5 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				5B60AF202D27E6B6000A43B5 /* userInfoButton.png */,
+				5B60AF212D27E6B6000A43B5 /* userInfoButton@2x.png */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
 		5BAE84282D1C849E00C021F9 /* UIColor+Hex */ = {
 			isa = PBXGroup;
 			children = (
@@ -1158,6 +1172,8 @@
 				5B2104BC2D1856A7005B9596 /* DCChatTableCell.xib in Resources */,
 				5B21053D2D1856E5005B9596 /* PLVideoOverlayPlayDown@2x.png in Resources */,
 				5B2105592D185794005B9596 /* Info.plist in Resources */,
+				5B60AF232D27E6B7000A43B5 /* userInfoButton@2x.png in Resources */,
+				5B60AF222D27E6B7000A43B5 /* userInfoButton.png in Resources */,
 				5B21053E2D1856E5005B9596 /* reply.png in Resources */,
 				5B2105112D1856E5005B9596 /* addbarglyph.png in Resources */,
 				5B21052C2D1856E5005B9596 /* DefaultAvatar4.png in Resources */,

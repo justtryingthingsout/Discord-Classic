@@ -12,8 +12,12 @@
 #import "DCServerCommunicator.h"
 #import "DCChatViewController.h"
 #import "APLSlideMenuViewController.h"
-
+#import "DCTools.h"
+#import "DCUser.h"
 @interface DCCInfoViewController : UITableViewController
 
+@property NSMutableArray* recipients;
+@property (nonatomic, strong) DCUser *selectedUser;
 
+@property DCUser* user;
 @end

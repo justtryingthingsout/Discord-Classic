@@ -605,6 +605,8 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 	
 	DCGuild* newGuild = DCGuild.new;
 	newGuild.name = [jsonGuild valueForKey:@"name"];
+    
+    //add new types here.
 	newGuild.snowflake = [jsonGuild valueForKey:@"id"];
 	newGuild.channels = NSMutableArray.new;
     

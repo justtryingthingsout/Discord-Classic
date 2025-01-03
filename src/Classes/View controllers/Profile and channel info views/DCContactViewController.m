@@ -25,6 +25,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
 }
 
 -(void)setSelectedUser:(DCUser*)user {
