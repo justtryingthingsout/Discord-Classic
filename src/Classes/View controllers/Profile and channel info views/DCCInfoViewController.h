@@ -20,6 +20,4 @@
 @property (nonatomic, strong) DCUser *selectedUser;
 
 @property DCUser* user;
-
-- (void)setSelectedRecipients:(NSDictionary*)recipients;
 @end

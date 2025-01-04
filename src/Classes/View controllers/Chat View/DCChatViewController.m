@@ -818,14 +818,14 @@ static dispatch_queue_t chat_messages_queue;
         [((DCContactViewController*)segue.destinationViewController) setSelectedUser:self.selectedMessage.author];
     }
     
-    if([segue.destinationViewController class] == [DCCInfoViewController class]){
-        [((DCCInfoViewController*)segue.destinationViewController) setSelectedRecipients:[DCServerCommunicator.sharedInstance.selectedChannel recipients]];
-    }
     
 }
 
 - (IBAction)openSidebar:(id)sender {
     [self.slideMenuController showLeftMenu:YES];
+}
+- (IBAction)clickMemberButton:(id)sender {
+    [self.slideMenuController showRightMenu:YES];
 }
 
 - (IBAction)chooseImage:(id)sender {

@@ -215,8 +215,7 @@
                 [contentViewController.navigationItem setTitle:formattedChannelName];
                 [contentViewController getMessages:50 beforeMessage:nil];
                 [contentViewController setViewingPresentTime:true];
-                NSLog(@"rterigufhdowkpfljfoedkpwfkdbj %@", [DCServerCommunicator.sharedInstance.selectedChannel recipients]);
-                [rightSidebar setSelectedRecipients:[DCServerCommunicator.sharedInstance.selectedChannel recipients]];
+                [rightSidebar viewDidLoad];
                 [self.slideMenuController hideMenu:YES];
             }
         }

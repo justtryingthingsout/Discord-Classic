@@ -197,7 +197,11 @@
                                 <action selector="openSidebar:" destination="qxH-ig-3gA" id="Hi5-0o-HFi"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" image="Sidebar_glyph.png" id="B9T-MA-QNp"/>
+                        <barButtonItem key="rightBarButtonItem" image="Sidebar_glyph.png" id="B9T-MA-QNp">
+                            <connections>
+                                <action selector="clickMemberButton:" destination="qxH-ig-3gA" id="Nu9-bK-3Yj"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
