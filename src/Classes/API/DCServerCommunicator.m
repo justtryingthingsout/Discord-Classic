@@ -299,8 +299,6 @@ UIActivityIndicatorView *spinner;
                             userInfo[@"id"] = [d valueForKeyPath:@"user.id"];
                             
                             userInfo[@"connectedAccounts"] = [d valueForKeyPath:@"connected_accounts"];
-                            
-                            NSLog(@"userinfo %@", userInfo);
                             weakSelf.currentUserInfo = userInfo;
 
                             

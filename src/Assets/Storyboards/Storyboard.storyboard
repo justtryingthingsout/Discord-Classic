@@ -110,7 +110,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mtA-up-yv0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1147" y="-978"/>
+            <point key="canvasLocation" x="-615" y="-482"/>
         </scene>
         <!--Chat View Controller - Chat-->
         <scene sceneID="0a4-kq-TlO">
@@ -223,7 +223,7 @@
                 </searchDisplayController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dn2-PR-nJa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1097" y="-46"/>
+            <point key="canvasLocation" x="1321" y="-779"/>
         </scene>
         <!--Image View Controller - View Embed-->
         <scene sceneID="f9C-bg-NlD">
@@ -261,7 +261,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a7p-Nr-Niu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1626" y="-46"/>
+            <point key="canvasLocation" x="1850" y="-779"/>
         </scene>
         <!--Contact View Controller - Contact-->
         <scene sceneID="vtw-Mx-X9Y">
@@ -500,7 +500,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gix-yU-SKh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1626" y="708"/>
+            <point key="canvasLocation" x="1850" y="-25"/>
         </scene>
         <!--Own Account Info Management Controller - Me (<@????>-->
         <scene sceneID="47a-8I-WMN">
@@ -862,7 +862,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Og4-cN-R47" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1764" y="728"/>
+            <point key="canvasLocation" x="1371" y="699"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="vU9-op-E4g">
@@ -877,7 +877,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f2d-Ac-r7A" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-269" y="1777"/>
+            <point key="canvasLocation" x="1850" y="692"/>
         </scene>
         <!--Info View Controller - Members-->
         <scene sceneID="8hE-6e-T5s">
@@ -946,7 +946,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="um1-EY-8bK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="892" y="627"/>
+            <point key="canvasLocation" x="1388" y="-25"/>
         </scene>
         <!--Menu View Controller-->
         <scene sceneID="xCE-qA-hyt">
@@ -1035,7 +1035,7 @@
                                         <size key="shadowOffset" width="0.0" height="1"/>
                                     </label>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Global Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="na8-zI-T0o">
-                                        <rect key="frame" x="19" y="104" width="193" height="22"/>
+                                        <rect key="frame" x="19" y="99" width="193" height="22"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
@@ -1043,17 +1043,8 @@
                                         <color key="shadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                                         <size key="shadowOffset" width="0.0" height="1"/>
                                     </label>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="You are" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TnA-Sq-w18">
-                                        <rect key="frame" x="19" y="91" width="193" height="22"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                        <color key="shadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
-                                        <size key="shadowOffset" width="0.0" height="1"/>
-                                    </label>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Username" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="UV9-uW-2CQ">
-                                        <rect key="frame" x="20" y="121" width="207" height="17"/>
+                                        <rect key="frame" x="20" y="116" width="207" height="17"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
@@ -1307,8 +1298,8 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="3JU-mh-AWl"/>
-        <segue reference="YEs-zn-a75"/>
+        <segue reference="3k7-Uj-5DX"/>
+        <segue reference="m4a-0d-dst"/>
         <segue reference="uNM-4v-z3R"/>
     </inferredMetricsTieBreakers>
 </document>
