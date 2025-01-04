@@ -182,6 +182,8 @@
 		5BDD374D2D20486500C6482C /* online.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD374A2D20486500C6482C /* online.png */; };
 		5BDD37502D20496500C6482C /* sinkInMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD374E2D20496500C6482C /* sinkInMask.png */; };
 		5BDD37512D20496500C6482C /* sinkInMask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDD374F2D20496500C6482C /* sinkInMask@2x.png */; };
+		5BDDDD8B2D295B6500B64883 /* hamburgerButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDDDD892D295B6500B64883 /* hamburgerButton.png */; };
+		5BDDDD8C2D295B6500B64883 /* hamburgerButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BDDDD8A2D295B6500B64883 /* hamburgerButton@2x.png */; };
 		5BEAA6ED2D26097200CBDB2A /* Experimental.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BEAA6EC2D26097200CBDB2A /* Experimental.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -405,6 +407,8 @@
 		5BDD374A2D20486500C6482C /* online.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = online.png; sourceTree = "<group>"; };
 		5BDD374E2D20496500C6482C /* sinkInMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sinkInMask.png; sourceTree = "<group>"; };
 		5BDD374F2D20496500C6482C /* sinkInMask@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sinkInMask@2x.png"; sourceTree = "<group>"; };
+		5BDDDD892D295B6500B64883 /* hamburgerButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hamburgerButton.png; sourceTree = "<group>"; };
+		5BDDDD8A2D295B6500B64883 /* hamburgerButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hamburgerButton@2x.png"; sourceTree = "<group>"; };
 		5BEAA6EC2D26097200CBDB2A /* Experimental.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Experimental.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -974,6 +978,8 @@
 		5B60AF1F2D27E6B0000A43B5 /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
+				5BDDDD892D295B6500B64883 /* hamburgerButton.png */,
+				5BDDDD8A2D295B6500B64883 /* hamburgerButton@2x.png */,
 				5B60AF202D27E6B6000A43B5 /* userInfoButton.png */,
 				5B60AF212D27E6B6000A43B5 /* userInfoButton@2x.png */,
 			);
@@ -1147,6 +1153,7 @@
 				5BD7434A2D21AC0B00300565 /* ConnectionCellBase.png in Resources */,
 				5BB2C3E92D21E8D7002432EE /* PFPInset.png in Resources */,
 				5BB5D73F2D19582700C54C0A /* bannerBottomShadow@2x.png in Resources */,
+				5BDDDD8B2D295B6500B64883 /* hamburgerButton.png in Resources */,
 				5BD7433F2D21A0C900300565 /* chatButtonInset@2x.png in Resources */,
 				5BAE84352D1D916700C021F9 /* DCUniversalTableCell.xib in Resources */,
 				5B2105282D1856E5005B9596 /* DefaultAvatar2.png in Resources */,
@@ -1190,6 +1197,7 @@
 				5B21050F2D1856E5005B9596 /* No-header.png in Resources */,
 				5BDD374B2D20486500C6482C /* absent.png in Resources */,
 				5BDD37432D2038DF00C6482C /* OldTitlebarTexture@2x.png in Resources */,
+				5BDDDD8C2D295B6500B64883 /* hamburgerButton@2x.png in Resources */,
 				5B21052A2D1856E5005B9596 /* DefaultAvatar3.png in Resources */,
 				5B21054D2D1856E5005B9596 /* ToolbarBG.png in Resources */,
 				5B2104A92D18540A005B9596 /* emoji.json in Resources */,

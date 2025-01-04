@@ -27,6 +27,7 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *memberButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sendButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *photoButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
 
 @property bool viewingPresentTime;
 

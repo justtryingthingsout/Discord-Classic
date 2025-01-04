@@ -13,6 +13,7 @@
 #import "UIColorHex.h"
 #import "DCMutualFriendsViewController.h"
 #import "DCConnectedAccountsCell.h"
+#import "APLSlideMenuViewController.h"
 @interface DCContactViewController : UITableViewController
 
 -(void)setSelectedUser:(DCUser*)user;

@@ -17,17 +17,21 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+}
+
+- (void)setSelectedRecipients:(NSDictionary*)recipients {
     self.recipients = [NSMutableArray array];
-    NSArray *recipientDictionaries = [DCServerCommunicator.sharedInstance.selectedChannel recipients];
+    NSArray *recipientDictionaries = recipients;
     for (NSDictionary *recipient in recipientDictionaries) {
         DCUser *dcUser = [DCTools convertJsonUser:recipient cache:YES];
         [self.recipients addObject:dcUser];
+        [self.tableView reloadData];
     }
+    
 }
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [DCServerCommunicator.sharedInstance.selectedChannel.recipients count];
+    return self.recipients.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -25,7 +25,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.slideMenuController.gestureSupport = NO;
 }
 
 -(void)setSelectedUser:(DCUser*)user {
@@ -58,7 +58,6 @@
                 if (error) {
                     return;
                 }
-                NSLog(@"%@", parsedResponse);
                 NSDictionary *userProfile = [parsedResponse objectForKey:@"user_profile"];
                 NSDictionary *userInfo = [parsedResponse objectForKey:@"user"];
                 

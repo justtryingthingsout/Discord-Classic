@@ -19,6 +19,7 @@
 #import "NSString+Emojize.h"
 #import "QuickLook/QuickLook.h"
 #import "DCCInfoViewController.h"
+
 @interface DCChatViewController()
 @property int numberOfMessagesLoaded;
 @property UIImage* selectedImage;
@@ -45,7 +46,13 @@ static dispatch_queue_t chat_messages_queue;
 
 - (void)viewDidLoad{
 	[super viewDidLoad];
-	
+    
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"] == YES) {
+        self.slideMenuController.bouncing = YES;
+        self.slideMenuController.gestureSupport = APLSlideMenuGestureSupportDrag;
+        self.slideMenuController.separatorColor = [UIColor grayColor];
+    }
+
 	[NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleMessageCreate:) name:@"MESSAGE CREATE" object:nil];
 	
 	[NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleMessageDelete:) name:@"MESSAGE DELETE" object:nil];
@@ -63,6 +70,9 @@ static dispatch_queue_t chat_messages_queue;
     self.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
     if(self.oldMode == NO) {
         [self.toolbar setBackgroundImage:[UIImage imageNamed:@"ToolbarBG"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+        
+        [self.sidebarButton setBackgroundImage:[UIImage imageNamed:@"BarButton"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+        [self.sidebarButton setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
         
         [self.memberButton setBackgroundImage:[UIImage imageNamed:@"BarButton"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
         [self.memberButton setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
@@ -343,7 +353,7 @@ static dispatch_queue_t chat_messages_queue;
             [cell.authorLabel setText:messageAtRowIndex.author.username];
         }
         
-        if(messageAtRowIndex.messageType == 6) {
+        if(!messageAtRowIndex.messageType == 6) {
             cell.universalImageView.image = [UIImage imageNamed:@"pinMessage"];
         }
         
@@ -808,8 +818,15 @@ static dispatch_queue_t chat_messages_queue;
         [((DCContactViewController*)segue.destinationViewController) setSelectedUser:self.selectedMessage.author];
     }
     
+    if([segue.destinationViewController class] == [DCCInfoViewController class]){
+        [((DCCInfoViewController*)segue.destinationViewController) setSelectedRecipients:[DCServerCommunicator.sharedInstance.selectedChannel recipients]];
+    }
+    
 }
 
+- (IBAction)openSidebar:(id)sender {
+    [self.slideMenuController showLeftMenu:YES];
+}
 
 - (IBAction)chooseImage:(id)sender {
 	[self.inputField resignFirstResponder];

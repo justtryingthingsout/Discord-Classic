@@ -11,6 +11,7 @@
 #import "DCChannel.h"
 #import "DCChatViewController.h"
 #import "DCChatViewController.h"
+#import "DCCInfoViewController.h"
 #import "DCServerCommunicator.h"
 #import "DCTools.h"
 #import "DCUser.h"
@@ -41,6 +42,8 @@
 
 @property (weak, nonatomic) IBOutlet UIView *guildTotalView;
 
+
+@property bool experimentalMode;
 @property NSOperationQueue* serverIconImageQueue;
 
 @end

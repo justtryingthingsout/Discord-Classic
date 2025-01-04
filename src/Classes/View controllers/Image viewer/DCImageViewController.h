@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "APLSlideMenuViewController.h"
 
 @interface DCImageViewController : UIViewController <UIScrollViewDelegate>
 

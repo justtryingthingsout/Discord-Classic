@@ -16,8 +16,11 @@
 
 - (void)viewDidLoad{
 	[super viewDidLoad];
-    [self.share setBackgroundImage:[UIImage imageNamed:@"BarButton"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    [self.share setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"] == NO) {
+        [self.share setBackgroundImage:[UIImage imageNamed:@"BarButton"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+        [self.share setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
+    }
+    self.slideMenuController.gestureSupport = NO;
     
 }
 

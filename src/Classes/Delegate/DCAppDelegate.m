@@ -24,18 +24,24 @@
         UIViewController *initialViewController = [storyboard instantiateInitialViewController];
         self.window.rootViewController = initialViewController;
         [self.window makeKeyAndVisible];
-    } else if(VERSION_MIN(@"6.0")) {
-        bool experiment = [[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"];
-        bool hackyMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
         
-        if(experiment == YES) {
+    } else if(VERSION_MIN(@"6.0")) {
+        
+        self.experimental = [[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"];
+        self.hackyMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
+        
+        if(self.experimental && self.hackyMode == YES) {
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"hackyMode"];
+        }
+        
+        if(self.experimental == YES) {
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Experimental" bundle:nil];
             UIViewController *initialViewController = [storyboard instantiateInitialViewController];
             self.window.rootViewController = initialViewController;
             [self.window makeKeyAndVisible];
             [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
         } else {
-            if(hackyMode == true) {
+            if(self.hackyMode == true) {
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Throwback" bundle:nil];
                 UIViewController *initialViewController = [storyboard instantiateInitialViewController];
                 self.window.rootViewController = initialViewController;

@@ -44,7 +44,7 @@
 		</dict>
 		<dict>
 			<key>FooterText</key>
-			<string>Wanna experience something a little out of the ordinary? This option allows you to see the new beta UI.</string>
+			<string>Wanna experience something a little out of the ordinary? This option allows you to see the new beta UI. Please keep in mind that bugs are prone to happen, and you should be prepared when using this mode.</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>

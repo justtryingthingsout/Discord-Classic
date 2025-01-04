@@ -37,6 +37,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(exitedChatController) name:@"ChannelSelectionCleared" object:nil];
     //NOTIF OBSERVERS END
     
+    self.experimentalMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"];
     self.totalView.hidden = YES;
 }
 
@@ -197,7 +198,28 @@
         //Remove the blue indicator since the channel has been read
         //[[self.channelTableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        [self performSegueWithIdentifier:@"guilds to chat" sender:self];
+        
+        if(self.experimentalMode == NO) {
+            [self performSegueWithIdentifier:@"guilds to chat" sender:self];
+        } else if(self.experimentalMode == YES) {
+            UINavigationController *navigationController = (UINavigationController *)self.slideMenuController.contentViewController;
+            DCChatViewController *contentViewController = navigationController.viewControllers.firstObject;
+            DCCInfoViewController *rightSidebar = [[DCCInfoViewController alloc] init];
+            if ([contentViewController isKindOfClass:[DCChatViewController class]]) {
+                contentViewController.messages = NSMutableArray.new;
+                NSString* formattedChannelName;
+                if(DCServerCommunicator.sharedInstance.selectedChannel.type == 0)
+                    formattedChannelName = [@"#" stringByAppendingString:DCServerCommunicator.sharedInstance.selectedChannel.name];
+                else
+                    formattedChannelName = DCServerCommunicator.sharedInstance.selectedChannel.name;
+                [contentViewController.navigationItem setTitle:formattedChannelName];
+                [contentViewController getMessages:50 beforeMessage:nil];
+                [contentViewController setViewingPresentTime:true];
+                NSLog(@"rterigufhdowkpfljfoedkpwfkdbj %@", [DCServerCommunicator.sharedInstance.selectedChannel recipients]);
+                [rightSidebar setSelectedRecipients:[DCServerCommunicator.sharedInstance.selectedChannel recipients]];
+                [self.slideMenuController hideMenu:YES];
+            }
+        }
         //[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
 }
