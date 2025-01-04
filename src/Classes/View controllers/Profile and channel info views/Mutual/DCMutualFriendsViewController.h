@@ -7,7 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DCUser.h"
+#import "DCTools.h"
+#import "DCRecipientTableCell.h"
+#import "DCContactViewController.h"
 
 @interface DCMutualFriendsViewController : UITableViewController
+@property DCUser* user;
+@property (nonatomic, strong) DCUser *selectedUser;
 
+@property NSDictionary* mutualFriendsList;
+@property NSMutableArray* recipients;
 @end

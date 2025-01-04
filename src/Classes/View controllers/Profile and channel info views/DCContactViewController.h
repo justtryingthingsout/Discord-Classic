@@ -11,6 +11,7 @@
 #import "DCTools.h"
 #import "DCServerCommunicator.h"
 #import "UIColorHex.h"
+#import "DCMutualFriendsViewController.h"
 #import "DCConnectedAccountsCell.h"
 @interface DCContactViewController : UITableViewController
 
@@ -18,8 +19,10 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *pronounLabel;
 @property (weak, nonatomic) IBOutlet UIButton *chatButton;
+@property (weak, nonatomic) IBOutlet UIButton *mutualFriendsButton;
 
 @property bool noConnections;
 @property NSString* snowflake;
 @property NSDictionary* connectedAccounts;
+@property NSDictionary* mutualFriends;
 @end

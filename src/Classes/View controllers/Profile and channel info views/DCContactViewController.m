@@ -44,7 +44,7 @@
     
     if([[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"] == NO) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSURL *userProfileURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://discordapp.com/api/v9/users/%@/profile?with_mutual_guilds=false&with_mutual_friends=false&with_mutual_friends_count=false", user.snowflake]];
+            NSURL *userProfileURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://discordapp.com/api/v9/users/%@/profile?with_mutual_guilds=false&with_mutual_friends=true&with_mutual_friends_count=false", user.snowflake]];
             NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:userProfileURL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15];
             [urlRequest setValue:@"no-store" forHTTPHeaderField:@"Cache-Control"];
             [urlRequest addValue:DCServerCommunicator.sharedInstance.token forHTTPHeaderField:@"Authorization"];
@@ -56,15 +56,14 @@
             if (response) {
                 NSDictionary *parsedResponse = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
                 if (error) {
-                    NSLog(@"Error parsing JSON: %@", error);
                     return;
                 }
-                
+                NSLog(@"%@", parsedResponse);
                 NSDictionary *userProfile = [parsedResponse objectForKey:@"user_profile"];
                 NSDictionary *userInfo = [parsedResponse objectForKey:@"user"];
                 
                 self.connectedAccounts = [parsedResponse objectForKey:@"connected_accounts"];
-                
+                self.mutualFriends = [parsedResponse objectForKey:@"mutual_friends"];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.pronounLabel.text = [userProfile objectForKey:@"pronouns"];
                     self.descriptionBox.text = [userProfile valueForKey:@"bio"];
@@ -191,6 +190,9 @@
     return 120;
 }
 
+- (IBAction)throwToMutualFriends:(id)sender {
+    [self performSegueWithIdentifier:@"about to mutual friends" sender:self];
+}
 
 
 - (NSString *)imageNameForStatus:(NSString *)status {
@@ -224,6 +226,11 @@
                 [chatViewController setViewingPresentTime:true];
             } else {
             }
+        }
+    } else if ([segue.identifier isEqualToString:@"about to mutual friends"]) {
+        if([segue.destinationViewController class] == [DCMutualFriendsViewController class]){
+            DCMutualFriendsViewController *friendmutualVC = (DCMutualFriendsViewController *)segue.destinationViewController;
+            friendmutualVC.mutualFriendsList = self.mutualFriends;
         }
     }
 }
