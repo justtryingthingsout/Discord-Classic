@@ -829,35 +829,51 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (IBAction)chooseImage:(id)sender {
-	[self.inputField resignFirstResponder];
+    [self.inputField resignFirstResponder];
     
-    if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        
-        UIActionSheet *imageSourceActionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                                            delegate:self
-                                                                   cancelButtonTitle:@"Cancel"
-                                                              destructiveButtonTitle:nil
-                                                                   otherButtonTitles:@"Take Photo or Video", @"Choose Existing", nil];
-        [imageSourceActionSheet setTag:2]; // Assign a unique tag for this actionsheet
-        [imageSourceActionSheet showInView:self.view];
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        // iPad-specific implementation using UIPopoverController
+        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+            UIImagePickerController *picker = UIImagePickerController.new;
+            picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            picker.delegate = self;
+            
+            // Initialize UIPopoverController
+            UIPopoverController *popoverController = [[UIPopoverController alloc] initWithContentViewController:picker];
+            self.imagePopoverController = popoverController;
+            
+            if ([sender isKindOfClass:[UIBarButtonItem class]]) {
+                // Use the bar button item's view for popover presentation
+                UIBarButtonItem *barButtonItem = (UIBarButtonItem *)sender;
+                [popoverController presentPopoverFromBarButtonItem:barButtonItem
+                                          permittedArrowDirections:UIPopoverArrowDirectionAny
+                                                          animated:YES];
+            }
+        }
     } else {
-        // camera is not supported!
-        UIImagePickerController *picker = UIImagePickerController.new;
-        
-        //picker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType: UIImagePickerControllerSourceTypeCamera];
-        
-        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        
-        [picker setDelegate:self];
-        
-        [picker viewWillAppear:YES];
-        [self presentViewController:picker animated:YES completion:nil];
-        [picker viewWillAppear:YES];
+        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+            UIActionSheet *imageSourceActionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                                                delegate:self
+                                                                       cancelButtonTitle:@"Cancel"
+                                                                  destructiveButtonTitle:nil
+                                                                       otherButtonTitles:@"Take Photo or Video", @"Choose Existing", nil];
+            [imageSourceActionSheet setTag:2];
+            [imageSourceActionSheet showInView:self.view];
+        } else {
+            // Camera is not supported, use photo library
+            UIImagePickerController *picker = UIImagePickerController.new;
+            picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            picker.delegate = self;
+            
+            [self presentViewController:picker animated:YES completion:nil];
+        }
     }
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     [picker dismissModalViewControllerAnimated:YES];
+    [self.imagePopoverController dismissPopoverAnimated:YES];
+    self.imagePopoverController = nil;
     
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
     

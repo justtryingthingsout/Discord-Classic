@@ -424,7 +424,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </imageView>
                                 <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" id="oow-9a-9v4">
-                                    <rect key="frame" x="20" y="424" width="281" height="38"/>
+                                    <rect key="frame" x="20" y="422" width="280" height="38"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
                                     <state key="normal" title="Mutual Friends" backgroundImage="No-Header.png">
@@ -598,7 +598,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Zi9-on-pLM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2430" y="-160"/>
+            <point key="canvasLocation" x="2594" y="-160"/>
         </scene>
         <!--Own Account Info Management Controller - Me (<@????>-->
         <scene sceneID="G9r-9g-gVA">
@@ -1422,8 +1422,8 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="ldO-VY-J45"/>
-        <segue reference="vHX-9M-oqb"/>
         <segue reference="Sg6-qn-HUF"/>
+        <segue reference="vHX-9M-oqb"/>
+        <segue reference="D3v-WJ-zL9"/>
     </inferredMetricsTieBreakers>
 </document>

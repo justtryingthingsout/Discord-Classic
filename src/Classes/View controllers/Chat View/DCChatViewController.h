@@ -34,4 +34,8 @@
 @property DCMessage *selectedMessage;
 
 @property NSMutableArray* messages;
+
+@property (nonatomic, strong) UIPopoverController *imagePopoverController;
+
+
 @end

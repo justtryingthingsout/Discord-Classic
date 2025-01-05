@@ -63,10 +63,11 @@
                 
                 self.connectedAccounts = [parsedResponse objectForKey:@"connected_accounts"];
                 self.mutualFriends = [parsedResponse objectForKey:@"mutual_friends"];
+
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.pronounLabel.text = [userProfile objectForKey:@"pronouns"];
                     self.descriptionBox.text = [userProfile valueForKey:@"bio"];
-                    [self.tableView reloadData]; // Reload the table view on the main thread
+                    [self.tableView reloadData]; 
                 });
                 
                 NSString *bannerHash = [userInfo objectForKey:@"banner"];
@@ -192,6 +193,7 @@
 - (IBAction)throwToMutualFriends:(id)sender {
     [self performSegueWithIdentifier:@"about to mutual friends" sender:self];
 }
+
 
 
 - (NSString *)imageNameForStatus:(NSString *)status {

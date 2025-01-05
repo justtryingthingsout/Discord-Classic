@@ -26,7 +26,7 @@
 		</dict>
 		<dict>
 			<key>FooterText</key>
-			<string>This option allows you to re-feel the old look of Discord Classic, or for you to opt out of the re-design if you prefer the old, more hacky, DIY-esque look of the older versions.</string>
+			<string>This option allows you to re-feel the old look of Discord Classic, or for you to opt out of the re-design if you prefer the old, more hacky, DIY-esque look of the older versions. If you&apos;re on a lower-end device this option will greatly benefit speed!</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>

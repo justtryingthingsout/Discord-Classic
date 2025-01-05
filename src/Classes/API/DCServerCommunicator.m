@@ -330,7 +330,6 @@ UIActivityIndicatorView *spinner;
                                 //NSLog(@"%@", privateChannel);
                                 NSMutableDictionary *usersDict;
                                 
-                                
                                 DCChannel* newChannel = DCChannel.new;
                                 newChannel.snowflake = [privateChannel valueForKey:@"id"];
                                 newChannel.lastMessageId = [privateChannel valueForKey:@"last_message_id"];
@@ -707,6 +706,11 @@ UIActivityIndicatorView *spinner;
 	
 	//Begin new session
 	[self.websocket close];
+    if(self.oldMode == NO) {
+        [self showNonIntrusiveNotificationWithTitle:@"Reauthenticating"];
+    } else {
+        [self.alertView show];
+    }
 	
 	//If an identify cooldown is in effect, wait for the time needed until sending another IDENTIFY
 	//if not, send immediately

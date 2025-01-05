@@ -331,6 +331,7 @@ static dispatch_queue_t channel_send_queue;
             NSError *error = nil;
             NSArray* parsedResponse = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
             
+            //NSLog(@"parsed %@", parsedResponse);
             /*if(parsedResponse.count > 0)
                 for(NSDictionary* jsonMessage in parsedResponse)
                     [messages insertObject:[DCTools convertJsonMessage:jsonMessage] atIndex:0];*/
