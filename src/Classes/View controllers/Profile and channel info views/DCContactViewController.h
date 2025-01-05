@@ -14,7 +14,6 @@
 #import "DCMutualFriendsViewController.h"
 #import "DCConnectedAccountsCell.h"
 #import "APLSlideMenuViewController.h"
-#import "DCMutualGuildsViewController.h"
 @interface DCContactViewController : UITableViewController
 
 -(void)setSelectedUser:(DCUser*)user;

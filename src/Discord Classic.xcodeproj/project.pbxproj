@@ -141,6 +141,28 @@
 		5B60AF232D27E6B7000A43B5 /* userInfoButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B60AF212D27E6B6000A43B5 /* userInfoButton@2x.png */; };
 		5B60AF272D282987000A43B5 /* DCOwnAccountInfoManagementController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B60AF262D282987000A43B5 /* DCOwnAccountInfoManagementController.m */; };
 		5B81E6DE2D20656200E0C4BE /* offline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B81E6DD2D20656200E0C4BE /* offline@2x.png */; };
+		5B923CFB2D2A185E000EBA90 /* C-BlueSky.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923CF72D2A185E000EBA90 /* C-BlueSky.png */; };
+		5B923CFC2D2A185E000EBA90 /* C-BlueSky@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923CF82D2A185E000EBA90 /* C-BlueSky@2x.png */; };
+		5B923CFD2D2A185E000EBA90 /* C-GitHub.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923CF92D2A185E000EBA90 /* C-GitHub.png */; };
+		5B923CFE2D2A185E000EBA90 /* C-GitHub@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923CFA2D2A185E000EBA90 /* C-GitHub@2x.png */; };
+		5B923D032D2A1866000EBA90 /* C-PSN.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923CFF2D2A1866000EBA90 /* C-PSN.png */; };
+		5B923D042D2A1866000EBA90 /* C-PSN@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D002D2A1866000EBA90 /* C-PSN@2x.png */; };
+		5B923D052D2A1866000EBA90 /* C-Reddit.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D012D2A1866000EBA90 /* C-Reddit.png */; };
+		5B923D062D2A1866000EBA90 /* C-Reddit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D022D2A1866000EBA90 /* C-Reddit@2x.png */; };
+		5B923D0D2D2A186F000EBA90 /* C-Spotify.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D072D2A186F000EBA90 /* C-Spotify.png */; };
+		5B923D0E2D2A186F000EBA90 /* C-Spotify@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D082D2A186F000EBA90 /* C-Spotify@2x.png */; };
+		5B923D0F2D2A186F000EBA90 /* C-Steam.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D092D2A186F000EBA90 /* C-Steam.png */; };
+		5B923D102D2A186F000EBA90 /* C-Steam@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D0A2D2A186F000EBA90 /* C-Steam@2x.png */; };
+		5B923D112D2A186F000EBA90 /* C-Twitch.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D0B2D2A186F000EBA90 /* C-Twitch.png */; };
+		5B923D122D2A186F000EBA90 /* C-Twitch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D0C2D2A186F000EBA90 /* C-Twitch@2x.png */; };
+		5B923D172D2A187A000EBA90 /* C-Twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D132D2A187A000EBA90 /* C-Twitter.png */; };
+		5B923D182D2A187A000EBA90 /* C-Twitter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D142D2A187A000EBA90 /* C-Twitter@2x.png */; };
+		5B923D192D2A187A000EBA90 /* C-Web.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D152D2A187A000EBA90 /* C-Web.png */; };
+		5B923D1A2D2A187A000EBA90 /* C-Web@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D162D2A187A000EBA90 /* C-Web@2x.png */; };
+		5B923D1F2D2A1883000EBA90 /* C-Xbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D1B2D2A1883000EBA90 /* C-Xbox.png */; };
+		5B923D202D2A1883000EBA90 /* C-Xbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D1C2D2A1883000EBA90 /* C-Xbox@2x.png */; };
+		5B923D212D2A1883000EBA90 /* C-YouTube.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D1D2D2A1883000EBA90 /* C-YouTube.png */; };
+		5B923D222D2A1883000EBA90 /* C-YouTube@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B923D1E2D2A1883000EBA90 /* C-YouTube@2x.png */; };
 		5BA0983F2D205E15009F7726 /* offline.png in Resources */ = {isa = PBXBuildFile; fileRef = 5BA0983E2D205E15009F7726 /* offline.png */; };
 		5BAE842B2D1C84AE00C021F9 /* UIColorHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BAE842A2D1C84AE00C021F9 /* UIColorHex.m */; };
 		5BAE842D2D1C9FDB00C021F9 /* Throwback.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BAE842C2D1C9FDB00C021F9 /* Throwback.storyboard */; };
@@ -361,6 +383,28 @@
 		5B60AF252D282987000A43B5 /* DCOwnAccountInfoManagementController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCOwnAccountInfoManagementController.h; sourceTree = "<group>"; };
 		5B60AF262D282987000A43B5 /* DCOwnAccountInfoManagementController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCOwnAccountInfoManagementController.m; sourceTree = "<group>"; };
 		5B81E6DD2D20656200E0C4BE /* offline@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline@2x.png"; sourceTree = "<group>"; };
+		5B923CF72D2A185E000EBA90 /* C-BlueSky.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-BlueSky.png"; sourceTree = "<group>"; };
+		5B923CF82D2A185E000EBA90 /* C-BlueSky@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-BlueSky@2x.png"; sourceTree = "<group>"; };
+		5B923CF92D2A185E000EBA90 /* C-GitHub.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-GitHub.png"; sourceTree = "<group>"; };
+		5B923CFA2D2A185E000EBA90 /* C-GitHub@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-GitHub@2x.png"; sourceTree = "<group>"; };
+		5B923CFF2D2A1866000EBA90 /* C-PSN.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-PSN.png"; sourceTree = "<group>"; };
+		5B923D002D2A1866000EBA90 /* C-PSN@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-PSN@2x.png"; sourceTree = "<group>"; };
+		5B923D012D2A1866000EBA90 /* C-Reddit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-Reddit.png"; sourceTree = "<group>"; };
+		5B923D022D2A1866000EBA90 /* C-Reddit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-Reddit@2x.png"; sourceTree = "<group>"; };
+		5B923D072D2A186F000EBA90 /* C-Spotify.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-Spotify.png"; sourceTree = "<group>"; };
+		5B923D082D2A186F000EBA90 /* C-Spotify@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-Spotify@2x.png"; sourceTree = "<group>"; };
+		5B923D092D2A186F000EBA90 /* C-Steam.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-Steam.png"; sourceTree = "<group>"; };
+		5B923D0A2D2A186F000EBA90 /* C-Steam@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-Steam@2x.png"; sourceTree = "<group>"; };
+		5B923D0B2D2A186F000EBA90 /* C-Twitch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-Twitch.png"; sourceTree = "<group>"; };
+		5B923D0C2D2A186F000EBA90 /* C-Twitch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-Twitch@2x.png"; sourceTree = "<group>"; };
+		5B923D132D2A187A000EBA90 /* C-Twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-Twitter.png"; sourceTree = "<group>"; };
+		5B923D142D2A187A000EBA90 /* C-Twitter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-Twitter@2x.png"; sourceTree = "<group>"; };
+		5B923D152D2A187A000EBA90 /* C-Web.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-Web.png"; sourceTree = "<group>"; };
+		5B923D162D2A187A000EBA90 /* C-Web@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-Web@2x.png"; sourceTree = "<group>"; };
+		5B923D1B2D2A1883000EBA90 /* C-Xbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-Xbox.png"; sourceTree = "<group>"; };
+		5B923D1C2D2A1883000EBA90 /* C-Xbox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-Xbox@2x.png"; sourceTree = "<group>"; };
+		5B923D1D2D2A1883000EBA90 /* C-YouTube.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-YouTube.png"; sourceTree = "<group>"; };
+		5B923D1E2D2A1883000EBA90 /* C-YouTube@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "C-YouTube@2x.png"; sourceTree = "<group>"; };
 		5BA0983D2D2058E4009F7726 /* Discord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Discord.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BA0983E2D205E15009F7726 /* offline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = offline.png; sourceTree = "<group>"; };
 		5BAE84292D1C84AE00C021F9 /* UIColorHex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIColorHex.h; sourceTree = "<group>"; };
@@ -995,6 +1039,35 @@
 			path = "Account Management";
 			sourceTree = "<group>";
 		};
+		5B923CF62D2A1838000EBA90 /* SocialMedia */ = {
+			isa = PBXGroup;
+			children = (
+				5B923D1B2D2A1883000EBA90 /* C-Xbox.png */,
+				5B923D1C2D2A1883000EBA90 /* C-Xbox@2x.png */,
+				5B923D1D2D2A1883000EBA90 /* C-YouTube.png */,
+				5B923D1E2D2A1883000EBA90 /* C-YouTube@2x.png */,
+				5B923D132D2A187A000EBA90 /* C-Twitter.png */,
+				5B923D142D2A187A000EBA90 /* C-Twitter@2x.png */,
+				5B923D152D2A187A000EBA90 /* C-Web.png */,
+				5B923D162D2A187A000EBA90 /* C-Web@2x.png */,
+				5B923D072D2A186F000EBA90 /* C-Spotify.png */,
+				5B923D082D2A186F000EBA90 /* C-Spotify@2x.png */,
+				5B923D092D2A186F000EBA90 /* C-Steam.png */,
+				5B923D0A2D2A186F000EBA90 /* C-Steam@2x.png */,
+				5B923D0B2D2A186F000EBA90 /* C-Twitch.png */,
+				5B923D0C2D2A186F000EBA90 /* C-Twitch@2x.png */,
+				5B923CFF2D2A1866000EBA90 /* C-PSN.png */,
+				5B923D002D2A1866000EBA90 /* C-PSN@2x.png */,
+				5B923D012D2A1866000EBA90 /* C-Reddit.png */,
+				5B923D022D2A1866000EBA90 /* C-Reddit@2x.png */,
+				5B923CF72D2A185E000EBA90 /* C-BlueSky.png */,
+				5B923CF82D2A185E000EBA90 /* C-BlueSky@2x.png */,
+				5B923CF92D2A185E000EBA90 /* C-GitHub.png */,
+				5B923CFA2D2A185E000EBA90 /* C-GitHub@2x.png */,
+			);
+			path = SocialMedia;
+			sourceTree = "<group>";
+		};
 		5BAE84282D1C849E00C021F9 /* UIColor+Hex */ = {
 			isa = PBXGroup;
 			children = (
@@ -1040,18 +1113,11 @@
 		5BD743402D21A4C500300565 /* Connections Cell */ = {
 			isa = PBXGroup;
 			children = (
+				5B923CF62D2A1838000EBA90 /* SocialMedia */,
 				5BD743482D21AC0B00300565 /* ConnectionCellBase.png */,
 				5BD743492D21AC0B00300565 /* ConnectionCellBase@2x.png */,
-				5BD743452D21A75D00300565 /* Social Media */,
 			);
 			path = "Connections Cell";
-			sourceTree = "<group>";
-		};
-		5BD743452D21A75D00300565 /* Social Media */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Social Media";
 			sourceTree = "<group>";
 		};
 		5BDD37472D20485300C6482C /* States */ = {
@@ -1126,13 +1192,16 @@
 				5B81E6DE2D20656200E0C4BE /* offline@2x.png in Resources */,
 				5BD7434B2D21AC0B00300565 /* ConnectionCellBase@2x.png in Resources */,
 				5B21051D2D1856E5005B9596 /* BarButton@2x.png in Resources */,
+				5B923D0F2D2A186F000EBA90 /* C-Steam.png in Resources */,
 				5B3890DD2D1C54D8002D3BBE /* GuildIconBaseSelected.png in Resources */,
 				5B2105182D1856E5005B9596 /* Send.png in Resources */,
 				5BDD37422D2038DF00C6482C /* OldTitlebarTexture.png in Resources */,
+				5B923D192D2A187A000EBA90 /* C-Web.png in Resources */,
 				5BC7F3082D20BB3C00CA6F3F /* O-DCChatTableCell.xib in Resources */,
 				5B3890E12D1C7A11002D3BBE /* pfpOverlay.png in Resources */,
 				5B2104A72D185409005B9596 /* FontAwesome.ttf in Resources */,
 				5BB5D7372D19545B00C54C0A /* privateGuildLogo@2x.png in Resources */,
+				5B923D042D2A1866000EBA90 /* C-PSN@2x.png in Resources */,
 				5B21054C2D1856E5005B9596 /* TbarBG@2x.png in Resources */,
 				5BDD374C2D20486500C6482C /* dnd.png in Resources */,
 				5B2105392D1856E5005B9596 /* TopLogo@2x.png in Resources */,
@@ -1144,15 +1213,20 @@
 				5B21052D2D1856E5005B9596 /* DefaultAvatar4@2x.png in Resources */,
 				5B21053C2D1856E5005B9596 /* PLVideoOverlayPlayDown.png in Resources */,
 				5B2105252D1856E5005B9596 /* DefaultAvatar0@2x.png in Resources */,
+				5B923D122D2A186F000EBA90 /* C-Twitch@2x.png in Resources */,
 				5BB5D73A2D1956F700C54C0A /* bannerTopShadow.png in Resources */,
 				5B21054F2D1856E5005B9596 /* Video-play-button.png in Resources */,
+				5B923D182D2A187A000EBA90 /* C-Twitter@2x.png in Resources */,
 				5BAE842D2D1C9FDB00C021F9 /* Throwback.storyboard in Resources */,
+				5B923D1F2D2A1883000EBA90 /* C-Xbox.png in Resources */,
 				5B21053B2D1856E5005B9596 /* PLVideoOverlayPlay@2x.png in Resources */,
 				5B2105B92D186432005B9596 /* TestCallEmbed.png in Resources */,
 				5B21050D2D1856E5005B9596 /* Border.png in Resources */,
 				5BD7434A2D21AC0B00300565 /* ConnectionCellBase.png in Resources */,
+				5B923CFC2D2A185E000EBA90 /* C-BlueSky@2x.png in Resources */,
 				5BB2C3E92D21E8D7002432EE /* PFPInset.png in Resources */,
 				5BB5D73F2D19582700C54C0A /* bannerBottomShadow@2x.png in Resources */,
+				5B923D202D2A1883000EBA90 /* C-Xbox@2x.png in Resources */,
 				5BDDDD8B2D295B6500B64883 /* hamburgerButton.png in Resources */,
 				5BD7433F2D21A0C900300565 /* chatButtonInset@2x.png in Resources */,
 				5BAE84352D1D916700C021F9 /* DCUniversalTableCell.xib in Resources */,
@@ -1164,6 +1238,7 @@
 				5BC7F3102D20C97300CA6F3F /* oldTextFieldBG.png in Resources */,
 				5BEAA6ED2D26097200CBDB2A /* Experimental.storyboard in Resources */,
 				5B2105242D1856E5005B9596 /* DefaultAvatar0.png in Resources */,
+				5B923D052D2A1866000EBA90 /* C-Reddit.png in Resources */,
 				5BA0983F2D205E15009F7726 /* offline.png in Resources */,
 				5BB2C3E62D21D7CE002432EE /* dnd@2x.png in Resources */,
 				5B21054B2D1856E5005B9596 /* TbarBG.png in Resources */,
@@ -1172,6 +1247,7 @@
 				5B3890DB2D1C53CB002D3BBE /* GuildIconBase.png in Resources */,
 				5BB5D73E2D19582700C54C0A /* bannerBottomShadow.png in Resources */,
 				5B21050E2D1856E5005B9596 /* Border@2x.png in Resources */,
+				5B923D212D2A1883000EBA90 /* C-YouTube.png in Resources */,
 				5B21052E2D1856E5005B9596 /* DefaultAvatar5.png in Resources */,
 				5BC7F30D2D20BC0500CA6F3F /* oldDiscord.png in Resources */,
 				5B21052F2D1856E5005B9596 /* DefaultAvatar5@2x.png in Resources */,
@@ -1180,6 +1256,7 @@
 				5BC7F30E2D20BC0500CA6F3F /* oldDiscord@2x.png in Resources */,
 				5B2105312D1856E5005B9596 /* border.png in Resources */,
 				5B2105102D1856E5005B9596 /* No-Header@2x.png in Resources */,
+				5B923D0D2D2A186F000EBA90 /* C-Spotify.png in Resources */,
 				5BB2C3EB2D21E9A1002432EE /* PFPInset@2x.png in Resources */,
 				5B2105202D1856E5005B9596 /* NavigationButton.png in Resources */,
 				5B2105462D1856E5005B9596 /* DescIntroducer.png in Resources */,
@@ -1190,41 +1267,51 @@
 				5B2105192D1856E5005B9596 /* Send@2x.png in Resources */,
 				5B2105212D1856E5005B9596 /* NavigationButton@2x.png in Resources */,
 				5B21047C2D185402005B9596 /* Settings.bundle in Resources */,
+				5B923D062D2A1866000EBA90 /* C-Reddit@2x.png in Resources */,
 				5B2105472D1856E5005B9596 /* DescIntroducer@2x.png in Resources */,
 				5B2105142D1856E5005B9596 /* CBarButtonMap@2x.png in Resources */,
+				5B923D032D2A1866000EBA90 /* C-PSN.png in Resources */,
+				5B923D0E2D2A186F000EBA90 /* C-Spotify@2x.png in Resources */,
 				5B2105352D1856E5005B9596 /* menu@2x.png in Resources */,
 				5B21053A2D1856E5005B9596 /* PLVideoOverlayPlay.png in Resources */,
 				5B21050F2D1856E5005B9596 /* No-header.png in Resources */,
 				5BDD374B2D20486500C6482C /* absent.png in Resources */,
 				5BDD37432D2038DF00C6482C /* OldTitlebarTexture@2x.png in Resources */,
 				5BDDDD8C2D295B6500B64883 /* hamburgerButton@2x.png in Resources */,
+				5B923D172D2A187A000EBA90 /* C-Twitter.png in Resources */,
 				5B21052A2D1856E5005B9596 /* DefaultAvatar3.png in Resources */,
 				5B21054D2D1856E5005B9596 /* ToolbarBG.png in Resources */,
 				5B2104A92D18540A005B9596 /* emoji.json in Resources */,
 				5B2104BB2D1856A7005B9596 /* DCChatReplyTableCell.xib in Resources */,
 				5B2105382D1856E5005B9596 /* TopLogo.png in Resources */,
 				5B2104BC2D1856A7005B9596 /* DCChatTableCell.xib in Resources */,
+				5B923D102D2A186F000EBA90 /* C-Steam@2x.png in Resources */,
 				5B21053D2D1856E5005B9596 /* PLVideoOverlayPlayDown@2x.png in Resources */,
 				5B2105592D185794005B9596 /* Info.plist in Resources */,
 				5B60AF232D27E6B7000A43B5 /* userInfoButton@2x.png in Resources */,
 				5B60AF222D27E6B7000A43B5 /* userInfoButton.png in Resources */,
 				5B21053E2D1856E5005B9596 /* reply.png in Resources */,
+				5B923CFD2D2A185E000EBA90 /* C-GitHub.png in Resources */,
 				5B2105112D1856E5005B9596 /* addbarglyph.png in Resources */,
 				5B21052C2D1856E5005B9596 /* DefaultAvatar4.png in Resources */,
 				5B2105552D185735005B9596 /* Images.xcassets in Resources */,
+				5B923D112D2A186F000EBA90 /* C-Twitch.png in Resources */,
 				5BB5D73B2D1956F700C54C0A /* bannerTopShadow@2x.png in Resources */,
 				5B2105222D1856E5005B9596 /* NavigationButtonPressed.png in Resources */,
 				5B2105162D1856E5005B9596 /* preferences.png in Resources */,
 				5B2105172D1856E5005B9596 /* preferences@2x.png in Resources */,
 				5B2105332D1856E5005B9596 /* DirectMessages@2x.png in Resources */,
+				5B923CFB2D2A185E000EBA90 /* C-BlueSky.png in Resources */,
 				5BAE843B2D1DE55500C021F9 /* pinMessage@2x.png in Resources */,
 				5B2105412D1856E5005B9596 /* bag-xml.png in Resources */,
 				5B3890E22D1C7A11002D3BBE /* pfpOverlay@2x.png in Resources */,
 				5B2105342D1856E5005B9596 /* menu.png in Resources */,
 				5BB5D7362D19545B00C54C0A /* privateGuildLogo.png in Resources */,
 				5B21051E2D1856E5005B9596 /* BarButtonPressed.png in Resources */,
+				5B923CFE2D2A185E000EBA90 /* C-GitHub@2x.png in Resources */,
 				5B2105502D1856E5005B9596 /* Video-play-button@2x.png in Resources */,
 				5B2105492D1856E5005B9596 /* WelcomeBanner.png in Resources */,
+				5B923D1A2D2A187A000EBA90 /* C-Web@2x.png in Resources */,
 				5BDD374D2D20486500C6482C /* online.png in Resources */,
 				5B2105362D1856E5005B9596 /* Sar izmeli Mehmet Aa.mp3 in Resources */,
 				5B2105422D1856E5005B9596 /* commandbar-bg.png in Resources */,
@@ -1248,6 +1335,7 @@
 				5B21054E2D1856E5005B9596 /* ToolbarBG@2x.png in Resources */,
 				5B2105442D1856E5005B9596 /* ContactsBar.png in Resources */,
 				5B2105152D1856E5005B9596 /* Home@2x.png in Resources */,
+				5B923D222D2A1883000EBA90 /* C-YouTube@2x.png in Resources */,
 				5B2105262D1856E5005B9596 /* DefaultAvatar1.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -373,7 +373,7 @@ static dispatch_queue_t channel_send_queue;
                         convertedMessage.content = [NSString stringWithFormat:@"%@ changed the group name to %@.", convertedMessage.author.globalName, [jsonMessage objectForKey:@"content"]];
                         float contentWidth = UIScreen.mainScreen.bounds.size.width - 63;
                         CGSize textSize = [convertedMessage.content sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:NSLineBreakByWordWrapping];
-                        convertedMessage.contentHeight = textSize.height + 40;
+                        convertedMessage.contentHeight = textSize.height + 35;
                         
                     } else if([messageType intValue] == 5) {
                         convertedMessage.messageType = 1;
@@ -398,13 +398,13 @@ static dispatch_queue_t channel_send_queue;
                         convertedMessage.content = [NSString stringWithFormat:@"%@ just boosted the server!", convertedMessage.author.globalName];
                         float contentWidth = UIScreen.mainScreen.bounds.size.width - 63;
                         CGSize textSize = [convertedMessage.content sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:NSLineBreakByWordWrapping];
-                        convertedMessage.contentHeight = textSize.height + 40;
+                        convertedMessage.contentHeight = textSize.height + 20;
                     } else if([messageType intValue] == 18) {
                         convertedMessage.messageType = 1;
                         convertedMessage.content = [NSString stringWithFormat:@"%@ just boosted the server!", convertedMessage.author.globalName];
                         float contentWidth = UIScreen.mainScreen.bounds.size.width - 63;
                         CGSize textSize = [convertedMessage.content sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:NSLineBreakByWordWrapping];
-                        convertedMessage.contentHeight = textSize.height + 40;
+                        convertedMessage.contentHeight = textSize.height + 20;
                     }
                     
                     [messages insertObject:convertedMessage atIndex:0];
