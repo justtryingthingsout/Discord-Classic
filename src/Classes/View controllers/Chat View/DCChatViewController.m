@@ -352,10 +352,7 @@ static dispatch_queue_t chat_messages_queue;
         if (!messageAtRowIndex.isGrouped) {
             [cell.authorLabel setText:messageAtRowIndex.author.username];
         }
-        
-        if(!messageAtRowIndex.messageType == 6) {
-            cell.universalImageView.image = [UIImage imageNamed:@"pinMessage"];
-        }
+        //im the dumbest fucking idiot alive kill me
         
         NSString* content = [messageAtRowIndex.content emojizedString];
         
@@ -490,6 +487,7 @@ static dispatch_queue_t chat_messages_queue;
         else
             cell = [tableView dequeueReusableCellWithIdentifier:@"Message Cell"];
         
+        
         if (messageAtRowIndex.referencedMessage != nil) {
             [cell.referencedAuthorLabel setText:messageAtRowIndex.referencedMessage.author.globalName];
             [cell.referencedMessage setText:messageAtRowIndex.referencedMessage.content];
@@ -506,8 +504,22 @@ static dispatch_queue_t chat_messages_queue;
             [cell.timestampLabel setFrame:CGRectMake(messageAtRowIndex.authorNameWidth, cell.timestampLabel.y, self.chatTableView.width-messageAtRowIndex.authorNameWidth, cell.timestampLabel.height)];
         }
         
-        if(messageAtRowIndex.messageType == 6) {
-            cell.universalImageView.image = [UIImage imageNamed:@"pinMessage"];
+        if(messageAtRowIndex.messageType == 1) {
+            cell.universalImageView.image = [UIImage imageNamed:@"U-Add"];
+        } else if(messageAtRowIndex.messageType == 2) {
+            cell.universalImageView.image = [UIImage imageNamed:@"U-Remove"];
+        } else if(messageAtRowIndex.messageType == 4) {
+            cell.universalImageView.image = [UIImage imageNamed:@"U-Pen"];
+        } else if(messageAtRowIndex.messageType == 5) {
+            cell.universalImageView.image = [UIImage imageNamed:@"U-Pen"];
+        } else if(messageAtRowIndex.messageType == 6) {
+            cell.universalImageView.image = [UIImage imageNamed:@"U-Pin"];
+        } else if(messageAtRowIndex.messageType == 7) {
+            cell.universalImageView.image = [UIImage imageNamed:@"U-Add"];
+        } else if(messageAtRowIndex.messageType == 8) {
+            cell.universalImageView.image = [UIImage imageNamed:@"U-Boost"];
+        } else if(messageAtRowIndex.messageType == 18) {
+            cell.universalImageView.image = [UIImage imageNamed:@"U-Boost"];
         }
         
         NSString* content = [messageAtRowIndex.content emojizedString];

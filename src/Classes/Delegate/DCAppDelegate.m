@@ -19,40 +19,40 @@
     self.window.backgroundColor = [UIColor clearColor];
     self.window.opaque = NO;
     self.shouldReload = false;
-    if(VERSION_MIN(@"7.0")) {
+    //if(VERSION_MIN(@"7.0")) {
+    /*
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"iOS-7" bundle:nil];
         UIViewController *initialViewController = [storyboard instantiateInitialViewController];
         self.window.rootViewController = initialViewController;
+        [self.window makeKeyAndVisible];*/
+        
+    //} else if(VERSION_MIN(@"6.0")) {
+    self.experimental = [[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"];
+    self.hackyMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
+    
+    if(self.experimental && self.hackyMode == YES) {
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"hackyMode"];
+    }
+    
+    if(self.experimental == YES) {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Experimental" bundle:nil];
+        UIViewController *initialViewController = [storyboard instantiateInitialViewController];
+        self.window.rootViewController = initialViewController;
         [self.window makeKeyAndVisible];
-        
-    } else if(VERSION_MIN(@"6.0")) {
-        
-        self.experimental = [[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"];
-        self.hackyMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
-        
-        if(self.experimental && self.hackyMode == YES) {
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"hackyMode"];
-        }
-        
-        if(self.experimental == YES) {
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Experimental" bundle:nil];
+        [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
+    } else {
+        if(self.hackyMode == true) {
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Throwback" bundle:nil];
             UIViewController *initialViewController = [storyboard instantiateInitialViewController];
             self.window.rootViewController = initialViewController;
             [self.window makeKeyAndVisible];
-            [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
+            [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"OldTitlebarTexture"] forBarMetrics:UIBarMetricsDefault];
         } else {
-            if(self.hackyMode == true) {
-                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Throwback" bundle:nil];
-                UIViewController *initialViewController = [storyboard instantiateInitialViewController];
-                self.window.rootViewController = initialViewController;
-                [self.window makeKeyAndVisible];
-                [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"OldTitlebarTexture"] forBarMetrics:UIBarMetricsDefault];
-            } else {
-                [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
-            }
+            [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
         }
-        
     }
+        
+    //}
     
     NSURLCache *urlCache = [[NSURLCache alloc] initWithMemoryCapacity:1024*1024*8  // 8MB mem cache
                                                          diskCapacity:1024*1024*60 // 60MB disk cache

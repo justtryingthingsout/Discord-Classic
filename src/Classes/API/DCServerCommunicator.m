@@ -287,7 +287,11 @@ UIActivityIndicatorView *spinner;
                             
                             NSMutableDictionary *userInfo = [NSMutableDictionary new];
                             userInfo[@"username"] = [d valueForKeyPath:@"user.username"];
-                            userInfo[@"global_name"] = [d valueForKeyPath:@"user.global_name"];
+                            if([[d valueForKeyPath:@"user.global_name"] isKindOfClass:[NSNull class]]) {
+                                userInfo[@"global_name"] = [d valueForKeyPath:@"user.username"];
+                            } else {
+                                userInfo[@"global_name"] = [d valueForKeyPath:@"user.global_name"];
+                            }
                             userInfo[@"pronouns"] = [d valueForKeyPath:@"user.pronouns"];
                             userInfo[@"avatar"] = [d valueForKeyPath:@"user.avatar"];
                             userInfo[@"phone"] = [d valueForKeyPath:@"user.phone"];
@@ -297,14 +301,9 @@ UIActivityIndicatorView *spinner;
                             userInfo[@"banner_color"] = [d valueForKeyPath:@"user.banner_color"];
                             userInfo[@"clan"] = [d valueForKeyPath:@"user.clan"];
                             userInfo[@"id"] = [d valueForKeyPath:@"user.id"];
-                            
                             userInfo[@"connectedAccounts"] = [d valueForKeyPath:@"connected_accounts"];
+                            
                             weakSelf.currentUserInfo = userInfo;
-
-                            
-                            
-                            
-
                             
                             weakSelf.userChannelSettings = NSMutableDictionary.new;
                             for(NSDictionary* guildSettings in [d valueForKey:@"user_guild_settings"])
@@ -723,7 +722,7 @@ UIActivityIndicatorView *spinner;
 		//NSLog(@"Cooldown in effect. Time left %f", timeRemaining);
 		[self.alertView setTitle:@"Waiting for auth cooldown..."];
         if(self.oldMode == NO)
-            [self showNonIntrusiveNotificationWithTitle:@"Re-Authenticating"];
+            [self showNonIntrusiveNotificationWithTitle:@"Re-Authenticating..."];
 		[self performSelector:@selector(startCommunicator) withObject:nil afterDelay:timeRemaining + 1];
 	}
 	

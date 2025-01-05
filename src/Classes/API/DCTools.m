@@ -679,45 +679,34 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 			int allowCode = 0;
 			
 			//Calculate permissions
-			for(NSDictionary* permission in [jsonChannel objectForKey:@"permission_overwrites"]){
-				
-				//Type of permission can either be role or member
-				int type = [permission valueForKey:@"type"];
-				
-				if(type == 0) {//if([type isEqualToString:@"role"]){
-					
-					//Check if this channel dictates permissions over any roles the user has
-					if([userRoles containsObject:[permission valueForKey:@"id"]]){
-						int deny = [[permission valueForKey:@"deny"] intValue];
-						int allow = [[permission valueForKey:@"allow"] intValue];
-						
-						if((deny & 1024) == 1024 && allowCode < 1)
-							allowCode = 1;
-						
-						if(((allow & 1024) == 1024) && allowCode < 2)
-							allowCode = 2;
-					}
-				}
-				
-				
-				if(type == 1){//if([type isEqualToString:@"member"]){
-					
-					//Check if
-					NSString* memberId = [permission valueForKey:@"id"];
-					if([memberId isEqualToString:DCServerCommunicator.sharedInstance.snowflake]){
-						int deny = [[permission valueForKey:@"deny"] intValue];
-						int allow = [[permission valueForKey:@"allow"] intValue];
-						
-						if((deny & 1024) == 1024 && allowCode < 3)
-							allowCode = 3;
-						
-						if((allow & 1024) == 1024){
-							allowCode = 4;
-							break;
-						}
-					}
-				}
-			}
+			NSArray *overwrites = [jsonChannel objectForKey:@"permission_overwrites"];
+            for (NSDictionary *permission in overwrites) {
+                int type = [[permission valueForKey:@"type"] intValue];
+                NSString *idValue = [permission valueForKey:@"id"];
+                int deny = [[permission valueForKey:@"deny"] intValue];
+                int allow = [[permission valueForKey:@"allow"] intValue];
+                
+                if (type == 0) { // Role overwrite
+                    if ([userRoles containsObject:idValue]) {
+                        if ((deny & 1024) == 1024 && allowCode < 1) {
+                            allowCode = 1;
+                        }
+                        if ((allow & 1024) == 1024 && allowCode < 2) {
+                            allowCode = 2;
+                        }
+                    }
+                } else if (type == 1) { // Member overwrite
+                    if ([idValue isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
+                        if ((deny & 1024) == 1024 && allowCode < 3) {
+                            allowCode = 3;
+                        }
+                        if ((allow & 1024) == 1024) {
+                            allowCode = 4;
+                            break; // Highest precedence, exit loop
+                        }
+                    }
+                }
+            }
 			
 			if(allowCode == 0 || allowCode == 2 || allowCode == 4){
 				DCChannel* newChannel = DCChannel.new;

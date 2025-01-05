@@ -94,15 +94,11 @@
         
         if(VERSION_MIN(@"6.0") && !self.refreshControl){
             self.refreshControl = UIRefreshControl.new;
-            self.reloadControl = UIRefreshControl.new;
             
-            self.reloadControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Reload"];
-            self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Reauthenticate"];
+            self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Reload"];
             
             [self.guildTableView addSubview:self.refreshControl];
-            [self.channelTableView addSubview:self.reloadControl];
             
-            [self.reloadControl addTarget:self action:@selector(reloadTable) forControlEvents:UIControlEventValueChanged];
             [self.refreshControl addTarget:self action:@selector(reconnect) forControlEvents:UIControlEventValueChanged];
         }
     });
@@ -177,8 +173,8 @@
 		[self.channelTableView reloadData];
         if (self.guildLabel && [self.guildLabel.text isEqualToString:@"Direct Messages"]) {
             self.totalView.hidden = NO;
-            self.userName.text = [[DCServerCommunicator.sharedInstance currentUserInfo] objectForKey:@"username"];
-            self.globalName.text = [NSString stringWithFormat:@"@%@", [[DCServerCommunicator.sharedInstance currentUserInfo] objectForKey:@"global_name"]];
+            self.userName.text = [[DCServerCommunicator.sharedInstance currentUserInfo] objectForKey:@"global_name"];
+            self.globalName.text = [NSString stringWithFormat:@"@%@", [[DCServerCommunicator.sharedInstance currentUserInfo] objectForKey:@"username"]];
             self.guildTotalView.hidden = YES;
         } else {
             self.totalView.hidden = YES;
