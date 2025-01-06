@@ -1,6 +1,8 @@
 # Discord Classic
 ## The definitive way of using Discord on legacy iOS.
 
+# How do I log in?
+You need your Discord token as of right now to authenticate with the app. Login via E-Mail and Password has not yet been implemented so this is the only way. Information on how to obtain your token can be found (here)[https://www.youtube.com/watch?v=LnBnm_tZlyU].
 
 # Encountering issues, or need support?
 If you're encountering issues you should always take note of what happens, how you triggered it, what your iOS version is, what device type (Doesn't matter if iPod but iPad is more important) you're using Discord Classic on and then open a new issue on the [issues tab](https://github.com/bag-xml/iOS-Discord-Classic/issues).
