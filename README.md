@@ -4,13 +4,13 @@ Discord Classic is a Discord client for iOS 5+. Created in 2018, it allows you t
 
 # Compatiblilty
 
-| Compatibility  | iOS version | iOS version |
+| Compatibility  | iOS version | Remarks |
 | ------------- | ------------- | ------------- |
-| Content Cell  | 5.0.x  | iOS version |
-| Content Cell  | 5.1.x  | iOS version |
-| Content Cell  | 6.x  | iOS version |
-| Content Cell  | 7.x  | iOS version |
-| Content Cell  | 8+  | iOS version |
+| Compatible  | 5.0.x  | None besides SSL issues |
+| Compatible  | 5.1.x  | None |
+| Compatible  | 6.x  | None |
+| Compatible  | 7.x  | No native UI yet |
+| Compatible  | 8+  | UI starts to break |
 # How do I log in?
 You need your Discord token as of right now to authenticate with the app. Login via E-Mail and Password has not yet been implemented so this is the only way. Information on how to obtain your token can be found (here)[https://www.youtube.com/watch?v=LnBnm_tZlyU].
 
