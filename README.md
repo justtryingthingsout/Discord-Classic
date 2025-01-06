@@ -1,5 +1,6 @@
 # Discord Classic
 ## The definitive way of using Discord on legacy iOS.
+![siteBanner](https://github.com/user-attachments/assets/ea272fc6-c230-4579-a81c-a8e28d941ace)
 Discord Classic is a Discord client for iOS 5+. Created in 2018, it allows you to message users, and do the rest of what people can do on modern Discord minus some features like VC's or Activities.
 
 # Compatiblilty
