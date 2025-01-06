@@ -9,6 +9,7 @@
 //
 
 #import "DCIntroductionPage.h"
+#import "APLSlideMenuViewController.h"
 
 @interface DCIntroductionPage ()
 
@@ -25,7 +26,7 @@
 {
     [super viewDidLoad];
 	self.navigationItem.hidesBackButton = YES;
-    
+    self.slideMenuController.gestureSupport = NO;
     self.tokenInputField.delegate = self;
     NSString *token = [NSUserDefaults.standardUserDefaults objectForKey:@"token"];
     

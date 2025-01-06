@@ -51,6 +51,9 @@ static dispatch_queue_t chat_messages_queue;
         self.slideMenuController.bouncing = YES;
         self.slideMenuController.gestureSupport = APLSlideMenuGestureSupportDrag;
         self.slideMenuController.separatorColor = [UIColor grayColor];
+        //Go to settings if no token is set
+        if(!DCServerCommunicator.sharedInstance.token.length)
+            [self performSegueWithIdentifier:@"to Tokenpage" sender:self];
     }
 
 	[NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleMessageCreate:) name:@"MESSAGE CREATE" object:nil];
@@ -342,7 +345,7 @@ static dispatch_queue_t chat_messages_queue;
             cell = [tableView dequeueReusableCellWithIdentifier:@"OldMode Message Cell"];
         
         if (messageAtRowIndex.referencedMessage != nil) {
-            [cell.referencedAuthorLabel setText:messageAtRowIndex.referencedMessage.author.username];
+            [cell.referencedAuthorLabel setText:messageAtRowIndex.referencedMessage.author.globalName];
             [cell.referencedMessage setText:messageAtRowIndex.referencedMessage.content];
             [cell.referencedMessage setFrame:CGRectMake(messageAtRowIndex.referencedMessage.authorNameWidth, cell.referencedMessage.y, self.chatTableView.width-messageAtRowIndex.authorNameWidth, cell.referencedMessage.height)];
             

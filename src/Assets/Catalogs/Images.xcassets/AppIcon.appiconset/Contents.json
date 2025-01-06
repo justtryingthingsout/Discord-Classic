@@ -13,6 +13,12 @@
       "scale" : "2x"
     },
     {
+      "size" : "40x40",
+      "idiom" : "iphone",
+      "filename" : "ios 9.png",
+      "scale" : "2x"
+    },
+    {
       "size" : "57x57",
       "idiom" : "iphone",
       "filename" : "Group 76.png",
@@ -22,6 +28,12 @@
       "size" : "57x57",
       "idiom" : "iphone",
       "filename" : "Group 74.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "60x60",
+      "idiom" : "iphone",
+      "filename" : "ios 8.png",
       "scale" : "2x"
     },
     {
