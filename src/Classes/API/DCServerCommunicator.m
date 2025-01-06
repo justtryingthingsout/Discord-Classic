@@ -102,14 +102,22 @@ UIActivityIndicatorView *spinner;
         
         self.notificationView = [[UIView alloc] initWithFrame:CGRectMake(notificationX, notificationY, notificationWidth, notificationHeight)];
         
-        self.notificationView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"No-header"]];
-        self.notificationView.layer.cornerRadius = 15;
+        // Create a container view for masking and rounding
+        UIView *maskView = [[UIView alloc] initWithFrame:self.notificationView.bounds];
+        maskView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"No-header"]];
+        maskView.layer.cornerRadius = 15;
+        maskView.layer.masksToBounds = YES;  // Important: Masking the view to fix corner clipping
+        
+        [self.notificationView addSubview:maskView];
+        [self.notificationView sendSubviewToBack:maskView];
+        
         self.notificationView.layer.shadowColor = [UIColor blackColor].CGColor;
         self.notificationView.layer.shadowOffset = CGSizeMake(0, 2);
         self.notificationView.layer.shadowOpacity = 0.6;
         self.notificationView.layer.shadowRadius = 5;
         self.notificationView.layer.borderColor = [UIColor darkGrayColor].CGColor;
         self.notificationView.layer.borderWidth = 1.0;
+        self.notificationView.layer.cornerRadius = 15;
         
         CGFloat spinnerWidth = 30;
         CGFloat labelWidth = notificationWidth - spinnerWidth - 10; // Reduce space between label and spinner
