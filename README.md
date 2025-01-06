@@ -1,6 +1,13 @@
 # Discord Classic
 ## The definitive way of using Discord on legacy iOS.
+Discord Classic is a Discord client for iOS 5+. Created in 2018, it allows you to message users, and do the rest of what people can do on modern Discord minus some features like VC's or Activities.
 
+# Compatiblilty
+
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
 # How do I log in?
 You need your Discord token as of right now to authenticate with the app. Login via E-Mail and Password has not yet been implemented so this is the only way. Information on how to obtain your token can be found (here)[https://www.youtube.com/watch?v=LnBnm_tZlyU].
 
