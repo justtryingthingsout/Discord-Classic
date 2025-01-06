@@ -19,6 +19,10 @@
     self.window.backgroundColor = [UIColor clearColor];
     self.window.opaque = NO;
     self.shouldReload = false;
+    if(VERSION_MIN(@"7.0")) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"UIUseLegacyUI"];
+    
+    }
     //if(VERSION_MIN(@"7.0")) {
     /*
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"iOS-7" bundle:nil];

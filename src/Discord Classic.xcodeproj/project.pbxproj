@@ -140,6 +140,9 @@
 		5B3890DD2D1C54D8002D3BBE /* GuildIconBaseSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890DC2D1C54D8002D3BBE /* GuildIconBaseSelected.png */; };
 		5B3890E12D1C7A11002D3BBE /* pfpOverlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890DF2D1C7A11002D3BBE /* pfpOverlay.png */; };
 		5B3890E22D1C7A11002D3BBE /* pfpOverlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B3890E02D1C7A11002D3BBE /* pfpOverlay@2x.png */; };
+		5B5A9E4E2D2BEBBE00A8779E /* Group 108.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B5A9E4D2D2BEBBE00A8779E /* Group 108.png */; };
+		5B5A9E502D2BF08400A8779E /* Group 111.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B5A9E4F2D2BF08400A8779E /* Group 111.png */; };
+		5B5A9E522D2BF20B00A8779E /* Rectangle 431.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B5A9E512D2BF20B00A8779E /* Rectangle 431.png */; };
 		5B5C47D82D2B1CBC005760C8 /* U-Boost.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B5C47D62D2B1CBC005760C8 /* U-Boost.png */; };
 		5B5C47D92D2B1CBC005760C8 /* U-Boost@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B5C47D72D2B1CBC005760C8 /* U-Boost@2x.png */; };
 		5B5C47DB2D2B2AD6005760C8 /* Storyboard-iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5B5C47DA2D2B2AD6005760C8 /* Storyboard-iPad.storyboard */; };
@@ -389,6 +392,9 @@
 		5B3890DC2D1C54D8002D3BBE /* GuildIconBaseSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GuildIconBaseSelected.png; sourceTree = "<group>"; };
 		5B3890DF2D1C7A11002D3BBE /* pfpOverlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pfpOverlay.png; sourceTree = "<group>"; };
 		5B3890E02D1C7A11002D3BBE /* pfpOverlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pfpOverlay@2x.png"; sourceTree = "<group>"; };
+		5B5A9E4D2D2BEBBE00A8779E /* Group 108.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Group 108.png"; sourceTree = "<group>"; };
+		5B5A9E4F2D2BF08400A8779E /* Group 111.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Group 111.png"; sourceTree = "<group>"; };
+		5B5A9E512D2BF20B00A8779E /* Rectangle 431.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Rectangle 431.png"; sourceTree = "<group>"; };
 		5B5C47D62D2B1CBC005760C8 /* U-Boost.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "U-Boost.png"; sourceTree = "<group>"; };
 		5B5C47D72D2B1CBC005760C8 /* U-Boost@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "U-Boost@2x.png"; sourceTree = "<group>"; };
 		5B5C47DA2D2B2AD6005760C8 /* Storyboard-iPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Storyboard-iPad.storyboard"; sourceTree = "<group>"; };
@@ -666,6 +672,9 @@
 		5B2104BE2D1856E5005B9596 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				5B5A9E512D2BF20B00A8779E /* Rectangle 431.png */,
+				5B5A9E4F2D2BF08400A8779E /* Group 111.png */,
+				5B5A9E4D2D2BEBBE00A8779E /* Group 108.png */,
 				5B60AF1F2D27E6B0000A43B5 /* Buttons */,
 				5BD743402D21A4C500300565 /* Connections Cell */,
 				5BD7433E2D21A0C900300565 /* chatButtonInset@2x.png */,
@@ -1232,6 +1241,7 @@
 				5B923D042D2A1866000EBA90 /* C-PSN@2x.png in Resources */,
 				5B21054C2D1856E5005B9596 /* TbarBG@2x.png in Resources */,
 				5BDD374C2D20486500C6482C /* dnd.png in Resources */,
+				5B5A9E502D2BF08400A8779E /* Group 111.png in Resources */,
 				5B2105392D1856E5005B9596 /* TopLogo@2x.png in Resources */,
 				5B21051F2D1856E5005B9596 /* BarButtonPressed@2x.png in Resources */,
 				5B2105AB2D185CDC005B9596 /* iOS-7.storyboard in Resources */,
@@ -1296,6 +1306,7 @@
 				5B5C47D82D2B1CBC005760C8 /* U-Boost.png in Resources */,
 				5B2104B42D185680005B9596 /* Storyboard.storyboard in Resources */,
 				5B2105192D1856E5005B9596 /* Send@2x.png in Resources */,
+				5B5A9E522D2BF20B00A8779E /* Rectangle 431.png in Resources */,
 				5B2105212D1856E5005B9596 /* NavigationButton@2x.png in Resources */,
 				5BBC537E2D2AE46C00CF07D0 /* U-Remove@2x.png in Resources */,
 				5B21047C2D185402005B9596 /* Settings.bundle in Resources */,
@@ -1334,6 +1345,7 @@
 				5BB5D73B2D1956F700C54C0A /* bannerTopShadow@2x.png in Resources */,
 				5B2105222D1856E5005B9596 /* NavigationButtonPressed.png in Resources */,
 				5B2105162D1856E5005B9596 /* preferences.png in Resources */,
+				5B5A9E4E2D2BEBBE00A8779E /* Group 108.png in Resources */,
 				5B2105172D1856E5005B9596 /* preferences@2x.png in Resources */,
 				5B2105332D1856E5005B9596 /* DirectMessages@2x.png in Resources */,
 				5BBC53792D2AE37600CF07D0 /* U-Add.png in Resources */,

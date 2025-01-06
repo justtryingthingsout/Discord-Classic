@@ -350,7 +350,7 @@ static dispatch_queue_t chat_messages_queue;
         }
         
         if (!messageAtRowIndex.isGrouped) {
-            [cell.authorLabel setText:messageAtRowIndex.author.username];
+            [cell.authorLabel setText:messageAtRowIndex.author.globalName];
         }
         //im the dumbest fucking idiot alive kill me
         

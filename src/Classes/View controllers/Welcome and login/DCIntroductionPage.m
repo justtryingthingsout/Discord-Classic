@@ -16,13 +16,6 @@
 
 @implementation DCIntroductionPage
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-    }
-    return self;
-}
 
 - (void)viewWillAppear:(BOOL)animated {
     self.authenticated = false;
@@ -33,6 +26,7 @@
     [super viewDidLoad];
 	self.navigationItem.hidesBackButton = YES;
     
+    self.tokenInputField.delegate = self;
     NSString *token = [NSUserDefaults.standardUserDefaults objectForKey:@"token"];
     
     if(token){
@@ -42,6 +36,10 @@
     }
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
+}
 
 - (IBAction)didClickLoginButton {
     if(self.tokenInputField.text.length == 0) {
@@ -72,24 +70,6 @@
     
 }
 
-
-
-
-
-
-- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
-    UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
-    header.textLabel.textColor = [UIColor colorWithRed:116.0/255.0 green:116.0/255.0 blue:116.0/255.0 alpha:1.0];
-    header.textLabel.shadowOffset = CGSizeMake(0, 1);
-    header.textLabel.shadowColor = [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayFooterView:(UIView *)view forSection:(NSInteger)section {
-    UITableViewHeaderFooterView *footer = (UITableViewHeaderFooterView *)view;
-    footer.textLabel.textColor = [UIColor colorWithRed:116.0/255.0 green:116.0/255.0 blue:116.0/255.0 alpha:1.0];
-    footer.textLabel.shadowOffset = CGSizeMake(0, 1);
-    footer.textLabel.shadowColor = [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
-}
 
 - (void)showAlertWithTitle:(NSString *)title message:(NSString *)message {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];

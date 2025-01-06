@@ -502,11 +502,7 @@ UIActivityIndicatorView *spinner;
                                         NSString* memberName = [privateChannelMember valueForKey:@"username"];
                                         @try {
                                             if ([privateChannelMember objectForKey:@"global_name"] &&  [[privateChannelMember valueForKey:@"global_name"] isKindOfClass:[NSString class]])
-                                                if(self.oldMode == YES) {
-                                                    memberName = [privateChannelMember valueForKey:@"username"];
-                                                } else {
-                                                    memberName = [privateChannelMember valueForKey:@"global_name"];
-                                                }
+                                                memberName = [privateChannelMember valueForKey:@"global_name"];
                                             
                                         } @catch (NSException* e) {}
                                         
@@ -691,7 +687,7 @@ UIActivityIndicatorView *spinner;
 - (void)sendResume{
     if(self.oldMode == NO)
         [self showNonIntrusiveNotificationWithTitle:@"Resuming..."];
-    [self.alertView setTitle:@"Resuming"];
+    [self.alertView setTitle:@"Resuming..."];
 	self.didTryResume = true;
 	self.shouldResume = true;
 	[self startCommunicator];
@@ -706,7 +702,7 @@ UIActivityIndicatorView *spinner;
 	//Begin new session
 	[self.websocket close];
     if(self.oldMode == NO) {
-        [self showNonIntrusiveNotificationWithTitle:@"Reauthenticating"];
+        [self showNonIntrusiveNotificationWithTitle:@"Re-Authenticating..."];
     } else {
         [self.alertView show];
     }
@@ -715,7 +711,7 @@ UIActivityIndicatorView *spinner;
 	//if not, send immediately
 	if(self.identifyCooldown){
 		//NSLog(@"No cooldown in effect. Authenticating...");
-		[self.alertView setTitle:@"Authenticating"];
+		[self.alertView setTitle:@"Authenticating..."];
 		[self startCommunicator];
 	}else{
 		double timeRemaining = self.cooldownTimer.fireDate.timeIntervalSinceNow;
