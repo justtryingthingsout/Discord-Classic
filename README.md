@@ -11,7 +11,7 @@ Additionally to that, you can join the bag.xml community discord on https://disc
 ### Contributors
 - [trevir](https://github.com/trev3d) (Project creator)
 - [bag.xml](https://github.com/bag-xml) (Current project leader)
-- [bag.xml](https://github.com/ObscureMosquito) (Project contributor)
+- [ObscureMosquito (Requis)](https://github.com/ObscureMosquito) (Project contributor)
 - [Toru](https://github.com/ToruTheRedFox) (Project contributor)
 
 ### Libraries used
