@@ -7,7 +7,7 @@ Discord Classic is a Discord client for iOS 5+. Created in 2018, it allows you t
 
 | Compatibility  | iOS version | Remarks |
 | ------------- | ------------- | ------------- |
-| Compatible  | 5.0.x  | None besides SSL issues |
+| Compatible  | 5.0.x  | SSL issues prevent a successful connection |
 | Compatible  | 5.1.x  | None |
 | Compatible  | 6.x  | None |
 | Compatible  | 7.x  | No native UI yet |
