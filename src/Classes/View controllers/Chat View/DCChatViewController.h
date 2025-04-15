@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "DCChannel.h"
+#import "ODCContactViewController.h"
 #import "APLSlideMenuViewController.h"
 #import "DCMessage.h"
 #import "DCContactViewController.h"
@@ -22,6 +23,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *inputFieldPlaceholder;
 @property (weak, nonatomic) IBOutlet UIImageView *insetShadow;
 
+@property (weak, nonatomic) IBOutlet UINavigationBar *nbbar;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *nbmodaldone;
 
 //buttons
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *memberButton;

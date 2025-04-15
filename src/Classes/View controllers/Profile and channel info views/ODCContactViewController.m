@@ -6,10 +6,10 @@
 //  Copyright (c) 2024 bag.xml. All rights reserved.
 //
 
-#import "DCContactViewController.h"
+#import "ODCContactViewController.h"
 
 
-@interface DCContactViewController ()
+@interface ODCContactViewController ()
 
 @property DCUser* user;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
@@ -21,19 +21,10 @@
 @property (weak, nonatomic) IBOutlet UIImageView *statusIcon;
 @end
 
-@implementation DCContactViewController
-
-- (void)viewWillAppear:(BOOL)animated {
-}
+@implementation ODCContactViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.navBar setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
-    [self.doneButton setBackgroundImage:[UIImage imageNamed:@"BarButton"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    [self.doneButton setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
-    
-    self.conTableView.delegate = self;
-    self.conTableView.dataSource = self;
     self.slideMenuController.gestureSupport = NO;
 }
 
@@ -76,7 +67,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.pronounLabel.text = [userProfile objectForKey:@"pronouns"];
                     self.descriptionBox.text = [userProfile valueForKey:@"bio"];
-                    [self.conTableView reloadData];
+                    [self.tableView reloadData]; 
                 });
                 
                 NSString *bannerHash = [userInfo objectForKey:@"banner"];
@@ -94,7 +85,7 @@
                         if (backgroundColor) {
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 self.bannerView.backgroundColor = backgroundColor;
-                                [self.conTableView reloadData];
+                                [self.tableView reloadData];
                             });
                         }
                     }
@@ -120,7 +111,6 @@
             return 1;
         } else {
             self.noConnections = NO;
-            NSLog(@"aaaa");
             return self.connectedAccounts.count;
         }
         return nil;
@@ -227,6 +217,7 @@
             if (privateChannel) {
                 DCServerCommunicator.sharedInstance.selectedChannel = privateChannel;
                 NSString *formattedChannelName = privateChannel.name;
+                [chatViewController.navigationItem setTitle:formattedChannelName];
 
                 if (!chatViewController.messages) {
                     chatViewController.messages = [NSMutableArray array];
@@ -258,9 +249,6 @@
         }
     }
     return nil;
-}
-- (IBAction)clickedDone:(id)sender {
-    [self dismissModalViewControllerAnimated:YES];
 }
 
 @end

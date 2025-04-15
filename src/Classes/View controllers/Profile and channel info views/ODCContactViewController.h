@@ -14,16 +14,13 @@
 #import "DCMutualFriendsViewController.h"
 #import "DCConnectedAccountsCell.h"
 #import "APLSlideMenuViewController.h"
-@interface DCContactViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface ODCContactViewController : UITableViewController
 
 -(void)setSelectedUser:(DCUser*)user;
 
-@property (weak, nonatomic) IBOutlet UINavigationBar *navBar;
-@property (weak, nonatomic) IBOutlet UITableView *conTableView;
 @property (weak, nonatomic) IBOutlet UILabel *pronounLabel;
 @property (weak, nonatomic) IBOutlet UIButton *chatButton;
 @property (weak, nonatomic) IBOutlet UIButton *mutualFriendsButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 
 @property bool noConnections;
 @property NSString* snowflake;

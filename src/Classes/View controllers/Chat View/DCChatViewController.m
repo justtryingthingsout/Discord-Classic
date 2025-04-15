@@ -48,6 +48,7 @@ static dispatch_queue_t chat_messages_queue;
 	[super viewDidLoad];
     
     if([[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"] == YES) {
+        [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
         self.slideMenuController.bouncing = YES;
         self.slideMenuController.gestureSupport = APLSlideMenuGestureSupportDrag;
         self.slideMenuController.separatorColor = [UIColor grayColor];
@@ -72,6 +73,11 @@ static dispatch_queue_t chat_messages_queue;
 	
     self.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
     if(self.oldMode == NO) {
+        
+        [self.nbbar setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
+        [self.nbmodaldone setBackgroundImage:[UIImage imageNamed:@"BarButton"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+        [self.nbmodaldone setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
+        
         [self.toolbar setBackgroundImage:[UIImage imageNamed:@"ToolbarBG"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
         
         [self.sidebarButton setBackgroundImage:[UIImage imageNamed:@"BarButton"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
@@ -368,6 +374,9 @@ static dispatch_queue_t chat_messages_queue;
         
         [cell.contentTextView setText:content];
         
+        
+        
+        
         [cell.contentTextView setHeight:[cell.contentTextView sizeThatFits:CGSizeMake(cell.contentTextView.width, MAXFLOAT)].height];
         
         if (!messageAtRowIndex.isGrouped) {
@@ -534,7 +543,11 @@ static dispatch_queue_t chat_messages_queue;
             content = [content stringByAppendingString:@" (edited)"];
         }
         
-        [cell.contentTextView setText:content];
+        if (VERSION_MIN(@"6.0")) {
+            [cell configureWithMessage:content];
+        } else {
+            [cell.contentTextView setText:content];
+        }
         
         [cell.contentTextView setHeight:[cell.contentTextView sizeThatFits:CGSizeMake(cell.contentTextView.width, MAXFLOAT)].height];
         
@@ -831,8 +844,9 @@ static dispatch_queue_t chat_messages_queue;
     
     if([segue.destinationViewController class] == [DCContactViewController class]){
         [((DCContactViewController*)segue.destinationViewController) setSelectedUser:self.selectedMessage.author];
+    } else if([segue.destinationViewController class] == [ODCContactViewController class]){
+        [((ODCContactViewController*)segue.destinationViewController) setSelectedUser:self.selectedMessage.author];
     }
-    
     
 }
 
@@ -948,6 +962,9 @@ static dispatch_queue_t chat_messages_queue;
             [DCServerCommunicator.sharedInstance.selectedChannel sendImage:originalImage mimeType:mimeType];
         }
     }
+}
+- (IBAction)dismissModalPVTONLY:(id)sender {
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 -(void)get50MoreMessages:(UIRefreshControl *)control {

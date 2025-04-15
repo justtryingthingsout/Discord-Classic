@@ -205,6 +205,12 @@ UIActivityIndicatorView *spinner;
 						//NSLog(@"Sending Resume with sequence number %i, session ID %@", weakSelf.sequenceNumber, weakSelf.sessionId);
 						
 						//RESUME
+                        
+                        if (!weakSelf.token || !weakSelf.sessionId) {
+                            [DCTools alert:@"Warning" withMessage:@"Something is wrong with your Discord token or your connection. Please re-check everything and retry."];
+                            return;
+                        }
+
 						[weakSelf sendJSON:@{
                                              @"op":@6,
                                              @"d":@{

@@ -198,7 +198,7 @@
 
 
 - (IBAction)return:(id)sender {
-    [self performSegueWithIdentifier:@"own view to guilds" sender:self];
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 

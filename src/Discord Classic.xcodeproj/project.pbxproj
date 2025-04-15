@@ -12,6 +12,8 @@
 		09C6B929204A0F54007EAC26 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09C6B928204A0F54007EAC26 /* CoreGraphics.framework */; };
 		09C6B995204A2614007EAC26 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09C6B994204A2614007EAC26 /* CFNetwork.framework */; };
 		09C6B997204A261B007EAC26 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09C6B996204A261B007EAC26 /* Security.framework */; };
+		0AF6BD632DAEF9CE0015EB99 /* TSMarkdownParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF6BD622DAEF9CE0015EB99 /* TSMarkdownParser.m */; };
+		0AF6BD692DAF08960015EB99 /* ODCContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF6BD682DAF08960015EB99 /* ODCContactViewController.m */; };
 		2C11B4202AEAFA5000BE66F6 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C11B41F2AEAFA5000BE66F6 /* ImageIO.framework */; };
 		2CEBF2982AE2FE2500EC7812 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CEBF2972AE2FE2500EC7812 /* AVFoundation.framework */; };
 		2CEBF29A2AE2FE4500EC7812 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CEBF2992AE2FE4500EC7812 /* MediaPlayer.framework */; };
@@ -228,6 +230,11 @@
 		09C6B945204A0F55007EAC26 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		09C6B994204A2614007EAC26 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		09C6B996204A261B007EAC26 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		0AF6BD602DAEF9CE0015EB99 /* TSMarkdownParser-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TSMarkdownParser-Prefix.pch"; sourceTree = "<group>"; };
+		0AF6BD612DAEF9CE0015EB99 /* TSMarkdownParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSMarkdownParser.h; sourceTree = "<group>"; };
+		0AF6BD622DAEF9CE0015EB99 /* TSMarkdownParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSMarkdownParser.m; sourceTree = "<group>"; };
+		0AF6BD672DAF08960015EB99 /* ODCContactViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ODCContactViewController.h; sourceTree = "<group>"; };
+		0AF6BD682DAF08960015EB99 /* ODCContactViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ODCContactViewController.m; sourceTree = "<group>"; };
 		2C11B41F2AEAFA5000BE66F6 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		2CEBF2972AE2FE2500EC7812 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		2CEBF2992AE2FE4500EC7812 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -530,6 +537,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		0AF6BD5F2DAEF9CE0015EB99 /* TSMarkdownParser */ = {
+			isa = PBXGroup;
+			children = (
+				0AF6BD602DAEF9CE0015EB99 /* TSMarkdownParser-Prefix.pch */,
+				0AF6BD612DAEF9CE0015EB99 /* TSMarkdownParser.h */,
+				0AF6BD622DAEF9CE0015EB99 /* TSMarkdownParser.m */,
+			);
+			path = TSMarkdownParser;
+			sourceTree = "<group>";
+		};
 		5B2104782D185402005B9596 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -554,6 +571,7 @@
 		5B21047D2D185409005B9596 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				0AF6BD5F2DAEF9CE0015EB99 /* TSMarkdownParser */,
 				5BAE84282D1C849E00C021F9 /* UIColor+Hex */,
 				5B21047E2D185409005B9596 /* APLSlideMenu */,
 				5B2104832D185409005B9596 /* BButton */,
@@ -994,6 +1012,8 @@
 		5B2105842D185B10005B9596 /* Profile and channel info views */ = {
 			isa = PBXGroup;
 			children = (
+				0AF6BD672DAF08960015EB99 /* ODCContactViewController.h */,
+				0AF6BD682DAF08960015EB99 /* ODCContactViewController.m */,
 				5B5F5FD62D28A8E100D227DE /* Mutual */,
 				5B2105852D185B10005B9596 /* DCCInfoViewController.h */,
 				5B2105862D185B10005B9596 /* DCCInfoViewController.m */,
@@ -1434,6 +1454,7 @@
 				5B21059D2D185B10005B9596 /* DCGuildListViewController.m in Sources */,
 				5B2105BF2D18B498005B9596 /* DCRecipientTableCell.m in Sources */,
 				5B2105932D185B10005B9596 /* DCMessage.m in Sources */,
+				0AF6BD632DAEF9CE0015EB99 /* TSMarkdownParser.m in Sources */,
 				5B2104A52D185409005B9596 /* BButton.m in Sources */,
 				5B2105922D185B10005B9596 /* DCGuild.m in Sources */,
 				5BB5D7472D195E6400C54C0A /* DCChannelViewCell.m in Sources */,
@@ -1461,6 +1482,7 @@
 				5B2104B02D18540A005B9596 /* WSMessageProcessor.m in Sources */,
 				5B2104A82D185409005B9596 /* UIColor+BButton.m in Sources */,
 				5B2104A42D185409005B9596 /* APLSlideMenuViewController.m in Sources */,
+				0AF6BD692DAF08960015EB99 /* ODCContactViewController.m in Sources */,
 				5B2104AE2D18540A005B9596 /* WSFrame.m in Sources */,
 				5BDD37462D20402700C6482C /* DCPrivateChannelTableCell.m in Sources */,
 				5B2104A32D185409005B9596 /* APLSlideMenuSegue.m in Sources */,

@@ -16,18 +16,25 @@
 
 - (void)viewDidLoad{
 	[super viewDidLoad];
-    if([[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"] == NO) {
-        [self.share setBackgroundImage:[UIImage imageNamed:@"BarButton"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-        [self.share setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
-    }
     self.slideMenuController.gestureSupport = NO;
     
+    self.scrollView.delegate = self;
+    self.scrollView.minimumZoomScale = 1.0;
+    self.scrollView.maximumZoomScale = 4.0;
+    self.scrollView.zoomScale = 1.0;
+
+    
 }
+
+
 
 - (void)viewDidUnload {
 	[self setImageView:nil];
     [self setScrollView:nil];
 	[super viewDidUnload];
+}
+- (IBAction)done:(id)sender {
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 -(IBAction)presentShareSheet:(id)sender{
@@ -39,5 +46,8 @@
     [activityVC viewWillAppear:YES];
 }
 
--(UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView{return self.imageView;}
+-(UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    return self.imageView;
+}
+
 @end

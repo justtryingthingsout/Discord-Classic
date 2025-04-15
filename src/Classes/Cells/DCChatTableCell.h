@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TSMarkdownParser.h"
 
 @interface DCChatTableCell : UITableViewCell
 @property (strong, nonatomic) IBOutlet UILabel *authorLabel;
@@ -18,4 +19,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *universalImageView;
 @property (strong, nonatomic) IBOutlet UILabel *referencedAuthorLabel;
 @property (strong, nonatomic) IBOutlet UILabel *referencedMessage;
+
+- (void)configureWithMessage:(NSString *)messageText;
+
 @end

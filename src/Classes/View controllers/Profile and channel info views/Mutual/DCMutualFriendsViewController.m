@@ -16,6 +16,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self.titleBar setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
+    [self.doneButton setBackgroundImage:[UIImage imageNamed:@"BarButton"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    [self.doneButton setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
+    
+    self.mutTableView.delegate = self;
+    self.mutTableView.dataSource = self;
     self.recipients = [NSMutableArray array];
     NSArray *recipientDictionaries = self.mutualFriendsList;
     for (NSDictionary *recipient in recipientDictionaries) {
@@ -47,6 +54,9 @@
     self.selectedUser = self.recipients[indexPath.row];
     [self performSegueWithIdentifier:@"mutual to contact" sender:self];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+- (IBAction)dismiss:(id)sender {
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 

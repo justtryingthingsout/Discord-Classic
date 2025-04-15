@@ -19,6 +19,7 @@
     self.window.backgroundColor = [UIColor clearColor];
     self.window.opaque = NO;
     self.shouldReload = false;
+    [[NSUserDefaults standardUserDefaults] synchronize];
     if(VERSION_MIN(@"7.0")) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"UIUseLegacyUI"];
     
@@ -43,7 +44,6 @@
         UIViewController *initialViewController = [storyboard instantiateInitialViewController];
         self.window.rootViewController = initialViewController;
         [self.window makeKeyAndVisible];
-        [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
     } else {
         if(self.hackyMode == true) {
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Throwback" bundle:nil];
@@ -52,7 +52,6 @@
             [self.window makeKeyAndVisible];
             [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"OldTitlebarTexture"] forBarMetrics:UIBarMetricsDefault];
         } else {
-            [UINavigationBar.appearance setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
         }
     }
         
@@ -108,23 +107,27 @@
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application{
+    [[NSUserDefaults standardUserDefaults] synchronize];
 	//NSLog(@"Will resign active");
 }
 
 
 - (void)applicationDidEnterBackground:(UIApplication *)application{
 	//NSLog(@"Did enter background");
+    [[NSUserDefaults standardUserDefaults] synchronize];
 	self.shouldReload = DCServerCommunicator.sharedInstance.didAuthenticate;
 }
 
 
 - (void)applicationWillEnterForeground:(UIApplication *)application{
 	//NSLog(@"Will enter foreground");
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application{
 	//NSLog(@"Did become active");
+    [[NSUserDefaults standardUserDefaults] synchronize];
 	if(self.shouldReload){
 		[DCServerCommunicator.sharedInstance sendResume];
 	}
@@ -132,6 +135,7 @@
 
 
 - (void)applicationWillTerminate:(UIApplication *)application{
+    [[NSUserDefaults standardUserDefaults] synchronize];
 	//NSLog(@"Will terminate");
 }
 

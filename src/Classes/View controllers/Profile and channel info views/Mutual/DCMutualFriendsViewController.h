@@ -12,9 +12,12 @@
 #import "DCRecipientTableCell.h"
 #import "DCContactViewController.h"
 
-@interface DCMutualFriendsViewController : UITableViewController
+@interface DCMutualFriendsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 @property DCUser* user;
 @property (nonatomic, strong) DCUser *selectedUser;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
+@property (weak, nonatomic) IBOutlet UINavigationBar *titleBar;
+@property (weak, nonatomic) IBOutlet UITableView *mutTableView;
 
 @property NSDictionary* mutualFriendsList;
 @property NSMutableArray* recipients;

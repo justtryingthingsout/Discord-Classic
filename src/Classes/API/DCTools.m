@@ -592,6 +592,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
 
 +(DCGuild *)convertJsonGuild:(NSDictionary*)jsonGuild{
+    NSLog(@"%@", jsonGuild);
 	NSMutableArray* userRoles;
 	//Get roles of the current user
 	for(NSDictionary* member in [jsonGuild objectForKey:@"members"])

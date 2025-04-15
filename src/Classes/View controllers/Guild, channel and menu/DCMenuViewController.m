@@ -36,6 +36,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotificationTap:) name:@"NavigateToChannel" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(exitedChatController) name:@"ChannelSelectionCleared" object:nil];
     //NOTIF OBSERVERS END
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"TbarBG"] forBarMetrics:UIBarMetricsDefault];
     
     self.experimentalMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"];
     self.totalView.hidden = YES;
