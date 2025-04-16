@@ -14,12 +14,16 @@
 #import "DCGuild.h"
 
 #define VERSION_MIN(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
-
+#define appVersion [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]
 
 @interface DCTools : NSObject
 @property bool oldMode;
 + (void)processImageDataWithURLString:(NSString *)urlString
 														 andBlock:(void (^)(UIImage *imageData))processImage;
+
+
+//UNTIL RELEASE ONLY
++ (void)checkForAppUpdate;
 
 + (NSDictionary*)parseJSON:(NSString*)json;
 + (void)alert:(NSString*)title withMessage:(NSString*)message;

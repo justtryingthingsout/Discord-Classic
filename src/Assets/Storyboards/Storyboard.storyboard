@@ -991,7 +991,6 @@
         <!--Navigation Controller-->
         <scene sceneID="vU9-op-E4g">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="f2d-Ac-r7A" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" id="q3S-9a-ACX" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="FN3-rk-ZOT">
                         <autoresizingMask key="autoresizingMask"/>
@@ -1000,6 +999,7 @@
                         <segue destination="SeX-T3-7zD" kind="relationship" relationship="rootViewController" id="egV-eo-k4C"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="f2d-Ac-r7A" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1602" y="774"/>
         </scene>

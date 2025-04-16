@@ -48,7 +48,6 @@ UIActivityIndicatorView *spinner;
         // Initialize if a sharedInstance does not yet exist
         
         sharedInstance.gatewayURL = @"wss://gateway.discord.gg/?encoding=json&v=9";
-        
         sharedInstance.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
         sharedInstance.token = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
         sharedInstance.currentUserInfo = nil;
@@ -178,6 +177,9 @@ UIActivityIndicatorView *spinner;
     [self.alertView show];
 	self.didAuthenticate = false;
 	self.oldMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
+    //Dev
+    [DCTools checkForAppUpdate];
+    //Devend
 	if(self.token!=nil){
 		
 		//Establish websocket connection with Discord

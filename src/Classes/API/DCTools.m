@@ -773,4 +773,37 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
     //});
 }
 
+
++ (void)checkForAppUpdate {
+    //this is just via the "XML Update Server"
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSURL *randomEndpoint = [NSURL URLWithString:[NSString stringWithFormat:@"http://5.230.249.85:8814/update?v=%@", appVersion]];
+        NSURLResponse *response;
+        NSError *error;
+        
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:randomEndpoint];
+        [request setHTTPMethod:@"GET"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        
+        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        
+        if(data) {
+            NSDictionary *response = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+            NSNumber *update = response[@"outdated"];
+            NSString *message = response[@"message"];
+            
+            if ([update intValue] == 1) {
+                [self alert:@"Update Available" withMessage:message];
+            } else {
+                return;
+            }
+        } else {
+            return;
+        }
+        
+    });
+    return;
+}
+
 @end
