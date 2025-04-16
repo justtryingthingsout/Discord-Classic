@@ -9,7 +9,6 @@
         <!--View Controller-->
         <scene sceneID="jrB-X1-rde">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dgz-6F-iLb" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController extendedLayoutIncludesOpaqueBars="YES" definesPresentationContext="YES" id="NOn-RW-Ouy" customClass="DCViewController" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translucent="NO" id="ycW-29-F9H">
                         <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
@@ -31,6 +30,7 @@
                         <segue destination="qxH-ig-3gA" kind="relationship" relationship="rootViewController" id="kDc-Ai-2l6"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dgz-6F-iLb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="436" y="-633"/>
         </scene>
@@ -64,13 +64,17 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="fqX-TB-qGv"/>
-                                    <barButtonItem id="0Iz-QQ-fwf">
-                                        <view key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="yqH-jV-D5s">
-                                            <rect key="frame" x="55" y="7" width="213" height="30"/>
+                                    <barButtonItem id="lXm-Kp-57O">
+                                        <view key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="KVq-NY-8gY">
+                                            <rect key="frame" x="58" y="6" width="207" height="32"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="wuj-ou-Vly">
-                                                    <rect key="frame" x="15" y="5" width="185" height="19"/>
+                                                <imageView appearanceType="aqua" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="inputField.png" id="QXc-C6-04f">
+                                                    <rect key="frame" x="0.0" y="0.0" width="207" height="32"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                </imageView>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="6Xu-ir-qwX">
+                                                    <rect key="frame" x="15" y="5" width="185" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" red="0.50196078430000002" green="0.51764705879999995" blue="0.56078431370000004" alpha="1" colorSpace="calibratedRGB"/>
@@ -78,19 +82,16 @@
                                                     <color key="shadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.73999999999999999" colorSpace="calibratedRGB"/>
                                                     <size key="shadowOffset" width="0.0" height="1"/>
                                                 </label>
-                                                <textView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" id="4a5-8V-u6c">
-                                                    <rect key="frame" x="4" y="0.0" width="205" height="30"/>
+                                                <textView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" id="Xkx-S2-fzY">
+                                                    <rect key="frame" x="4" y="2" width="199" height="28"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" keyboardAppearance="alert"/>
                                                 </textView>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="AZI-9J-a7T">
-                                                    <rect key="frame" x="-1" y="-2" width="215" height="32"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                </imageView>
                                             </subviews>
-                                            <color key="backgroundColor" red="0.1043726084" green="0.1043726084" blue="0.1043726084" alpha="0.75" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" red="0.50269616169999998" green="0.50269616169999998" blue="0.50269616169999998" alpha="0.0" colorSpace="calibratedRGB"/>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -128,9 +129,9 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="chatTableView" destination="4C2-CP-Eef" id="eR2-YN-oGC"/>
-                        <outlet property="inputField" destination="4a5-8V-u6c" id="qJK-Ca-8ff"/>
-                        <outlet property="inputFieldPlaceholder" destination="wuj-ou-Vly" id="9Cs-cM-ZP7"/>
-                        <outlet property="insetShadow" destination="AZI-9J-a7T" id="7vq-TV-7u0"/>
+                        <outlet property="inputField" destination="Xkx-S2-fzY" id="YDG-Gt-6Gf"/>
+                        <outlet property="inputFieldPlaceholder" destination="6Xu-ir-qwX" id="Myd-zj-V68"/>
+                        <outlet property="inputView" destination="KVq-NY-8gY" id="xHv-BB-f75"/>
                         <outlet property="memberButton" destination="B9T-MA-QNp" id="7t0-nd-RIs"/>
                         <outlet property="photoButton" destination="CSM-gy-ZtR" id="Pmr-Sb-6BQ"/>
                         <outlet property="searchDisplayController" destination="niR-m5-FP3" id="QQ4-gP-MNh"/>
@@ -1453,13 +1454,17 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="2RU-PN-bhy"/>
-                                    <barButtonItem id="K9c-Lt-BY7">
-                                        <view key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="gO9-G4-ei9">
-                                            <rect key="frame" x="55" y="7" width="213" height="30"/>
+                                    <barButtonItem id="DfF-nB-pwb">
+                                        <view key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="IN0-YN-Cgg">
+                                            <rect key="frame" x="58" y="6" width="207" height="32"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="nqE-z5-GCI">
-                                                    <rect key="frame" x="15" y="5" width="185" height="19"/>
+                                                <imageView appearanceType="aqua" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="inputField.png" id="dFZ-Jq-qvn">
+                                                    <rect key="frame" x="0.0" y="0.0" width="207" height="32"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                </imageView>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yDd-ql-I02">
+                                                    <rect key="frame" x="15" y="5" width="185" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" red="0.50196078430000002" green="0.51764705879999995" blue="0.56078431370000004" alpha="1" colorSpace="calibratedRGB"/>
@@ -1467,19 +1472,16 @@
                                                     <color key="shadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.73999999999999999" colorSpace="calibratedRGB"/>
                                                     <size key="shadowOffset" width="0.0" height="1"/>
                                                 </label>
-                                                <textView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" id="1Jy-DK-Yb1">
-                                                    <rect key="frame" x="4" y="0.0" width="205" height="30"/>
+                                                <textView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" id="WSZ-1g-dsi">
+                                                    <rect key="frame" x="4" y="2" width="199" height="28"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" keyboardAppearance="alert"/>
                                                 </textView>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="Lwl-FP-MN7">
-                                                    <rect key="frame" x="-1" y="-2" width="215" height="32"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                </imageView>
                                             </subviews>
-                                            <color key="backgroundColor" red="0.1043726084" green="0.1043726084" blue="0.1043726084" alpha="0.75" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" red="0.50269616169999998" green="0.50269616169999998" blue="0.50269616169999998" alpha="0.0" colorSpace="calibratedRGB"/>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -1520,15 +1522,16 @@
                     </navigationItem>
                     <connections>
                         <outlet property="chatTableView" destination="1FG-2v-8U8" id="sVf-qC-BGA"/>
-                        <outlet property="inputField" destination="1Jy-DK-Yb1" id="pxQ-VV-O3b"/>
-                        <outlet property="inputFieldPlaceholder" destination="nqE-z5-GCI" id="awL-ul-r0Q"/>
-                        <outlet property="insetShadow" destination="Lwl-FP-MN7" id="APM-Ph-uc5"/>
+                        <outlet property="inputField" destination="WSZ-1g-dsi" id="dH2-4g-kf7"/>
+                        <outlet property="inputFieldPlaceholder" destination="yDd-ql-I02" id="r7w-Zu-F0t"/>
+                        <outlet property="inputView" destination="IN0-YN-Cgg" id="Cg1-9k-U4w"/>
                         <outlet property="memberButton" destination="xp4-eD-S0J" id="k9P-kY-USu"/>
                         <outlet property="nbbar" destination="ews-YN-EAV" id="Ecm-Ix-C0n"/>
                         <outlet property="nbmodaldone" destination="IMN-Ig-KLF" id="mgE-89-XMh"/>
                         <outlet property="photoButton" destination="Uqx-sm-xrQ" id="51i-yo-7bu"/>
                         <outlet property="sendButton" destination="Hd3-60-ccf" id="kl4-eg-lc0"/>
                         <outlet property="toolbar" destination="k97-2X-XhV" id="1HI-em-NO6"/>
+                        <segue destination="xzW-XR-Sbg" kind="modal" identifier="Chat to Gallery" id="cdu-l6-Trp"/>
                     </connections>
                 </viewController>
                 <searchDisplayController id="wgx-4q-AOo">
@@ -1541,7 +1544,7 @@
                 </searchDisplayController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OGk-el-HiN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2483" y="-105"/>
+            <point key="canvasLocation" x="2699" y="-549"/>
         </scene>
         <!--Image View Controller-->
         <scene sceneID="l3W-jA-8kv">
@@ -1592,7 +1595,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="etB-MS-UwQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="751" y="-1434"/>
+            <point key="canvasLocation" x="1739" y="-1298"/>
         </scene>
     </scenes>
     <resources>
@@ -1604,14 +1607,15 @@
         <image name="GuildIconBase.png" width="96" height="96"/>
         <image name="No-Header.png" width="264" height="146"/>
         <image name="Rectangle 431.png" width="640" height="91"/>
-        <image name="Send.png" width="23" height="20"/>
+        <image name="Send.png" width="17" height="15"/>
         <image name="Sidebar_glyph.png" width="27" height="25"/>
         <image name="TopLogo.png" width="120" height="30"/>
-        <image name="addbarglyph.png" width="25" height="25"/>
+        <image name="addbarglyph.png" width="19" height="19"/>
         <image name="bannerBottomShadow.png" width="1" height="30"/>
         <image name="bannerTopShadow.png" width="1" height="60"/>
         <image name="chatButtonInset.png" width="50" height="26"/>
         <image name="hamburgerButton.png" width="23" height="18"/>
+        <image name="inputField.png" width="207" height="30"/>
         <image name="menu.png" width="24" height="24"/>
         <image name="newMessages.png" width="7" height="19"/>
         <image name="offline.png" width="24" height="24"/>
@@ -1628,5 +1632,6 @@
     <inferredMetricsTieBreakers>
         <segue reference="Cm4-wn-GtC"/>
         <segue reference="ZLN-09-gkt"/>
+        <segue reference="cdu-l6-Trp"/>
     </inferredMetricsTieBreakers>
 </document>

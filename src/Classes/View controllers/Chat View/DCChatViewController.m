@@ -86,11 +86,14 @@ static dispatch_queue_t chat_messages_queue;
         [self.memberButton setBackgroundImage:[UIImage imageNamed:@"BarButton"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
         [self.memberButton setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
         
+        
+        
         [self.sendButton setBackgroundImage:[UIImage imageNamed:@"BarButton"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
         [self.sendButton setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
-        
+
         [self.photoButton setBackgroundImage:[UIImage imageNamed:@"BarButton"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
         [self.photoButton setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
+        
 
     }
     
@@ -99,15 +102,6 @@ static dispatch_queue_t chat_messages_queue;
     [self.inputField setDelegate:self];
     self.inputFieldPlaceholder.text = [NSString stringWithFormat:@"Message %@", self.navigationItem.title];
     self.inputFieldPlaceholder.hidden = NO;
-    
-    [[self.insetShadow layer] setMasksToBounds:YES];
-    [[self.insetShadow layer] setCornerRadius:16.0f];
-    [[self.insetShadow layer] setBorderColor:[UIColor darkGrayColor].CGColor];
-    [[self.insetShadow layer] setBorderWidth:1.0f];
-    [[self.insetShadow layer] setShadowColor:[UIColor blackColor].CGColor];
-    [[self.insetShadow layer] setShadowOffset:CGSizeMake(0, 0)];
-    [[self.insetShadow layer] setShadowOpacity:1];
-    [[self.insetShadow layer] setShadowRadius:4.0];
 }
 
 - (BOOL) textViewShouldBeginEditing:(UITextView *)textView {
@@ -133,6 +127,8 @@ static dispatch_queue_t chat_messages_queue;
 - (void) handleAsyncReload {
     dispatch_async(dispatch_get_main_queue(), ^{
         //////NSLog(@"async reload!");
+        //about contact CoreControl
+        
         [self.chatTableView reloadData];
     });
 }

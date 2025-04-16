@@ -32,7 +32,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WEX-yh-NfH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1147" y="-40"/>
+            <point key="canvasLocation" x="664" y="752"/>
         </scene>
         <!--Introduction Page - Welcome-->
         <scene sceneID="EZs-Wv-Cwe">
@@ -138,7 +138,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mtA-up-yv0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-623" y="-802"/>
+            <point key="canvasLocation" x="228" y="752"/>
         </scene>
         <!--Chat View Controller - Chat-->
         <scene sceneID="0a4-kq-TlO">
@@ -172,11 +172,15 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="QSM-nz-CeE"/>
                                     <barButtonItem id="wA4-Lr-YJV">
                                         <view key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="tIC-ws-iyt">
-                                            <rect key="frame" x="55" y="7" width="213" height="30"/>
+                                            <rect key="frame" x="58" y="6" width="207" height="32"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <subviews>
+                                                <imageView appearanceType="aqua" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="inputField.png" id="Gw8-2c-NtC">
+                                                    <rect key="frame" x="0.0" y="0.0" width="207" height="32"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                </imageView>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bek-Bc-94j">
-                                                    <rect key="frame" x="15" y="5" width="185" height="19"/>
+                                                    <rect key="frame" x="15" y="5" width="185" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" red="0.50196078431372548" green="0.51764705882352935" blue="0.5607843137254902" alpha="1" colorSpace="calibratedRGB"/>
@@ -185,18 +189,15 @@
                                                     <size key="shadowOffset" width="0.0" height="1"/>
                                                 </label>
                                                 <textView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" id="kXo-gL-h09">
-                                                    <rect key="frame" x="4" y="0.0" width="205" height="30"/>
+                                                    <rect key="frame" x="4" y="2" width="199" height="28"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" keyboardAppearance="alert"/>
                                                 </textView>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="qmN-Pc-fvt">
-                                                    <rect key="frame" x="-1" y="-2" width="215" height="32"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                </imageView>
                                             </subviews>
-                                            <color key="backgroundColor" red="0.10437260841836737" green="0.10437260841836737" blue="0.10437260841836737" alpha="0.75" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" red="0.50269616169999998" green="0.50269616169999998" blue="0.50269616169999998" alpha="0.0" colorSpace="calibratedRGB"/>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -229,9 +230,9 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="chatTableView" destination="FQU-uE-jCg" id="Zu3-NK-RP6"/>
-                        <outlet property="inputField" destination="kXo-gL-h09" id="7ra-oU-3qH"/>
-                        <outlet property="inputFieldPlaceholder" destination="bek-Bc-94j" id="lHt-Vl-rv3"/>
-                        <outlet property="insetShadow" destination="qmN-Pc-fvt" id="F3p-jP-Inj"/>
+                        <outlet property="inputField" destination="kXo-gL-h09" id="GUe-dn-Fb7"/>
+                        <outlet property="inputFieldPlaceholder" destination="bek-Bc-94j" id="A56-j3-eCk"/>
+                        <outlet property="inputView" destination="tIC-ws-iyt" id="YXz-I4-9YU"/>
                         <outlet property="memberButton" destination="QdX-Za-6qg" id="1w9-LN-Mj1"/>
                         <outlet property="photoButton" destination="wbf-C7-8cs" id="eT9-uf-5zt"/>
                         <outlet property="searchDisplayController" destination="EvX-d6-39L" id="cKg-Hb-40j"/>
@@ -251,7 +252,7 @@
                 </searchDisplayController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dn2-PR-nJa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="817" y="-707"/>
+            <point key="canvasLocation" x="1077" y="123"/>
         </scene>
         <!--Contact View Controller-->
         <scene sceneID="ReW-1s-QQh">
@@ -624,7 +625,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Awv-PA-WOW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2438" y="369"/>
+            <point key="canvasLocation" x="2620" y="123"/>
         </scene>
         <!--Own Account Info Management Controller - Me (<@????>-->
         <scene sceneID="47a-8I-WMN">
@@ -985,7 +986,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Og4-cN-R47" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1550" y="890"/>
+            <point key="canvasLocation" x="2047" y="774"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="vU9-op-E4g">
@@ -1000,7 +1001,7 @@
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="966" y="898"/>
+            <point key="canvasLocation" x="1602" y="774"/>
         </scene>
         <!--Info View Controller - Members-->
         <scene sceneID="8hE-6e-T5s">
@@ -1069,7 +1070,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="um1-EY-8bK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1612" y="-802"/>
+            <point key="canvasLocation" x="1612" y="-498"/>
         </scene>
         <!--Menu View Controller-->
         <scene sceneID="xCE-qA-hyt">
@@ -1397,7 +1398,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oFG-yZ-xxS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-86" y="-69"/>
+            <point key="canvasLocation" x="1077" y="763"/>
         </scene>
         <!--Image View Controller-->
         <scene sceneID="m7q-5b-4ji">
@@ -1448,7 +1449,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BEa-TQ-BvM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="751" y="-1434"/>
+            <point key="canvasLocation" x="1612" y="-1130"/>
         </scene>
         <!--Chat View Controller - Chat-->
         <scene sceneID="dgK-rY-I1V">
@@ -1480,13 +1481,17 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="QwO-AV-IrA"/>
-                                    <barButtonItem id="Ljy-Eg-kMG">
-                                        <view key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="Dt1-jY-8M2">
-                                            <rect key="frame" x="55" y="7" width="213" height="30"/>
+                                    <barButtonItem id="Yuw-nZ-LMG">
+                                        <view key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="s4K-ES-jaW">
+                                            <rect key="frame" x="58" y="6" width="207" height="32"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="J5B-aM-okr">
-                                                    <rect key="frame" x="15" y="5" width="185" height="19"/>
+                                                <imageView appearanceType="aqua" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="inputField.png" id="AjE-fk-u75">
+                                                    <rect key="frame" x="0.0" y="0.0" width="207" height="32"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                </imageView>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ecL-H8-K5X">
+                                                    <rect key="frame" x="15" y="5" width="185" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" red="0.50196078430000002" green="0.51764705879999995" blue="0.56078431370000004" alpha="1" colorSpace="calibratedRGB"/>
@@ -1494,19 +1499,16 @@
                                                     <color key="shadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.73999999999999999" colorSpace="calibratedRGB"/>
                                                     <size key="shadowOffset" width="0.0" height="1"/>
                                                 </label>
-                                                <textView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" id="B5L-fu-hOm">
-                                                    <rect key="frame" x="4" y="0.0" width="205" height="30"/>
+                                                <textView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" id="vtO-QZ-i96">
+                                                    <rect key="frame" x="4" y="2" width="199" height="28"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" keyboardAppearance="alert"/>
                                                 </textView>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="igF-HC-2iy">
-                                                    <rect key="frame" x="-1" y="-2" width="215" height="32"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                </imageView>
                                             </subviews>
-                                            <color key="backgroundColor" red="0.1043726084" green="0.1043726084" blue="0.1043726084" alpha="0.75" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" red="0.50269616169999998" green="0.50269616169999998" blue="0.50269616169999998" alpha="0.0" colorSpace="calibratedRGB"/>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -1547,9 +1549,9 @@
                     </navigationItem>
                     <connections>
                         <outlet property="chatTableView" destination="XT2-bl-BrM" id="3qi-jI-MUu"/>
-                        <outlet property="inputField" destination="B5L-fu-hOm" id="c68-ZT-ait"/>
-                        <outlet property="inputFieldPlaceholder" destination="J5B-aM-okr" id="RzV-6a-AsY"/>
-                        <outlet property="insetShadow" destination="igF-HC-2iy" id="uBH-ie-6Ql"/>
+                        <outlet property="inputField" destination="vtO-QZ-i96" id="Gp3-D7-MXG"/>
+                        <outlet property="inputFieldPlaceholder" destination="ecL-H8-K5X" id="dHF-Kq-ICB"/>
+                        <outlet property="inputView" destination="s4K-ES-jaW" id="Ytd-0J-126"/>
                         <outlet property="memberButton" destination="01k-b8-TXE" id="wIJ-N4-nRw"/>
                         <outlet property="nbbar" destination="hy8-8d-p9e" id="3X4-fQ-ygO"/>
                         <outlet property="nbmodaldone" destination="U0F-sA-KKK" id="tm6-FU-sYy"/>
@@ -1557,6 +1559,8 @@
                         <outlet property="searchDisplayController" destination="EvX-d6-39L" id="iEk-rf-SWL"/>
                         <outlet property="sendButton" destination="qL4-dg-AGD" id="L79-LV-wgV"/>
                         <outlet property="toolbar" destination="PZS-oW-ibO" id="rAk-iF-Cte"/>
+                        <segue destination="5VA-qi-8ou" kind="modal" identifier="Chat to Gallery" id="VIU-Jg-26X"/>
+                        <segue destination="FDc-Jq-bZ4" kind="modal" identifier="chat to contact" id="lt1-BL-bem"/>
                     </connections>
                 </viewController>
                 <searchDisplayController id="IZg-4x-TiN">
@@ -1569,7 +1573,7 @@
                 </searchDisplayController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0zd-Dt-Ar2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2119" y="15"/>
+            <point key="canvasLocation" x="2039" y="133"/>
         </scene>
     </scenes>
     <resources>
@@ -1581,13 +1585,14 @@
         <image name="GuildIconBase.png" width="96" height="96"/>
         <image name="No-Header.png" width="264" height="146"/>
         <image name="Rectangle 431.png" width="640" height="91"/>
-        <image name="Send.png" width="23" height="20"/>
+        <image name="Send.png" width="17" height="15"/>
         <image name="Sidebar_glyph.png" width="27" height="25"/>
         <image name="TopLogo.png" width="120" height="30"/>
-        <image name="addbarglyph.png" width="25" height="25"/>
+        <image name="addbarglyph.png" width="19" height="19"/>
         <image name="bannerBottomShadow.png" width="1" height="30"/>
         <image name="bannerTopShadow.png" width="1" height="60"/>
         <image name="chatButtonInset.png" width="50" height="26"/>
+        <image name="inputField.png" width="207" height="30"/>
         <image name="menu.png" width="24" height="24"/>
         <image name="newMessages.png" width="7" height="19"/>
         <image name="offline.png" width="24" height="24"/>
@@ -1602,6 +1607,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="5KW-N7-pd5"/>
+        <segue reference="lt1-BL-bem"/>
+        <segue reference="VIU-Jg-26X"/>
     </inferredMetricsTieBreakers>
 </document>

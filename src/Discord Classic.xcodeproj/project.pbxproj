@@ -12,6 +12,8 @@
 		09C6B929204A0F54007EAC26 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09C6B928204A0F54007EAC26 /* CoreGraphics.framework */; };
 		09C6B995204A2614007EAC26 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09C6B994204A2614007EAC26 /* CFNetwork.framework */; };
 		09C6B997204A261B007EAC26 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09C6B996204A261B007EAC26 /* Security.framework */; };
+		0ABD06DE2DAFA2F100B27A35 /* inputField.png in Resources */ = {isa = PBXBuildFile; fileRef = 0ABD06DC2DAFA2F100B27A35 /* inputField.png */; };
+		0ABD06DF2DAFA2F100B27A35 /* inputField@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0ABD06DD2DAFA2F100B27A35 /* inputField@2x.png */; };
 		0AF6BD632DAEF9CE0015EB99 /* TSMarkdownParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF6BD622DAEF9CE0015EB99 /* TSMarkdownParser.m */; };
 		0AF6BD692DAF08960015EB99 /* ODCContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF6BD682DAF08960015EB99 /* ODCContactViewController.m */; };
 		2C11B4202AEAFA5000BE66F6 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C11B41F2AEAFA5000BE66F6 /* ImageIO.framework */; };
@@ -230,6 +232,8 @@
 		09C6B945204A0F55007EAC26 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		09C6B994204A2614007EAC26 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		09C6B996204A261B007EAC26 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		0ABD06DC2DAFA2F100B27A35 /* inputField.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = inputField.png; sourceTree = "<group>"; };
+		0ABD06DD2DAFA2F100B27A35 /* inputField@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "inputField@2x.png"; sourceTree = "<group>"; };
 		0AF6BD602DAEF9CE0015EB99 /* TSMarkdownParser-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TSMarkdownParser-Prefix.pch"; sourceTree = "<group>"; };
 		0AF6BD612DAEF9CE0015EB99 /* TSMarkdownParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSMarkdownParser.h; sourceTree = "<group>"; };
 		0AF6BD622DAEF9CE0015EB99 /* TSMarkdownParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSMarkdownParser.m; sourceTree = "<group>"; };
@@ -690,6 +694,8 @@
 		5B2104BE2D1856E5005B9596 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				0ABD06DC2DAFA2F100B27A35 /* inputField.png */,
+				0ABD06DD2DAFA2F100B27A35 /* inputField@2x.png */,
 				5B5A9E512D2BF20B00A8779E /* Rectangle 431.png */,
 				5B5A9E4F2D2BF08400A8779E /* Group 111.png */,
 				5B5A9E4D2D2BEBBE00A8779E /* Group 108.png */,
@@ -1353,6 +1359,8 @@
 				5B923D102D2A186F000EBA90 /* C-Steam@2x.png in Resources */,
 				5B21053D2D1856E5005B9596 /* PLVideoOverlayPlayDown@2x.png in Resources */,
 				5B2105592D185794005B9596 /* Info.plist in Resources */,
+				0ABD06DF2DAFA2F100B27A35 /* inputField@2x.png in Resources */,
+				0ABD06DE2DAFA2F100B27A35 /* inputField.png in Resources */,
 				5B60AF232D27E6B7000A43B5 /* userInfoButton@2x.png in Resources */,
 				5B60AF222D27E6B7000A43B5 /* userInfoButton.png in Resources */,
 				5B21053E2D1856E5005B9596 /* reply.png in Resources */,

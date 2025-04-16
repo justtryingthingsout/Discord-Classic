@@ -21,7 +21,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *chatTableView;
 @property (weak, nonatomic) IBOutlet UITextView *inputField;
 @property (weak, nonatomic) IBOutlet UILabel *inputFieldPlaceholder;
-@property (weak, nonatomic) IBOutlet UIImageView *insetShadow;
+@property (weak, nonatomic) IBOutlet UIView *inputView;
 
 @property (weak, nonatomic) IBOutlet UINavigationBar *nbbar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *nbmodaldone;

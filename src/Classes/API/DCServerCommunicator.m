@@ -124,10 +124,12 @@ UIActivityIndicatorView *spinner;
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, labelWidth, notificationHeight)];
         label.text = title;
         label.backgroundColor = [UIColor clearColor];
-        label.textColor = [UIColor whiteColor];
+        label.textColor = [UIColor colorWithRed:168/255.0 green:168/255.0 blue:168/255.0 alpha:1];
         label.font = [UIFont boldSystemFontOfSize:16];
         label.textAlignment = NSTextAlignmentLeft;
         label.lineBreakMode = NSLineBreakByTruncatingTail;
+        label.shadowColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:1];
+        label.shadowOffset = CGSizeMake(0, 1);
         
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         spinner.center = CGPointMake(notificationWidth - (spinnerWidth / 2) - 5, notificationHeight / 2); // Adjust spinner closer to text
@@ -146,6 +148,7 @@ UIActivityIndicatorView *spinner;
 }
 
 - (void)dismissNotification {
+
     dispatch_async(dispatch_get_main_queue(), ^{
         // Animate out
         [UIView animateWithDuration:0.4 animations:^{

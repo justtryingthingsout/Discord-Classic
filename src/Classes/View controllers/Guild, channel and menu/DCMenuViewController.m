@@ -322,6 +322,39 @@
     return nil;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return (section == 0) ? 0 : 28.0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return nil;
+    }
+    
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 28)];
+    UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:headerView.bounds];
+    backgroundImageView.contentMode = UIViewContentModeScaleToFill;
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, tableView.frame.size.width - 20, 18)];
+    label.textColor = [UIColor colorWithRed:158.0/255.0 green:159.0/255.0 blue:159.0/255.0 alpha:1.0];
+    
+    backgroundImageView.image = [UIImage imageNamed:@"headerSeparator"];
+    label.layer.shadowColor = [UIColor blackColor].CGColor;
+    label.layer.shadowOffset = CGSizeMake(0, 1);
+    label.backgroundColor = [UIColor clearColor];
+    label.font = [UIFont boldSystemFontOfSize:16];
+
+    
+    [headerView addSubview:backgroundImageView];
+    if (section == 1) {
+        label.text = @"Chats";
+    }
+    
+    [headerView addSubview:label];
+    return headerView;
+}
+
+
 - (NSString *)imageNameForStatus:(NSString *)status {
     if ([status isEqualToString:@"online"]) {
         return @"online";
