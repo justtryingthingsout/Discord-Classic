@@ -253,10 +253,7 @@ UIActivityIndicatorView *spinner;
 						weakSelf.loadedUsers = NSMutableDictionary.new;
                         
 						weakSelf.didRecieveHeartbeatResponse = true;
-                        if ([UIApplication sharedApplication].networkActivityIndicatorVisible > 0)
-                            [UIApplication sharedApplication].networkActivityIndicatorVisible--;
-                        else if ([UIApplication sharedApplication].networkActivityIndicatorVisible < 0)
-                            [UIApplication sharedApplication].networkActivityIndicatorVisible = 0;
+                        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 						
 						int heartbeatInterval = [[d valueForKey:@"heartbeat_interval"] intValue];
 						
@@ -683,10 +680,7 @@ UIActivityIndicatorView *spinner;
 				case 11: {
 					//NSLog(@"Got heartbeat response");
 					weakSelf.didRecieveHeartbeatResponse = true;
-                    if ([UIApplication sharedApplication].networkActivityIndicatorVisible > 0)
-                        [UIApplication sharedApplication].networkActivityIndicatorVisible--;
-                    else if ([UIApplication sharedApplication].networkActivityIndicatorVisible < 0)
-                        [UIApplication sharedApplication].networkActivityIndicatorVisible = 0;
+                    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 				}
 					break;
 					

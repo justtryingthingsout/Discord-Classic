@@ -123,9 +123,8 @@
             NSLog(@"aaaa");
             return self.connectedAccounts.count;
         }
-        return nil;
     }
-    return nil;
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -226,7 +225,7 @@
             
             if (privateChannel) {
                 DCServerCommunicator.sharedInstance.selectedChannel = privateChannel;
-                NSString *formattedChannelName = privateChannel.name;
+                //NSString *formattedChannelName = privateChannel.name;
 
                 if (!chatViewController.messages) {
                     chatViewController.messages = [NSMutableArray array];

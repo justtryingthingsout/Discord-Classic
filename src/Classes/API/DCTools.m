@@ -225,7 +225,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 	DCMessage* newMessage = DCMessage.new;
 	NSString* authorId = [jsonMessage valueForKeyPath:@"author.id"];
 	
-	if(![DCServerCommunicator.sharedInstance.loadedUsers objectForKey:authorId] && authorId != nil && authorId != [NSNull null])
+	if(![DCServerCommunicator.sharedInstance.loadedUsers objectForKey:authorId] && authorId != nil && authorId != nil)
 		[DCTools convertJsonUser:[jsonMessage valueForKeyPath:@"author"] cache:true];
 	
     // load referenced message if it exists
@@ -247,7 +247,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
             referencedMessage.content = @"";
         }
         referencedMessage.snowflake = [referencedJsonMessage valueForKey:@"id"];
-        CGSize authorNameSize = [referencedMessage.author.globalName sizeWithFont:[UIFont boldSystemFontOfSize:10] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
+        CGSize authorNameSize = [referencedMessage.author.globalName sizeWithFont:[UIFont boldSystemFontOfSize:10] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
         referencedMessage.authorNameWidth = 80 + authorNameSize.width;
         
         newMessage.referencedMessage = referencedMessage;
@@ -272,7 +272,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
     if (newMessage.timestamp == nil)
         //NSLog(@"Invalid timestamp %@", [jsonMessage valueForKey:@"timestamp"]);
     
-    if ([jsonMessage valueForKey:@"edited_timestamp"] != [NSNull null]) {
+    if ([jsonMessage valueForKey:@"edited_timestamp"] != nil) {
         newMessage.editedTimestamp = [dateFormatter dateFromString: [jsonMessage valueForKey:@"edited_timestamp"]];
         if (newMessage.editedTimestamp == nil) {
             dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
@@ -578,8 +578,8 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 	//Calculate height of content to be used when showing messages in a tableview
 	//contentHeight does NOT include height of the embeded images or account for height of a grouped message
 	
-	CGSize authorNameSize = [newMessage.author.globalName sizeWithFont:[UIFont boldSystemFontOfSize:15] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
-	CGSize contentSize = [newMessage.content sizeWithFont:[UIFont systemFontOfSize:14] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
+	CGSize authorNameSize = [newMessage.author.globalName sizeWithFont:[UIFont boldSystemFontOfSize:15] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
+	CGSize contentSize = [newMessage.content sizeWithFont:[UIFont systemFontOfSize:14] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
     
     newMessage.contentHeight = authorNameSize.height + contentSize.height + 10 + (newMessage.referencedMessage != nil ? 16 : 0);
     newMessage.authorNameWidth = 60 + authorNameSize.width;
@@ -758,14 +758,11 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
             [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
             [UIApplication sharedApplication].networkActivityIndicatorVisible--;*/
     dispatch_async(dispatch_get_main_queue(), ^{
-            [UIApplication sharedApplication].networkActivityIndicatorVisible++;
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     });
             [NSURLConnection sendAsynchronousRequest:urlRequest queue:[NSOperationQueue currentQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connError) {
                 dispatch_sync(dispatch_get_main_queue(), ^{
-                    if ([UIApplication sharedApplication].networkActivityIndicatorVisible > 0)
-                        [UIApplication sharedApplication].networkActivityIndicatorVisible--;
-                    else if ([UIApplication sharedApplication].networkActivityIndicatorVisible < 0)
-                        [UIApplication sharedApplication].networkActivityIndicatorVisible = 0;
+                    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                 });
 
             }];

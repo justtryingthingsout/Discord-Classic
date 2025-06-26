@@ -9,15 +9,12 @@
 #import "DCMenuViewController.h"
 
 @interface DCMenuViewController ()
-
-
 @end
 
 @implementation DCMenuViewController
 
 - (void)viewDidLoad{
 	[super viewDidLoad];
-	
     
 	//Go to settings if no token is set
 	if(!DCServerCommunicator.sharedInstance.token.length)
@@ -149,7 +146,13 @@
 
 //misc end
 - (IBAction)moreInfo:(id)sender {
-    UIActionSheet *messageActionSheet = [[UIActionSheet alloc] initWithTitle:self.selectedGuild.name delegate:self cancelButtonTitle:@"Okay" destructiveButtonTitle:nil otherButtonTitles:nil, nil];
+    UIActionSheet *messageActionSheet = [[UIActionSheet alloc]
+        initWithTitle:self.selectedGuild.name
+        delegate:self
+        cancelButtonTitle:@"Okay"
+        destructiveButtonTitle:nil
+        otherButtonTitles:nil, nil
+    ];
     [messageActionSheet setDelegate:self];
     [messageActionSheet showInView:self.view];
 }

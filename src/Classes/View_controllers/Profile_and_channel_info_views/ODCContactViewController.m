@@ -113,9 +113,9 @@
             self.noConnections = NO;
             return self.connectedAccounts.count;
         }
-        return nil;
+        return 0;
     }
-    return nil;
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

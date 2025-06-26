@@ -43,14 +43,11 @@ static dispatch_queue_t messages_delete_queue;
             [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
             [UIApplication sharedApplication].networkActivityIndicatorVisible--;*/
             dispatch_sync(dispatch_get_main_queue(), ^{
-            [UIApplication sharedApplication].networkActivityIndicatorVisible++;
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
             });
             [NSURLConnection sendAsynchronousRequest:urlRequest queue:[NSOperationQueue currentQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connError) {
                 dispatch_sync(dispatch_get_main_queue(), ^{
-                    if ([UIApplication sharedApplication].networkActivityIndicatorVisible > 0)
-                        [UIApplication sharedApplication].networkActivityIndicatorVisible--;
-                    else if ([UIApplication sharedApplication].networkActivityIndicatorVisible < 0)
-                        [UIApplication sharedApplication].networkActivityIndicatorVisible = 0;
+                    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                 });
 
             }];

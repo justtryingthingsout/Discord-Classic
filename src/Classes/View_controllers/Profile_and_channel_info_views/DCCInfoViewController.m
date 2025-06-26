@@ -18,7 +18,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.recipients = [NSMutableArray array];
-    NSArray *recipientDictionaries = [DCServerCommunicator.sharedInstance.selectedChannel recipients];
+    #warning TODO: fix cast
+    NSArray *recipientDictionaries = (NSArray *)[DCServerCommunicator.sharedInstance.selectedChannel recipients];
     for (NSDictionary *recipient in recipientDictionaries) {
         DCUser *dcUser = [DCTools convertJsonUser:recipient cache:YES];
         [self.recipients addObject:dcUser];

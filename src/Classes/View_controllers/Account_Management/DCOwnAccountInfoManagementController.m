@@ -116,9 +116,8 @@
             self.noConnections = NO;
             return self.activeConnections.count;
         }
-        return nil;
     }
-    return nil;
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

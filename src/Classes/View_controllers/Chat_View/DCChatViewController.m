@@ -165,7 +165,12 @@ static dispatch_queue_t chat_messages_queue;
                 
                 if (newMessage.isGrouped ) {
                     float contentWidth = UIScreen.mainScreen.bounds.size.width - 63;
-                    CGSize authorNameSize = [newMessage.author.globalName sizeWithFont:[UIFont boldSystemFontOfSize:15] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
+                    CGSize authorNameSize = [
+                        newMessage.author.globalName
+                        sizeWithFont:[UIFont boldSystemFontOfSize:15]
+                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                        lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap
+                    ];
                     
                     newMessage.contentHeight -= authorNameSize.height + 4;
                 }
@@ -189,16 +194,16 @@ static dispatch_queue_t chat_messages_queue;
     DCMessage* newMessage = [DCTools convertJsonMessage:notification.userInfo];
     
     // fix any potential missing fields from a partial response
-    if (newMessage.author == nil || newMessage.author == [NSNull null]) {
+    if (newMessage.author == nil || newMessage.author == nil) {
         newMessage.author = compareMessage.author;
         newMessage.contentHeight += compareMessage.contentHeight; // assume it's an embed update
     }
-    if (newMessage.content == nil || newMessage.content == [NSNull null])
+    if (newMessage.content == nil || newMessage.content == nil)
         newMessage.content = compareMessage.content;
-    if ((newMessage.attachments == nil || newMessage.attachments == [NSNull null]) && newMessage.attachmentCount > 0)
+    if ((newMessage.attachments == nil || newMessage.attachments == nil) && newMessage.attachmentCount > 0)
         newMessage.attachments = compareMessage.attachments;
     newMessage.timestamp = compareMessage.timestamp;
-    if (newMessage.editedTimestamp == nil || newMessage.editedTimestamp == [NSNull null])
+    if (newMessage.editedTimestamp == nil || newMessage.editedTimestamp == nil)
         newMessage.editedTimestamp = compareMessage.editedTimestamp;
     newMessage.prettyTimestamp = compareMessage.prettyTimestamp;
     newMessage.referencedMessage = compareMessage.referencedMessage;
@@ -218,7 +223,12 @@ static dispatch_queue_t chat_messages_queue;
                 
                 if (newMessage.isGrouped ) {
                     float contentWidth = UIScreen.mainScreen.bounds.size.width - 63;
-                    CGSize authorNameSize = [newMessage.author.globalName sizeWithFont:[UIFont boldSystemFontOfSize:15] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
+                    CGSize authorNameSize = [
+                        newMessage.author.globalName
+                        sizeWithFont:[UIFont boldSystemFontOfSize:15]
+                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                        lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap
+                    ];
                     
                     newMessage.contentHeight -= authorNameSize.height + 4;
                 }
@@ -262,14 +272,24 @@ static dispatch_queue_t chat_messages_queue;
                     
                     if (newMessage.isGrouped && (newMessage.isGrouped != oldGroupedFlag)) {
                         float contentWidth = UIScreen.mainScreen.bounds.size.width - 63;
-                        CGSize authorNameSize = [newMessage.author.globalName sizeWithFont:[UIFont boldSystemFontOfSize:15] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
+                        CGSize authorNameSize = [
+                            newMessage.author.globalName
+                            sizeWithFont:[UIFont boldSystemFontOfSize:15]
+                            constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                            lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap
+                        ];
                         
                         newMessage.contentHeight -= authorNameSize.height + 4;
                     }
                 } else if (newMessage.isGrouped) {
                     newMessage.isGrouped = false;
                     float contentWidth = UIScreen.mainScreen.bounds.size.width - 63;
-                    CGSize authorNameSize = [newMessage.author.globalName sizeWithFont:[UIFont boldSystemFontOfSize:15] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
+                    CGSize authorNameSize = [
+                        newMessage.author.globalName 
+                        sizeWithFont:[UIFont boldSystemFontOfSize:15] 
+                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) 
+                        lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap
+                    ];
                     newMessage.contentHeight += authorNameSize.height + 4;
                 }
             }

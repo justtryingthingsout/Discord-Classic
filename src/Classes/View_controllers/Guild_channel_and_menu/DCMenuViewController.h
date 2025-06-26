@@ -22,7 +22,7 @@
 
 #define VERSION_MIN(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
-@interface DCMenuViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface DCMenuViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *guildTableView;
 @property (weak, nonatomic) IBOutlet UITableView *channelTableView;

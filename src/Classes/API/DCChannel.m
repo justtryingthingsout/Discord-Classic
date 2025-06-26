@@ -74,14 +74,11 @@ static dispatch_queue_t channel_send_queue;
 		NSError *error = nil;
 		NSHTTPURLResponse *responseCode = nil;
         dispatch_sync(dispatch_get_main_queue(), ^{
-            [UIApplication sharedApplication].networkActivityIndicatorVisible++;
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
         });
         [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
         dispatch_sync(dispatch_get_main_queue(), ^{
-        if ([UIApplication sharedApplication].networkActivityIndicatorVisible > 0)
-            [UIApplication sharedApplication].networkActivityIndicatorVisible--;
-        else if ([UIApplication sharedApplication].networkActivityIndicatorVisible < 0)
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = 0;
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         });
 	});
 }
@@ -90,7 +87,7 @@ static dispatch_queue_t channel_send_queue;
 
 - (void)sendImage:(UIImage*)image mimeType:(NSString*)type {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [UIApplication sharedApplication].networkActivityIndicatorVisible++;
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     });
     NSURL* channelURL = [NSURL URLWithString: [NSString stringWithFormat:@"https://discordapp.com/api/v9/channels/%@/messages", self.snowflake]];
     
@@ -129,17 +126,14 @@ static dispatch_queue_t channel_send_queue;
         
         [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
         dispatch_sync(dispatch_get_main_queue(), ^{
-        if ([UIApplication sharedApplication].networkActivityIndicatorVisible > 0)
-            [UIApplication sharedApplication].networkActivityIndicatorVisible--;
-        else if ([UIApplication sharedApplication].networkActivityIndicatorVisible < 0)
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = 0;
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         });
 	});
 }
 
 - (void)sendData:(NSData*)data mimeType:(NSString*)type {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [UIApplication sharedApplication].networkActivityIndicatorVisible++;
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     });
     NSURL* channelURL = [NSURL URLWithString: [NSString stringWithFormat:@"https://discordapp.com/api/v9/channels/%@/messages", self.snowflake]];
     
@@ -175,17 +169,14 @@ static dispatch_queue_t channel_send_queue;
         
         [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
         dispatch_sync(dispatch_get_main_queue(), ^{
-            if ([UIApplication sharedApplication].networkActivityIndicatorVisible > 0)
-                [UIApplication sharedApplication].networkActivityIndicatorVisible--;
-            else if ([UIApplication sharedApplication].networkActivityIndicatorVisible < 0)
-                [UIApplication sharedApplication].networkActivityIndicatorVisible = 0;
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         });
 	});
 }
 
 - (void)sendVideo:(NSURL*)videoURL mimeType:(NSString*)type {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [UIApplication sharedApplication].networkActivityIndicatorVisible++;
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     });
     NSURL* channelURL = [NSURL URLWithString: [NSString stringWithFormat:@"https://discordapp.com/api/v9/channels/%@/messages", self.snowflake]];
     
@@ -227,10 +218,7 @@ static dispatch_queue_t channel_send_queue;
         }
         
         dispatch_sync(dispatch_get_main_queue(), ^{
-            if ([UIApplication sharedApplication].networkActivityIndicatorVisible > 0)
-                [UIApplication sharedApplication].networkActivityIndicatorVisible--;
-            else if ([UIApplication sharedApplication].networkActivityIndicatorVisible < 0)
-                [UIApplication sharedApplication].networkActivityIndicatorVisible = 0;
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         });
     });
 }
@@ -251,13 +239,10 @@ static dispatch_queue_t channel_send_queue;
         NSError *error = nil;
 		NSHTTPURLResponse *responseCode = nil;
         
-        //[UIApplication sharedApplication].networkActivityIndicatorVisible++;
+        //[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
         //[DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
         [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error];
-        /*if ([UIApplication sharedApplication].networkActivityIndicatorVisible > 0)
-            [UIApplication sharedApplication].networkActivityIndicatorVisible--;
-        else if ([UIApplication sharedApplication].networkActivityIndicatorVisible < 0)
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = 0;*/
+        /*[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;*/
     });
 }
 
@@ -282,13 +267,10 @@ static dispatch_queue_t channel_send_queue;
         
         [urlRequest setHTTPBody:postbody];
         
-        //[UIApplication sharedApplication].networkActivityIndicatorVisible++;
+        //[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
         //[DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
         [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error];
-        /*if ([UIApplication sharedApplication].networkActivityIndicatorVisible > 0)
-            [UIApplication sharedApplication].networkActivityIndicatorVisible--;
-        else if ([UIApplication sharedApplication].networkActivityIndicatorVisible < 0)
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = 0;*/
+        /*[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;*/
 	});
 }
 
@@ -316,14 +298,11 @@ static dispatch_queue_t channel_send_queue;
 	NSError *error = nil;
     NSHTTPURLResponse *responseCode = nil;
     dispatch_sync(dispatch_get_main_queue(), ^{
-        [UIApplication sharedApplication].networkActivityIndicatorVisible++;
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     });
     NSData *response = [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
     dispatch_sync(dispatch_get_main_queue(), ^{
-        if ([UIApplication sharedApplication].networkActivityIndicatorVisible > 0)
-            [UIApplication sharedApplication].networkActivityIndicatorVisible--;
-        else if ([UIApplication sharedApplication].networkActivityIndicatorVisible < 0)
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = 0;
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     });
     if(response){
         //starting here it gets important
@@ -432,7 +411,7 @@ static dispatch_queue_t channel_send_queue;
                         
                         if (currentMessage.isGrouped) {
                             float contentWidth = UIScreen.mainScreen.bounds.size.width - 63;
-                            CGSize authorNameSize = [currentMessage.author.globalName sizeWithFont:[UIFont boldSystemFontOfSize:15] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
+                            CGSize authorNameSize = [currentMessage.author.globalName sizeWithFont:[UIFont boldSystemFontOfSize:15] constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT) lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
                             
                             currentMessage.contentHeight -= authorNameSize.height + 4;
                         }
@@ -474,7 +453,7 @@ static dispatch_queue_t channel_send_queue;
  NSError *error = nil;
  NSHTTPURLResponse *responseCode = nil;
  dispatch_sync(dispatch_get_main_queue(), ^{
- [UIApplication sharedApplication].networkActivityIndicatorVisible++;
+ [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
  });
  
  NSData *response = [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&responseCode error:&error] withError:error];
