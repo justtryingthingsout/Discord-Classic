@@ -344,8 +344,8 @@ UIActivityIndicatorView *spinner;
                                 if ([privateChannel objectForKey:@"icon"] != nil || [privateChannel objectForKey:@"recipients"] != nil) {
                                     if (((NSArray *)[privateChannel valueForKey:@"recipients"]).count > 0) {
                                         NSDictionary *user = [[privateChannel valueForKey:@"recipients"] objectAtIndex:0];
+                                        newChannel.recipients = [privateChannel objectForKey:@"recipients"];
                                         for (NSDictionary *user in [privateChannel objectForKey:@"recipients"]) {
-                                            newChannel.recipients = [privateChannel objectForKey:@"recipients"];
                                             usersDict             = NSMutableDictionary.new;
                                             [usersDict setObject:[user valueForKey:@"global_name"] forKey:@"username"];
                                             [usersDict setObject:[user valueForKey:@"username"] forKey:@"handle"];
@@ -539,7 +539,6 @@ UIActivityIndicatorView *spinner;
                             for (NSDictionary *jsonGuild in [d valueForKey:@"guilds"]) {
                                 [weakSelf.guilds addObject:[DCTools convertJsonGuild:jsonGuild]];
                             }
-
 
                             // Read states are recieved in READY payload
                             // they give a channel ID and the ID of the last read message in that channel

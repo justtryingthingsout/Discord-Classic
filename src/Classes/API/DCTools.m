@@ -934,7 +934,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
             lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
 
-    newMessage.contentHeight = authorNameSize.height + contentSize.height + 10
+    newMessage.contentHeight = authorNameSize.height + MAX(contentSize.height, 18) + 10
         + (newMessage.referencedMessage != nil ? 16 : 0);
     newMessage.authorNameWidth = 60 + authorNameSize.width;
 
@@ -945,6 +945,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 + (DCGuild *)convertJsonGuild:(NSDictionary *)jsonGuild {
     DCGuild *newGuild  = DCGuild.new;
     newGuild.userRoles = NSMutableArray.new;
+    newGuild.members   = NSMutableArray.new;
     newGuild.roles     = NSMutableDictionary.new;
 
     // Get @everyone role
@@ -960,10 +961,9 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
     // Get roles of the current user
     for (NSDictionary *member in [jsonGuild objectForKey:@"members"]) {
-        if ([[member valueForKeyPath:@"user.id"]
-#warning TODO: do permissions for member role
-                isEqualToString:DCServerCommunicator.sharedInstance
-                                    .snowflake]) {
+        [newGuild.members
+            addObject:[DCTools convertJsonUser:[member valueForKey:@"user"] cache:true]];
+        if ([[member valueForKeyPath:@"user.id"] isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
             [newGuild.userRoles addObjectsFromArray:[member valueForKey:@"roles"]];
         }
     }

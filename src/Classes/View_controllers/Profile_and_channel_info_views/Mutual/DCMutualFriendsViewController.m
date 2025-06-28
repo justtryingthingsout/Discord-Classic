@@ -28,7 +28,7 @@
 
     // fix last element in table view being cut off
     UIEdgeInsets insets                     = self.mutTableView.contentInset;
-    insets.bottom                           = 52;
+    insets.bottom                           = 44;
     self.mutTableView.contentInset          = insets;
     self.mutTableView.scrollIndicatorInsets = insets;
 

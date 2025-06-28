@@ -7,6 +7,7 @@
 //
 
 #import "DCCInfoViewController.h"
+#include <Foundation/Foundation.h>
 
 @interface DCCInfoViewController ()
 
@@ -14,16 +15,25 @@
 
 @implementation DCCInfoViewController
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.recipients = [NSMutableArray array];
-#warning TODO: fix cast
-    NSArray *recipientDictionaries = (NSArray *)
-        [DCServerCommunicator.sharedInstance.selectedChannel recipients];
-    for (NSDictionary *recipient in recipientDictionaries) {
-        DCUser *dcUser = [DCTools convertJsonUser:recipient cache:YES];
-        [self.recipients addObject:dcUser];
+#warning TODO: fix member list not loading
+    if (DCServerCommunicator.sharedInstance.selectedChannel && DCServerCommunicator.sharedInstance.selectedChannel.parentGuild) {
+        NSLog(@"Selected guild: %@", [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild name]);
+        NSArray *members = [[DCServerCommunicator.sharedInstance.selectedChannel.parentGuild members] copy];
+        for (DCUser *member in members) {
+            [self.recipients addObject:member];
+        }
+    } else if (DCServerCommunicator.sharedInstance.selectedChannel) {
+        NSLog(@"Selected channel: %@", DCServerCommunicator.sharedInstance.selectedChannel.name);
+        NSArray *recipientDictionaries = (NSArray *)[DCServerCommunicator.sharedInstance.selectedChannel recipients];
+        for (NSDictionary *recipient in recipientDictionaries) {
+            DCUser *dcUser = [DCTools convertJsonUser:recipient cache:YES];
+            [self.recipients addObject:dcUser];
+        }
+    } else {
+        NSLog(@"No channel or guild selected!");
     }
 }
 
