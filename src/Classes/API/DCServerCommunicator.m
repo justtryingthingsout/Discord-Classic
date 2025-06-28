@@ -7,6 +7,7 @@
 //
 
 #import "DCServerCommunicator.h"
+#include <Foundation/Foundation.h>
 #import "DCChannel.h"
 #import "DCGuild.h"
 #import "DCTools.h"
@@ -197,9 +198,8 @@ UIActivityIndicatorView *spinner;
 
             // NSLog(@"Got op code %i", op);
 
-            // revcieved HELLO eventd
             switch (op) {
-                case 10: {
+                case HELLO: {
                     if (weakSelf.shouldResume) {
                         // NSLog(@"Sending Resume with sequence number %i, session ID %@", weakSelf.sequenceNumber, weakSelf.sessionId);
 
@@ -257,7 +257,7 @@ UIActivityIndicatorView *spinner;
                                 // NSLog(@"Heartbeat is %d seconds", heartbeatInterval/1000);
 
                                 // Begin heartbeat cycle if not already begun
-                                [NSTimer scheduledTimerWithTimeInterval:heartbeatInterval / 1000 target:weakSelf selector:@selector(sendHeartbeat:) userInfo:nil repeats:YES];
+                                [NSTimer scheduledTimerWithTimeInterval:(float)heartbeatInterval / 1000 target:weakSelf selector:@selector(sendHeartbeat:) userInfo:nil repeats:YES];
                             });
 
                             // Reenable ability to identify in 5 seconds
@@ -267,9 +267,7 @@ UIActivityIndicatorView *spinner;
 
                 } break;
 
-
-                // Misc Event
-                case 0: {
+                case DISPATCH: {
                     // Get event type and sequence number
                     NSString *t             = [parsedJsonResponse valueForKey:@"t"];
                     weakSelf.sequenceNumber = [[parsedJsonResponse valueForKey:@"s"] integerValue];
@@ -306,6 +304,18 @@ UIActivityIndicatorView *spinner;
                             userInfo[@"clan"]              = [d valueForKeyPath:@"user.clan"];
                             userInfo[@"id"]                = [d valueForKeyPath:@"user.id"];
                             userInfo[@"connectedAccounts"] = [d valueForKeyPath:@"connected_accounts"];
+                            userInfo[@"guildPositions"]    = NSMutableArray.new;
+
+                            if ([d valueForKeyPath:@"user_settings.guild_positions"]) {
+                                [userInfo[@"guildPositions"] addObjectsFromArray:[d valueForKeyPath:@"user_settings.guild_positions"]];
+                            } else if ([d valueForKeyPath:@"user_settings.guild_folders"]) {
+                                for (NSDictionary *userDict in [d valueForKeyPath:@"user_settings.guild_folders"]) {
+                                   NSArray *guildIDs = userDict[@"guild_ids"];
+                                   [userInfo[@"guildPositions"] addObjectsFromArray:guildIDs];
+                                }
+                            } else {
+                                NSLog(@"no guild positions found in user settings");
+                            }
 
                             weakSelf.currentUserInfo = userInfo;
 
@@ -336,6 +346,7 @@ UIActivityIndicatorView *spinner;
                                 NSMutableDictionary *usersDict;
 
                                 DCChannel *newChannel    = DCChannel.new;
+                                newChannel.parentID     = [privateChannel valueForKey:@"parent_id"];
                                 newChannel.snowflake     = [privateChannel valueForKey:@"id"];
                                 newChannel.lastMessageId = [privateChannel valueForKey:@"last_message_id"];
                                 newChannel.parentGuild   = privateGuild;
@@ -534,11 +545,11 @@ UIActivityIndicatorView *spinner;
 
                             [weakSelf.guilds addObject:privateGuild];
 
-
                             // Get servers (guilds) the user is a member of
                             for (NSDictionary *jsonGuild in [d valueForKey:@"guilds"]) {
                                 [weakSelf.guilds addObject:[DCTools convertJsonGuild:jsonGuild]];
                             }
+                            weakSelf.guildsIsSorted = NO;
 
                             // Read states are recieved in READY payload
                             // they give a channel ID and the ID of the last read message in that channel
@@ -665,18 +676,19 @@ UIActivityIndicatorView *spinner;
                     if ([t isEqualToString:@"GUILD_CREATE"]) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [weakSelf.guilds addObject:[DCTools convertJsonGuild:d]];
+                            weakSelf.guildsIsSorted = NO;
                         });
                     }
                 } break;
 
 
-                case 11: {
+                case HEARTBEAT_ACK: {
                     // NSLog(@"Got heartbeat response");
                     weakSelf.didRecieveHeartbeatResponse                              = true;
                     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                 } break;
 
-                case 9:
+                case INVALID_SESSION:
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [weakSelf reconnect];
                     });

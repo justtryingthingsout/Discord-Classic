@@ -60,17 +60,33 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell =
-        [tableView dequeueReusableCellWithIdentifier:@"Channel Cell"];
-
     // Show blue indicator if channel contains any unread messages
     DCChannel *channelAtRowIndex =
         [self.selectedGuild.channels objectAtIndex:indexPath.row];
-    if (channelAtRowIndex.unread) {
-        [cell setAccessoryType:UITableViewCellAccessoryDetailDisclosureButton];
-    } else {
-        [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+
+    if (channelAtRowIndex.type == 4) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Category Cell"];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc]
+                  initWithStyle:UITableViewCellStyleDefault
+                reuseIdentifier:@"Category Cell"];
+            // make unclickable
+            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+            [cell setUserInteractionEnabled:NO];
+            [cell.textLabel setEnabled:NO];
+            [cell.textLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:15.0]];
+            [cell.detailTextLabel setEnabled:NO];
+            [cell setAlpha:0.5];
+            [cell setAccessoryType:UITableViewCellAccessoryNone];
+        }
+        [cell.textLabel setText:channelAtRowIndex.name];
+        return cell;
     }
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Channel Cell"];
+
+    [cell setAccessoryType: channelAtRowIndex.unread
+        ? UITableViewCellAccessoryDetailDisclosureButton
+        : UITableViewCellAccessoryDisclosureIndicator];
 
     // Channel name
     [cell.textLabel setText:channelAtRowIndex.name];
@@ -94,6 +110,12 @@
     didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     DCServerCommunicator.sharedInstance.selectedChannel =
         [self.selectedGuild.channels objectAtIndex:indexPath.row];
+    
+    if (DCServerCommunicator.sharedInstance.selectedChannel.type == 4) {
+        // If the channel is a category, do nothing
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        return;
+    }
 
     // Mark channel messages as read and refresh the channel object accordingly
     [DCServerCommunicator.sharedInstance.selectedChannel

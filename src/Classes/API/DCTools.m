@@ -1037,14 +1037,18 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                              }];
 
 
+    NSMutableArray *categories = NSMutableArray.new;
+
     for (NSDictionary *jsonChannel in [jsonGuild valueForKey:@"channels"]) {
-        // Make sure jsonChannel is a text cannel
+        // Make sure jsonChannel is a text channel or a category
         // we dont want to include voice channels in the text channel list
-        if ([[jsonChannel valueForKey:@"type"] isEqual:@0]) {
+        if ([[jsonChannel valueForKey:@"type"] isEqual:@0] || // text channel
+            [[jsonChannel valueForKey:@"type"] isEqual:@5] || // announcements
+            [[jsonChannel valueForKey:@"type"] isEqual:@4]) { // category
             // Allow code is used to determine if the user should see the
             // channel in question.
             /*
-             0 - No overwrides. Channel should be created
+             0 - No overrides. Channel should be created
 
              1 - Hidden by role. Channel should not be created unless another
              role contradicts (code 2)
@@ -1065,11 +1069,12 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                 [jsonChannel objectForKey:@"permission_overwrites"];
             // sort with role priority
             NSArray *overwrites = [rawOverwrites sortedArrayUsingComparator:
-                                                     ^NSComparisonResult(NSDictionary *perm1, NSDictionary *perm2) {
-                                                         DCRole *role1 = [newGuild.roles valueForKey:[perm1 valueForKey:@"id"]];
-                                                         DCRole *role2 = [newGuild.roles valueForKey:[perm2 valueForKey:@"id"]];
-                                                         return role1.position < role2.position ? NSOrderedAscending : NSOrderedDescending;
-                                                     }];
+                ^NSComparisonResult(NSDictionary *perm1, NSDictionary *perm2) {
+                    DCRole *role1 = [newGuild.roles valueForKey:[perm1 valueForKey:@"id"]];
+                    DCRole *role2 = [newGuild.roles valueForKey:[perm2 valueForKey:@"id"]];
+                    return role1.position < role2.position ? NSOrderedAscending : NSOrderedDescending;
+                }
+            ];
             for (NSDictionary *permission in overwrites) {
                 uint64_t type     = [[permission valueForKey:@"type"] longLongValue];
                 NSString *idValue = [permission valueForKey:@"id"];
@@ -1106,11 +1111,12 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                 DCChannel *newChannel = DCChannel.new;
 
                 newChannel.snowflake = [jsonChannel valueForKey:@"id"];
+                newChannel.parentID  = [jsonChannel valueForKey:@"parent_id"];
                 newChannel.name      = [jsonChannel valueForKey:@"name"];
                 newChannel.lastMessageId =
                     [jsonChannel valueForKey:@"last_message_id"];
                 newChannel.parentGuild = newGuild;
-                newChannel.type        = 0;
+                newChannel.type        = [[jsonChannel valueForKey:@"type"] intValue];
                 NSString *rawPosition  = [jsonChannel valueForKey:@"position"];
                 newChannel.position    = rawPosition ? [rawPosition intValue] : 0;
 
@@ -1120,7 +1126,11 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                     newChannel.muted = true;
                 }
 
-                [newGuild.channels addObject:newChannel];
+                if (newChannel.type == 4) { // category
+                    [categories addObject:newChannel];
+                } else {
+                    [newGuild.channels addObject:newChannel];
+                }
                 [DCServerCommunicator.sharedInstance.channels
                     setObject:newChannel
                        forKey:newChannel.snowflake];
@@ -1139,6 +1149,26 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
             return [channel1.snowflake compare:channel2.snowflake];
         }
     }];
+
+    // Add categories to the guild
+    for (DCChannel *category in categories) {
+        int i = 0;
+        for (DCChannel *channel in newGuild.channels) {
+            if (channel.type == 4 
+            || channel.parentID == nil 
+            || (NSNull*)channel.parentID == [NSNull null]
+            ) {
+                // If the channel is a category or has no parent, skip it
+                i++;
+                continue;
+            }
+            if ([channel.parentID isEqualToString:category.snowflake]) {
+                [newGuild.channels insertObject:category atIndex:i];
+                break;
+            }
+            i++;
+        }
+    }
 
     return newGuild;
 }

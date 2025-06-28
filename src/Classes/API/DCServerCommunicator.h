@@ -12,6 +12,22 @@
 #import "DCGuildListViewController.h"
 #import "WSWebSocket.h"
 
+#define DISPATCH 0
+#define HEARTBEAT 1
+#define IDENTIFY 2
+#define PRESENCE_UPDATE 3
+#define VOICE_STATE_UPDATE 4
+#define UNKNOWN 5
+#define RESUME 6
+#define RECONNECT 7
+#define GUILD_MEMBER_REQUEST 8
+#define INVALID_SESSION 9
+#define HELLO 10
+#define HEARTBEAT_ACK 11
+#define GUILD_SYNC 12
+#define PRIVATE_CHANNEL_SUBSCRIBE 13
+#define GUILD_SUBSCRIBE 14
+
 @interface DCServerCommunicator : NSObject
 
 @property WSWebSocket* websocket;
@@ -23,6 +39,7 @@
 @property NSString* snowflake;
 
 @property NSMutableArray* guilds;
+@property bool guildsIsSorted;
 @property NSMutableDictionary* channels;
 @property NSMutableDictionary* loadedUsers;
 @property NSMutableDictionary* loadedRoles;

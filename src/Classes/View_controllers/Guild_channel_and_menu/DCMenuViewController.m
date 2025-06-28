@@ -7,6 +7,10 @@
 //
 
 #import "DCMenuViewController.h"
+#include <objc/NSObjCRuntime.h>
+#include "DCGuild.h"
+#include <Foundation/Foundation.h>
+#include "DCServerCommunicator.h"
 
 @interface DCMenuViewController ()
 @end
@@ -239,10 +243,17 @@
     }
 
     if (tableView == self.channelTableView) {
-        self.selectedChannel = (DCChannel *)[self.selectedGuild.channels
-            objectAtIndex:indexPath.row];
-        DCServerCommunicator.sharedInstance.selectedChannel =
+        DCChannel *channelAtRowIndex =
             [self.selectedGuild.channels objectAtIndex:indexPath.row];
+        
+        // If the channel is a category, do nothing
+        if (channelAtRowIndex.type == 4) {
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            return;
+        }
+
+        DCServerCommunicator.sharedInstance.selectedChannel = channelAtRowIndex;
+        self.selectedChannel = channelAtRowIndex;
 
         // Mark channel messages as read and refresh the channel object
         // accordingly
@@ -292,6 +303,19 @@
         // UITableViewCellAccessoryDisclosureIndicator;
     }
 }
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (tableView == self.channelTableView) {
+        DCChannel *channelAtRowIndex =
+            [self.selectedGuild.channels objectAtIndex:indexPath.row];
+        if (channelAtRowIndex.type == 4) {
+            // Category cell height
+            return 20.0;
+        }
+    }
+    return tableView.rowHeight;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.guildTableView) {
@@ -304,17 +328,35 @@
                 reuseIdentifier:@"guild"];
         }
 
-        // Sorting guilds
-        DCServerCommunicator.sharedInstance.guilds =
-            [[DCServerCommunicator.sharedInstance.guilds
-                sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
-                    NSString *first  = [(DCGuild *)a name];
-                    NSString *second = [(DCGuild *)b name];
-                    if ([first compare:@"Direct Messages"] == 0) {
-                        return false; // DMs at the top
+
+        // Sorting guilds based on userInfo[@"guildPositions"] array
+        if (!DCServerCommunicator.sharedInstance.guildsIsSorted) {
+            NSUInteger guildCount = [DCServerCommunicator.sharedInstance.guilds count];
+            NSMutableArray *sortedGuilds = [NSMutableArray arrayWithCapacity:guildCount];
+            NSNull *nullObject = [NSNull null];
+            // init to be able to index
+            for (NSUInteger i = 0; i < guildCount; i++) {
+                [sortedGuilds addObject:nullObject];
+            }
+            for (DCGuild *guild in DCServerCommunicator.sharedInstance.guilds) {
+                int index = [DCServerCommunicator.sharedInstance.currentUserInfo[@"guildPositions"] indexOfObject:guild.snowflake];
+                if (index != NSNotFound) {
+                    sortedGuilds[index+1] = guild;
+                } else {
+                    if ([sortedGuilds[0] isEqual:nullObject]) {
+                        // If the first element is still null, must be private guild
+                        sortedGuilds[0] = guild;
+                    } else {
+                        // Otherwise, append to the end of the array
+                        [sortedGuilds addObject:guild];
                     }
-                    return [first compare:second];
-                }] mutableCopy];
+                }
+            }
+            [sortedGuilds removeObjectIdenticalTo:nullObject];
+            DCServerCommunicator.sharedInstance.guilds = sortedGuilds;
+            NSAssert([sortedGuilds count] != 0, @"No sorted guilds found");
+            DCServerCommunicator.sharedInstance.guildsIsSorted = YES;
+        }
 
         DCGuild *guildAtRowIndex = [DCServerCommunicator.sharedInstance.guilds
             objectAtIndex:indexPath.row];
@@ -404,15 +446,34 @@
             return cell;
 
         } else {
-            DCChannelViewCell *cell =
-                [tableView dequeueReusableCellWithIdentifier:@"channel"];
+            DCChannel *channelAtRowIndex =
+                [self.selectedGuild.channels objectAtIndex:indexPath.row];
+
+            if (channelAtRowIndex.type == 4) {
+                UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Category Cell"];
+                if (cell == nil) {
+                    cell = [[UITableViewCell alloc]
+                          initWithStyle:UITableViewCellStyleDefault
+                        reuseIdentifier:@"Category Cell"];
+                    // make unclickable
+                    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+                    [cell setUserInteractionEnabled:NO];
+                    [cell.textLabel setEnabled:NO];
+                    [cell.textLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:15.0]];
+                    [cell.detailTextLabel setEnabled:NO];
+                    [cell setAlpha:0.5];
+                    [cell setAccessoryType:UITableViewCellAccessoryNone];
+                }
+                [cell.textLabel setText:channelAtRowIndex.name];
+                return cell;
+            }
+
+            DCChannelViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"channel"];
             if (cell == nil) {
                 cell = [[DCChannelViewCell alloc]
                       initWithStyle:UITableViewCellStyleDefault
                     reuseIdentifier:@"channel"];
             }
-            DCChannel *channelAtRowIndex =
-                [self.selectedGuild.channels objectAtIndex:indexPath.row];
             cell.messageIndicator.hidden = !channelAtRowIndex.unread;
             [cell.channelName setText:channelAtRowIndex.name];
 
