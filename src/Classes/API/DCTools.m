@@ -1044,6 +1044,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                                  });
                              }];
 
+
     for (NSDictionary *jsonChannel in [jsonGuild valueForKey:@"channels"]) {
         // Make sure jsonChannel is a text cannel
         // we dont want to include voice channels in the text channel list
@@ -1068,13 +1069,20 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
             int allowCode = 0;
 
             // Calculate permissions
-            NSArray *overwrites =
+            NSArray *rawOverwrites =
                 [jsonChannel objectForKey:@"permission_overwrites"];
+            // sort with role priority
+            NSArray *overwrites = [rawOverwrites sortedArrayUsingComparator:
+                ^NSComparisonResult(NSDictionary *perm1, NSDictionary *perm2) {
+                    DCRole *role1 = [newGuild.roles valueForKey:[perm1 valueForKey:@"id"]];
+                    DCRole *role2 = [newGuild.roles valueForKey:[perm2 valueForKey:@"id"]];
+                    return role1.position < role2.position ? NSOrderedAscending : NSOrderedDescending;
+                }];
             for (NSDictionary *permission in overwrites) {
-                uint64_t type          = [[permission valueForKey:@"type"] longLongValue];
+                uint64_t type     = [[permission valueForKey:@"type"] longLongValue];
                 NSString *idValue = [permission valueForKey:@"id"];
-                uint64_t deny          = [[permission valueForKey:@"deny"] longLongValue];
-                uint64_t allow = [[permission valueForKey:@"allow"] longLongValue];
+                uint64_t deny     = [[permission valueForKey:@"deny"] longLongValue];
+                uint64_t allow    = [[permission valueForKey:@"allow"] longLongValue];
 
                 if (type == 0) { // Role overwrite
                     if ([newGuild.userRoles containsObject:idValue]) {
@@ -1100,7 +1108,10 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                 }
             }
 
-            if (allowCode == 0 || allowCode == 2 || allowCode == 4) {
+            if (allowCode == 0 || allowCode == 2 || allowCode == 4 || 
+                [[jsonGuild valueForKey:@"owner_id"] isEqualToString:
+                    DCServerCommunicator.sharedInstance.snowflake]
+               ) {
                 DCChannel *newChannel = DCChannel.new;
 
                 newChannel.snowflake = [jsonChannel valueForKey:@"id"];
