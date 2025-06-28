@@ -369,7 +369,7 @@ static dispatch_queue_t chat_messages_queue;
                     && curComponents.month == prevComponents.month
                     && curComponents.year == prevComponents.year) {
                     Boolean oldGroupedFlag = newMessage.isGrouped;
-                    newMessage.isGrouped = newMessage.referencedMessage == nil;
+                    newMessage.isGrouped   = newMessage.referencedMessage == nil;
 
                     if (newMessage.isGrouped
                         && (newMessage.isGrouped != oldGroupedFlag)) {
@@ -775,12 +775,10 @@ static dispatch_queue_t chat_messages_queue;
             [cell.contentTextView setText:content];
         }
 
-        [cell.contentTextView
-            setHeight:[cell.contentTextView
-                          sizeThatFits:CGSizeMake(
-                                           cell.contentTextView.width, MAXFLOAT
-                                       )]
-                          .height];
+        double height = [cell.contentTextView
+                            sizeThatFits:CGSizeMake(cell.contentTextView.width, MAXFLOAT)]
+                            .height;
+        [cell.contentTextView setHeight:height];
 
         if (!messageAtRowIndex.isGrouped) {
             if (messageAtRowIndex.author.avatarDecoration &&
@@ -1177,8 +1175,8 @@ static dispatch_queue_t chat_messages_queue;
                 isSourceTypeAvailable:
                     UIImagePickerControllerSourceTypePhotoLibrary]) {
             UIImagePickerController *picker = UIImagePickerController.new;
-            picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-            picker.delegate   = self;
+            picker.sourceType               = UIImagePickerControllerSourceTypePhotoLibrary;
+            picker.delegate                 = self;
 
             // Initialize UIPopoverController
             UIPopoverController *popoverController =
@@ -1211,8 +1209,8 @@ static dispatch_queue_t chat_messages_queue;
         } else {
             // Camera is not supported, use photo library
             UIImagePickerController *picker = UIImagePickerController.new;
-            picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-            picker.delegate   = self;
+            picker.sourceType               = UIImagePickerControllerSourceTypePhotoLibrary;
+            picker.delegate                 = self;
 
             [self presentViewController:picker animated:YES completion:nil];
         }
@@ -1228,7 +1226,7 @@ static dispatch_queue_t chat_messages_queue;
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
 
     if ([mediaType isEqualToString:@"public.movie"]) { // Check if it's a video
-        NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
+        NSURL *videoURL     = [info objectForKey:UIImagePickerControllerMediaURL];
         NSString *extension = [videoURL pathExtension];
 
         NSString *mimeType;
@@ -1285,7 +1283,7 @@ static dispatch_queue_t chat_messages_queue;
                              fromOffset:0
                                  length:(NSUInteger)representation.size
                                   error:nil];
-                         NSData *data = [NSData dataWithBytesNoCopy:buffer
+                         NSData *data        = [NSData dataWithBytesNoCopy:buffer
                                                              length:buffered
                                                        freeWhenDone:YES];
 

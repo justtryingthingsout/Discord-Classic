@@ -44,7 +44,8 @@
 
     if (self.experimental == YES) {
         UIStoryboard *storyboard =
-            [UIStoryboard storyboardWithName:@"Experimental" bundle:nil];
+            [UIStoryboard storyboardWithName:@"Experimental"
+                                      bundle:nil];
         UIViewController *initialViewController =
             [storyboard instantiateInitialViewController];
         self.window.rootViewController = initialViewController;
@@ -52,7 +53,8 @@
     } else {
         if (self.hackyMode == true) {
             UIStoryboard *storyboard =
-                [UIStoryboard storyboardWithName:@"Throwback" bundle:nil];
+                [UIStoryboard storyboardWithName:@"Throwback"
+                                          bundle:nil];
             UIViewController *initialViewController =
                 [storyboard instantiateInitialViewController];
             self.window.rootViewController = initialViewController;

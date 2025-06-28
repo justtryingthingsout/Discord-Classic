@@ -489,20 +489,6 @@
 		87FF88102E0CD04900B90700 /* DCSettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCSettingsViewController.m; sourceTree = "<group>"; };
 		87FF88122E0CD04900B90700 /* DCIntroductionPage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCIntroductionPage.h; sourceTree = "<group>"; };
 		87FF88132E0CD04900B90700 /* DCIntroductionPage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCIntroductionPage.m; sourceTree = "<group>"; };
-		87FF88242E0CD1BC00B90700 /* Experimental.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Experimental.storyboard; sourceTree = "<group>"; };
-		87FF88252E0CD1BC00B90700 /* iOS-7.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "iOS-7.storyboard"; sourceTree = "<group>"; };
-		87FF88262E0CD1BC00B90700 /* Storyboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
-		87FF88272E0CD1BC00B90700 /* Storyboard-iPad.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Storyboard-iPad.storyboard"; sourceTree = "<group>"; };
-		87FF88282E0CD1BC00B90700 /* Throwback.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Throwback.storyboard; sourceTree = "<group>"; };
-		87FF882A2E0CD1BC00B90700 /* O-DCChatGroupedTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "O-DCChatGroupedTableCell.xib"; sourceTree = "<group>"; };
-		87FF882B2E0CD1BC00B90700 /* O-DCChatReplyTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "O-DCChatReplyTableCell.xib"; sourceTree = "<group>"; };
-		87FF882C2E0CD1BC00B90700 /* O-DCChatTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "O-DCChatTableCell.xib"; sourceTree = "<group>"; };
-		87FF882D2E0CD1BC00B90700 /* O-DCUniversalTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "O-DCUniversalTableCell.xib"; sourceTree = "<group>"; };
-		87FF882F2E0CD1BC00B90700 /* DCChatGroupedTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCChatGroupedTableCell.xib; sourceTree = "<group>"; };
-		87FF88302E0CD1BC00B90700 /* DCChatReplyTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCChatReplyTableCell.xib; sourceTree = "<group>"; };
-		87FF88312E0CD1BC00B90700 /* DCChatTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCChatTableCell.xib; sourceTree = "<group>"; };
-		87FF88322E0CD1BC00B90700 /* DCChatVideoAttachment.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCChatVideoAttachment.xib; sourceTree = "<group>"; };
-		87FF88332E0CD1BC00B90700 /* DCUniversalTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCUniversalTableCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -529,7 +515,6 @@
 		09C6B915204A0F54007EAC26 = {
 			isa = PBXGroup;
 			children = (
-				87FF88352E0CD1BC00B90700 /* a */,
 				5B21055A2D185B10005B9596 /* Classes */,
 				5B21047D2D185409005B9596 /* Libraries */,
 				5B2104782D185402005B9596 /* Assets */,
@@ -1210,51 +1195,6 @@
 				87FF88142E0CD04900B90700 /* Welcome_and_login */,
 			);
 			path = View_controllers;
-			sourceTree = "<group>";
-		};
-		87FF88292E0CD1BC00B90700 /* Storyboards */ = {
-			isa = PBXGroup;
-			children = (
-				87FF88242E0CD1BC00B90700 /* Experimental.storyboard */,
-				87FF88252E0CD1BC00B90700 /* iOS-7.storyboard */,
-				87FF88262E0CD1BC00B90700 /* Storyboard.storyboard */,
-				87FF88272E0CD1BC00B90700 /* Storyboard-iPad.storyboard */,
-				87FF88282E0CD1BC00B90700 /* Throwback.storyboard */,
-			);
-			path = Storyboards;
-			sourceTree = "<group>";
-		};
-		87FF882E2E0CD1BC00B90700 /* OldMode */ = {
-			isa = PBXGroup;
-			children = (
-				87FF882A2E0CD1BC00B90700 /* O-DCChatGroupedTableCell.xib */,
-				87FF882B2E0CD1BC00B90700 /* O-DCChatReplyTableCell.xib */,
-				87FF882C2E0CD1BC00B90700 /* O-DCChatTableCell.xib */,
-				87FF882D2E0CD1BC00B90700 /* O-DCUniversalTableCell.xib */,
-			);
-			path = OldMode;
-			sourceTree = "<group>";
-		};
-		87FF88342E0CD1BC00B90700 /* XIBs */ = {
-			isa = PBXGroup;
-			children = (
-				87FF882E2E0CD1BC00B90700 /* OldMode */,
-				87FF882F2E0CD1BC00B90700 /* DCChatGroupedTableCell.xib */,
-				87FF88302E0CD1BC00B90700 /* DCChatReplyTableCell.xib */,
-				87FF88312E0CD1BC00B90700 /* DCChatTableCell.xib */,
-				87FF88322E0CD1BC00B90700 /* DCChatVideoAttachment.xib */,
-				87FF88332E0CD1BC00B90700 /* DCUniversalTableCell.xib */,
-			);
-			path = XIBs;
-			sourceTree = "<group>";
-		};
-		87FF88352E0CD1BC00B90700 /* a */ = {
-			isa = PBXGroup;
-			children = (
-				87FF88292E0CD1BC00B90700 /* Storyboards */,
-				87FF88342E0CD1BC00B90700 /* XIBs */,
-			);
-			path = a;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

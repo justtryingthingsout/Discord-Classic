@@ -27,11 +27,11 @@
                              barMetrics:UIBarMetricsDefault];
 
     // fix last element in table view being cut off
-    UIEdgeInsets insets = self.mutTableView.contentInset;
-    insets.bottom = 52;
-    self.mutTableView.contentInset = insets;
+    UIEdgeInsets insets                     = self.mutTableView.contentInset;
+    insets.bottom                           = 52;
+    self.mutTableView.contentInset          = insets;
     self.mutTableView.scrollIndicatorInsets = insets;
-    
+
     self.mutTableView.delegate   = self;
     self.mutTableView.dataSource = self;
     self.recipients              = [NSMutableArray array];

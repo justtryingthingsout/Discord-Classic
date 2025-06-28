@@ -253,7 +253,7 @@
 
         // Remove the blue indicator since the channel has been read
         //[[self.channelTableView cellForRowAtIndexPath:indexPath]
-        //setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+        // setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
         if (self.experimentalMode == NO) {
@@ -289,7 +289,7 @@
             }
         }
         //[tableView cellForRowAtIndexPath:indexPath].accessoryType =
-        //UITableViewCellAccessoryDisclosureIndicator;
+        // UITableViewCellAccessoryDisclosureIndicator;
     }
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -377,7 +377,7 @@
                         if (!buddy) {
                             buddy           = [[DCUser alloc] init];
                             buddy.snowflake = userId;
-                            buddy.username = [userDict valueForKey:@"username"];
+                            buddy.username  = [userDict valueForKey:@"username"];
                             buddy.status =
                                 [userDict valueForKey:@"status"] ?: @"offline";
                         }

@@ -10,9 +10,9 @@
 #include <Foundation/Foundation.h>
 #import "DCChatVideoAttachment.h"
 #import "DCMessage.h"
+#import "DCRole.h"
 #import "DCServerCommunicator.h"
 #import "DCUser.h"
-#import "DCRole.h"
 #import "QuickLook/QuickLook.h"
 #import "UIImage+animatedGIF.h"
 
@@ -74,7 +74,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
             [cacheWait isEqualToString:@"l"])) {
         dispatch_queue_t callerQueue = dispatchQueues
             [threadQueue]; //(__bridge
-                           // dispatch_queue_t)(dispatchQueues[threadQueue]);//dispatch_get_current_queue();
+        // dispatch_queue_t)(dispatchQueues[threadQueue]);//dispatch_get_current_queue();
         threadQueue = (threadQueue + 1) % MAX_IMAGE_THREADS;
 
         dispatch_async(callerQueue, ^{
@@ -207,55 +207,54 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                       newUser.snowflake, [jsonUser valueForKey:@"avatar"]];
     [DCTools
         processImageDataWithURLString:avatarURL
-        andBlock:^(UIImage *imageData) {
-            UIImage *retrievedImage = imageData;
+                             andBlock:^(UIImage *imageData) {
+                                 UIImage *retrievedImage = imageData;
 
-            if (imageData) {
-                dispatch_async(
-                    dispatch_get_main_queue(),
-                    ^{
-                        newUser.profileImage =
-                            retrievedImage;
-                        [NSNotificationCenter.defaultCenter
-                            postNotificationName:
-                                @"RELOAD CHAT DATA"
-                                          object:nil];
-                    }
-                );
-            } else {
-                int selector = 0;
-                NSNumberFormatter *f =
-                    [[NSNumberFormatter alloc] init];
-                [f setNumberStyle:
-                        NSNumberFormatterDecimalStyle];
-                NSNumber *discriminator = [f
-                    numberFromString:
-                        [jsonUser
-                            valueForKey:@"discriminator"]];
+                                 if (imageData) {
+                                     dispatch_async(
+                                         dispatch_get_main_queue(),
+                                         ^{
+                                             newUser.profileImage =
+                                                 retrievedImage;
+                                             [NSNotificationCenter.defaultCenter
+                                                 postNotificationName:
+                                                     @"RELOAD CHAT DATA"
+                                                               object:nil];
+                                         }
+                                     );
+                                 } else {
+                                     int selector = 0;
+                                     NSNumberFormatter *f =
+                                         [[NSNumberFormatter alloc] init];
+                                     [f setNumberStyle:
+                                             NSNumberFormatterDecimalStyle];
+                                     NSNumber *discriminator = [f
+                                         numberFromString:
+                                             [jsonUser
+                                                 valueForKey:@"discriminator"]];
 
-                if ([discriminator integerValue] == 0) {
-                    NSNumberFormatter *f =
-                        [[NSNumberFormatter alloc] init];
-                    [f setNumberStyle:
-                            NSNumberFormatterDecimalStyle];
-                    NSNumber *longId = [f
-                        numberFromString:newUser
-                                             .snowflake];
+                                     if ([discriminator integerValue] == 0) {
+                                         NSNumberFormatter *f =
+                                             [[NSNumberFormatter alloc] init];
+                                         [f setNumberStyle:
+                                                 NSNumberFormatterDecimalStyle];
+                                         NSNumber *longId = [f
+                                             numberFromString:newUser
+                                                                  .snowflake];
 
-                    selector =
-                        (int)(([longId longLongValue] >> 22
-                              )
-                              % 6);
-                } else {
-                    selector =
-                        (int)([discriminator integerValue]
-                              % 5);
-                }
-                newUser.profileImage =
-                    [DCUser defaultAvatars][selector];
-            }
-        }
-    ];
+                                         selector =
+                                             (int)(([longId longLongValue] >> 22
+                                                   )
+                                                   % 6);
+                                     } else {
+                                         selector =
+                                             (int)([discriminator integerValue]
+                                                   % 5);
+                                     }
+                                     newUser.profileImage =
+                                         [DCUser defaultAvatars][selector];
+                                 }
+                             }];
 
     NSString *avatarDecorationURL = [NSString
         stringWithFormat:
@@ -264,24 +263,23 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
             [jsonUser valueForKeyPath:@"avatar_decoration_data.asset"]];
     [DCTools
         processImageDataWithURLString:avatarDecorationURL
-        andBlock:^(UIImage *imageData) {
-            UIImage *retrievedImage = imageData;
+                             andBlock:^(UIImage *imageData) {
+                                 UIImage *retrievedImage = imageData;
 
-            if (retrievedImage != nil) {
-                dispatch_async(
-                    dispatch_get_main_queue(),
-                    ^{
-                        newUser.avatarDecoration =
-                            retrievedImage;
-                        [NSNotificationCenter.defaultCenter
-                            postNotificationName:
-                                @"RELOAD CHAT DATA"
-                                          object:nil];
-                    }
-                );
-            }
-        }
-    ];
+                                 if (retrievedImage != nil) {
+                                     dispatch_async(
+                                         dispatch_get_main_queue(),
+                                         ^{
+                                             newUser.avatarDecoration =
+                                                 retrievedImage;
+                                             [NSNotificationCenter.defaultCenter
+                                                 postNotificationName:
+                                                     @"RELOAD CHAT DATA"
+                                                               object:nil];
+                                         }
+                                     );
+                                 }
+                             }];
 
     // Save to DCServerCommunicator.loadedUsers
     if (cache) {
@@ -298,12 +296,12 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 // object Also keeps the role in DCServerCommunicator.loadedUsers if cache:YES
 + (DCRole *)convertJsonRole:(NSDictionary *)jsonRole cache:(bool)cache {
     // NSLog(@"%@", jsonUser);
-    DCRole *newRole     = DCRole.new;
-    newRole.snowflake   = [jsonRole valueForKey:@"id"];
-    newRole.name        = [jsonRole valueForKey:@"name"];
-    newRole.color       = [[jsonRole valueForKey:@"color"] intValue];
-    newRole.hoist       = [[jsonRole valueForKey:@"hoist"] boolValue];
-    NSString* icon      = [jsonRole valueForKey:@"icon"]; // can be nil
+    DCRole *newRole   = DCRole.new;
+    newRole.snowflake = [jsonRole valueForKey:@"id"];
+    newRole.name      = [jsonRole valueForKey:@"name"];
+    newRole.color     = [[jsonRole valueForKey:@"color"] intValue];
+    newRole.hoist     = [[jsonRole valueForKey:@"hoist"] boolValue];
+    NSString *icon    = [jsonRole valueForKey:@"icon"]; // can be nil
     if (icon != nil && ![icon isKindOfClass:[NSNull class]]) {
         NSString *iconURL = [NSString
             stringWithFormat:
@@ -311,33 +309,32 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                 newRole.snowflake, icon];
         [DCTools
             processImageDataWithURLString:iconURL
-            andBlock:^(UIImage *imageData) {
-                UIImage *retrievedImage = imageData;
+                                 andBlock:^(UIImage *imageData) {
+                                     UIImage *retrievedImage = imageData;
 
-                if (imageData) {
-                    dispatch_async(
-                        dispatch_get_main_queue(),
-                        ^{
-                            newRole.icon =
-                                retrievedImage;
-                            [NSNotificationCenter
-                                    .defaultCenter
-                                postNotificationName:
-                                    @"RELOAD CHAT DATA"
-                                              object:nil];
-                        }
-                    );
-                }
-            }
-        ];
+                                     if (imageData) {
+                                         dispatch_async(
+                                             dispatch_get_main_queue(),
+                                             ^{
+                                                 newRole.icon =
+                                                     retrievedImage;
+                                                 [NSNotificationCenter
+                                                         .defaultCenter
+                                                     postNotificationName:
+                                                         @"RELOAD CHAT DATA"
+                                                                   object:nil];
+                                             }
+                                         );
+                                     }
+                                 }];
     } else {
         newRole.icon = nil;
     }
     newRole.unicodeEmoji = [jsonRole valueForKey:@"unicode_emoji"]; // can be nil
-    newRole.position   = [[jsonRole valueForKey:@"position"] intValue];
-    newRole.permissions = [jsonRole valueForKey:@"permissions"];
-    newRole.managed    = [[jsonRole valueForKey:@"managed"] boolValue];
-    newRole.mentionable = [[jsonRole valueForKey:@"mentionable"] boolValue];
+    newRole.position     = [[jsonRole valueForKey:@"position"] intValue];
+    newRole.permissions  = [jsonRole valueForKey:@"permissions"];
+    newRole.managed      = [[jsonRole valueForKey:@"managed"] boolValue];
+    newRole.mentionable  = [[jsonRole valueForKey:@"mentionable"] boolValue];
 
     // Save to DCServerCommunicator.loadedRoles
     if (cache) {
@@ -393,8 +390,8 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
         } else {
             referencedMessage.content = @"";
         }
-        referencedMessage.snowflake = [referencedJsonMessage valueForKey:@"id"];
-        CGSize authorNameSize       = [referencedMessage.author.globalName
+        referencedMessage.snowflake       = [referencedJsonMessage valueForKey:@"id"];
+        CGSize authorNameSize             = [referencedMessage.author.globalName
                  sizeWithFont:[UIFont boldSystemFontOfSize:10]
             constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
                 lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
@@ -517,27 +514,26 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
                 [DCTools
                     processImageDataWithURLString:urlString
-                    andBlock:^(UIImage *imageData) {
-                        UIImage *retrievedImage =
-                            imageData;
+                                         andBlock:^(UIImage *imageData) {
+                                             UIImage *retrievedImage =
+                                                 imageData;
 
-                        if (retrievedImage != nil) {
-                            [newMessage.attachments
-                                addObject:retrievedImage];
-                            dispatch_async(
-                                dispatch_get_main_queue(),
-                                ^{
-                                    [NSNotificationCenter
-                                            .defaultCenter
-                                        postNotificationName:
-                                            @"RELOAD CHAT DATA"
-                                                      object:
-                                                          nil];
-                                }
-                            );
-                        }
-                    }
-                ];
+                                             if (retrievedImage != nil) {
+                                                 [newMessage.attachments
+                                                     addObject:retrievedImage];
+                                                 dispatch_async(
+                                                     dispatch_get_main_queue(),
+                                                     ^{
+                                                         [NSNotificationCenter
+                                                                 .defaultCenter
+                                                             postNotificationName:
+                                                                 @"RELOAD CHAT DATA"
+                                                                           object:
+                                                                               nil];
+                                                     }
+                                                 );
+                                             }
+                                         }];
             } else if ([embedType isEqualToString:@"video"] ||
                        [embedType isEqualToString:@"gifv"]) {
                 newMessage.attachmentCount++;
@@ -645,35 +641,34 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
                     [DCTools
                         processImageDataWithURLString:urlString
-                        andBlock:^(UIImage *imageData) {
-                            UIImage *retrievedImage =
-                                imageData;
+                                             andBlock:^(UIImage *imageData) {
+                                                 UIImage *retrievedImage =
+                                                     imageData;
 
-                            if (retrievedImage != nil &&
-                                [retrievedImage
-                                    isKindOfClass:
-                                        [UIImage class]]) {
-                                [video.thumbnail
-                                    setImage:
-                                        retrievedImage];
-                                dispatch_async(
-                                    dispatch_get_main_queue(
-                                    ),
-                                    ^{
-                                        [NSNotificationCenter
-                                                .defaultCenter
-                                            postNotificationName:
-                                                @"RELOAD CHAT DATA"
-                                                          object:
-                                                              nil];
-                                    }
-                                );
-                            } else {
-                                // NSLog(@"Failed to load
-                                // video thumbnail!");
-                            }
-                        }
-                    ];
+                                                 if (retrievedImage != nil &&
+                                                     [retrievedImage
+                                                         isKindOfClass:
+                                                             [UIImage class]]) {
+                                                     [video.thumbnail
+                                                         setImage:
+                                                             retrievedImage];
+                                                     dispatch_async(
+                                                         dispatch_get_main_queue(
+                                                         ),
+                                                         ^{
+                                                             [NSNotificationCenter
+                                                                     .defaultCenter
+                                                                 postNotificationName:
+                                                                     @"RELOAD CHAT DATA"
+                                                                               object:
+                                                                                   nil];
+                                                         }
+                                                     );
+                                                 } else {
+                                                     // NSLog(@"Failed to load
+                                                     // video thumbnail!");
+                                                 }
+                                             }];
 
                     video.layer.cornerRadius     = 6;
                     video.layer.masksToBounds    = YES;
@@ -734,27 +729,26 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
                 [DCTools
                     processImageDataWithURLString:urlString
-                    andBlock:^(UIImage *imageData) {
-                        UIImage *retrievedImage =
-                            imageData;
+                                         andBlock:^(UIImage *imageData) {
+                                             UIImage *retrievedImage =
+                                                 imageData;
 
-                        if (retrievedImage != nil) {
-                            [newMessage.attachments
-                                addObject:retrievedImage];
-                            dispatch_async(
-                                dispatch_get_main_queue(),
-                                ^{
-                                    [NSNotificationCenter
-                                            .defaultCenter
-                                        postNotificationName:
-                                            @"RELOAD CHAT DATA"
-                                                      object:
-                                                          nil];
-                                }
-                            );
-                        }
-                    }
-                ];
+                                             if (retrievedImage != nil) {
+                                                 [newMessage.attachments
+                                                     addObject:retrievedImage];
+                                                 dispatch_async(
+                                                     dispatch_get_main_queue(),
+                                                     ^{
+                                                         [NSNotificationCenter
+                                                                 .defaultCenter
+                                                             postNotificationName:
+                                                                 @"RELOAD CHAT DATA"
+                                                                           object:
+                                                                               nil];
+                                                     }
+                                                 );
+                                             }
+                                         }];
             } else if ([fileType rangeOfString:@"video/"].location
                        != NSNotFound) {
                 newMessage.attachmentCount++;
@@ -814,29 +808,28 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
                     [DCTools
                         processImageDataWithURLString:urlString
-                        andBlock:^(UIImage *imageData) {
-                            UIImage *retrievedImage =
-                                imageData;
+                                             andBlock:^(UIImage *imageData) {
+                                                 UIImage *retrievedImage =
+                                                     imageData;
 
-                            if (retrievedImage != nil) {
-                                [video.thumbnail
-                                    setImage: retrievedImage];
-                                dispatch_async(
-                                    dispatch_get_main_queue(
-                                    ),
-                                    ^{
-                                        [NSNotificationCenter.defaultCenter
-                                            postNotificationName:
-                                                @"RELOAD CHAT DATA"
-                                                object: nil];
-                                    }
-                                );
-                            } else {
-                                // NSLog(@"Failed to load
-                                // video thumbnail!");
-                            }
-                        }
-                    ];
+                                                 if (retrievedImage != nil) {
+                                                     [video.thumbnail
+                                                         setImage:retrievedImage];
+                                                     dispatch_async(
+                                                         dispatch_get_main_queue(
+                                                         ),
+                                                         ^{
+                                                             [NSNotificationCenter.defaultCenter
+                                                                 postNotificationName:
+                                                                     @"RELOAD CHAT DATA"
+                                                                               object:nil];
+                                                         }
+                                                     );
+                                                 } else {
+                                                     // NSLog(@"Failed to load
+                                                     // video thumbnail!");
+                                                 }
+                                             }];
 
                     video.layer.cornerRadius     = 6;
                     video.layer.masksToBounds    = YES;
@@ -905,7 +898,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                                         .snowflake]) {
                 newMessage.pingingUser = true;
             } else if ([DCServerCommunicator.sharedInstance.selectedGuild
-                        .userRoles containsObject:mentionSnowflake]) {
+                               .userRoles containsObject:mentionSnowflake]) {
                 newMessage.pingingUser = true;
             }
 
@@ -950,33 +943,32 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
 
 + (DCGuild *)convertJsonGuild:(NSDictionary *)jsonGuild {
-    DCGuild *newGuild = DCGuild.new;
+    DCGuild *newGuild  = DCGuild.new;
     newGuild.userRoles = NSMutableArray.new;
-    newGuild.roles = NSMutableDictionary.new;
+    newGuild.roles     = NSMutableDictionary.new;
 
     // Get @everyone role
     for (NSDictionary *guildRole in [jsonGuild objectForKey:@"roles"]) {
         if ([[guildRole valueForKey:@"name"] isEqualToString:@"@everyone"]) {
-            #warning TODO: do permissions for @everyone
+#warning TODO: do permissions for @everyone
             [newGuild.userRoles addObject:[guildRole valueForKey:@"id"]];
         }
         [newGuild.roles
             setObject:[DCTools convertJsonRole:guildRole cache:true]
-            forKey:[guildRole valueForKey:@"id"]
-        ];
+               forKey:[guildRole valueForKey:@"id"]];
     }
 
     // Get roles of the current user
     for (NSDictionary *member in [jsonGuild objectForKey:@"members"]) {
         if ([[member valueForKeyPath:@"user.id"]
-                #warning TODO: do permissions for member role
+#warning TODO: do permissions for member role
                 isEqualToString:DCServerCommunicator.sharedInstance
                                     .snowflake]) {
             [newGuild.userRoles addObjectsFromArray:[member valueForKey:@"roles"]];
         }
     }
 
-    newGuild.name     = [jsonGuild valueForKey:@"name"];
+    newGuild.name = [jsonGuild valueForKey:@"name"];
 
     // add new types here.
     newGuild.snowflake = [jsonGuild valueForKey:@"id"];
@@ -999,11 +991,11 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
     newGuild.icon = [DCUser defaultAvatars][selector];
     /*CGSize itemSize = CGSizeMake(40, 40);
-    UIGraphicsBeginImageContextWithOptions(itemSize, NO,
-    UIScreen.mainScreen.scale); CGRect imageRect = CGRectMake(0.0, 0.0,
-    itemSize.width, itemSize.height); [newGuild.icon  drawInRect:imageRect];
-    newGuild.icon = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();*/
+     UIGraphicsBeginImageContextWithOptions(itemSize, NO,
+     UIScreen.mainScreen.scale); CGRect imageRect = CGRectMake(0.0, 0.0,
+     itemSize.width, itemSize.height); [newGuild.icon  drawInRect:imageRect];
+     newGuild.icon = UIGraphicsGetImageFromCurrentImageContext();
+     UIGraphicsEndImageContext();*/
 
     [DCTools
         processImageDataWithURLString:iconURL
@@ -1039,8 +1031,8 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
                                  dispatch_async(dispatch_get_main_queue(), ^{
                                      [NSNotificationCenter.defaultCenter
-                                         postNotificationName: @"RELOAD GUILD LIST"
-                                        object:DCServerCommunicator.sharedInstance];
+                                         postNotificationName:@"RELOAD GUILD LIST"
+                                                       object:DCServerCommunicator.sharedInstance];
                                  });
                              }];
 
@@ -1056,7 +1048,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
              1 - Hidden by role. Channel should not be created unless another
              role contradicts (code 2)
-             
+
              2 - Shown by role. Channel should be created unless hidden by
              member overwrite (code 3)
 
@@ -1073,11 +1065,11 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                 [jsonChannel objectForKey:@"permission_overwrites"];
             // sort with role priority
             NSArray *overwrites = [rawOverwrites sortedArrayUsingComparator:
-                ^NSComparisonResult(NSDictionary *perm1, NSDictionary *perm2) {
-                    DCRole *role1 = [newGuild.roles valueForKey:[perm1 valueForKey:@"id"]];
-                    DCRole *role2 = [newGuild.roles valueForKey:[perm2 valueForKey:@"id"]];
-                    return role1.position < role2.position ? NSOrderedAscending : NSOrderedDescending;
-                }];
+                                                     ^NSComparisonResult(NSDictionary *perm1, NSDictionary *perm2) {
+                                                         DCRole *role1 = [newGuild.roles valueForKey:[perm1 valueForKey:@"id"]];
+                                                         DCRole *role2 = [newGuild.roles valueForKey:[perm2 valueForKey:@"id"]];
+                                                         return role1.position < role2.position ? NSOrderedAscending : NSOrderedDescending;
+                                                     }];
             for (NSDictionary *permission in overwrites) {
                 uint64_t type     = [[permission valueForKey:@"type"] longLongValue];
                 NSString *idValue = [permission valueForKey:@"id"];
@@ -1095,7 +1087,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                     }
                 } else if (type == 1) { // Member overwrite, break on these
                     if ([idValue isEqualToString:
-                                DCServerCommunicator.sharedInstance.snowflake]) {
+                                     DCServerCommunicator.sharedInstance.snowflake]) {
                         if ((deny & VIEW_CHANNEL) == VIEW_CHANNEL) {
                             allowCode = 3;
                             break;
@@ -1108,10 +1100,9 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                 }
             }
 
-            if (allowCode == 0 || allowCode == 2 || allowCode == 4 || 
+            if (allowCode == 0 || allowCode == 2 || allowCode == 4 ||
                 [[jsonGuild valueForKey:@"owner_id"] isEqualToString:
-                    DCServerCommunicator.sharedInstance.snowflake]
-               ) {
+                                                         DCServerCommunicator.sharedInstance.snowflake]) {
                 DCChannel *newChannel = DCChannel.new;
 
                 newChannel.snowflake = [jsonChannel valueForKey:@"id"];
@@ -1120,7 +1111,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                     [jsonChannel valueForKey:@"last_message_id"];
                 newChannel.parentGuild = newGuild;
                 newChannel.type        = 0;
-                NSString *rawPosition = [jsonChannel valueForKey:@"position"];
+                NSString *rawPosition  = [jsonChannel valueForKey:@"position"];
                 newChannel.position    = rawPosition ? [rawPosition intValue] : 0;
 
                 // check if channel is muted
@@ -1138,7 +1129,8 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
     }
 
     [newGuild.channels sortUsingComparator:^NSComparisonResult(
-        DCChannel *channel1, DCChannel *channel2) {
+                           DCChannel *channel1, DCChannel *channel2
+    ) {
         if (channel1.position < channel2.position) {
             return NSOrderedAscending;
         } else if (channel1.position > channel2.position) {
@@ -1176,14 +1168,14 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
         forHTTPHeaderField:@"Content-Type"];
 
     /*NSError *error = nil;
-    NSHTTPURLResponse *responseCode = nil;
-    int attempts = 0;
-    while (attempts == 0 || (attempts <= 10 && error.code ==
-    NSURLErrorTimedOut)) { attempts++; error = nil; [UIApplication
-    sharedApplication].networkActivityIndicatorVisible++; [DCTools
-    checkData:[NSURLConnection sendSynchronousRequest:urlRequest
-    returningResponse:&responseCode error:&error] withError:error];
-        [UIApplication sharedApplication].networkActivityIndicatorVisible--;*/
+     NSHTTPURLResponse *responseCode = nil;
+     int attempts = 0;
+     while (attempts == 0 || (attempts <= 10 && error.code ==
+     NSURLErrorTimedOut)) { attempts++; error = nil; [UIApplication
+     sharedApplication].networkActivityIndicatorVisible++; [DCTools
+     checkData:[NSURLConnection sendSynchronousRequest:urlRequest
+     returningResponse:&responseCode error:&error] withError:error];
+     [UIApplication sharedApplication].networkActivityIndicatorVisible--;*/
     dispatch_async(dispatch_get_main_queue(), ^{
         [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     });
