@@ -17,9 +17,9 @@ Discord_CFLAGS = -fobjc-arc -Wno-unused-const-variable -Wno-gnu-folding-constant
 # -fobjc-weak -Wno-objc-property-no-attribute 
 
 after-Discord-all::
-	codesign --force --deep --sign - $(THEOS_OBJ_DIR)/Discord.app
+	$(ECHO_BEGIN)codesign --force --deep --sign - $(THEOS_OBJ_DIR)/Discord.app$(ECHO_END)
 
 after-package::
-	OPENSSL_CONF=$(HOME)/openssl-weak.conf ideviceinstaller install "$(THEOS_PACKAGE_DIR)/$(shell ls -rt $(THEOS_PACKAGE_DIR) | tail -n 1)"
+	$(ECHO_BEGIN)OPENSSL_CONF=$(HOME)/openssl-weak.conf ideviceinstaller install "$(THEOS_PACKAGE_DIR)/$(shell ls -rt $(THEOS_PACKAGE_DIR) | tail -n 1)"$(ECHO_END)
 
 include $(THEOS_MAKE_PATH)/application.mk

@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "WSWebSocket.h"
-#import "DCGuildListViewController.h"
 #import "DCChannelListViewController.h"
 #import "DCChatViewController.h"
+#import "DCGuildListViewController.h"
+#import "WSWebSocket.h"
 
 @interface DCServerCommunicator : NSObject
 
@@ -25,16 +25,17 @@
 @property NSMutableArray* guilds;
 @property NSMutableDictionary* channels;
 @property NSMutableDictionary* loadedUsers;
+@property NSMutableDictionary* loadedRoles;
 
 @property DCGuild* selectedGuild;
 @property DCChannel* selectedChannel;
 
 @property bool didAuthenticate;
 
-+ (DCServerCommunicator *)sharedInstance;
++ (DCServerCommunicator*)sharedInstance;
 - (void)startCommunicator;
 - (void)sendResume;
 - (void)reconnect;
-- (void)sendHeartbeat:(NSTimer *)timer;
+- (void)sendHeartbeat:(NSTimer*)timer;
 - (void)sendJSON:(NSDictionary*)dictionary;
 @end

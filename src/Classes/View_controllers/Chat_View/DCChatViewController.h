@@ -6,16 +6,22 @@
 //  Copyright (c) 2018 bag.xml. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import <QuartzCore/QuartzCore.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "DCChannel.h"
-#import "ODCContactViewController.h"
+#import <QuartzCore/QuartzCore.h>
+#import <UIKit/UIKit.h>
 #import "APLSlideMenuViewController.h"
-#import "DCMessage.h"
+#import "DCChannel.h"
 #import "DCContactViewController.h"
-@interface DCChatViewController : UIViewController <UINavigationControllerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIImagePickerControllerDelegate, UIActionSheetDelegate>
-- (void)getMessages:(int)numberOfMessages beforeMessage:(DCMessage*)message;
+#import "DCMessage.h"
+#import "ODCContactViewController.h"
+@interface DCChatViewController : UIViewController<
+                                      UINavigationControllerDelegate,
+                                      UITextViewDelegate,
+                                      UITableViewDataSource,
+                                      UITableViewDelegate,
+                                      UIImagePickerControllerDelegate,
+                                      UIActionSheetDelegate>
+- (void)getMessages:(int)numberOfMessages beforeMessage:(DCMessage *)message;
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UITableView *chatTableView;
@@ -26,7 +32,7 @@
 @property (weak, nonatomic) IBOutlet UINavigationBar *nbbar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *nbmodaldone;
 
-//buttons
+// buttons
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *memberButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sendButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *photoButton;
@@ -36,7 +42,7 @@
 
 @property DCMessage *selectedMessage;
 
-@property NSMutableArray* messages;
+@property NSMutableArray *messages;
 
 @property (nonatomic, strong) UIPopoverController *imagePopoverController;
 

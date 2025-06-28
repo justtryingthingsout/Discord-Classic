@@ -14,16 +14,17 @@
 #import "DCGuild.h"
 #import "DCMessage.h"
 
-@interface DCChannel : NSObject <NSURLConnectionDelegate>
+@interface DCChannel : NSObject<NSURLConnectionDelegate>
 @property NSString* snowflake;
 @property NSString* name;
 @property NSString* lastMessageId;
 @property NSString* lastReadMessageId;
-@property UIImage* icon; //Icon for a DM
+@property UIImage* icon; // Icon for a DM
 @property bool unread;
 @property bool muted;
 @property int type;
-@property NSMutableDictionary *recipients;
+@property int position;
+@property NSMutableDictionary* recipients;
 @property DCGuild* parentGuild;
 @property NSArray* users;
 

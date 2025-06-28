@@ -7,18 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "DCUser.h"
-#import "DCTools.h"
-#import "DCRecipientTableCell.h"
 #import "DCContactViewController.h"
+#import "DCRecipientTableCell.h"
+#import "DCTools.h"
+#import "DCUser.h"
 
-@interface DCMutualFriendsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
-@property DCUser* user;
+@interface DCMutualFriendsViewController
+    : UIViewController<UITableViewDelegate, UITableViewDataSource>
+@property DCUser *user;
 @property (nonatomic, strong) DCUser *selectedUser;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 @property (weak, nonatomic) IBOutlet UINavigationBar *titleBar;
 @property (weak, nonatomic) IBOutlet UITableView *mutTableView;
 
-@property NSDictionary* mutualFriendsList;
-@property NSMutableArray* recipients;
+@property NSDictionary *mutualFriendsList;
+@property NSMutableArray *recipients;
 @end

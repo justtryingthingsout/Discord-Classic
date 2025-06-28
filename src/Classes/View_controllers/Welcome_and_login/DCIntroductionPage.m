@@ -22,15 +22,15 @@
     self.authenticated = false;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-	self.navigationItem.hidesBackButton = YES;
+    self.navigationItem.hidesBackButton     = YES;
     self.slideMenuController.gestureSupport = NO;
-    self.tokenInputField.delegate = self;
-    NSString *token = [NSUserDefaults.standardUserDefaults objectForKey:@"token"];
-    
-    if(token){
+    self.tokenInputField.delegate           = self;
+    NSString *token =
+        [NSUserDefaults.standardUserDefaults objectForKey:@"token"];
+
+    if (token) {
         self.tokenInputField.text = token;
     } else {
         self.tokenInputField.text = UIPasteboard.generalPasteboard.string;
@@ -43,17 +43,23 @@
 }
 
 - (IBAction)didClickLoginButton {
-    if(self.tokenInputField.text.length == 0) {
-        [self showAlertWithTitle:@"Nothing..." message:@"Make sure to properly type in your token."];
+    if (self.tokenInputField.text.length == 0) {
+        [self showAlertWithTitle:@"Nothing..."
+                         message:@"Make sure to properly type in your token."];
     } else {
         //[self.loginIndicator startAnimating];
         //[self.loginIndicator setHidden:false];
-        [NSUserDefaults.standardUserDefaults setObject:self.tokenInputField.text forKey:@"token"];
+        [NSUserDefaults.standardUserDefaults setObject:self.tokenInputField.text
+                                                forKey:@"token"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        //Save the entered values and reauthenticate if the token has been changed
-        if(![DCServerCommunicator.sharedInstance.token isEqual:[NSUserDefaults.standardUserDefaults valueForKey:@"token"]]){
-            DCServerCommunicator.sharedInstance.token = self.tokenInputField.text;
+
+        // Save the entered values and reauthenticate if the token has been
+        // changed
+        if (![DCServerCommunicator.sharedInstance.token
+                isEqual:[NSUserDefaults.standardUserDefaults
+                            valueForKey:@"token"]]) {
+            DCServerCommunicator.sharedInstance.token =
+                self.tokenInputField.text;
             [DCServerCommunicator.sharedInstance reconnect];
             [self didLogin];
         }
@@ -65,15 +71,19 @@
     [self performSegueWithIdentifier:@"login to guilds" sender:self];
     self.authenticated = true;
     // user shouldn't be able to go back to this screen once logged in
-    NSMutableArray *navigationArray = [[NSMutableArray alloc] initWithArray: self.navigationController.viewControllers];
+    NSMutableArray *navigationArray = [[NSMutableArray alloc]
+        initWithArray:self.navigationController.viewControllers];
     [navigationArray removeObjectAtIndex:0];
     self.navigationController.viewControllers = navigationArray;
-    
 }
 
 
 - (void)showAlertWithTitle:(NSString *)title message:(NSString *)message {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title
+                                                        message:message
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
     [alertView show];
 }
 @end

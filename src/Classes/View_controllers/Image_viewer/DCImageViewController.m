@@ -14,39 +14,38 @@
 
 @implementation DCImageViewController
 
-- (void)viewDidLoad{
-	[super viewDidLoad];
+- (void)viewDidLoad {
+    [super viewDidLoad];
     self.slideMenuController.gestureSupport = NO;
-    
-    self.scrollView.delegate = self;
+
+    self.scrollView.delegate         = self;
     self.scrollView.minimumZoomScale = 1.0;
     self.scrollView.maximumZoomScale = 4.0;
-    self.scrollView.zoomScale = 1.0;
-
-    
+    self.scrollView.zoomScale        = 1.0;
 }
 
 
-
 - (void)viewDidUnload {
-	[self setImageView:nil];
+    [self setImageView:nil];
     [self setScrollView:nil];
-	[super viewDidUnload];
+    [super viewDidUnload];
 }
 - (IBAction)done:(id)sender {
     [self dismissModalViewControllerAnimated:YES];
 }
 
--(IBAction)presentShareSheet:(id)sender{
-	//Show share sheet with appropriate options
-	NSArray *itemsToShare = @[self.imageView.image];
-	UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
-	[activityVC viewWillAppear:YES];
+- (IBAction)presentShareSheet:(id)sender {
+    // Show share sheet with appropriate options
+    NSArray *itemsToShare = @[ self.imageView.image ];
+    UIActivityViewController *activityVC =
+        [[UIActivityViewController alloc] initWithActivityItems:itemsToShare
+                                          applicationActivities:nil];
+    [activityVC viewWillAppear:YES];
     [self presentViewController:activityVC animated:YES completion:nil];
     [activityVC viewWillAppear:YES];
 }
 
--(UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return self.imageView;
 }
 

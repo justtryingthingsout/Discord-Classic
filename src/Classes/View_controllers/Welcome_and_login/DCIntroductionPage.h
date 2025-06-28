@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "DCServerCommunicator.h"
 
-@interface DCIntroductionPage : UITableViewController <UITextFieldDelegate>
+@interface DCIntroductionPage : UITableViewController<UITextFieldDelegate>
 
 
 @property (weak, nonatomic) IBOutlet UITextField *tokenInputField;

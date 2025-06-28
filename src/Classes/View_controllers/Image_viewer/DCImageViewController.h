@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "APLSlideMenuViewController.h"
 
-@interface DCImageViewController : UIViewController <UIScrollViewDelegate>
+@interface DCImageViewController : UIViewController<UIScrollViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;

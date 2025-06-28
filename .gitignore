@@ -74,4 +74,5 @@ src/Theos/*
 !src/Theos/.gitkeep
 src/a
 a
-src/.clangd
+.clangd
+src/packages

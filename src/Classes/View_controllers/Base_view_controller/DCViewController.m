@@ -7,17 +7,18 @@
 //
 
 #import "DCViewController.h"
-#import "DCServerCommunicator.h"
 #import "DCGuildListViewController.h"
+#import "DCServerCommunicator.h"
 
 @implementation DCViewController
 
-- (void)viewDidLoad{
-	[super viewDidLoad];
+- (void)viewDidLoad {
+    [super viewDidLoad];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation{
-	return (interfaceOrientation == UIInterfaceOrientationPortrait);
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation
+                                               )interfaceOrientation {
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 @end

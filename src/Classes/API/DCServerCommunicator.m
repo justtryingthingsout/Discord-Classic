@@ -233,16 +233,16 @@ UIActivityIndicatorView *spinner;
 						
 						//IDENTIFY
 						[weakSelf sendJSON:@{
-                                             @"op":@2,
-                                             @"d":@{
-                                                     @"token":weakSelf.token,
-                                                     @"properties":@{
-                                                             @"os" : @"iOS",
-                                                             @"$browser" : @"Discord iOS",
-                                                             },
-                                                     @"large_threshold":@"50",
-                                                     }
-                                             }];
+                            @"op": @2,
+                            @"d": @{
+                                @"token": weakSelf.token,
+                                @"properties": @{
+                                    @"os": @"iOS",
+                                    @"$browser": @"Discord iOS",
+                                },
+                                @"large_threshold": @"50",
+                            }
+                        }];
 						
 						//Disable ability to identify until reenabled 5 seconds later.
 						//API only allows once identify every 5 seconds
@@ -251,6 +251,7 @@ UIActivityIndicatorView *spinner;
 						weakSelf.guilds = NSMutableArray.new;
 						weakSelf.channels = NSMutableDictionary.new;
 						weakSelf.loadedUsers = NSMutableDictionary.new;
+                        weakSelf.loadedRoles = NSMutableDictionary.new;
                         
 						weakSelf.didRecieveHeartbeatResponse = true;
                         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -275,12 +276,11 @@ UIActivityIndicatorView *spinner;
 					}
 					
 				}
-					break;
+				break;
 					
 					
-					//Misc Event
+				//Misc Event
 				case 0: {
-					
 					//Get event type and sequence number
 					NSString* t = [parsedJsonResponse valueForKey:@"t"];
 					weakSelf.sequenceNumber = [[parsedJsonResponse valueForKey:@"s"] integerValue];
@@ -337,8 +337,7 @@ UIActivityIndicatorView *spinner;
                             privateGuild.channels = NSMutableArray.new;
                             
                             
-                            for(NSDictionary* privateChannel in [d valueForKey:@"private_channels"]){
-                                
+                            for (NSDictionary* privateChannel in [d valueForKey:@"private_channels"]) {
                                 //this may actually suck
                                 // Initialize users array for the member list
                                 NSMutableArray *users = NSMutableArray.new;
@@ -438,7 +437,11 @@ UIActivityIndicatorView *spinner;
                                     } else {
                                         if (((NSArray*)[privateChannel valueForKey:@"recipients"]).count > 0) {
                                             NSDictionary *user = [[privateChannel valueForKey:@"recipients"] objectAtIndex:0];
-                                            NSString* avatarURL = [NSString stringWithFormat:@"https://cdn.discordapp.com/avatars/%@/%@.png?size=64", [user  valueForKey:@"id"], [user valueForKey:@"avatar"]];
+                                            NSString* avatarURL = [NSString
+                                                stringWithFormat:@"https://cdn.discordapp.com/avatars/%@/%@.png?size=64",
+                                                [user valueForKey:@"id"],
+                                                [user valueForKey:@"avatar"]
+                                            ];
                                             [DCTools processImageDataWithURLString:avatarURL andBlock:^(UIImage *imageData){
                                                 UIImage *retrievedImage = imageData;
                                                 
@@ -674,7 +677,7 @@ UIActivityIndicatorView *spinner;
                             [weakSelf.guilds addObject:[DCTools convertJsonGuild:d]];
                         });
 				}
-					break;
+				break;
 					
 					
 				case 11: {
@@ -682,13 +685,13 @@ UIActivityIndicatorView *spinner;
 					weakSelf.didRecieveHeartbeatResponse = true;
                     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 				}
-					break;
+				break;
 					
 				case 9:
 					dispatch_async(dispatch_get_main_queue(), ^{
 						[weakSelf reconnect];
 					});
-					break;
+				break;
 			}
 		}];
 		

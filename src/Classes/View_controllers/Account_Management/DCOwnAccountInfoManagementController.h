@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "DCServerCommunicator.h"
 #import "DCConnectedAccountsCell.h"
+#import "DCServerCommunicator.h"
 #import "UIColorHex.h"
 
 @interface DCOwnAccountInfoManagementController : UITableViewController
@@ -30,7 +30,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *userID;
 @property (weak, nonatomic) IBOutlet UILabel *token;
 
-@property NSDictionary* activeConnections;
+@property NSDictionary *activeConnections;
 @property bool noConnections;
 
 @end

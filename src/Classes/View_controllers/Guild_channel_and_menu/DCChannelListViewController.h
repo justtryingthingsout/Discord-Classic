@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "DCGuild.h"
 
-@interface DCChannelListViewController : UITableViewController <UIAlertViewDelegate>
+@interface DCChannelListViewController
+    : UITableViewController<UIAlertViewDelegate>
 @property DCGuild* selectedGuild;
 
 @end

@@ -7,16 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "DCUser.h"
-#import "DCTools.h"
-#import "DCServerCommunicator.h"
-#import "UIColorHex.h"
-#import "DCMutualFriendsViewController.h"
-#import "DCConnectedAccountsCell.h"
 #import "APLSlideMenuViewController.h"
-@interface DCContactViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+#import "DCConnectedAccountsCell.h"
+#import "DCMutualFriendsViewController.h"
+#import "DCServerCommunicator.h"
+#import "DCTools.h"
+#import "DCUser.h"
+#import "UIColorHex.h"
+@interface DCContactViewController
+    : UIViewController<UITableViewDelegate, UITableViewDataSource>
 
--(void)setSelectedUser:(DCUser*)user;
+- (void)setSelectedUser:(DCUser *)user;
 
 @property (weak, nonatomic) IBOutlet UINavigationBar *navBar;
 @property (weak, nonatomic) IBOutlet UITableView *conTableView;
@@ -26,8 +27,8 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 
 @property bool noConnections;
-@property NSString* snowflake;
-@property NSDictionary* connectedAccounts;
-@property NSDictionary* mutualFriends;
-@property NSDictionary* mutualGuilds;
+@property NSString *snowflake;
+@property NSDictionary *connectedAccounts;
+@property NSDictionary *mutualFriends;
+@property NSDictionary *mutualGuilds;
 @end
