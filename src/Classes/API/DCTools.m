@@ -857,9 +857,13 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
     if (mentions.count || mentionRoles.count) {
         for (NSDictionary *mention in mentions) {
+            if ([[mention valueForKey:@"id"] isEqualToString:
+                    DCServerCommunicator.sharedInstance.snowflake]) {
+                newMessage.pingingUser = true;
+            }
             if (![DCServerCommunicator.sharedInstance.loadedUsers
                     valueForKey:[mention valueForKey:@"id"]]) {
-                [DCTools convertJsonUser:mention cache:true];
+                (void)[DCTools convertJsonUser:mention cache:true];
             }
         }
 

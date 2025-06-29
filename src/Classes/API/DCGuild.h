@@ -11,6 +11,7 @@
  built in functions*/
 
 #import <Foundation/Foundation.h>
+#include <UIKit/UIKit.h>
 
 @interface DCGuild : NSObject
 // ID/snowflake
@@ -26,7 +27,6 @@
 @property UIImage* icon;
 // The guild's banner
 @property UIImage* banner;
-
 
 // Array of child DCChannel objects
 @property NSMutableArray* channels;
