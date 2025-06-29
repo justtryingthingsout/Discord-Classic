@@ -276,7 +276,7 @@ UIActivityIndicatorView *spinner;
 
                     // recieved READY
                     if (![[parsedJsonResponse valueForKey:@"t"] isKindOfClass:[NSString class]]) {
-                    } else if ([t isEqualToString:@"READY"]) {
+                    } else if ([t isEqualToString:READY]) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             weakSelf.didAuthenticate = true;
                             // NSLog(@"Did authenticate!");
@@ -575,7 +575,7 @@ UIActivityIndicatorView *spinner;
                         });
                     }
 
-                    if ([t isEqualToString:@"PRESENCE_UPDATE"]) {
+                    if ([t isEqualToString:PRESENCE_UPDATE_EVENT]) {
                         NSString *userId = [d valueForKeyPath:@"user.id"];
                         NSString *status = [d valueForKey:@"status"];
 
@@ -602,7 +602,7 @@ UIActivityIndicatorView *spinner;
                         }
                     }
 
-                    if ([t isEqualToString:@"RESUMED"]) {
+                    if ([t isEqualToString:RESUMED]) {
                         weakSelf.didAuthenticate = true;
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [weakSelf.alertView dismissWithClickedButtonIndex:0 animated:YES];
@@ -610,7 +610,7 @@ UIActivityIndicatorView *spinner;
                         });
                     }
 
-                    if ([t isEqualToString:@"MESSAGE_CREATE"]) {
+                    if ([t isEqualToString:MESSAGE_CREATE]) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             NSString *channelIdOfMessage = [d objectForKey:@"channel_id"];
                             NSString *messageId          = [d objectForKey:@"id"];
@@ -637,7 +637,7 @@ UIActivityIndicatorView *spinner;
                         });
                     }
 
-                    if ([t isEqualToString:@"MESSAGE_UPDATE"]) {
+                    if ([t isEqualToString:MESSAGE_UPDATE]) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             NSString *channelIdOfMessage = [d objectForKey:@"channel_id"];
                             NSString *messageId          = [d objectForKey:@"id"];
@@ -658,13 +658,13 @@ UIActivityIndicatorView *spinner;
                         });
                     }
 
-                    if ([t isEqualToString:@"MESSAGE_ACK"]) {
+                    if ([t isEqualToString:MESSAGE_ACK]) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [NSNotificationCenter.defaultCenter postNotificationName:@"MESSAGE ACK" object:weakSelf];
                         });
                     }
 
-                    if ([t isEqualToString:@"MESSAGE_DELETE"]) {
+                    if ([t isEqualToString:MESSAGE_DELETE]) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             // Send notification with the new message
                             // will be recieved by DCChatViewController
@@ -673,10 +673,32 @@ UIActivityIndicatorView *spinner;
                     }
 
 
-                    if ([t isEqualToString:@"GUILD_CREATE"]) {
+                    if ([t isEqualToString:GUILD_CREATE]) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [weakSelf.guilds addObject:[DCTools convertJsonGuild:d]];
                             weakSelf.guildsIsSorted = NO;
+                        });
+                    }
+
+                    if ([t isEqualToString:THREAD_CREATE] || [t isEqualToString:CHANNEL_CREATE]) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            DCChannel *newChannel = DCChannel.new;
+                            newChannel.snowflake = [d valueForKey:@"id"];
+                            newChannel.parentID  = [d valueForKey:@"parent_id"];
+                            newChannel.name      = [d valueForKey:@"name"];
+                            newChannel.lastMessageId =
+                                [d valueForKey:@"last_message_id"];
+                            if ([d valueForKey:@"guild_id"] != nil) {
+                                for (DCGuild *guild in weakSelf.guilds) {
+                                    if ([guild.snowflake isEqualToString:[d valueForKey:@"guild_id"]]) {
+                                        newChannel.parentGuild = guild;
+                                        break;
+                                    }
+                                }
+                            }
+                            newChannel.type        = [[d valueForKey:@"type"] intValue];
+                            NSString *rawPosition  = [d valueForKey:@"position"];
+                            newChannel.position    = rawPosition ? [rawPosition intValue] : 0;
                         });
                     }
                 } break;

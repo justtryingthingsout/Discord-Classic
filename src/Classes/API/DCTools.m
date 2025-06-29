@@ -925,6 +925,42 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
         }
     }
 
+    {
+        // channels
+        NSRegularExpression *regex = [NSRegularExpression
+            regularExpressionWithPattern:@"\\<#(.*?)\\>"
+                                 options:NSRegularExpressionCaseInsensitive
+                                   error:NULL];
+
+        NSTextCheckingResult *embeddedMention = [regex
+            firstMatchInString:newMessage.content
+                       options:0
+                         range:NSMakeRange(0, newMessage.content.length)];
+        while (embeddedMention) {
+            NSCharacterSet *charactersToRemove =
+                [NSCharacterSet.alphanumericCharacterSet invertedSet];
+            NSString *channelSnowflake =
+                [[[newMessage.content substringWithRange:embeddedMention.range]
+                    componentsSeparatedByCharactersInSet:charactersToRemove]
+                    componentsJoinedByString:@""];
+
+            NSString *mentionName = @"#CHANNEL";
+            DCChannel *channel = [DCServerCommunicator.sharedInstance.channels objectForKey:channelSnowflake];
+            if (channel) {
+                mentionName = [NSString stringWithFormat:@"#%@", channel.name];
+            }
+
+            newMessage.content = [newMessage.content
+                stringByReplacingCharactersInRange:embeddedMention.range
+                                        withString:mentionName];
+
+            embeddedMention = [regex
+                firstMatchInString:newMessage.content
+                           options:0
+                             range:NSMakeRange(0, newMessage.content.length)];
+        }
+    }
+
     // Calculate height of content to be used when showing messages in a
     // tableview contentHeight does NOT include height of the embeded images or
     // account for height of a grouped message
@@ -1045,7 +1081,31 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
     NSMutableArray *categories = NSMutableArray.new;
 
-    for (NSDictionary *jsonChannel in [jsonGuild valueForKey:@"channels"]) {
+    NSArray *combined = [[jsonGuild valueForKey:@"channels"] arrayByAddingObjectsFromArray:[jsonGuild valueForKey:@"threads"]];
+    for (NSDictionary *jsonChannel in combined) {
+        // regardless of implementation or permissions, add to channels list so they're visible in <#snowflake>
+        DCChannel *newChannel = DCChannel.new;
+
+        newChannel.snowflake = [jsonChannel valueForKey:@"id"];
+        newChannel.parentID  = [jsonChannel valueForKey:@"parent_id"];
+        newChannel.name      = [jsonChannel valueForKey:@"name"];
+        newChannel.lastMessageId =
+            [jsonChannel valueForKey:@"last_message_id"];
+        newChannel.parentGuild = newGuild;
+        newChannel.type        = [[jsonChannel valueForKey:@"type"] intValue];
+        NSString *rawPosition  = [jsonChannel valueForKey:@"position"];
+        newChannel.position    = rawPosition ? [rawPosition intValue] : 0;
+
+        // check if channel is muted
+        if ([DCServerCommunicator.sharedInstance.userChannelSettings
+                objectForKey:newChannel.snowflake]) {
+            newChannel.muted = true;
+        }
+
+        [DCServerCommunicator.sharedInstance.channels
+            setObject:newChannel
+               forKey:newChannel.snowflake];
+
         // Make sure jsonChannel is a text channel or a category
         // we dont want to include voice channels in the text channel list
         if ([[jsonChannel valueForKey:@"type"] isEqual:@0] || // text channel
@@ -1114,32 +1174,12 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
             if (allowCode == 0 || allowCode == 2 || allowCode == 4 ||
                 [[jsonGuild valueForKey:@"owner_id"] isEqualToString:
                                                          DCServerCommunicator.sharedInstance.snowflake]) {
-                DCChannel *newChannel = DCChannel.new;
-
-                newChannel.snowflake = [jsonChannel valueForKey:@"id"];
-                newChannel.parentID  = [jsonChannel valueForKey:@"parent_id"];
-                newChannel.name      = [jsonChannel valueForKey:@"name"];
-                newChannel.lastMessageId =
-                    [jsonChannel valueForKey:@"last_message_id"];
-                newChannel.parentGuild = newGuild;
-                newChannel.type        = [[jsonChannel valueForKey:@"type"] intValue];
-                NSString *rawPosition  = [jsonChannel valueForKey:@"position"];
-                newChannel.position    = rawPosition ? [rawPosition intValue] : 0;
-
-                // check if channel is muted
-                if ([DCServerCommunicator.sharedInstance.userChannelSettings
-                        objectForKey:newChannel.snowflake]) {
-                    newChannel.muted = true;
-                }
 
                 if (newChannel.type == 4) { // category
                     [categories addObject:newChannel];
                 } else {
                     [newGuild.channels addObject:newChannel];
                 }
-                [DCServerCommunicator.sharedInstance.channels
-                    setObject:newChannel
-                       forKey:newChannel.snowflake];
             }
         }
     }
