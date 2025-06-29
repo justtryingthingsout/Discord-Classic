@@ -263,11 +263,11 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleMessageEdit:(NSNotification *)notification {
-    DCMessage *compareMessage = DCMessage.new;
-    compareMessage.snowflake  = [notification.userInfo valueForKey:@"id"];
-    // this makes no sense but it works??
-    compareMessage        = [self.messages
-        objectAtIndex:[self.messages indexOfObject:compareMessage]];
+    NSString *snowflake  = [notification.userInfo valueForKey:@"id"];
+    DCMessage *compareMessage = [self.messages objectAtIndex:[self.messages indexOfObjectPassingTest:^BOOL(DCMessage *msg, NSUInteger idx, BOOL *stop) {
+        return [msg.snowflake isEqualToString:snowflake];
+    }]];
+
     DCMessage *newMessage = [DCTools convertJsonMessage:notification.userInfo];
 
     // fix any potential missing fields from a partial response
@@ -424,9 +424,35 @@ static dispatch_queue_t chat_messages_queue;
             dispatch_async(dispatch_get_main_queue(), ^{
                 int scrollOffset = -self.chatTableView.height;
                 for (DCMessage *newMessage in newMessages) {
+                    int attachmentHeight = 0;
+                    for (id attachment in newMessage.attachments) {
+                        if ([attachment isKindOfClass:[UIImage class]]) {
+                            UIImage *image = attachment;
+                            CGFloat aspectRatio = image.size.width
+                                / image.size.height;
+                            int newWidth  = 200 * aspectRatio;
+                            int newHeight = 200;
+                            if (newWidth > self.chatTableView.width - 66) {
+                                newWidth  = self.chatTableView.width - 66;
+                                newHeight = newWidth / aspectRatio;
+                            }
+                            attachmentHeight += newHeight;
+                        } else if ([attachment isKindOfClass:[DCChatVideoAttachment class]]) {
+                            DCChatVideoAttachment *video = attachment;
+                            CGFloat aspectRatio = video.thumbnail.image.size.width
+                                / video.thumbnail.image.size.height;
+                            int newWidth  = 200 * aspectRatio;
+                            int newHeight = 200;
+                            if (newWidth > self.chatTableView.width - 66) {
+                                newWidth  = self.chatTableView.width - 66;
+                                newHeight = newWidth / aspectRatio;
+                            }
+                            attachmentHeight += newHeight;
+                        }
+                    }
                     scrollOffset += newMessage.contentHeight
-                        + (newMessage.attachmentCount * 224)
-                        + (newMessage.attachmentCount > 0 ? 11 : 0);
+                        + attachmentHeight
+                        + (attachmentHeight ? 11 : 0);
                 }
 
                 [self.chatTableView
@@ -919,9 +945,34 @@ static dispatch_queue_t chat_messages_queue;
     heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     DCMessage *messageAtRowIndex = [self.messages objectAtIndex:indexPath.row];
 
+    int attachmentHeight = 0;
+    for (id attachment in messageAtRowIndex.attachments) {
+        if ([attachment isKindOfClass:[UIImage class]]) {
+            UIImage *image = attachment;
+            CGFloat aspectRatio = image.size.width / image.size.height;
+            int newWidth  = 200 * aspectRatio;
+            int newHeight = 200;
+            if (newWidth > self.chatTableView.width - 66) {
+                newWidth  = self.chatTableView.width - 66;
+                newHeight = newWidth / aspectRatio;
+            }
+            attachmentHeight += newHeight;
+        } else if ([attachment isKindOfClass:[DCChatVideoAttachment class]]) {
+            DCChatVideoAttachment *video = attachment;
+            CGFloat aspectRatio = video.thumbnail.image.size.width
+                    / video.thumbnail.image.size.height;
+                int newWidth  = 200 * aspectRatio;
+                int newHeight = 200;
+                if (newWidth > self.chatTableView.width - 66) {
+                    newWidth  = self.chatTableView.width - 66;
+                    newHeight = newWidth / aspectRatio;
+                }
+            attachmentHeight += newHeight;
+        }
+    }
     return messageAtRowIndex.contentHeight
-        + (messageAtRowIndex.attachmentCount * 224)
-        + (messageAtRowIndex.attachmentCount > 0 ? 11 : 0);
+        + attachmentHeight
+        + (attachmentHeight ? 11 : 0);
 }
 
 
