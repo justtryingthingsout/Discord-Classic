@@ -934,7 +934,9 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
             lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
 
-    newMessage.contentHeight = authorNameSize.height + MAX(contentSize.height, 18) + 10
+    newMessage.contentHeight = authorNameSize.height 
+        + (newMessage.attachmentCount ? contentSize.height : MAX(contentSize.height, 18)) 
+        + 10
         + (newMessage.referencedMessage != nil ? 16 : 0);
     newMessage.authorNameWidth = 60 + authorNameSize.width;
 

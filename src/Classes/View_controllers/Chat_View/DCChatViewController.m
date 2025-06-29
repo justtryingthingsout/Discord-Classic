@@ -565,7 +565,7 @@ static dispatch_queue_t chat_messages_queue;
         }
 
         [cell.contentTextView setText:content];
-
+        
 
         [cell.contentTextView
             setHeight:[cell.contentTextView
@@ -644,7 +644,7 @@ static dispatch_queue_t chat_messages_queue;
                                     55, imageViewOffset, newWidth, newHeight
                                 )];
 
-                imageViewOffset += 210;
+                imageViewOffset += newHeight;
 
                 [cell addSubview:video];
             } else if ([attachment isKindOfClass:[QLPreviewController class]]) {
@@ -846,8 +846,11 @@ static dispatch_queue_t chat_messages_queue;
             }
         }
         // dispatch_async(dispatch_get_main_queue(), ^{
-        int imageViewOffset = cell.contentTextView.height
-            + (messageAtRowIndex.isGrouped ? 12 : 36);
+        int imageViewOffset = 
+            ([messageAtRowIndex.content length] != 0 
+            ? (cell.contentTextView.height / [UIScreen mainScreen].scale) 
+            : 0)
+            + (!messageAtRowIndex.isGrouped ? 36 : 0);
 
         for (id attachment in messageAtRowIndex.attachments) {
             if ([attachment isKindOfClass:[UIImage class]]) {
@@ -864,7 +867,7 @@ static dispatch_queue_t chat_messages_queue;
                                         55, imageViewOffset, newWidth, newHeight
                                     )];
                 [imageView setImage:attachment];
-                imageViewOffset += 210;
+                imageViewOffset += newHeight;
 
                 [imageView setContentMode:UIViewContentModeScaleAspectFit];
 
@@ -906,7 +909,7 @@ static dispatch_queue_t chat_messages_queue;
                                     55, imageViewOffset, newWidth, newHeight
                                 )];
 
-                imageViewOffset += 210;
+                imageViewOffset += newHeight;
 
                 [cell addSubview:video];
             } else if ([attachment isKindOfClass:[QLPreviewController class]]) {
