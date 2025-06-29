@@ -15,11 +15,9 @@
     NSAttributedString *attributedText =
         [parser attributedStringFromMarkdown:messageText];
     if (attributedText) {
-    } else {
+        self.contentTextView.attributedText = attributedText;
+        [self adjustTextViewSize];
     }
-
-    self.contentTextView.attributedText = attributedText;
-    [self adjustTextViewSize];
 }
 
 

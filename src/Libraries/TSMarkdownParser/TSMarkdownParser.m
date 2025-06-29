@@ -61,7 +61,8 @@
                                       blue:112 / 255.0
                                      alpha:1];
         _linkUnderlineStyle = @(NSUnderlineStyleSingle);
-        _monospaceFont      = [UIFont fontWithName:@"Menlo" size:14];
+        // Menlo is unavailable on iOS 5~6, replace with Courier New
+        _monospaceFont      = [UIFont fontWithName:@"Courier New" size:14];
         _monospaceTextColor = [UIColor colorWithRed:197 / 255.0
                                               green:135 / 255.0
                                                blue:10 / 255.0
@@ -204,6 +205,15 @@
         ) {
             [attributedString addAttribute:NSFontAttributeName
                                      value:weakParser.emphasisFont
+                                     range:range];
+        }];
+
+    [defaultParser
+        addMonospacedParsingWithFormattingBlock:^(
+            NSMutableAttributedString *attributedString, NSRange range
+        ) {
+            [attributedString addAttribute:NSFontAttributeName
+                                     value:weakParser.monospaceFont
                                      range:range];
         }];
 
@@ -468,22 +478,21 @@ static NSString *const TSMarkdownEmRegex =
 
 #pragma mark inline parsing
 
-
-// ELECTIMON, :3 heres the crash, fuck this piece of shit code i hate this
 - (void)addMonospacedParsingWithFormattingBlock:(TSMarkdownParserFormattingBlock
                                                 )formattingBlock {
-    /*NSRegularExpression *monoParsing = [NSRegularExpression
-    regularExpressionWithPattern:TSMarkdownMonospaceRegex
-    options:NSRegularExpressionCaseInsensitive error:nil]; [self
-    addParsingRuleWithRegularExpression:monoParsing
-    withBlock:^(NSTextCheckingResult *match, NSMutableAttributedString
-    *attributedString) { formattingBlock(attributedString, match.range);
-        [attributedString
-    deleteCharactersInRange:NSMakeRange(match.range.location, 1)];
-        [attributedString
-    deleteCharactersInRange:NSMakeRange((match.range.location +
-    match.range.length - 2), 1)];
-    }];*/
+    NSRegularExpression *monoParsing = [NSRegularExpression
+        regularExpressionWithPattern:TSMarkdownMonospaceRegex
+                             options:NSRegularExpressionCaseInsensitive
+                               error:nil];
+    [self
+        addParsingRuleWithRegularExpression:monoParsing
+                                  withBlock:^(NSTextCheckingResult *match, NSMutableAttributedString *attributedString) {
+                                      formattingBlock(attributedString, match.range);
+                                      [attributedString
+                                          deleteCharactersInRange:NSMakeRange(match.range.location, 1)];
+                                      [attributedString
+                                          deleteCharactersInRange:NSMakeRange((match.range.location + match.range.length - 2), 1)];
+                                  }];
 }
 
 - (void)addStrongParsingWithFormattingBlock:

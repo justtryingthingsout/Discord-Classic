@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#include <UIKit/UIKit.h>
 
 typedef void (^TSMarkdownParserMatchBlock)(
     NSTextCheckingResult *match, NSMutableAttributedString *attributedString
