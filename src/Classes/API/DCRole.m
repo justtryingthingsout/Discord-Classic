@@ -4,12 +4,11 @@
 
 - (NSString *)description {
     return [NSString
-        stringWithFormat:@"[Role] Snowflake: %@, Name: %@, Color: %d, Hoist: %d, Icon: %@, Unicode Emoji: %@, Position: %d, Permissions: %@, Managed: %d, Mentionable: %d, Flags: %d",
+        stringWithFormat:@"[Role] Snowflake: %@, Name: %@, Color: %d, Hoist: %d, Unicode Emoji: %@, Position: %d, Permissions: %@, Managed: %d, Mentionable: %d, Flags: %d",
                          self.snowflake,
                          self.name,
                          self.color,
                          self.hoist,
-                         self.icon,
                          self.unicodeEmoji,
                          self.position,
                          self.permissions,

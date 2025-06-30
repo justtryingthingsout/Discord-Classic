@@ -620,22 +620,22 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                             == NSNotFound) {
                             urlString = [NSString
                                 stringWithFormat:
-                                    @"%@?format=jpeg&width=%d&height=%d",
+                                    @"%@?format=png&width=%d&height=%d",
                                     urlString, width, height];
                         } else {
                             urlString = [NSString
                                 stringWithFormat:
-                                    @"%@&format=jpeg&width=%d&height=%d",
+                                    @"%@&format=png&width=%d&height=%d",
                                     urlString, width, height];
                         }
                     } else {
                         if ([urlString rangeOfString:@"?"].location
                             == NSNotFound) {
                             urlString = [NSString
-                                stringWithFormat:@"%@?format=jpeg", urlString];
+                                stringWithFormat:@"%@?format=png", urlString];
                         } else {
                             urlString = [NSString
-                                stringWithFormat:@"%@&format=jpeg", urlString];
+                                stringWithFormat:@"%@&format=png", urlString];
                         }
                     }
 
@@ -796,12 +796,12 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
 
                     NSString *urlString = [NSString
-                        stringWithFormat:@"%@format=jpeg&width=%d&height=%d",
+                        stringWithFormat:@"%@format=png&width=%d&height=%d",
                                          baseURL, width, height];
                     if ([baseURL rangeOfString:@"?"].location == NSNotFound) {
                         urlString =
                             [NSString stringWithFormat:
-                                          @"%@?format=jpeg&width=%d&height=%d",
+                                          @"%@?format=png&width=%d&height=%d",
                                           baseURL, width, height];
                     }
 

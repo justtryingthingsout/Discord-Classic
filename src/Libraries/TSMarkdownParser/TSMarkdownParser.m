@@ -158,7 +158,7 @@
         addListParsingWithFormattingBlock:^(
             NSMutableAttributedString *attributedString, NSRange range
         ) {
-            [attributedString replaceCharactersInRange:range withString:@"•\t"];
+            [attributedString replaceCharactersInRange:range withString:@"• "];
         }];
 
     /* bracket parsing */
