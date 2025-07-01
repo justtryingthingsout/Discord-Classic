@@ -961,6 +961,53 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
         }
     }
 
+    {
+        // <t:timestamp:format>
+        NSRegularExpression *regex = [NSRegularExpression
+            regularExpressionWithPattern:@"\\<t:(\\d+)(?::(\\w+))?\\>"
+                                 options:NSRegularExpressionCaseInsensitive
+                                   error:NULL];
+        NSTextCheckingResult *embeddedMention = [regex
+            firstMatchInString:newMessage.content
+                       options:0
+                         range:NSMakeRange(0, newMessage.content.length)];
+        while (embeddedMention) {
+            NSString *timestamp = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:1]];
+            NSString *format = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:2]];
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:[timestamp longLongValue]];
+            NSString *replacement = @"TIME";
+            if (date) {
+                prettyDateFormatter.doesRelativeDateFormatting = NO;
+                if (!format || [format isEqualToString:@"f"]) {
+                    prettyDateFormatter.dateStyle = NSDateFormatterShortStyle;
+                    prettyDateFormatter.timeStyle = NSDateFormatterFullStyle;
+                } else if (format && [format isEqualToString:@"F"]) {
+                    prettyDateFormatter.dateStyle = NSDateFormatterFullStyle;
+                    prettyDateFormatter.timeStyle = NSDateFormatterFullStyle;
+                } else if (format && [format isEqualToString:@"R"]) {
+                    prettyDateFormatter.dateStyle = NSDateFormatterShortStyle;
+                    prettyDateFormatter.timeStyle = NSDateFormatterShortStyle;
+                    prettyDateFormatter.doesRelativeDateFormatting = YES;
+                } else if (format && [format isEqualToString:@"D"]) {
+                    prettyDateFormatter.dateStyle = NSDateFormatterMediumStyle;
+                    prettyDateFormatter.timeStyle = NSDateFormatterNoStyle;
+                } else if (format && [format isEqualToString:@"d"]) {
+                    prettyDateFormatter.dateStyle = NSDateFormatterShortStyle;
+                    prettyDateFormatter.timeStyle = NSDateFormatterNoStyle;
+                } else if (format && [format isEqualToString:@"t"]) {
+                    prettyDateFormatter.dateStyle = NSDateFormatterNoStyle;
+                    prettyDateFormatter.timeStyle = NSDateFormatterShortStyle;
+                } else if (format && [format isEqualToString:@"T"]) {
+                    prettyDateFormatter.dateStyle = NSDateFormatterNoStyle;
+                    prettyDateFormatter.timeStyle = NSDateFormatterMediumStyle;
+                }
+                replacement = [prettyDateFormatter stringFromDate:date];
+            }
+            newMessage.content = [newMessage.content stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
+            embeddedMention = [regex firstMatchInString:newMessage.content options:0 range:NSMakeRange(0, newMessage.content.length)];
+        }
+    }
+
     // Calculate height of content to be used when showing messages in a
     // tableview contentHeight does NOT include height of the embeded images or
     // account for height of a grouped message
