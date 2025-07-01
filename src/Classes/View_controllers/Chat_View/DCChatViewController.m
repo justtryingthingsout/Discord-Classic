@@ -493,6 +493,9 @@ static dispatch_queue_t chat_messages_queue;
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     DCChatTableCell *cell;
 
+    if (!self.messages || [self.messages count] <= indexPath.row) {
+        return nil;
+    }
     DCMessage *messageAtRowIndex = [self.messages objectAtIndex:indexPath.row];
 
     if (self.oldMode == YES) {
