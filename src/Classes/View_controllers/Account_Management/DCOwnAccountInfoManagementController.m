@@ -56,7 +56,7 @@
                                forState:UIControlStateNormal
                              barMetrics:UIBarMetricsDefault];
     [self.doneButton setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"]
-                               forState:UIControlStateSelected
+                               forState:UIControlStateHighlighted
                              barMetrics:UIBarMetricsDefault];
 
     NSDictionary *userInfo =

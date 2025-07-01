@@ -7,6 +7,7 @@
 //
 
 #import "DCMutualFriendsViewController.h"
+#include <UIKit/UIKit.h>
 
 @interface DCMutualFriendsViewController ()
 
@@ -23,7 +24,7 @@
                                forState:UIControlStateNormal
                              barMetrics:UIBarMetricsDefault];
     [self.doneButton setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"]
-                               forState:UIControlStateSelected
+                               forState:UIControlStateHighlighted
                              barMetrics:UIBarMetricsDefault];
 
     // fix last element in table view being cut off

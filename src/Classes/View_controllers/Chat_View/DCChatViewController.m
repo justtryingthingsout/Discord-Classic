@@ -114,7 +114,7 @@ static dispatch_queue_t chat_messages_queue;
                                   barMetrics:UIBarMetricsDefault];
         [self.nbmodaldone
             setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"]
-                      forState:UIControlStateSelected
+                      forState:UIControlStateHighlighted
                     barMetrics:UIBarMetricsDefault];
 
         [self.toolbar setBackgroundImage:[UIImage imageNamed:@"ToolbarBG"]
@@ -126,7 +126,7 @@ static dispatch_queue_t chat_messages_queue;
                                     barMetrics:UIBarMetricsDefault];
         [self.sidebarButton
             setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"]
-                      forState:UIControlStateSelected
+                      forState:UIControlStateHighlighted
                     barMetrics:UIBarMetricsDefault];
 
         [self.memberButton setBackgroundImage:[UIImage imageNamed:@"BarButton"]
@@ -134,7 +134,7 @@ static dispatch_queue_t chat_messages_queue;
                                    barMetrics:UIBarMetricsDefault];
         [self.memberButton
             setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"]
-                      forState:UIControlStateSelected
+                      forState:UIControlStateHighlighted
                     barMetrics:UIBarMetricsDefault];
 
 
@@ -143,7 +143,7 @@ static dispatch_queue_t chat_messages_queue;
                                  barMetrics:UIBarMetricsDefault];
         [self.sendButton
             setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"]
-                      forState:UIControlStateSelected
+                      forState:UIControlStateHighlighted
                     barMetrics:UIBarMetricsDefault];
 
         [self.photoButton setBackgroundImage:[UIImage imageNamed:@"BarButton"]
@@ -151,7 +151,7 @@ static dispatch_queue_t chat_messages_queue;
                                   barMetrics:UIBarMetricsDefault];
         [self.photoButton
             setBackgroundImage:[UIImage imageNamed:@"BarButtonPressed"]
-                      forState:UIControlStateSelected
+                      forState:UIControlStateHighlighted
                     barMetrics:UIBarMetricsDefault];
     }
 
@@ -842,12 +842,30 @@ static dispatch_queue_t chat_messages_queue;
                 [subView removeFromSuperview];
             }
         }
+
+        float contentWidth = UIScreen.mainScreen.bounds.size.width - 63;
+        CGSize authorNameSize = [messageAtRowIndex.author.globalName
+                             sizeWithFont:[UIFont boldSystemFontOfSize:15]
+                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                            lineBreakMode:(NSLineBreakMode
+                                          )UILineBreakModeWordWrap];
+
         // dispatch_async(dispatch_get_main_queue(), ^{
-        int imageViewOffset = 
-            ([messageAtRowIndex.content length] != 0 
-            ? (cell.contentTextView.height / [UIScreen mainScreen].scale) 
-            : 0)
-            + (!messageAtRowIndex.isGrouped ? 36 : 0);
+        CGFloat imageViewOffset = (
+                !messageAtRowIndex.isGrouped 
+                ? authorNameSize.height 
+                    + (messageAtRowIndex.referencedMessage != nil ? 16 : 0) 
+                : 0
+            ) + (
+                [messageAtRowIndex.content length] != 0 
+                ? height 
+                : (!messageAtRowIndex.isGrouped ? 10 : 0) // ???
+            );
+
+        if ([messageAtRowIndex.content length] == 0) {
+            NSLog(@"No content with snowflake %@",
+                  messageAtRowIndex.snowflake);
+        }
 
         for (id attachment in messageAtRowIndex.attachments) {
             if ([attachment isKindOfClass:[UIImage class]]) {
