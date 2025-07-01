@@ -1218,15 +1218,13 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                 }
             }
 
-            if (allowCode == 0 || allowCode == 2 || allowCode == 4 ||
+            // ignore perms for guild categories
+            if (newChannel.type == 4) { // category
+                [categories addObject:newChannel];
+            }  else if (allowCode == 0 || allowCode == 2 || allowCode == 4 ||
                 [[jsonGuild valueForKey:@"owner_id"] isEqualToString:
                                                          DCServerCommunicator.sharedInstance.snowflake]) {
-
-                if (newChannel.type == 4) { // category
-                    [categories addObject:newChannel];
-                } else {
-                    [newGuild.channels addObject:newChannel];
-                }
+                [newGuild.channels addObject:newChannel];
             }
         }
     }

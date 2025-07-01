@@ -609,9 +609,9 @@ static dispatch_queue_t chat_messages_queue;
                                         self.chatTableView.width - 22, 200
                                     )];
                 [imageView setImage:attachment];
-                imageViewOffset += 210;
-
                 [imageView setContentMode:UIViewContentModeScaleAspectFit];
+
+                imageViewOffset += imageView.height + 11;
 
                 UITapGestureRecognizer *singleTap =
                     [[UITapGestureRecognizer alloc]
