@@ -454,31 +454,31 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
             if ([embedType isEqualToString:@"image"]) {
                 newMessage.attachmentCount++;
 
-                NSString *attachmentURL = [[embed valueForKey:@"url"]
-                    stringByReplacingOccurrencesOfString:@"cdn.discordapp.com"
-                                              withString:
-                                                  @"media.discordapp.net"];
+                NSString *attachmentURL = nil;
 
-                if ([embed valueForKey:@"image.url"] != nil) {
-                    attachmentURL = [[embed valueForKey:@"image.url"]
+                if ([embed valueForKeyPath:@"image.proxy_url"] != nil) {
+                    attachmentURL = [[embed valueForKeyPath:@"image.proxy_url"]
                         stringByReplacingOccurrencesOfString:
                             @"cdn.discordapp.com"
                                                   withString:
                                                       @"media.discordapp.net"];
-                }
-
-                if ([embed valueForKey:@"image.proxy_url"] != nil) {
-                    attachmentURL = [[embed valueForKey:@"image.proxy_url"]
+                } else if ([embed valueForKeyPath:@"image.url"] != nil) {
+                    attachmentURL = [[embed valueForKeyPath:@"image.url"]
                         stringByReplacingOccurrencesOfString:
                             @"cdn.discordapp.com"
+                                                  withString:
+                                                      @"media.discordapp.net"];
+                } else {
+                    attachmentURL = [[embed valueForKey:@"url"]
+                        stringByReplacingOccurrencesOfString:@"cdn.discordapp.com"
                                                   withString:
                                                       @"media.discordapp.net"];
                 }
 
                 NSInteger width =
-                    [[embed valueForKey:@"image.width"] integerValue];
+                    [[embed valueForKeyPath:@"image.width"] integerValue];
                 NSInteger height =
-                    [[embed valueForKey:@"image.height"] integerValue];
+                    [[embed valueForKeyPath:@"image.height"] integerValue];
                 CGFloat aspectRatio = (CGFloat)width / (CGFloat)height;
 
                 if (height > 1024) {
@@ -536,21 +536,20 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                                          }];
             } else if ([embedType isEqualToString:@"video"] ||
                        [embedType isEqualToString:@"gifv"]) {
-                newMessage.attachmentCount++;
+                NSURL *attachmentURL = nil;
 
-                NSURL *attachmentURL =
-                    [NSURL URLWithString:[embed valueForKey:@"url"]];
-
-                if ([embed valueForKey:@"video.proxy_url"] != nil &&
-                    [[embed valueForKey:@"video.proxy_url"]
+                if ([embed valueForKeyPath:@"video.proxy_url"] != nil &&
+                    [[embed valueForKeyPath:@"video.proxy_url"]
                         isKindOfClass:[NSString class]]) {
                     attachmentURL = [NSURL
-                        URLWithString:[embed valueForKey:@"video.proxy_url"]];
-                } else if ([embed valueForKey:@"video.url"] != nil &&
-                           [[embed valueForKey:@"video.url"]
+                        URLWithString:[embed valueForKeyPath:@"video.proxy_url"]];
+                } else if ([embed valueForKeyPath:@"video.url"] != nil &&
+                           [[embed valueForKeyPath:@"video.url"]
                                isKindOfClass:[NSString class]]) {
                     attachmentURL =
-                        [NSURL URLWithString:[embed valueForKey:@"video.url"]];
+                        [NSURL URLWithString:[embed valueForKeyPath:@"video.url"]];
+                } else {
+                    attachmentURL = [NSURL URLWithString:[embed valueForKey:@"url"]];
                 }
 
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -571,30 +570,28 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                                                       @"media.discordapp.net"];
 
 
-                    if ([embed valueForKey:@"video.proxy_url"] != nil &&
-                        [[embed valueForKey:@"video.proxy_url"]
+                    if ([embed valueForKeyPath:@"thumbnail.proxy_url"] != nil &&
+                        [[embed valueForKeyPath:@"thumbnail.proxy_url"]
                             isKindOfClass:[NSString class]]) {
-                        baseURL = [[embed valueForKey:@"video.proxy_url"]
+                        baseURL = [[embed valueForKeyPath:@"thumbnail.proxy_url"]
                             stringByReplacingOccurrencesOfString:
                                 @"cdn.discordapp.com"
                                                       withString:
-                                                          @"media.discordapp."
-                                                          @"net"];
-                    } else if ([embed valueForKey:@"video.url"] != nil &&
-                               [[embed valueForKey:@"video.url"]
+                                                          @"media.discordapp.net"];
+                    } else if ([embed valueForKeyPath:@"thumbnail.url"] != nil &&
+                               [[embed valueForKeyPath:@"thumbnail.url"]
                                    isKindOfClass:[NSString class]]) {
-                        baseURL = [[embed valueForKey:@"video.url"]
+                        baseURL = [[embed valueForKeyPath:@"thumbnail.url"]
                             stringByReplacingOccurrencesOfString:
                                 @"cdn.discordapp.com"
                                                       withString:
-                                                          @"media.discordapp."
-                                                          @"net"];
+                                                          @"media.discordapp.net"];
                     }
 
                     NSInteger width =
-                        [[embed valueForKey:@"video.width"] integerValue];
+                        [[embed valueForKeyPath:@"video.width"] integerValue];
                     NSInteger height =
-                        [[embed valueForKey:@"video.height"] integerValue];
+                        [[embed valueForKeyPath:@"video.height"] integerValue];
                     CGFloat aspectRatio = (CGFloat)width / (CGFloat)height;
 
                     if (height > 1024) {
@@ -614,28 +611,32 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                     }
 
                     NSString *urlString = baseURL;
+                    bool isDiscord      = [baseURL
+                        hasPrefix:@"https://media.discordapp.net/"];
 
-                    if (width != 0 || height != 0) {
-                        if ([urlString rangeOfString:@"?"].location
-                            == NSNotFound) {
-                            urlString = [NSString
-                                stringWithFormat:
-                                    @"%@?format=png&width=%d&height=%d",
-                                    urlString, width, height];
+                    if (isDiscord) {
+                        if (width != 0 || height != 0) {
+                            if ([urlString rangeOfString:@"?"].location
+                                == NSNotFound) {
+                                urlString = [NSString
+                                    stringWithFormat:
+                                        @"%@?format=png&width=%d&height=%d",
+                                        urlString, width, height];
+                            } else {
+                                urlString = [NSString
+                                    stringWithFormat:
+                                        @"%@&format=png&width=%d&height=%d",
+                                        urlString, width, height];
+                            }
                         } else {
-                            urlString = [NSString
-                                stringWithFormat:
-                                    @"%@&format=png&width=%d&height=%d",
-                                    urlString, width, height];
-                        }
-                    } else {
-                        if ([urlString rangeOfString:@"?"].location
-                            == NSNotFound) {
-                            urlString = [NSString
-                                stringWithFormat:@"%@?format=png", urlString];
-                        } else {
-                            urlString = [NSString
-                                stringWithFormat:@"%@&format=png", urlString];
+                            if ([urlString rangeOfString:@"?"].location
+                                == NSNotFound) {
+                                urlString = [NSString
+                                    stringWithFormat:@"%@?format=png", urlString];
+                            } else {
+                                urlString = [NSString
+                                    stringWithFormat:@"%@&format=png", urlString];
+                            }
                         }
                     }
 
@@ -653,8 +654,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                                                          setImage:
                                                              retrievedImage];
                                                      dispatch_async(
-                                                         dispatch_get_main_queue(
-                                                         ),
+                                                         dispatch_get_main_queue(),
                                                          ^{
                                                              [NSNotificationCenter
                                                                      .defaultCenter
@@ -674,6 +674,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                     video.layer.masksToBounds    = YES;
                     video.userInteractionEnabled = YES;
                     [newMessage.attachments addObject:video];
+                    newMessage.attachmentCount++;
                 });
             } else {
                 // NSLog(@"unknown embed type %@", embedType);
@@ -858,7 +859,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
     if (mentions.count || mentionRoles.count) {
         for (NSDictionary *mention in mentions) {
             if ([[mention valueForKey:@"id"] isEqualToString:
-                    DCServerCommunicator.sharedInstance.snowflake]) {
+                                                 DCServerCommunicator.sharedInstance.snowflake]) {
                 newMessage.pingingUser = true;
             }
             if (![DCServerCommunicator.sharedInstance.loadedUsers
@@ -945,7 +946,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                     componentsJoinedByString:@""];
 
             NSString *mentionName = @"#CHANNEL";
-            DCChannel *channel = [DCServerCommunicator.sharedInstance.channels objectForKey:channelSnowflake];
+            DCChannel *channel    = [DCServerCommunicator.sharedInstance.channels objectForKey:channelSnowflake];
             if (channel) {
                 mentionName = [NSString stringWithFormat:@"#%@", channel.name];
             }
@@ -963,7 +964,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
     {
         // <t:timestamp:format>
-        NSRegularExpression *regex = [NSRegularExpression
+        NSRegularExpression *regex            = [NSRegularExpression
             regularExpressionWithPattern:@"\\<t:(\\d+)(?::(\\w+))?\\>"
                                  options:NSRegularExpressionCaseInsensitive
                                    error:NULL];
@@ -972,9 +973,9 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                        options:0
                          range:NSMakeRange(0, newMessage.content.length)];
         while (embeddedMention) {
-            NSString *timestamp = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:1]];
-            NSString *format = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:2]];
-            NSDate *date = [NSDate dateWithTimeIntervalSince1970:[timestamp longLongValue]];
+            NSString *timestamp   = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:1]];
+            NSString *format      = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:2]];
+            NSDate *date          = [NSDate dateWithTimeIntervalSince1970:[timestamp longLongValue]];
             NSString *replacement = @"TIME";
             if (date) {
                 prettyDateFormatter.doesRelativeDateFormatting = NO;
@@ -985,8 +986,8 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                     prettyDateFormatter.dateStyle = NSDateFormatterFullStyle;
                     prettyDateFormatter.timeStyle = NSDateFormatterFullStyle;
                 } else if (format && [format isEqualToString:@"R"]) {
-                    prettyDateFormatter.dateStyle = NSDateFormatterShortStyle;
-                    prettyDateFormatter.timeStyle = NSDateFormatterShortStyle;
+                    prettyDateFormatter.dateStyle                  = NSDateFormatterShortStyle;
+                    prettyDateFormatter.timeStyle                  = NSDateFormatterShortStyle;
                     prettyDateFormatter.doesRelativeDateFormatting = YES;
                 } else if (format && [format isEqualToString:@"D"]) {
                     prettyDateFormatter.dateStyle = NSDateFormatterMediumStyle;
@@ -1004,7 +1005,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                 replacement = [prettyDateFormatter stringFromDate:date];
             }
             newMessage.content = [newMessage.content stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
-            embeddedMention = [regex firstMatchInString:newMessage.content options:0 range:NSMakeRange(0, newMessage.content.length)];
+            embeddedMention    = [regex firstMatchInString:newMessage.content options:0 range:NSMakeRange(0, newMessage.content.length)];
         }
     }
 
@@ -1021,8 +1022,8 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
             lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
 
-    newMessage.contentHeight = authorNameSize.height 
-        + (newMessage.attachmentCount ? contentSize.height : MAX(contentSize.height, 18)) 
+    newMessage.contentHeight = authorNameSize.height
+        + (newMessage.attachmentCount ? contentSize.height : MAX(contentSize.height, 18))
         + 10
         + (newMessage.referencedMessage != nil ? 16 : 0);
     newMessage.authorNameWidth = 60 + authorNameSize.width;
@@ -1182,12 +1183,11 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                 [jsonChannel objectForKey:@"permission_overwrites"];
             // sort with role priority
             NSArray *overwrites = [rawOverwrites sortedArrayUsingComparator:
-                ^NSComparisonResult(NSDictionary *perm1, NSDictionary *perm2) {
-                    DCRole *role1 = [newGuild.roles valueForKey:[perm1 valueForKey:@"id"]];
-                    DCRole *role2 = [newGuild.roles valueForKey:[perm2 valueForKey:@"id"]];
-                    return role1.position < role2.position ? NSOrderedAscending : NSOrderedDescending;
-                }
-            ];
+                                                     ^NSComparisonResult(NSDictionary *perm1, NSDictionary *perm2) {
+                                                         DCRole *role1 = [newGuild.roles valueForKey:[perm1 valueForKey:@"id"]];
+                                                         DCRole *role2 = [newGuild.roles valueForKey:[perm2 valueForKey:@"id"]];
+                                                         return role1.position < role2.position ? NSOrderedAscending : NSOrderedDescending;
+                                                     }];
             for (NSDictionary *permission in overwrites) {
                 uint64_t type     = [[permission valueForKey:@"type"] longLongValue];
                 NSString *idValue = [permission valueForKey:@"id"];
@@ -1221,9 +1221,9 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
             // ignore perms for guild categories
             if (newChannel.type == 4) { // category
                 [categories addObject:newChannel];
-            }  else if (allowCode == 0 || allowCode == 2 || allowCode == 4 ||
-                [[jsonGuild valueForKey:@"owner_id"] isEqualToString:
-                                                         DCServerCommunicator.sharedInstance.snowflake]) {
+            } else if (allowCode == 0 || allowCode == 2 || allowCode == 4 ||
+                       [[jsonGuild valueForKey:@"owner_id"] isEqualToString:
+                                                                DCServerCommunicator.sharedInstance.snowflake]) {
                 [newGuild.channels addObject:newChannel];
             }
         }
@@ -1245,10 +1245,9 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
     for (DCChannel *category in categories) {
         int i = 0;
         for (DCChannel *channel in newGuild.channels) {
-            if (channel.type == 4 
-            || channel.parentID == nil 
-            || (NSNull*)channel.parentID == [NSNull null]
-            ) {
+            if (channel.type == 4
+                || channel.parentID == nil
+                || (NSNull *)channel.parentID == [NSNull null]) {
                 // If the channel is a category or has no parent, skip it
                 i++;
                 continue;

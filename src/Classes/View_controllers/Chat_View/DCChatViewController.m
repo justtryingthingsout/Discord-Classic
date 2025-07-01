@@ -769,21 +769,15 @@ static dispatch_queue_t chat_messages_queue;
                          )];
         }
 
-        if (messageAtRowIndex.messageType == 1) {
+        if (messageAtRowIndex.messageType == 1 || messageAtRowIndex.messageType == 7) {
             cell.universalImageView.image = [UIImage imageNamed:@"U-Add"];
         } else if (messageAtRowIndex.messageType == 2) {
             cell.universalImageView.image = [UIImage imageNamed:@"U-Remove"];
-        } else if (messageAtRowIndex.messageType == 4) {
-            cell.universalImageView.image = [UIImage imageNamed:@"U-Pen"];
-        } else if (messageAtRowIndex.messageType == 5) {
+        } else if (messageAtRowIndex.messageType == 4 || messageAtRowIndex.messageType == 5) {
             cell.universalImageView.image = [UIImage imageNamed:@"U-Pen"];
         } else if (messageAtRowIndex.messageType == 6) {
             cell.universalImageView.image = [UIImage imageNamed:@"U-Pin"];
-        } else if (messageAtRowIndex.messageType == 7) {
-            cell.universalImageView.image = [UIImage imageNamed:@"U-Add"];
-        } else if (messageAtRowIndex.messageType == 8) {
-            cell.universalImageView.image = [UIImage imageNamed:@"U-Boost"];
-        } else if (messageAtRowIndex.messageType == 18) {
+        } else if (messageAtRowIndex.messageType == 8 || messageAtRowIndex.messageType == 18) {
             cell.universalImageView.image = [UIImage imageNamed:@"U-Boost"];
         }
 
