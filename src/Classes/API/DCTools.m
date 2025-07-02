@@ -105,7 +105,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                 dispatch_sync(dispatch_get_main_queue(), ^{
                     uint8_t c;
                     [imageData getBytes:&c length:1];
-                    if (c == 0x47) {
+                    if (c == 'G') {
                         image = [UIImage
                             animatedImageWithAnimatedGIFData:imageData];
                     } else {
@@ -134,6 +134,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                         processImage(image);
                     }
                 } @catch (id e) {
+                    NSLog(@"Error processing image: %@", e);
                 }
             });
         });

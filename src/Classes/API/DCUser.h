@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#include <UIKit/UIKit.h>
 
 @interface DCUser : NSObject
 @property NSString* snowflake;

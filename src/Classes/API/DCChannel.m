@@ -629,8 +629,7 @@ static dispatch_queue_t channel_send_queue;
                 && curComponents.day == prevComponents.day
                 && curComponents.month == prevComponents.month
                 && curComponents.year == prevComponents.year) {
-                currentMessage.isGrouped =
-                    currentMessage.referencedMessage == nil;
+                currentMessage.isGrouped = currentMessage.isGrouped && (currentMessage.referencedMessage == nil);
 
                 if (currentMessage.isGrouped) {
                     float contentWidth =

@@ -230,7 +230,7 @@ static dispatch_queue_t chat_messages_queue;
                 && curComponents.day == prevComponents.day
                 && curComponents.month == prevComponents.month
                 && curComponents.year == prevComponents.year) {
-                newMessage.isGrouped = newMessage.referencedMessage == nil;
+                newMessage.isGrouped = newMessage.isGrouped && (newMessage.referencedMessage == nil);
 
                 if (newMessage.isGrouped) {
                     float contentWidth =
@@ -311,7 +311,7 @@ static dispatch_queue_t chat_messages_queue;
                 && curComponents.day == prevComponents.day
                 && curComponents.month == prevComponents.month
                 && curComponents.year == prevComponents.year) {
-                newMessage.isGrouped = newMessage.referencedMessage == nil;
+                newMessage.isGrouped = newMessage.isGrouped && (newMessage.referencedMessage == nil);
 
                 if (newMessage.isGrouped) {
                     float contentWidth =
