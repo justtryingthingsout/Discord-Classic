@@ -243,6 +243,10 @@
     }
 
     if (tableView == self.channelTableView) {
+        if (!self.selectedGuild || !self.selectedGuild.channels || self.selectedGuild.channels.count <= indexPath.row) {
+            return;
+        }
+
         DCChannel *channelAtRowIndex =
             [self.selectedGuild.channels objectAtIndex:indexPath.row];
         
