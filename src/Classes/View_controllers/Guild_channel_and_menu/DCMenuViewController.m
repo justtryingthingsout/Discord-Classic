@@ -365,6 +365,10 @@
         DCGuild *guildAtRowIndex = [DCServerCommunicator.sharedInstance.guilds
             objectAtIndex:indexPath.row];
 
+        if (!guildAtRowIndex) {
+            return nil;
+        }
+
         // Show blue indicator if guild has any unread messages
         cell.unreadMessages.hidden = !guildAtRowIndex.unread;
 
