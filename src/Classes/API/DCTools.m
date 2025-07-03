@@ -391,6 +391,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
         } else {
             referencedMessage.content = @"";
         }
+        referencedMessage.messageType     = [[referencedJsonMessage valueForKey:@"type"] intValue];
         referencedMessage.snowflake       = [referencedJsonMessage valueForKey:@"id"];
         CGSize authorNameSize             = [referencedMessage.author.globalName
                  sizeWithFont:[UIFont boldSystemFontOfSize:10]
@@ -403,7 +404,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
     newMessage.author =
         [DCServerCommunicator.sharedInstance.loadedUsers valueForKey:authorId];
-
+    newMessage.messageType     = [[jsonMessage valueForKey:@"type"] intValue];
     newMessage.content         = [jsonMessage valueForKey:@"content"];
     newMessage.snowflake       = [jsonMessage valueForKey:@"id"];
     newMessage.attachments     = NSMutableArray.new;

@@ -7,6 +7,7 @@
 //
 
 #import "DCChannel.h"
+#include "DCMessage.h"
 #import "DCServerCommunicator.h"
 #import "DCTools.h"
 #import "NSString+Emojize.h"
@@ -495,7 +496,6 @@ static dispatch_queue_t channel_send_queue;
                 NSDictionary *mention = mentions.firstObject;
                 // NSString *targetName = [mentions
                 // objectForKey:@"global_name"];
-                convertedMessage.messageType = 1;
                 convertedMessage.isGrouped   = NO;
                 NSString *targetUsername =
                     [mention objectForKey:@"global_name"];
@@ -514,7 +514,6 @@ static dispatch_queue_t channel_send_queue;
                 convertedMessage.contentHeight = textSize.height + 40;
 
             } else if ([messageType intValue] == 2) {
-                convertedMessage.messageType   = 2;
                 convertedMessage.isGrouped     = NO;
                 convertedMessage.content       = [NSString
                     stringWithFormat:@"%@ left the group conversation.",
@@ -527,7 +526,6 @@ static dispatch_queue_t channel_send_queue;
                 convertedMessage.contentHeight = textSize.height + 40;
 
             } else if ([messageType intValue] == 4) {
-                convertedMessage.messageType   = 4;
                 convertedMessage.isGrouped     = NO;
                 convertedMessage.content       = [NSString
                     stringWithFormat:@"%@ changed the group name to %@.",
@@ -541,7 +539,6 @@ static dispatch_queue_t channel_send_queue;
                 convertedMessage.contentHeight = textSize.height + 30;
 
             } else if ([messageType intValue] == 5) {
-                convertedMessage.messageType   = 5;
                 convertedMessage.isGrouped     = NO;
                 convertedMessage.content       = [NSString
                     stringWithFormat:@"%@ changed the group icon.",
@@ -553,7 +550,6 @@ static dispatch_queue_t channel_send_queue;
                         lineBreakMode:NSLineBreakByWordWrapping];
                 convertedMessage.contentHeight = textSize.height + 15;
             } else if ([messageType intValue] == 6) {
-                convertedMessage.messageType   = 6;
                 convertedMessage.isGrouped     = NO;
                 convertedMessage.content       = [NSString
                     stringWithFormat:@"%@ pinned a message to this channel.",
@@ -565,7 +561,6 @@ static dispatch_queue_t channel_send_queue;
                         lineBreakMode:NSLineBreakByWordWrapping];
                 convertedMessage.contentHeight = textSize.height + 40;
             } else if ([messageType intValue] == 7) {
-                convertedMessage.messageType   = 7;
                 convertedMessage.isGrouped     = NO;
                 convertedMessage.content       = [NSString
                     stringWithFormat:@"%@ just slid into the server. "
@@ -578,7 +573,6 @@ static dispatch_queue_t channel_send_queue;
                         lineBreakMode:NSLineBreakByWordWrapping];
                 convertedMessage.contentHeight = textSize.height + 20;
             } else if ([messageType intValue] == 8) {
-                convertedMessage.messageType   = 8;
                 convertedMessage.isGrouped     = NO;
                 convertedMessage.content       = [NSString
                     stringWithFormat:@"%@ just boosted the server!",
@@ -590,7 +584,6 @@ static dispatch_queue_t channel_send_queue;
                         lineBreakMode:NSLineBreakByWordWrapping];
                 convertedMessage.contentHeight = textSize.height + 20;
             } else if ([messageType intValue] == 18) {
-                convertedMessage.messageType   = 18;
                 convertedMessage.isGrouped     = NO;
                 convertedMessage.content       = [NSString
                     stringWithFormat:@"%@ just boosted the server!",
@@ -613,23 +606,19 @@ static dispatch_queue_t channel_send_queue;
             if (prevMessage == nil) {
                 continue;
             }
-            NSDateComponents *curComponents  = [[NSCalendar currentCalendar]
-                components:kCFCalendarUnitHour | kCFCalendarUnitDay
-                | kCFCalendarUnitMonth | kCFCalendarUnitYear
-                  fromDate:currentMessage.timestamp];
-            NSDateComponents *prevComponents = [[NSCalendar currentCalendar]
-                components:kCFCalendarUnitHour | kCFCalendarUnitDay
-                | kCFCalendarUnitMonth | kCFCalendarUnitYear
-                  fromDate:prevMessage.timestamp];
+            NSDate *currentTimeStamp = currentMessage.timestamp;
 
             if (prevMessage.author.snowflake == currentMessage.author.snowflake
                 && ([currentMessage.timestamp timeIntervalSince1970] -
                         [prevMessage.timestamp timeIntervalSince1970]
                     < 420)
-                && curComponents.day == prevComponents.day
-                && curComponents.month == prevComponents.month
-                && curComponents.year == prevComponents.year) {
-                currentMessage.isGrouped = currentMessage.isGrouped && (currentMessage.referencedMessage == nil);
+                && [[NSCalendar currentCalendar] 
+                    rangeOfUnit:NSCalendarUnitDay
+                    startDate:&currentTimeStamp
+                    interval:NULL
+                    forDate:prevMessage.timestamp
+                ] && (prevMessage.messageType == DEFAULT || prevMessage.messageType == REPLY)) {
+                currentMessage.isGrouped = (currentMessage.messageType == DEFAULT || currentMessage.messageType == REPLY) && (currentMessage.referencedMessage == nil);
 
                 if (currentMessage.isGrouped) {
                     float contentWidth =

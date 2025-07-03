@@ -177,11 +177,13 @@ UIActivityIndicatorView *spinner;
         // NSLog(@"Sending Resume with sequence number %i, session ID %@", weakSelf.sequenceNumber, weakSelf.sessionId);
         // RESUME
         if (!self.token || !self.sessionId) {
-            [DCTools alert:@"Warning" withMessage:@"Something is wrong with your Discord token or your connection. Please re-check everything and retry."];
+            [DCTools
+                      alert:@"Warning"
+                withMessage:@"Something is wrong with your Discord token or your connection. Please re-check everything and retry."];
             return;
         }
         [self sendJSON:@{
-            @"op" : @6,
+            @"op" : @RESUME,
             @"d" : @{
                 @"token" : self.token,
                 @"session_id" : self.sessionId,
@@ -190,10 +192,8 @@ UIActivityIndicatorView *spinner;
         }];
         self.shouldResume = false;
     } else {
-        // NSLog(@"Sending Identify");
-        // IDENTIFY
         [self sendJSON:@{
-            @"op" : @2,
+            @"op" : @IDENTIFY,
             @"d" : @{
                 @"token" : self.token,
                 @"properties" : @{
@@ -624,7 +624,9 @@ UIActivityIndicatorView *spinner;
         [self handleChannelCreateWithData:d];
         return;
     } else {
-        NSLog(@"Unhandled event type: %@", t);
+#ifdef DEBUG
+        NSLog(@"Unhandled event type: %@, content: %@", t, d);
+#endif
         return;
     }
 }
@@ -678,7 +680,9 @@ UIActivityIndicatorView *spinner;
                 break;
             }
             default: {
-                NSLog(@"Got unknown op code %i", op);
+#ifdef DEBUG
+                NSLog(@"Got unknown op code %i, content: %@", op, d);
+#endif
                 break;
             }
         }

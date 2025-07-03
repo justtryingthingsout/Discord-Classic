@@ -214,23 +214,19 @@ static dispatch_queue_t chat_messages_queue;
         DCMessage *prevMessage =
             [self.messages objectAtIndex:self.messages.count - 1];
         if (prevMessage != nil) {
-            NSDateComponents *curComponents  = [[NSCalendar currentCalendar]
-                components:kCFCalendarUnitHour | kCFCalendarUnitDay
-                | kCFCalendarUnitMonth | kCFCalendarUnitYear
-                  fromDate:newMessage.timestamp];
-            NSDateComponents *prevComponents = [[NSCalendar currentCalendar]
-                components:kCFCalendarUnitHour | kCFCalendarUnitDay
-                | kCFCalendarUnitMonth | kCFCalendarUnitYear
-                  fromDate:prevMessage.timestamp];
+            NSDate *currentTimeStamp = newMessage.timestamp;
 
             if (prevMessage.author.snowflake == newMessage.author.snowflake
                 && ([newMessage.timestamp timeIntervalSince1970] -
                         [prevMessage.timestamp timeIntervalSince1970]
                     < 420)
-                && curComponents.day == prevComponents.day
-                && curComponents.month == prevComponents.month
-                && curComponents.year == prevComponents.year) {
-                newMessage.isGrouped = newMessage.isGrouped && (newMessage.referencedMessage == nil);
+                && [[NSCalendar currentCalendar]
+                    rangeOfUnit:NSCalendarUnitDay
+                      startDate:&currentTimeStamp
+                       interval:NULL
+                        forDate:prevMessage.timestamp]
+                && (prevMessage.messageType == DEFAULT || prevMessage.messageType == REPLY)) {
+                newMessage.isGrouped = (newMessage.messageType == DEFAULT || newMessage.messageType == REPLY) && (newMessage.referencedMessage == nil);
 
                 if (newMessage.isGrouped) {
                     float contentWidth =
@@ -263,10 +259,10 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleMessageEdit:(NSNotification *)notification {
-    NSString *snowflake  = [notification.userInfo valueForKey:@"id"];
+    NSString *snowflake       = [notification.userInfo valueForKey:@"id"];
     DCMessage *compareMessage = [self.messages objectAtIndex:[self.messages indexOfObjectPassingTest:^BOOL(DCMessage *msg, NSUInteger idx, BOOL *stop) {
-        return [msg.snowflake isEqualToString:snowflake];
-    }]];
+                                                   return [msg.snowflake isEqualToString:snowflake];
+                                               }]];
 
     DCMessage *newMessage = [DCTools convertJsonMessage:notification.userInfo];
 
@@ -295,23 +291,19 @@ static dispatch_queue_t chat_messages_queue;
         DCMessage *prevMessage = [self.messages
             objectAtIndex:[self.messages indexOfObject:compareMessage] - 1];
         if (prevMessage != nil) {
-            NSDateComponents *curComponents  = [[NSCalendar currentCalendar]
-                components:kCFCalendarUnitHour | kCFCalendarUnitDay
-                | kCFCalendarUnitMonth | kCFCalendarUnitYear
-                  fromDate:newMessage.timestamp];
-            NSDateComponents *prevComponents = [[NSCalendar currentCalendar]
-                components:kCFCalendarUnitHour | kCFCalendarUnitDay
-                | kCFCalendarUnitMonth | kCFCalendarUnitYear
-                  fromDate:prevMessage.timestamp];
+            NSDate *currentTimeStamp = newMessage.timestamp;
 
             if (prevMessage.author.snowflake == newMessage.author.snowflake
                 && ([newMessage.timestamp timeIntervalSince1970] -
                         [prevMessage.timestamp timeIntervalSince1970]
                     < 420)
-                && curComponents.day == prevComponents.day
-                && curComponents.month == prevComponents.month
-                && curComponents.year == prevComponents.year) {
-                newMessage.isGrouped = newMessage.isGrouped && (newMessage.referencedMessage == nil);
+                && [[NSCalendar currentCalendar]
+                    rangeOfUnit:NSCalendarUnitDay
+                      startDate:&currentTimeStamp
+                       interval:NULL
+                        forDate:prevMessage.timestamp]
+                && (prevMessage.messageType == DEFAULT || prevMessage.messageType == REPLY)) {
+                newMessage.isGrouped = (newMessage.messageType == DEFAULT || newMessage.messageType == REPLY) && (newMessage.referencedMessage == nil);
 
                 if (newMessage.isGrouped) {
                     float contentWidth =
@@ -340,65 +332,60 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleMessageDelete:(NSNotification *)notification {
-    DCMessage *compareMessage = DCMessage.new;
-    compareMessage.snowflake  = [notification.userInfo valueForKey:@"id"];
-
-    NSUInteger index = [self.messages indexOfObject:compareMessage];
-    index++;
-
-    if (index < self.messages.count) {
-        DCMessage *newMessage = [self.messages objectAtIndex:index];
-
-        if (newMessage != nil) {
-            DCMessage *prevMessage = [self.messages objectAtIndex:index - 2];
-            if (prevMessage != nil) {
-                NSDateComponents *curComponents  = [[NSCalendar currentCalendar]
-                    components:kCFCalendarUnitHour | kCFCalendarUnitDay
-                    | kCFCalendarUnitMonth | kCFCalendarUnitYear
-                      fromDate:newMessage.timestamp];
-                NSDateComponents *prevComponents = [[NSCalendar currentCalendar]
-                    components:kCFCalendarUnitHour | kCFCalendarUnitDay
-                    | kCFCalendarUnitMonth | kCFCalendarUnitYear
-                      fromDate:prevMessage.timestamp];
-
-                if (prevMessage.author.snowflake == newMessage.author.snowflake
-                    && ([newMessage.timestamp timeIntervalSince1970] -
-                            [prevMessage.timestamp timeIntervalSince1970]
-                        < 420)
-                    && curComponents.day == prevComponents.day
-                    && curComponents.month == prevComponents.month
-                    && curComponents.year == prevComponents.year) {
-                    Boolean oldGroupedFlag = newMessage.isGrouped;
-                    newMessage.isGrouped   = newMessage.referencedMessage == nil;
-
-                    if (newMessage.isGrouped
-                        && (newMessage.isGrouped != oldGroupedFlag)) {
-                        float contentWidth =
-                            UIScreen.mainScreen.bounds.size.width - 63;
-                        CGSize authorNameSize = [newMessage.author.globalName
-                                 sizeWithFont:[UIFont boldSystemFontOfSize:15]
-                            constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                                lineBreakMode:(NSLineBreakMode
-                                              )UILineBreakModeWordWrap];
-
-                        newMessage.contentHeight -= authorNameSize.height + 4;
-                    }
-                } else if (newMessage.isGrouped) {
-                    newMessage.isGrouped = false;
-                    float contentWidth =
-                        UIScreen.mainScreen.bounds.size.width - 63;
-                    CGSize authorNameSize = [newMessage.author.globalName
-                             sizeWithFont:[UIFont boldSystemFontOfSize:15]
-                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                            lineBreakMode:(NSLineBreakMode
-                                          )UILineBreakModeWordWrap];
-                    newMessage.contentHeight += authorNameSize.height + 4;
-                }
-            }
-        }
+    NSUInteger index = [self.messages indexOfObjectPassingTest:^BOOL(DCMessage *msg, NSUInteger idx, BOOL *stop) {
+        return [msg.snowflake isEqualToString:[notification.userInfo valueForKey:@"id"]];
+    }];
+    if (index == NSNotFound || index > self.messages.count) {
+        return;
     }
 
-    [self.messages removeObject:compareMessage];
+    DCMessage *newMessage = [self.messages objectAtIndex:index + 1];
+    if (newMessage == nil) {
+        return;
+    }
+
+    DCMessage *prevMessage = [self.messages objectAtIndex:index - 1];
+    if (prevMessage != nil) {
+        NSDate *currentTimeStamp = newMessage.timestamp;
+
+        if (prevMessage.author.snowflake == newMessage.author.snowflake
+            && ([newMessage.timestamp timeIntervalSince1970] -
+                    [prevMessage.timestamp timeIntervalSince1970]
+                < 420)
+            && [[NSCalendar currentCalendar]
+                rangeOfUnit:NSCalendarUnitDay
+                  startDate:&currentTimeStamp
+                   interval:NULL
+                    forDate:prevMessage.timestamp]
+            && (prevMessage.messageType == DEFAULT || prevMessage.messageType == REPLY)) {
+            Boolean oldGroupedFlag = newMessage.isGrouped;
+            newMessage.isGrouped   = (newMessage.messageType == DEFAULT || newMessage.messageType == REPLY) && (newMessage.referencedMessage == nil);
+
+            if (newMessage.isGrouped
+                && (newMessage.isGrouped != oldGroupedFlag)) {
+                float contentWidth =
+                    UIScreen.mainScreen.bounds.size.width - 63;
+                CGSize authorNameSize = [newMessage.author.globalName
+                         sizeWithFont:[UIFont boldSystemFontOfSize:15]
+                    constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                        lineBreakMode:(NSLineBreakMode
+                                      )UILineBreakModeWordWrap];
+
+                newMessage.contentHeight -= authorNameSize.height + 4;
+            }
+        } else if (newMessage.isGrouped) {
+            newMessage.isGrouped = false;
+            float contentWidth =
+                UIScreen.mainScreen.bounds.size.width - 63;
+            CGSize authorNameSize = [newMessage.author.globalName
+                     sizeWithFont:[UIFont boldSystemFontOfSize:15]
+                constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                    lineBreakMode:(NSLineBreakMode
+                                  )UILineBreakModeWordWrap];
+            newMessage.contentHeight += authorNameSize.height + 4;
+        }
+    }
+    [self.messages removeObjectAtIndex:index];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.chatTableView reloadData];
     });
@@ -427,7 +414,7 @@ static dispatch_queue_t chat_messages_queue;
                     int attachmentHeight = 0;
                     for (id attachment in newMessage.attachments) {
                         if ([attachment isKindOfClass:[UIImage class]]) {
-                            UIImage *image = attachment;
+                            UIImage *image      = attachment;
                             CGFloat aspectRatio = image.size.width
                                 / image.size.height;
                             int newWidth  = 200 * aspectRatio;
@@ -439,7 +426,7 @@ static dispatch_queue_t chat_messages_queue;
                             attachmentHeight += newHeight;
                         } else if ([attachment isKindOfClass:[DCChatVideoAttachment class]]) {
                             DCChatVideoAttachment *video = attachment;
-                            CGFloat aspectRatio = video.thumbnail.image.size.width
+                            CGFloat aspectRatio          = video.thumbnail.image.size.width
                                 / video.thumbnail.image.size.height;
                             int newWidth  = 200 * aspectRatio;
                             int newHeight = 200;
@@ -568,7 +555,7 @@ static dispatch_queue_t chat_messages_queue;
         }
 
         [cell.contentTextView setText:content];
-        
+
 
         [cell.contentTextView
             setHeight:[cell.contentTextView
@@ -843,29 +830,24 @@ static dispatch_queue_t chat_messages_queue;
             }
         }
 
-        float contentWidth = UIScreen.mainScreen.bounds.size.width - 63;
+        float contentWidth    = UIScreen.mainScreen.bounds.size.width - 63;
         CGSize authorNameSize = [messageAtRowIndex.author.globalName
-                             sizeWithFont:[UIFont boldSystemFontOfSize:15]
-                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                            lineBreakMode:(NSLineBreakMode
-                                          )UILineBreakModeWordWrap];
+                 sizeWithFont:[UIFont boldSystemFontOfSize:15]
+            constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                lineBreakMode:(NSLineBreakMode
+                              )UILineBreakModeWordWrap];
 
         // dispatch_async(dispatch_get_main_queue(), ^{
-        CGFloat imageViewOffset = (
-                !messageAtRowIndex.isGrouped 
-                ? authorNameSize.height 
-                    + (messageAtRowIndex.referencedMessage != nil ? 16 : 0) 
-                : 0
-            ) + (
-                [messageAtRowIndex.content length] != 0 
-                ? height 
-                : (!messageAtRowIndex.isGrouped ? 10 : 0) // ???
+        CGFloat imageViewOffset = (!messageAtRowIndex.isGrouped
+                                       ? authorNameSize.height
+                                           + (messageAtRowIndex.referencedMessage != nil ? 16 : 0)
+                                       : 0
+                                  )
+            + (
+                                      [messageAtRowIndex.content length] != 0
+                                          ? height
+                                          : (!messageAtRowIndex.isGrouped ? 10 : 0) // ???
             );
-
-        if ([messageAtRowIndex.content length] == 0) {
-            NSLog(@"No content with snowflake %@",
-                  messageAtRowIndex.snowflake);
-        }
 
         for (id attachment in messageAtRowIndex.attachments) {
             if ([attachment isKindOfClass:[UIImage class]]) {
@@ -966,10 +948,10 @@ static dispatch_queue_t chat_messages_queue;
     int attachmentHeight = 0;
     for (id attachment in messageAtRowIndex.attachments) {
         if ([attachment isKindOfClass:[UIImage class]]) {
-            UIImage *image = attachment;
+            UIImage *image      = attachment;
             CGFloat aspectRatio = image.size.width / image.size.height;
-            int newWidth  = 200 * aspectRatio;
-            int newHeight = 200;
+            int newWidth        = 200 * aspectRatio;
+            int newHeight       = 200;
             if (newWidth > self.chatTableView.width - 66) {
                 newWidth  = self.chatTableView.width - 66;
                 newHeight = newWidth / aspectRatio;
@@ -977,14 +959,14 @@ static dispatch_queue_t chat_messages_queue;
             attachmentHeight += newHeight;
         } else if ([attachment isKindOfClass:[DCChatVideoAttachment class]]) {
             DCChatVideoAttachment *video = attachment;
-            CGFloat aspectRatio = video.thumbnail.image.size.width
-                    / video.thumbnail.image.size.height;
-                int newWidth  = 200 * aspectRatio;
-                int newHeight = 200;
-                if (newWidth > self.chatTableView.width - 66) {
-                    newWidth  = self.chatTableView.width - 66;
-                    newHeight = newWidth / aspectRatio;
-                }
+            CGFloat aspectRatio          = video.thumbnail.image.size.width
+                / video.thumbnail.image.size.height;
+            int newWidth  = 200 * aspectRatio;
+            int newHeight = 200;
+            if (newWidth > self.chatTableView.width - 66) {
+                newWidth  = self.chatTableView.width - 66;
+                newHeight = newWidth / aspectRatio;
+            }
             attachmentHeight += newHeight;
         }
     }
