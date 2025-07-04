@@ -1231,6 +1231,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
         }
     }
 
+#warning TODO: refer to github.com/Rapptz/discord.py/issues/2392#issuecomment-707455919 on how to fix properly
     [newGuild.channels sortUsingComparator:^NSComparisonResult(
                            DCChannel *channel1, DCChannel *channel2
     ) {

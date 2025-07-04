@@ -27,7 +27,6 @@
 @end
 
 @implementation DCChatViewController
-
 int lastTimeInterval = 0; // for typing indicator
 
 static dispatch_queue_t chat_messages_queue;
@@ -117,7 +116,7 @@ static dispatch_queue_t chat_messages_queue;
                       forState:UIControlStateHighlighted
                     barMetrics:UIBarMetricsDefault];
 
-        [self.toolbar setBackgroundImage:[UIImage imageNamed:@"ToolbarBG"]
+        [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"ToolbarBG"]
                       forToolbarPosition:UIToolbarPositionAny
                               barMetrics:UIBarMetricsDefault];
 
@@ -189,6 +188,10 @@ static dispatch_queue_t chat_messages_queue;
         //////NSLog(@"async reload!");
         // about contact CoreControl
 
+        if (!self.chatTableView) {
+            return;
+        }
+
         [self.chatTableView reloadData];
     });
 }
@@ -234,8 +237,7 @@ static dispatch_queue_t chat_messages_queue;
                     CGSize authorNameSize = [newMessage.author.globalName
                              sizeWithFont:[UIFont boldSystemFontOfSize:15]
                         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                            lineBreakMode:(NSLineBreakMode
-                                          )UILineBreakModeWordWrap];
+                            lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
 
                     newMessage.contentHeight -= authorNameSize.height + 4;
                 }

@@ -362,12 +362,13 @@
             DCServerCommunicator.sharedInstance.guildsIsSorted = YES;
         }
 
-        DCGuild *guildAtRowIndex = [DCServerCommunicator.sharedInstance.guilds
-            objectAtIndex:indexPath.row];
-
-        if (!guildAtRowIndex) {
+        if (!DCServerCommunicator.sharedInstance.guilds ||
+            DCServerCommunicator.sharedInstance.guilds.count <= indexPath.row) {
             return nil;
         }
+
+        DCGuild *guildAtRowIndex = [DCServerCommunicator.sharedInstance.guilds
+            objectAtIndex:indexPath.row];
 
         // Show blue indicator if guild has any unread messages
         cell.unreadMessages.hidden = !guildAtRowIndex.unread;

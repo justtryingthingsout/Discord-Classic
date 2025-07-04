@@ -11,12 +11,15 @@
 @implementation DCChatTableCell
 
 - (void)configureWithMessage:(NSString *)messageText {
-    TSMarkdownParser *parser = [TSMarkdownParser standardParser];
-    NSAttributedString *attributedText =
-        [parser attributedStringFromMarkdown:messageText];
-    if (attributedText) {
-        self.contentTextView.attributedText = attributedText;
-        [self adjustTextViewSize];
+    // @available doesn't exist on iOS 5, use respondsToSelector instead
+    if ([self.contentTextView respondsToSelector:@selector(setAttributedText:)]) {
+        TSMarkdownParser *parser = [TSMarkdownParser standardParser];
+        NSAttributedString *attributedText =
+            [parser attributedStringFromMarkdown:messageText];
+        if (attributedText) {
+            self.contentTextView.attributedText = attributedText;
+            [self adjustTextViewSize];
+        }
     }
 }
 

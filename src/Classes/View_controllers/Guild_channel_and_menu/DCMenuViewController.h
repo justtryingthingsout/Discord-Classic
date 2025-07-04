@@ -18,6 +18,7 @@
 #import "DCServerCommunicator.h"
 #import "DCTools.h"
 #import "DCUser.h"
+#import "CKRefreshControl.h"
 
 #define VERSION_MIN(v)                                                  \
     ([[[UIDevice currentDevice] systemVersion] compare:v                \

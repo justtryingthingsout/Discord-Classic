@@ -11,9 +11,9 @@ APPLICATION_NAME = Discord
 
 INCLUDE_FLAGS = $(shell find . -type d -not -path "*/.*" -exec gprintf '-iquote %s ' {} \;) 
 Discord_FILES = $(shell find . -name "*.m")
-Discord_FRAMEWORKS = AssetsLibrary QuickLook ImageIO MediaPlayer AVFoundation Security CFNetwork UIKit Foundation CoreGraphics
+Discord_FRAMEWORKS = AssetsLibrary QuickLook ImageIO MediaPlayer AVFoundation Security CFNetwork UIKit Foundation CoreGraphics QuartzCore
 Discord_BUNDLE_RESOURCES = Theos/
-Discord_CFLAGS = -fobjc-arc -Wno-unused-const-variable -Wno-gnu-folding-constant -Wno-error=\#warnings -include Discord_Classic/Discord_Classic-Prefix.pch $(INCLUDE_FLAGS)
+Discord_CFLAGS = -ObjC -fobjc-arc -Wno-unused-const-variable -Wno-gnu-folding-constant -Wno-error=\#warnings -include Discord_Classic/Discord_Classic-Prefix.pch $(INCLUDE_FLAGS)
 # -fobjc-weak -Wno-objc-property-no-attribute 
 
 after-Discord-all::

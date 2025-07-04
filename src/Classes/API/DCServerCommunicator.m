@@ -122,7 +122,7 @@ UIActivityIndicatorView *spinner;
         label.backgroundColor = [UIColor clearColor];
         label.textColor       = [UIColor colorWithRed:168 / 255.0 green:168 / 255.0 blue:168 / 255.0 alpha:1];
         label.font            = [UIFont boldSystemFontOfSize:16];
-        label.textAlignment   = NSTextAlignmentLeft;
+        label.textAlignment   = (NSTextAlignment)UITextAlignmentLeft;
         label.lineBreakMode   = NSLineBreakByTruncatingTail;
         label.shadowColor     = [UIColor colorWithRed:0 / 255.0 green:0 / 255.0 blue:0 / 255.0 alpha:1];
         label.shadowOffset    = CGSizeMake(0, 1);

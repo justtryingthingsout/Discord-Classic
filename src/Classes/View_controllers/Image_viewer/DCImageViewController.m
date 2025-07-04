@@ -35,14 +35,17 @@
 }
 
 - (IBAction)presentShareSheet:(id)sender {
-    // Show share sheet with appropriate options
-    NSArray *itemsToShare = @[ self.imageView.image ];
-    UIActivityViewController *activityVC =
-        [[UIActivityViewController alloc] initWithActivityItems:itemsToShare
-                                          applicationActivities:nil];
-    [activityVC viewWillAppear:YES];
-    [self presentViewController:activityVC animated:YES completion:nil];
-    [activityVC viewWillAppear:YES];
+    // @available doesn't exist on iOS 5, use NSClassFromString instead
+    if (NSClassFromString(@"UIActivityViewController")) {
+        // Show share sheet with appropriate options
+        NSArray *itemsToShare = @[ self.imageView.image ];
+        UIActivityViewController *activityVC =
+            [[UIActivityViewController alloc] initWithActivityItems:itemsToShare
+                                              applicationActivities:nil];
+        [activityVC viewWillAppear:YES];
+        [self presentViewController:activityVC animated:YES completion:nil];
+        [activityVC viewWillAppear:YES];
+    }
 }
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {

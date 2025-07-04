@@ -8,7 +8,6 @@
 
 #import "DCAppDelegate.h"
 
-
 @interface DCAppDelegate ()
 @property bool shouldReload;
 @end

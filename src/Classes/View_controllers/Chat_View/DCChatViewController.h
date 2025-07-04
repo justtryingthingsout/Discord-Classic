@@ -14,6 +14,8 @@
 #import "DCContactViewController.h"
 #import "DCMessage.h"
 #import "ODCContactViewController.h"
+#import "CKRefreshControl.h"
+
 @interface DCChatViewController : UIViewController<
                                       UINavigationControllerDelegate,
                                       UITextViewDelegate,
