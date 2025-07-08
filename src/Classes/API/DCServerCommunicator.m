@@ -14,7 +14,7 @@
 
 @interface DCServerCommunicator ()
 @property (strong, nonatomic) UIView *notificationView;
-@property bool didRecieveHeartbeatResponse;
+@property bool didReceiveHeartbeatResponse;
 @property bool didTryResume;
 @property bool shouldResume;
 @property bool heartbeatDefined;
@@ -409,14 +409,18 @@ UIActivityIndicatorView *spinner;
         // Sort the DMs list by most recent...
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastMessageId" ascending:NO selector:@selector(localizedStandardCompare:)];
         [privateGuild.channels sortUsingDescriptors:@[ sortDescriptor ]];
+        NSMutableDictionary *channelsDict = NSMutableDictionary.new;
         for (DCChannel *channel in privateGuild.channels) {
-            [self.channels setObject:channel forKey:channel.snowflake];
+            [channelsDict setObject:channel forKey:channel.snowflake];
         }
-        [self.guilds addObject:privateGuild];
+        self.channels = channelsDict;
+        NSMutableArray *guilds = NSMutableArray.new;
+        [guilds addObject:privateGuild];
         // Get servers (guilds) the user is a member of
         for (NSDictionary *jsonGuild in [d valueForKey:@"guilds"]) {
-            [self.guilds addObject:[DCTools convertJsonGuild:jsonGuild]];
+            [guilds addObject:[DCTools convertJsonGuild:jsonGuild]];
         }
+        self.guilds = guilds;
         self.guildsIsSorted = NO;
         // Read states are recieved in READY payload
         // they give a channel ID and the ID of the last read message in that channel
@@ -561,11 +565,12 @@ UIActivityIndicatorView *spinner;
         // Disable ability to identify until reenabled 5 seconds later.
         // API only allows once identify every 5 seconds
         self.identifyCooldown                                             = false;
-        self.guilds                                                       = NSMutableArray.new;
-        self.channels                                                     = NSMutableDictionary.new;
+        // do not initialize these here, could cause concurrency issues while guilds and channels are being loaded
+        //self.guilds                                                       = NSMutableArray.new;
+        //self.channels                                                     = NSMutableDictionary.new;
         self.loadedUsers                                                  = NSMutableDictionary.new;
         self.loadedRoles                                                  = NSMutableDictionary.new;
-        self.didRecieveHeartbeatResponse                                  = true;
+        self.didReceiveHeartbeatResponse                                  = true;
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         int heartbeatInterval                                             = [[d valueForKey:@"heartbeat_interval"] intValue];
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -700,7 +705,7 @@ UIActivityIndicatorView *spinner;
                 break;
             }
             case HEARTBEAT_ACK: {
-                weakSelf.didRecieveHeartbeatResponse                              = true;
+                weakSelf.didReceiveHeartbeatResponse                              = true;
                 [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                 break;
             }
@@ -773,13 +778,13 @@ UIActivityIndicatorView *spinner;
 
 - (void)sendHeartbeat:(NSTimer *)timer {
     // Check that we've recieved a response since the last heartbeat
-    if (self.didRecieveHeartbeatResponse) {
+    if (self.didReceiveHeartbeatResponse) {
         [NSTimer scheduledTimerWithTimeInterval:8 target:self selector:@selector(checkForRecievedHeartbeat:) userInfo:nil repeats:NO];
         [self sendJSON:@{@"op" : @1, @"d" : @(self.sequenceNumber)}];
 #ifdef DEBUG
         NSLog(@"Sent heartbeat");
 #endif
-        [self setDidRecieveHeartbeatResponse:false];
+        [self setDidReceiveHeartbeatResponse:false];
         self.didTryResume = false;
     } else if (self.didTryResume) {
 #ifdef DEBUG
@@ -798,7 +803,7 @@ UIActivityIndicatorView *spinner;
 }
 
 - (void)checkForRecievedHeartbeat:(NSTimer *)timer {
-    if (!self.didRecieveHeartbeatResponse) {
+    if (!self.didReceiveHeartbeatResponse) {
 #ifdef DEBUG
         NSLog(@"Did not get heartbeat response, sending RESUME with sequence %i %@ (checkForRecievedHeartbeat)", self.sequenceNumber, self.sessionId);
 #endif

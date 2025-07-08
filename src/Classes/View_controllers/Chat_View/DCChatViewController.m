@@ -274,21 +274,21 @@ static dispatch_queue_t chat_messages_queue;
     DCMessage *newMessage = [DCTools convertJsonMessage:notification.userInfo];
 
     // fix any potential missing fields from a partial response
-    if (newMessage.author == nil || newMessage.author == nil) {
+    if (newMessage.author == nil || (NSNull*)newMessage.author == [NSNull null]) {
         newMessage.author = compareMessage.author;
         newMessage.contentHeight +=
             compareMessage.contentHeight; // assume it's an embed update
     }
-    if (newMessage.content == nil || newMessage.content == nil) {
+    if (newMessage.content == nil || (NSNull*)newMessage.content == [NSNull null]) {
         newMessage.content = compareMessage.content;
     }
-    if ((newMessage.attachments == nil || newMessage.attachments == nil)
+    if ((newMessage.attachments == nil || (NSNull*)newMessage.attachments == [NSNull null])
         && newMessage.attachmentCount > 0) {
         newMessage.attachments = compareMessage.attachments;
     }
     newMessage.timestamp = compareMessage.timestamp;
     if (newMessage.editedTimestamp == nil
-        || newMessage.editedTimestamp == nil) {
+        || (NSNull*)newMessage.editedTimestamp == [NSNull null]) {
         newMessage.editedTimestamp = compareMessage.editedTimestamp;
     }
     newMessage.prettyTimestamp   = compareMessage.prettyTimestamp;
@@ -561,7 +561,7 @@ static dispatch_queue_t chat_messages_queue;
         content = [content stringByReplacingOccurrencesOfString:@"\u00AE\uFE0F"
                                                      withString:@"®"];
 
-        if (messageAtRowIndex.editedTimestamp != nil) {
+        if (messageAtRowIndex.editedTimestamp != nil && (NSNull*)messageAtRowIndex.editedTimestamp != [NSNull null]) {
             content = [content stringByAppendingString:@" (edited)"];
         }
 

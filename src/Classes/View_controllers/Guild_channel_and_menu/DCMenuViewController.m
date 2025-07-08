@@ -209,7 +209,6 @@
     [self performSegueWithIdentifier:@"guilds to own info" sender:self];
 }
 
-
 - (void)tableView:(UITableView *)tableView
     didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.guildTableView) {
@@ -358,11 +357,14 @@
             }
             [sortedGuilds removeObjectIdenticalTo:nullObject];
             DCServerCommunicator.sharedInstance.guilds = sortedGuilds;
-            NSAssert([sortedGuilds count] != 0, @"No sorted guilds found");
+            NSAssert(sortedGuilds && [sortedGuilds count] != 0, @"No sorted guilds found");
             DCServerCommunicator.sharedInstance.guildsIsSorted = YES;
         }
 
-        NSCAssert(DCServerCommunicator.sharedInstance.guilds && DCServerCommunicator.sharedInstance.guilds.count > indexPath.row, @"Guilds array is empty or index out of bounds");
+        NSCAssert(
+            DCServerCommunicator.sharedInstance.guilds && DCServerCommunicator.sharedInstance.guilds.count > indexPath.row,
+            @"Guilds array is empty or index out of bounds"
+        );
 
         DCGuild *guildAtRowIndex = [DCServerCommunicator.sharedInstance.guilds
             objectAtIndex:indexPath.row];

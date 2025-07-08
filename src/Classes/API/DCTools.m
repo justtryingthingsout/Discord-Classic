@@ -1138,6 +1138,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
     NSMutableArray *categories = NSMutableArray.new;
 
     NSArray *combined = [[jsonGuild valueForKey:@"channels"] arrayByAddingObjectsFromArray:[jsonGuild valueForKey:@"threads"]];
+    NSMutableDictionary *channels = NSMutableDictionary.new;
     for (NSDictionary *jsonChannel in combined) {
         // regardless of implementation or permissions, add to channels list so they're visible in <#snowflake>
         DCChannel *newChannel = DCChannel.new;
@@ -1158,9 +1159,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
             newChannel.muted = true;
         }
 
-        [DCServerCommunicator.sharedInstance.channels
-            setObject:newChannel
-               forKey:newChannel.snowflake];
+        [channels setObject:newChannel forKey:newChannel.snowflake];
 
         // Make sure jsonChannel is a text channel or a category
         // we dont want to include voice channels in the text channel list
@@ -1268,6 +1267,8 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
             i++;
         }
     }
+
+    [DCServerCommunicator.sharedInstance.channels addEntriesFromDictionary:channels];
 
     return newGuild;
 }
