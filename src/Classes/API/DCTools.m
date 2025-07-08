@@ -752,8 +752,11 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                                                  );
                                              }
                                          }];
-            } else if ([fileType rangeOfString:@"video/"].location
-                       != NSNotFound) {
+            } else if ([fileType rangeOfString:@"video/quicktime"].location != NSNotFound ||
+                       [fileType rangeOfString:@"video/mp4"].location != NSNotFound ||
+                       [fileType rangeOfString:@"video/mpv"].location != NSNotFound ||
+                       [fileType rangeOfString:@"video/3gpp"].location != NSNotFound) {
+                // iOS only supports these video formats
                 newMessage.attachmentCount++;
 
                 NSURL *attachmentURL =
@@ -815,23 +818,26 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                                                  UIImage *retrievedImage =
                                                      imageData;
 
-                                                 if (retrievedImage != nil) {
-                                                     [video.thumbnail
-                                                         setImage:retrievedImage];
-                                                     dispatch_async(
-                                                         dispatch_get_main_queue(
-                                                         ),
-                                                         ^{
-                                                             [NSNotificationCenter.defaultCenter
-                                                                 postNotificationName:
-                                                                     @"RELOAD CHAT DATA"
-                                                                               object:nil];
-                                                         }
-                                                     );
-                                                 } else {
-                                                     // NSLog(@"Failed to load
-                                                     // video thumbnail!");
+                                                 if (!retrievedImage || !video || !video.thumbnail
+                                                    || ![retrievedImage isKindOfClass:[UIImage class]]
+                                                    || ![video.thumbnail isKindOfClass:[UIImageView class]]) {
+#ifdef DEBUG
+                                                     NSLog(@"Failed to load video thumbnail!");
+#endif
+                                                     return;
                                                  }
+                                                 [video.thumbnail
+                                                     setImage:retrievedImage];
+                                                 dispatch_async(
+                                                     dispatch_get_main_queue(
+                                                     ),
+                                                     ^{
+                                                         [NSNotificationCenter.defaultCenter
+                                                             postNotificationName:
+                                                                 @"RELOAD CHAT DATA"
+                                                                           object:nil];
+                                                     }
+                                                 );
                                              }];
 
                     video.layer.cornerRadius     = 6;
@@ -1336,6 +1342,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
             [request setHTTPMethod:@"GET"];
             [request setValue:@"application/json"
                 forHTTPHeaderField:@"Content-Type"];
+            [request setTimeoutInterval:10];
 
             NSData *data = [NSURLConnection sendSynchronousRequest:request
                                                  returningResponse:&response

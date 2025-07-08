@@ -20,6 +20,8 @@
 @property (weak, nonatomic) IBOutlet UINavigationBar *titleBar;
 @property (weak, nonatomic) IBOutlet UITableView *mutTableView;
 
-@property NSDictionary *mutualFriendsList;
+// Holds NSDictionary*
+@property NSArray *mutualFriendsList;
+// Holds DCUser*
 @property NSMutableArray *recipients;
 @end

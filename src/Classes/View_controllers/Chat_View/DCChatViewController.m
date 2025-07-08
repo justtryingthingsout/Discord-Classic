@@ -7,6 +7,9 @@
 //
 
 #import "DCChatViewController.h"
+#include <Foundation/NSObjCRuntime.h>
+#include <objc/NSObjCRuntime.h>
+#include <Foundation/Foundation.h>
 #import "DCCInfoViewController.h"
 #import "DCChatTableCell.h"
 #import "DCChatVideoAttachment.h"
@@ -117,8 +120,8 @@ static dispatch_queue_t chat_messages_queue;
                     barMetrics:UIBarMetricsDefault];
 
         [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"ToolbarBG"]
-                      forToolbarPosition:UIToolbarPositionAny
-                              barMetrics:UIBarMetricsDefault];
+                                forToolbarPosition:UIToolbarPositionAny
+                                        barMetrics:UIBarMetricsDefault];
 
         [self.sidebarButton setBackgroundImage:[UIImage imageNamed:@"BarButton"]
                                       forState:UIControlStateNormal
@@ -184,13 +187,12 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleAsyncReload {
+    if (!self.chatTableView) {
+        return;
+    }
     dispatch_async(dispatch_get_main_queue(), ^{
         //////NSLog(@"async reload!");
         // about contact CoreControl
-
-        if (!self.chatTableView) {
-            return;
-        }
 
         [self.chatTableView reloadData];
     });
@@ -245,9 +247,12 @@ static dispatch_queue_t chat_messages_queue;
         }
     }
 
+
+    [self.chatTableView beginUpdates];
     [self.messages addObject:newMessage];
-    [self.chatTableView reloadData];
-    //});
+    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
+    [self.chatTableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.chatTableView endUpdates];
 
     if (self.viewingPresentTime) {
         [self.chatTableView
@@ -322,18 +327,21 @@ static dispatch_queue_t chat_messages_queue;
         }
     }
 
-    //[self.messages addObject:newMessage];
-
+    [self.chatTableView beginUpdates];
+    NSUInteger idx = [self.messages indexOfObject:compareMessage];
     [self.messages
-        replaceObjectAtIndex:[self.messages indexOfObject:compareMessage]
+        replaceObjectAtIndex:idx
                   withObject:newMessage];
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.chatTableView reloadData];
-    });
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+    [self.chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.chatTableView endUpdates];
 }
 
 - (void)handleMessageDelete:(NSNotification *)notification {
+    if (!self.messages || self.messages.count == 0) {
+        return;
+    }
+
     NSUInteger index = [self.messages indexOfObjectPassingTest:^BOOL(DCMessage *msg, NSUInteger idx, BOOL *stop) {
         return [msg.snowflake isEqualToString:[notification.userInfo valueForKey:@"id"]];
     }];
@@ -387,10 +395,11 @@ static dispatch_queue_t chat_messages_queue;
             newMessage.contentHeight += authorNameSize.height + 4;
         }
     }
+    [self.chatTableView beginUpdates];
     [self.messages removeObjectAtIndex:index];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.chatTableView reloadData];
-    });
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    [self.chatTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.chatTableView endUpdates];
 }
 
 
@@ -402,15 +411,19 @@ static dispatch_queue_t chat_messages_queue;
                 beforeMessage:message];
 
         if (newMessages) {
-            NSRange range = NSMakeRange(0, [newMessages count]);
-            NSIndexSet *indexSet =
-                [NSIndexSet indexSetWithIndexesInRange:range];
-            [self.messages insertObjects:newMessages atIndexes:indexSet];
-
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                [self.chatTableView reloadData];
-            });
             dispatch_async(dispatch_get_main_queue(), ^{
+                NSRange range = NSMakeRange(0, [newMessages count]);
+                NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+                NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+                [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+                    [indexPaths addObject:indexPath];
+                }];
+                [self.chatTableView beginUpdates];
+                [self.messages insertObjects:newMessages atIndexes:indexSet];
+                [self.chatTableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.chatTableView endUpdates];
+
                 int scrollOffset = -self.chatTableView.height;
                 for (DCMessage *newMessage in newMessages) {
                     int attachmentHeight = 0;
@@ -448,8 +461,7 @@ static dispatch_queue_t chat_messages_queue;
                     setContentOffset:CGPointMake(0, scrollOffset)
                             animated:NO];
 
-                if (VERSION_MIN(@"6.0") && [newMessages count] > 0
-                    && !self.refreshControl) {
+                if ([newMessages count] > 0 && !self.refreshControl) {
                     self.refreshControl = UIRefreshControl.new;
                     self.refreshControl.attributedTitle =
                         [[NSAttributedString alloc]
@@ -466,13 +478,9 @@ static dispatch_queue_t chat_messages_queue;
                         | UIViewAutoresizingFlexibleRightMargin;
                 }
             });
-        }
-        if (VERSION_MIN(@"6.0")) {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                if (self.refreshControl) {
-                    [self.refreshControl endRefreshing];
-                }
-            });
+            if (self.refreshControl) {
+                [self.refreshControl endRefreshing];
+            }
         }
     });
 }
@@ -483,7 +491,8 @@ static dispatch_queue_t chat_messages_queue;
     DCChatTableCell *cell;
 
     if (!self.messages || [self.messages count] <= indexPath.row) {
-        return nil;
+        NSCAssert(self.messages, @"Messages array is nil");
+        NSCAssert([self.messages count] > indexPath.row, @"Invalid indexPath");
     }
     DCMessage *messageAtRowIndex = [self.messages objectAtIndex:indexPath.row];
 
@@ -686,7 +695,6 @@ static dispatch_queue_t chat_messages_queue;
         }
 
                }*/
-        return cell;
     } else if (self.oldMode == NO) {
         [tableView registerNib:[UINib nibWithNibName:@"DCChatGroupedTableCell"
                                               bundle:nil]
@@ -939,7 +947,8 @@ static dispatch_queue_t chat_messages_queue;
         //});
         return cell;
     }
-    return nil;
+    NSCAssert(0, @"Should be unreachable");
+    abort();
 }
 
 
@@ -1072,7 +1081,7 @@ static dispatch_queue_t chat_messages_queue;
 
 - (NSInteger)tableView:(UITableView *)tableView
     numberOfRowsInSection:(NSInteger)section {
-    return self.messages.count;
+    return [self.messages count];
 }
 
 
@@ -1158,19 +1167,23 @@ static dispatch_queue_t chat_messages_queue;
 
 - (void)tappedVideo:(UITapGestureRecognizer *)sender {
     [self.inputField resignFirstResponder];
-    ////NSLog(@"Tapped video!");
+#ifdef DEBUG
+    NSLog(@"Tapped video!");
+#endif
     dispatch_async(dispatch_get_main_queue(), ^{
         MPMoviePlayerViewController *player;
         @try {
-            NSURL *url =
-                ((DCChatVideoAttachment *)((UIImageView *)sender.view).superview
-                )
-                    .videoURL;
-            player =
-                [[MPMoviePlayerViewController alloc] initWithContentURL:url];
+            NSURL *url = ((DCChatVideoAttachment *)sender.view.superview).videoURL;
+            player = [[MPMoviePlayerViewController alloc] initWithContentURL:url];
         } @catch (id exception) {
-            ////NSLog(@"Silly movie error %@", exception);
+#ifdef DEBUG
+            NSLog(@"Silly movie error %@", exception);
+#endif
         }
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                         selector:@selector(moviePlaybackDidFinish:)
+                                             name:MPMoviePlayerPlaybackDidFinishNotification
+                                           object:player.moviePlayer];
         player.moviePlayer.repeatMode = MPMovieRepeatModeOne;
         UIWindow *backgroundWindow =
             [[UIApplication sharedApplication] keyWindow];
@@ -1179,6 +1192,22 @@ static dispatch_queue_t chat_messages_queue;
         [self presentMoviePlayerViewControllerAnimated:player];
         [player.moviePlayer play];
     });
+}
+
+- (void)moviePlaybackDidFinish:(NSNotification *)notification {
+    NSNumber *reason = notification.userInfo[MPMoviePlayerPlaybackDidFinishReasonUserInfoKey];
+
+    if ([reason intValue] == MPMovieFinishReasonPlaybackError) {
+        NSError *error = notification.userInfo[@"error"];
+        NSLog(@"Playback error occurred: %@", error);
+    }
+#ifdef DEBUG
+    else if ([reason intValue] == MPMovieFinishReasonUserExited) {
+        NSLog(@"User exited playback");
+    } else if ([reason intValue] == MPMovieFinishReasonPlaybackEnded) {
+        NSLog(@"Playback ended normally");
+    }
+#endif
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

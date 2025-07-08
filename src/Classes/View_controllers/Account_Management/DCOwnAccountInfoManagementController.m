@@ -7,6 +7,7 @@
 //
 
 #import "DCOwnAccountInfoManagementController.h"
+#include <Foundation/Foundation.h>
 
 @interface DCOwnAccountInfoManagementController ()
 
@@ -228,7 +229,8 @@
         }
         return cell;
     }
-    return nil;
+    NSAssert(0, @"Unexpected state");
+    abort();
 }
 
 - (CGFloat)tableView:(UITableView *)tableView

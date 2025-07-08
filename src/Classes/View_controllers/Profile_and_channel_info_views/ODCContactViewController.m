@@ -233,7 +233,8 @@
         }
         return cell;
     }
-    return nil;
+    NSAssert(0, @"Unexpected state");
+    abort();
 }
 
 - (CGFloat)tableView:(UITableView *)tableView

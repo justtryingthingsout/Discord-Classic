@@ -37,8 +37,7 @@
     self.mutTableView.dataSource = self;
     self.recipients              = [NSMutableArray array];
 
-#warning TODO: fix cast
-    NSArray *recipientDictionaries = (NSArray *)self.mutualFriendsList;
+    NSArray *recipientDictionaries = self.mutualFriendsList;
     for (NSDictionary *recipient in recipientDictionaries) {
         DCUser *dcUser = [DCTools convertJsonUser:recipient cache:YES];
         [self.recipients addObject:dcUser];

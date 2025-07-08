@@ -7,9 +7,10 @@
 //
 
 #import "DCMenuViewController.h"
+#include <dispatch/dispatch.h>
+#include <Foundation/Foundation.h>
 #include <objc/NSObjCRuntime.h>
 #include "DCGuild.h"
-#include <Foundation/Foundation.h>
 #include "DCServerCommunicator.h"
 
 @interface DCMenuViewController ()
@@ -130,7 +131,7 @@
         [self.guildTableView reloadData];
         [self.channelTableView reloadData];
 
-        if (VERSION_MIN(@"6.0") && !self.refreshControl) {
+        if (!self.refreshControl) {
             self.refreshControl = UIRefreshControl.new;
 
             self.refreshControl.attributedTitle =
@@ -147,17 +148,17 @@
 
 - (void)reloadTable {
     [self handleMessageAck];
-    [self.channelTableView reloadData];
-    if (VERSION_MIN(@"6.0")) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.channelTableView reloadData];
         [self.reloadControl endRefreshing];
-    }
+    });
 }
 
 - (void)reconnect {
     [DCServerCommunicator.sharedInstance reconnect];
-    if (VERSION_MIN(@"6.0")) {
+    dispatch_async(dispatch_get_main_queue(), ^{
         [self.refreshControl endRefreshing];
-    }
+    });
 }
 
 // reload end
@@ -175,9 +176,7 @@
 // idk what to do with this ngl
 - (void)viewWillAppear:(BOOL)animated {
     if (self.selectedGuild) {
-        [self.channelTableView reloadData];
         [DCServerCommunicator.sharedInstance setSelectedChannel:nil];
-        [self.channelTableView reloadData];
         if ([self.navigationItem.title isEqualToString:@"Direct Messages"]) {
             NSSortDescriptor *sortDescriptor = [NSSortDescriptor
                 sortDescriptorWithKey:@"lastMessageId"
@@ -185,9 +184,10 @@
                              selector:@selector(localizedStandardCompare:)];
             [self.selectedGuild.channels
                 sortUsingDescriptors:@[ sortDescriptor ]];
-
-            [self.channelTableView reloadData];
         }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.channelTableView reloadData];
+        });
     } else {
         [self.navigationItem setTitle:@"Discord"];
     }
@@ -249,7 +249,7 @@
 
         DCChannel *channelAtRowIndex =
             [self.selectedGuild.channels objectAtIndex:indexPath.row];
-        
+
         // If the channel is a category, do nothing
         if (channelAtRowIndex.type == 4) {
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -257,7 +257,7 @@
         }
 
         DCServerCommunicator.sharedInstance.selectedChannel = channelAtRowIndex;
-        self.selectedChannel = channelAtRowIndex;
+        self.selectedChannel                                = channelAtRowIndex;
 
         // Mark channel messages as read and refresh the channel object
         // accordingly
@@ -335,9 +335,9 @@
 
         // Sorting guilds based on userInfo[@"guildPositions"] array
         if (!DCServerCommunicator.sharedInstance.guildsIsSorted) {
-            NSUInteger guildCount = [DCServerCommunicator.sharedInstance.guilds count];
+            NSUInteger guildCount        = [DCServerCommunicator.sharedInstance.guilds count];
             NSMutableArray *sortedGuilds = [NSMutableArray arrayWithCapacity:guildCount];
-            NSNull *nullObject = [NSNull null];
+            NSNull *nullObject           = [NSNull null];
             // init to be able to index
             for (NSUInteger i = 0; i < guildCount; i++) {
                 [sortedGuilds addObject:nullObject];
@@ -345,7 +345,7 @@
             for (DCGuild *guild in DCServerCommunicator.sharedInstance.guilds) {
                 int index = [DCServerCommunicator.sharedInstance.currentUserInfo[@"guildPositions"] indexOfObject:guild.snowflake];
                 if (index != NSNotFound) {
-                    sortedGuilds[index+1] = guild;
+                    sortedGuilds[index + 1] = guild;
                 } else {
                     if ([sortedGuilds[0] isEqual:nullObject]) {
                         // If the first element is still null, must be private guild
@@ -362,13 +362,12 @@
             DCServerCommunicator.sharedInstance.guildsIsSorted = YES;
         }
 
-        if (!DCServerCommunicator.sharedInstance.guilds ||
-            DCServerCommunicator.sharedInstance.guilds.count <= indexPath.row) {
-            return nil;
-        }
+        NSCAssert(DCServerCommunicator.sharedInstance.guilds && DCServerCommunicator.sharedInstance.guilds.count > indexPath.row, @"Guilds array is empty or index out of bounds");
 
         DCGuild *guildAtRowIndex = [DCServerCommunicator.sharedInstance.guilds
             objectAtIndex:indexPath.row];
+
+        NSCAssert((NSNull *)guildAtRowIndex != [NSNull null], @"Guild at row index is NSNull");
 
         // Show blue indicator if guild has any unread messages
         cell.unreadMessages.hidden = !guildAtRowIndex.unread;
@@ -393,8 +392,16 @@
                       initWithStyle:UITableViewCellStyleDefault
                     reuseIdentifier:@"private"];
             }
+
+            NSCAssert(
+                self.selectedGuild && self.selectedGuild.channels && self.selectedGuild.channels.count > indexPath.row,
+                @"Invalid guild, channel, or index"
+            );
+
             DCChannel *channelAtRowIndex =
                 [self.selectedGuild.channels objectAtIndex:indexPath.row];
+
+            NSCAssert((NSNull *)channelAtRowIndex != [NSNull null], @"Channel at row index is NSNull");
 
             cell.unreadMessages.hidden = !channelAtRowIndex.unread;
             [cell.nameLabel setText:channelAtRowIndex.name];
@@ -455,8 +462,12 @@
             return cell;
 
         } else {
+            NSCAssert(self.selectedGuild && self.selectedGuild.channels && self.selectedGuild.channels.count > indexPath.row, @"Invalid guild, channel, or index");
+
             DCChannel *channelAtRowIndex =
                 [self.selectedGuild.channels objectAtIndex:indexPath.row];
+
+            NSCAssert((NSNull *)channelAtRowIndex != [NSNull null], @"Channel at row index is NSNull");
 
             if (channelAtRowIndex.type == 4) {
                 UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Category Cell"];
@@ -489,8 +500,8 @@
             return cell;
         }
     }
-
-    return nil;
+    NSCAssert(0, @"Unexpected table view type");
+    abort();
 }
 
 - (CGFloat)tableView:(UITableView *)tableView
@@ -500,9 +511,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView
     viewForHeaderInSection:(NSInteger)section {
-    if (section == 0) {
-        return nil;
-    }
+    NSCAssert(section != 0, @"Unexpected section");
 
     UIView *headerView = [[UIView alloc]
         initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 28)];
@@ -552,14 +561,13 @@
 
 - (NSInteger)tableView:(UITableView *)tableView
     numberOfRowsInSection:(NSInteger)section {
-    if (tableView == self.guildTableView) {
+    if (tableView == self.guildTableView && DCServerCommunicator.sharedInstance.guilds) {
         return DCServerCommunicator.sharedInstance.guilds.count;
-    }
-    if (tableView == self.channelTableView) {
+    } else if (tableView == self.channelTableView && self.selectedGuild && self.selectedGuild.channels) {
         return self.selectedGuild.channels.count;
+    } else {
+        return 0;
     }
-
-    return 0;
 }
 
 // SEGUE

@@ -27,8 +27,10 @@
 @property bool muted;
 @property int type;
 @property int position;
-@property NSMutableDictionary* recipients;
+// Holds NSDictionary* of Users
+@property NSMutableArray* recipients;
 @property DCGuild* parentGuild;
+// Holds NSDictionary* of Users
 @property NSArray* users;
 
 - (void)checkIfRead;

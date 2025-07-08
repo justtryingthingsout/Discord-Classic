@@ -25,6 +25,9 @@
 //
 
 #import "WSWebSocket.h"
+// #include <Security/SecureTransport.h>
+// #include <CoreFoundation/CFNumber.h>
+// #include <CFNetwork/CFSocketStream.h>
 #import <CommonCrypto/CommonDigest.h>
 #import <Security/Security.h>
 
@@ -80,6 +83,7 @@ typedef enum {
 @implementation WSWebSocket {
     NSArray *protocols;
 
+    // SSLContextRef _sslContext;
     NSInputStream *inputStream;
     NSOutputStream *outputStream;
     BOOL hasSpaceAvailable;
@@ -214,6 +218,10 @@ typedef enum {
 
 
 - (void)initiateConnection {
+// #ifdef DEBUG
+//     setenv("CFNETWORK_DIAGNOSTICS", "3", 1);
+// #endif
+
     CFReadStreamRef readStream;
     CFWriteStreamRef writeStream;
     NSUInteger port = (hostURL.port) ? hostURL.port.integerValue
@@ -236,6 +244,13 @@ typedef enum {
         [outputStream setProperty:NSStreamSocketSecurityLevelTLSv1
                            forKey:NSStreamSocketSecurityLevelKey];
     }
+
+    // sslContext = SSLCreateContext(NULL, kSSLClientSide, kSSLStreamType);
+    // SSLSetSessionOption(sslContext, kSSLSessionOptionBreakOnServerAuth, true);
+    // SSLSetProtocolVersionMin(sslContext, kTLSProtocol12);
+    // SSLSetProtocolVersionMax(sslContext, kTLSProtocol12);
+    // CFReadStreamSetProperty(readStream, kCFStreamPropertySSLContext, sslContext);
+    // CFWriteStreamSetProperty(writeStream, kCFStreamPropertySSLContext, sslContext);
 
     inputStream.delegate  = self;
     outputStream.delegate = self;
@@ -464,20 +479,53 @@ typedef enum {
 
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
     switch (eventCode) {
-        case NSStreamEventOpenCompleted:
+        case NSStreamEventOpenCompleted: {
+#ifdef DEBUG
+            NSLog(@"Stream opened: %@", aStream);
+#endif
+            // OSStatus status = SSLHandshake(sslContext);
+            // while (status == errSSLWouldBlock) {
+            //     status = SSLHandshake(sslContext);
+            // }
+            // if (status == errSSLServerAuthCompleted) {
+            //     SecTrustRef trust;
+            //     SecTrustResultType result;
+            //     status = SSLCopyPeerTrust(sslContext, &trust);
+            //     SecTrustEvaluate(trust, &result);
+            //     // Continue handshake
+            //     status = SSLHandshake(sslContext);
+            // }
+// #ifdef DEBUG
+//             if (status != noErr) {
+//                 NSLog(@"SSL Handshake failed with status: %d", (int)status);
+//                 [self closeConnection];
+//             } else {
+//                 NSLog(@"SSL Handshake completed successfully");
+//             }
+// #endif
             break;
+        }
         case NSStreamEventHasBytesAvailable:
+// #ifdef DEBUG
+//             NSLog(@"Bytes available");
+// #endif
             if (aStream == inputStream) {
                 [self readFromStream];
             }
             break;
         case NSStreamEventHasSpaceAvailable:
+// #ifdef DEBUG
+//             NSLog(@"Space available");
+// #endif
             if (aStream == outputStream) {
                 hasSpaceAvailable = YES;
                 [self sendData];
             }
             break;
         case NSStreamEventErrorOccurred:
+#ifdef DEBUG
+            NSLog(@"Error occurred: %@", aStream.streamError);
+#endif
             statusCode    = aStream.streamError.code;
             closingReason = [NSString
                 stringWithFormat:@"%@ - %@", aStream.streamError.domain,
@@ -485,10 +533,15 @@ typedef enum {
             [self closeConnection];
             break;
         case NSStreamEventEndEncountered:
+#ifdef DEBUG
+            NSLog(@"Stream ended: %@", aStream);
+#endif
             [self closeConnection];
             break;
         default:
-            // NSLog(@"Unknown event");
+#ifdef DEBUG
+            NSLog(@"Unknown event");
+#endif
             break;
     }
 }

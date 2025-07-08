@@ -25,6 +25,6 @@
 @property bool noConnections;
 @property NSString* snowflake;
 @property NSDictionary* connectedAccounts;
-@property NSDictionary* mutualFriends;
+@property NSArray* mutualFriends;
 @property NSDictionary* mutualGuilds;
 @end
