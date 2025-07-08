@@ -33,7 +33,6 @@
 @end
 
 
-
 @implementation DCServerCommunicator
 
 UIActivityIndicatorView *spinner;
@@ -307,18 +306,19 @@ UIActivityIndicatorView *spinner;
                     [DCTools processImageDataWithURLString:iconURL
                                                   andBlock:^(UIImage *imageData) {
                                                       UIImage *icon = imageData;
-                                                      if (icon != nil) {
-                                                          newChannel.icon = icon;
-                                                          CGSize itemSize = CGSizeMake(32, 32);
+                                                      if (icon == nil) {
+                                                          return;
+                                                      }
+                                                      newChannel.icon = icon;
+                                                      CGSize itemSize = CGSizeMake(32, 32);
+                                                      dispatch_async(dispatch_get_main_queue(), ^{
                                                           UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
                                                           CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
                                                           [newChannel.icon drawInRect:imageRect];
                                                           newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
                                                           UIGraphicsEndImageContext();
-                                                      }
-                                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                                                         /*[NSNotificationCenter.defaultCenter postNotificationName:@"RELOAD CHANNEL LIST" object:DCServerCommunicator.sharedInstance];*/
-                                                                     });
+                                                      });
+                                                      //   /*[NSNotificationCenter.defaultCenter postNotificationName:@"RELOAD CHANNEL LIST" object:DCServerCommunicator.sharedInstance];*/
                                                   }];
                 } else {
                     if (((NSArray *)[privateChannel valueForKey:@"recipients"]).count > 0) {
@@ -331,9 +331,9 @@ UIActivityIndicatorView *spinner;
                                                       andBlock:^(UIImage *imageData) {
                                                           UIImage *retrievedImage = imageData;
                                                           if (imageData) {
+                                                              newChannel.icon = retrievedImage;
+                                                              CGSize itemSize = CGSizeMake(32, 32);
                                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                                  newChannel.icon = retrievedImage;
-                                                                  CGSize itemSize = CGSizeMake(32, 32);
                                                                   UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
                                                                   CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
                                                                   [newChannel.icon drawInRect:imageRect];
@@ -355,11 +355,13 @@ UIActivityIndicatorView *spinner;
                                                               }
                                                               newChannel.icon = [DCUser defaultAvatars][selector];
                                                               CGSize itemSize = CGSizeMake(32, 32);
-                                                              UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
-                                                              CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
-                                                              [newChannel.icon drawInRect:imageRect];
-                                                              newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
-                                                              UIGraphicsEndImageContext();
+                                                              dispatch_async(dispatch_get_main_queue(), ^{
+                                                                UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
+                                                                CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+                                                                [newChannel.icon drawInRect:imageRect];
+                                                                newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
+                                                                UIGraphicsEndImageContext();
+                                                              });
                                                           }
                                                           // Process user presences from READY payload
                                                           NSArray *presences = [d valueForKey:@"presences"];
@@ -413,14 +415,14 @@ UIActivityIndicatorView *spinner;
         for (DCChannel *channel in privateGuild.channels) {
             [channelsDict setObject:channel forKey:channel.snowflake];
         }
-        self.channels = channelsDict;
+        self.channels          = channelsDict;
         NSMutableArray *guilds = NSMutableArray.new;
         [guilds addObject:privateGuild];
         // Get servers (guilds) the user is a member of
         for (NSDictionary *jsonGuild in [d valueForKey:@"guilds"]) {
             [guilds addObject:[DCTools convertJsonGuild:jsonGuild]];
         }
-        self.guilds = guilds;
+        self.guilds         = guilds;
         self.guildsIsSorted = NO;
         // Read states are recieved in READY payload
         // they give a channel ID and the ID of the last read message in that channel
@@ -564,10 +566,10 @@ UIActivityIndicatorView *spinner;
         }];
         // Disable ability to identify until reenabled 5 seconds later.
         // API only allows once identify every 5 seconds
-        self.identifyCooldown                                             = false;
+        self.identifyCooldown = false;
         // do not initialize these here, could cause concurrency issues while guilds and channels are being loaded
-        //self.guilds                                                       = NSMutableArray.new;
-        //self.channels                                                     = NSMutableDictionary.new;
+        // self.guilds                                                       = NSMutableArray.new;
+        // self.channels                                                     = NSMutableDictionary.new;
         self.loadedUsers                                                  = NSMutableDictionary.new;
         self.loadedRoles                                                  = NSMutableDictionary.new;
         self.didReceiveHeartbeatResponse                                  = true;
@@ -679,9 +681,9 @@ UIActivityIndicatorView *spinner;
     __weak typeof(self) weakSelf = self;
 
     [self.websocket setTextCallback:^(NSString *responseString) {
-// #ifdef DEBUG
-//         NSLog(@"Got response: %@", responseString);
-// #endif
+        // #ifdef DEBUG
+        //         NSLog(@"Got response: %@", responseString);
+        // #endif
 
         // Parse JSON to a dictionary
         NSDictionary *parsedJsonResponse = [DCTools parseJSON:responseString];
@@ -691,9 +693,9 @@ UIActivityIndicatorView *spinner;
         int op          = [[parsedJsonResponse valueForKey:@"op"] integerValue];
         NSDictionary *d = [parsedJsonResponse valueForKey:@"d"];
 
-// #ifdef DEBUG
-//         NSLog(@"Got op code %i", op);
-// #endif
+        // #ifdef DEBUG
+        //         NSLog(@"Got op code %i", op);
+        // #endif
 
         switch (op) {
             case HELLO: {

@@ -84,9 +84,20 @@ static dispatch_queue_t chat_messages_queue;
                name:@"MESSAGE EDIT"
              object:nil];
 
+    // use RELOAD CHAT DATA very sparingly, it is very expensive and lags the chat
     [NSNotificationCenter.defaultCenter addObserver:self
                                            selector:@selector(handleAsyncReload)
                                                name:@"RELOAD CHAT DATA"
+                                             object:nil];
+
+    [NSNotificationCenter.defaultCenter addObserver:self
+                                           selector:@selector(handleReloadUser:)
+                                               name:@"RELOAD USER DATA"
+                                             object:nil];
+
+    [NSNotificationCenter.defaultCenter addObserver:self
+                                           selector:@selector(handleReloadMessage:)
+                                               name:@"RELOAD MESSAGE DATA"
                                              object:nil];
 
     [NSNotificationCenter.defaultCenter addObserver:self
@@ -199,6 +210,7 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleReady {
+    [self handleAsyncReload];
     if (DCServerCommunicator.sharedInstance.selectedChannel) {
         self.messages = NSMutableArray.new;
 
@@ -210,6 +222,37 @@ static dispatch_queue_t chat_messages_queue;
     }
 }
 
+- (void)handleReloadUser:(NSNotification *)notification {
+    if (!self.chatTableView) {
+        return;
+    }
+    DCUser *user = notification.object;
+    NSMutableArray *indexPaths = NSMutableArray.new;
+    for (DCMessage *message in self.messages) {
+        if ([message.author.snowflake isEqualToString:user.snowflake]) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.messages indexOfObject:message] inSection:0];
+            [indexPaths addObject:indexPath];
+        }
+    }
+    [self.chatTableView beginUpdates];
+    [self.chatTableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.chatTableView endUpdates];
+}
+
+- (void)handleReloadMessage:(NSNotification *)notification {
+    if (!self.chatTableView) {
+        return;
+    }
+    DCMessage *message = notification.object;
+    NSUInteger index = [self.messages indexOfObject:message];
+    if (index == NSNotFound || index >= self.messages.count) {
+        return;
+    }
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    [self.chatTableView beginUpdates];
+    [self.chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.chatTableView endUpdates];
+}
 
 - (void)handleMessageCreate:(NSNotification *)notification {
     // dispatch_async(dispatch_get_main_queue(), ^{

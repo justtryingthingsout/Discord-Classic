@@ -13,6 +13,9 @@
 #import "DCMessage.h"
 #import "DCUser.h"
 
+#define TICK   NSDate *startTime = [NSDate date]
+#define TOCK   NSLog(@"%s: Time: %f", __PRETTY_FUNCTION__, -[startTime timeIntervalSinceNow])
+
 #define VERSION_MIN(v)                                                  \
     ([[[UIDevice currentDevice] systemVersion] compare:v                \
                                                options:NSNumericSearch] \
