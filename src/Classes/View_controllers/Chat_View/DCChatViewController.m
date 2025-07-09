@@ -23,10 +23,11 @@
 #import "TRMalleableFrameView.h"
 
 @interface DCChatViewController ()
-@property int numberOfMessagesLoaded;
-@property UIImage *selectedImage;
-@property bool oldMode;
-@property UIRefreshControl *refreshControl;
+@property(nonatomic, strong) NSMutableArray *messages;
+@property(nonatomic, assign) int numberOfMessagesLoaded;
+@property(nonatomic, strong) UIImage *selectedImage;
+@property(nonatomic, assign) BOOL oldMode;
+@property(nonatomic, strong) UIRefreshControl *refreshControl;
 @end
 
 @implementation DCChatViewController
@@ -51,8 +52,7 @@ static dispatch_queue_t chat_messages_queue;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"]
-        == YES) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"]) {
         [UINavigationBar.appearance
             setBackgroundImage:[UIImage imageNamed:@"TbarBG"]
                  forBarMetrics:UIBarMetricsDefault];
@@ -65,6 +65,8 @@ static dispatch_queue_t chat_messages_queue;
             [self performSegueWithIdentifier:@"to Tokenpage" sender:self];
         }
     }
+
+    self.messages = NSMutableArray.new;
 
     [NSNotificationCenter.defaultCenter
         addObserver:self
@@ -84,7 +86,12 @@ static dispatch_queue_t chat_messages_queue;
                name:@"MESSAGE EDIT"
              object:nil];
 
-    // use RELOAD CHAT DATA very sparingly, it is very expensive and lags the chat
+    // use NUKE/RELOAD CHAT DATA very sparingly, it is very expensive and lags the chat
+    [NSNotificationCenter.defaultCenter addObserver:self
+                                           selector:@selector(handleChatReset)
+                                               name:@"NUKE CHAT DATA"
+                                             object:nil];
+
     [NSNotificationCenter.defaultCenter addObserver:self
                                            selector:@selector(handleAsyncReload)
                                                name:@"RELOAD CHAT DATA"
@@ -197,12 +204,18 @@ static dispatch_queue_t chat_messages_queue;
     lastTimeInterval                  = 0;
 }
 
+- (void)handleChatReset {
+    NSLog(@"%s: Resetting chat data", __PRETTY_FUNCTION__);
+    self.messages = NSMutableArray.new;
+    [self handleAsyncReload];
+}
+
 - (void)handleAsyncReload {
     if (!self.chatTableView) {
         return;
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        //////NSLog(@"async reload!");
+        //NSLog(@"async reload!");
         // about contact CoreControl
 
         [self.chatTableView reloadData];
@@ -210,10 +223,9 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleReady {
-    [self handleAsyncReload];
     if (DCServerCommunicator.sharedInstance.selectedChannel) {
         self.messages = NSMutableArray.new;
-
+        [self handleAsyncReload];
         [self getMessages:50 beforeMessage:nil];
     }
 
@@ -226,11 +238,20 @@ static dispatch_queue_t chat_messages_queue;
     if (!self.chatTableView) {
         return;
     }
+
+    NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
+    if (rowCount != self.messages.count) {
+        NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
+        [self handleAsyncReload];
+        return;
+    }
+
     DCUser *user = notification.object;
     NSMutableArray *indexPaths = NSMutableArray.new;
-    for (DCMessage *message in self.messages) {
+    for (int i = 0; i < self.messages.count; i++) {
+        DCMessage *message = [self.messages objectAtIndex:i];
         if ([message.author.snowflake isEqualToString:user.snowflake]) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.messages indexOfObject:message] inSection:0];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
             [indexPaths addObject:indexPath];
         }
     }
@@ -243,6 +264,14 @@ static dispatch_queue_t chat_messages_queue;
     if (!self.chatTableView) {
         return;
     }
+
+    NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
+    if (rowCount != self.messages.count) {
+        NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
+        [self handleAsyncReload];
+        return;
+    }
+
     DCMessage *message = notification.object;
     NSUInteger index = [self.messages indexOfObject:message];
     if (index == NSNotFound || index >= self.messages.count) {
@@ -291,11 +320,18 @@ static dispatch_queue_t chat_messages_queue;
     }
 
 
-    [self.chatTableView beginUpdates];
-    [self.messages addObject:newMessage];
-    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
-    [self.chatTableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    [self.chatTableView endUpdates];
+    NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
+    if (rowCount != self.messages.count) {
+        NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
+        [self.messages addObject:newMessage];
+        [self handleAsyncReload];
+    } else {
+        [self.chatTableView beginUpdates];
+        [self.messages addObject:newMessage];
+        NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
+        [self.chatTableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.chatTableView endUpdates];
+    }
 
     if (self.viewingPresentTime) {
         [self.chatTableView
@@ -370,11 +406,18 @@ static dispatch_queue_t chat_messages_queue;
         }
     }
 
-    [self.chatTableView beginUpdates];
+    NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
     NSUInteger idx = [self.messages indexOfObject:compareMessage];
-    [self.messages
-        replaceObjectAtIndex:idx
-                  withObject:newMessage];
+    if (rowCount != self.messages.count) {
+        NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
+        [self.messages replaceObjectAtIndex:idx
+                             withObject:newMessage];
+        [self handleAsyncReload];
+        return;
+    }
+    [self.chatTableView beginUpdates];
+    [self.messages replaceObjectAtIndex:idx
+                             withObject:newMessage];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
     [self.chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     [self.chatTableView endUpdates];
@@ -438,6 +481,14 @@ static dispatch_queue_t chat_messages_queue;
             newMessage.contentHeight += authorNameSize.height + 4;
         }
     }
+
+    NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
+    if (rowCount != self.messages.count) {
+        NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
+        [self.messages removeObjectAtIndex:index];
+        [self handleAsyncReload];
+        return;
+    }
     [self.chatTableView beginUpdates];
     [self.messages removeObjectAtIndex:index];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
@@ -457,15 +508,23 @@ static dispatch_queue_t chat_messages_queue;
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSRange range = NSMakeRange(0, [newMessages count]);
                 NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
-                NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
-                [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
-                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
-                    [indexPaths addObject:indexPath];
-                }];
-                [self.chatTableView beginUpdates];
-                [self.messages insertObjects:newMessages atIndexes:indexSet];
-                [self.chatTableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-                [self.chatTableView endUpdates];
+
+                NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
+                if (rowCount != self.messages.count) {
+                    NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
+                    [self.messages insertObjects:newMessages atIndexes:indexSet];
+                    [self handleAsyncReload];
+                } else {
+                    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+                    [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+                        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+                        [indexPaths addObject:indexPath];
+                    }];
+                    [self.chatTableView beginUpdates];
+                    [self.messages insertObjects:newMessages atIndexes:indexSet];
+                    [self.chatTableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+                    [self.chatTableView endUpdates];
+                }
 
                 int scrollOffset = -self.chatTableView.height;
                 for (DCMessage *newMessage in newMessages) {
@@ -1044,7 +1103,7 @@ static dispatch_queue_t chat_messages_queue;
                                otherButtonTitles:@"View Profile", nil];
         [messageActionSheet setTag:1];
         [messageActionSheet setDelegate:self];
-        [messageActionSheet showInView:self.view];
+        [messageActionSheet showFromToolbar:self.toolbar];
     } else {
         UIActionSheet *messageActionSheet = [[UIActionSheet alloc]
                      initWithTitle:self.selectedMessage.content
@@ -1054,7 +1113,7 @@ static dispatch_queue_t chat_messages_queue;
                  otherButtonTitles:@"Reply", @"Mention", @"View Profile", nil];
         [messageActionSheet setTag:3];
         [messageActionSheet setDelegate:self];
-        [messageActionSheet showInView:self.view];
+        [messageActionSheet showFromToolbar:self.toolbar];
     }
 }
 
@@ -1330,7 +1389,7 @@ static dispatch_queue_t chat_messages_queue;
                                    otherButtonTitles:@"Take Photo or Video",
                                                      @"Choose Existing", nil];
             [imageSourceActionSheet setTag:2];
-            [imageSourceActionSheet showInView:self.view];
+            [imageSourceActionSheet showFromToolbar:self.toolbar];
         } else {
             // Camera is not supported, use photo library
             UIImagePickerController *picker = UIImagePickerController.new;

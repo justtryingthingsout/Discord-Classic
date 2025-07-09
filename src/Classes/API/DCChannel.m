@@ -626,8 +626,7 @@ static dispatch_queue_t channel_send_queue;
                     CGSize authorNameSize = [currentMessage.author.globalName
                              sizeWithFont:[UIFont boldSystemFontOfSize:15]
                         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                            lineBreakMode:(NSLineBreakMode
-                                          )UILineBreakModeWordWrap];
+                            lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
 
                     currentMessage.contentHeight -= authorNameSize.height + 4;
                 }

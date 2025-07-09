@@ -202,7 +202,7 @@
                       destructiveButtonTitle:nil
                            otherButtonTitles:nil, nil];
     [messageActionSheet setDelegate:self];
-    [messageActionSheet showInView:self.view];
+    [messageActionSheet showFromToolbar:self.toolbar];
 }
 
 - (IBAction)userInfo:(id)sender {
@@ -270,9 +270,7 @@
         // setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-        if (self.experimentalMode == NO) {
-            [self performSegueWithIdentifier:@"guilds to chat" sender:self];
-        } else if (self.experimentalMode == YES) {
+        if (self.experimentalMode) {
             UINavigationController *navigationController =
                 (UINavigationController *)
                     self.slideMenuController.contentViewController;
@@ -282,7 +280,9 @@
                 [[DCCInfoViewController alloc] init];
             if ([contentViewController
                     isKindOfClass:[DCChatViewController class]]) {
-                contentViewController.messages = NSMutableArray.new;
+                [NSNotificationCenter.defaultCenter
+                postNotificationName:@"NUKE CHAT DATA"
+                              object:nil];
                 NSString *formattedChannelName;
                 if (DCServerCommunicator.sharedInstance.selectedChannel.type
                     == 0) {
@@ -301,6 +301,8 @@
                 [rightSidebar viewDidLoad];
                 [self.slideMenuController hideMenu:YES];
             }
+        } else {
+            [self performSegueWithIdentifier:@"guilds to chat" sender:self];
         }
         //[tableView cellForRowAtIndexPath:indexPath].accessoryType =
         // UITableViewCellAccessoryDisclosureIndicator;
@@ -582,7 +584,10 @@
 
             if ([chatViewController isKindOfClass:DCChatViewController.class]) {
                 // Initialize messages
-                chatViewController.messages = NSMutableArray.new;
+                [NSNotificationCenter.defaultCenter
+                postNotificationName:@"NUKE CHAT DATA"
+                              object:nil];
+
                 NSString *formattedChannelName;
 
                 if (DCServerCommunicator.sharedInstance.selectedChannel.type

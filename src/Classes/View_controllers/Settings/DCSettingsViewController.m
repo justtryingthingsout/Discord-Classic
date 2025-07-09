@@ -65,7 +65,9 @@
                     valueForKey:@"1184464173795651594"];
 
             // Initialize messages
-            chatViewController.messages = NSMutableArray.new;
+            [NSNotificationCenter.defaultCenter
+                postNotificationName:@"NUKE CHAT DATA"
+                              object:nil];
 
             [chatViewController.navigationItem
                 setTitle:@"Discord Classic #general"];

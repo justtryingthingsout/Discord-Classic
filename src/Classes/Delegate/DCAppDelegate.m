@@ -37,11 +37,11 @@
     self.hackyMode =
         [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
 
-    if (self.experimental && self.hackyMode == YES) {
+    if (self.experimental && self.hackyMode) {
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"hackyMode"];
     }
 
-    if (self.experimental == YES) {
+    if (self.experimental) {
         UIStoryboard *storyboard =
             [UIStoryboard storyboardWithName:@"Experimental"
                                       bundle:nil];
@@ -50,7 +50,7 @@
         self.window.rootViewController = initialViewController;
         [self.window makeKeyAndVisible];
     } else {
-        if (self.hackyMode == true) {
+        if (self.hackyMode) {
             UIStoryboard *storyboard =
                 [UIStoryboard storyboardWithName:@"Throwback"
                                           bundle:nil];

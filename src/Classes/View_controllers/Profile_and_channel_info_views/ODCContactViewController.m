@@ -274,9 +274,9 @@
                 [chatViewController.navigationItem
                     setTitle:formattedChannelName];
 
-                if (!chatViewController.messages) {
-                    chatViewController.messages = [NSMutableArray array];
-                }
+                [NSNotificationCenter.defaultCenter
+                    postNotificationName:@"NUKE CHAT DATA"
+                                  object:nil];
 
                 [chatViewController getMessages:50 beforeMessage:nil];
                 [chatViewController setViewingPresentTime:true];

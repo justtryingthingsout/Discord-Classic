@@ -139,7 +139,9 @@
 
         if ([chatViewController isKindOfClass:DCChatViewController.class]) {
             // Initialize messages
-            chatViewController.messages = NSMutableArray.new;
+            [NSNotificationCenter.defaultCenter
+                postNotificationName:@"NUKE CHAT DATA"
+                              object:nil];
 
             // Add a '#' if appropriate to the chanel name in the navigation bar
             NSString *formattedChannelName;

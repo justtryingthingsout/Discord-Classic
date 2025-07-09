@@ -20,13 +20,17 @@
     self.recipients = [NSMutableArray array];
 #warning TODO: fix member list not loading
     if (DCServerCommunicator.sharedInstance.selectedChannel && DCServerCommunicator.sharedInstance.selectedChannel.parentGuild) {
+#ifdef DEBUG
         NSLog(@"Selected guild: %@", [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild name]);
+#endif
         NSArray *members = [[DCServerCommunicator.sharedInstance.selectedChannel.parentGuild members] copy];
         for (DCUser *member in members) {
             [self.recipients addObject:member];
         }
     } else if (DCServerCommunicator.sharedInstance.selectedChannel) {
+#ifdef DEBUG
         NSLog(@"Selected channel: %@", DCServerCommunicator.sharedInstance.selectedChannel.name);
+#endif
         NSArray *recipientDictionaries = (NSArray *)[DCServerCommunicator.sharedInstance.selectedChannel recipients];
         for (NSDictionary *recipient in recipientDictionaries) {
             DCUser *dcUser = [DCTools convertJsonUser:recipient cache:YES];
