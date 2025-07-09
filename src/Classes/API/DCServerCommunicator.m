@@ -567,9 +567,8 @@ UIActivityIndicatorView *spinner;
         // Disable ability to identify until reenabled 5 seconds later.
         // API only allows once identify every 5 seconds
         self.identifyCooldown = false;
-        // do not initialize these here, could cause concurrency issues while guilds and channels are being loaded
-        // self.guilds                                                       = NSMutableArray.new;
-        // self.channels                                                     = NSMutableDictionary.new;
+        /* do not initialize guilds and channels here,
+           could cause concurrency issues while guilds and channels are being loaded */
         self.loadedUsers                                                  = NSMutableDictionary.new;
         self.loadedRoles                                                  = NSMutableDictionary.new;
         self.didReceiveHeartbeatResponse                                  = true;
