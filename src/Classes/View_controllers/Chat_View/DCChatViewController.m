@@ -579,10 +579,10 @@ static dispatch_queue_t chat_messages_queue;
                         UIViewAutoresizingFlexibleLeftMargin
                         | UIViewAutoresizingFlexibleRightMargin;
                 }
+                if (self.refreshControl) {
+                    [self.refreshControl endRefreshing];
+                }
             });
-            if (self.refreshControl) {
-                [self.refreshControl endRefreshing];
-            }
         }
     });
 }

@@ -33,30 +33,20 @@
                                              object:nil];
 
     [NSNotificationCenter.defaultCenter addObserver:self
-                                           selector:@selector(handleReady)
+                                           selector:@selector(handleMessageAck)
                                                name:@"MESSAGE ACK"
                                              object:nil];
 
     [NSNotificationCenter.defaultCenter addObserver:self
                                            selector:@selector(handleMessageAck)
-                                               name:@"MESSAGE ACK"
-                                             object:nil];
-    [NSNotificationCenter.defaultCenter addObserver:self
-                                           selector:@selector(handleMessageAck)
                                                name:@"RELOAD CHANNEL LIST"
                                              object:nil];
+
     [NSNotificationCenter.defaultCenter addObserver:self
                                            selector:@selector(handleReady)
                                                name:@"RELOAD GUILD LIST"
                                              object:nil];
-    [NSNotificationCenter.defaultCenter addObserver:self
-                                           selector:@selector(handleMessageAck)
-                                               name:@"MESSAGE ACK"
-                                             object:nil];
-    [NSNotificationCenter.defaultCenter addObserver:self
-                                           selector:@selector(handleMessageAck)
-                                               name:@"RELOAD CHANNEL LIST"
-                                             object:nil];
+                                             
     [[NSNotificationCenter defaultCenter]
         addObserver:self
            selector:@selector(handleNotificationTap:)

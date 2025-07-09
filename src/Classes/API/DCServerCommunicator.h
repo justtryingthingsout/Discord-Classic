@@ -199,6 +199,8 @@
 #define VOICE_SERVER_UPDATE @"VOICE_SERVER_UPDATE"
 #define VOICE_STATE_UPDATE_EVENT @"VOICE_STATE_UPDATE"
 
+#define CHANNEL_UNREAD_UPDATE @"CHANNEL_UNREAD_UPDATE"
+
 @interface DCServerCommunicator : NSObject
 
 @property WSWebSocket* websocket;

@@ -7,6 +7,7 @@
 //
 
 #import "DCServerCommunicator.h"
+#include <dispatch/dispatch.h>
 #include <Foundation/Foundation.h>
 #import "DCChannel.h"
 #import "DCGuild.h"
@@ -510,25 +511,23 @@ UIActivityIndicatorView *spinner;
 }
 
 - (void)handleChannelCreateWithData:(NSDictionary *)d {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        DCChannel *newChannel = DCChannel.new;
-        newChannel.snowflake  = [d valueForKey:@"id"];
-        newChannel.parentID   = [d valueForKey:@"parent_id"];
-        newChannel.name       = [d valueForKey:@"name"];
-        newChannel.lastMessageId =
-            [d valueForKey:@"last_message_id"];
-        if ([d valueForKey:@"guild_id"] != nil) {
-            for (DCGuild *guild in self.guilds) {
-                if ([guild.snowflake isEqualToString:[d valueForKey:@"guild_id"]]) {
-                    newChannel.parentGuild = guild;
-                    break;
-                }
+    DCChannel *newChannel = DCChannel.new;
+    newChannel.snowflake  = [d valueForKey:@"id"];
+    newChannel.parentID   = [d valueForKey:@"parent_id"];
+    newChannel.name       = [d valueForKey:@"name"];
+    newChannel.lastMessageId =
+        [d valueForKey:@"last_message_id"];
+    if ([d valueForKey:@"guild_id"] != nil) {
+        for (DCGuild *guild in self.guilds) {
+            if ([guild.snowflake isEqualToString:[d valueForKey:@"guild_id"]]) {
+                newChannel.parentGuild = guild;
+                break;
             }
         }
-        newChannel.type       = [[d valueForKey:@"type"] intValue];
-        NSString *rawPosition = [d valueForKey:@"position"];
-        newChannel.position   = rawPosition ? [rawPosition intValue] : 0;
-    });
+    }
+    newChannel.type       = [[d valueForKey:@"type"] intValue];
+    NSString *rawPosition = [d valueForKey:@"position"];
+    newChannel.position   = rawPosition ? [rawPosition intValue] : 0;
 }
 
 #pragma mark - WebSocket Event Handlers
@@ -640,6 +639,20 @@ UIActivityIndicatorView *spinner;
     } else if ([t isEqualToString:THREAD_CREATE] || [t isEqualToString:CHANNEL_CREATE]) {
         [self handleChannelCreateWithData:d];
         return;
+    } else if ([t isEqualToString:CHANNEL_UNREAD_UPDATE]) {
+        NSArray *unreads = [d valueForKey:@"channel_unread_updates"];
+        for (NSDictionary *unread in unreads) {
+            NSString *channelId = [unread valueForKey:@"id"];
+            DCChannel *channel  = [self.channels objectForKey:channelId];
+            if (channel) {
+                channel.lastMessageId = [unread valueForKey:@"last_message_id"];
+                BOOL oldUnread = channel.unread;
+                [channel checkIfRead];
+                if (oldUnread != channel.unread) {
+                    NSLog(@"Channel %@ (%@) unread state changed to %d", channel.name, channel.snowflake, channel.unread);
+                }
+            }
+        }
     } else {
 #ifdef DEBUG
         NSLog(@"Unhandled event type: %@, content: %@", t, d);
@@ -762,9 +775,9 @@ UIActivityIndicatorView *spinner;
         [self.alertView setTitle:@"Authenticating..."];
         [self startCommunicator];
     } else {
-        double timeRemaining = self.cooldownTimer.fireDate.timeIntervalSinceNow;
+        NSTimeInterval timeRemaining = [self.cooldownTimer.fireDate timeIntervalSinceNow];
 #ifdef DEBUG
-        NSLog(@"Cooldown in effect. Time left %f", timeRemaining);
+        NSLog(@"Cooldown in effect. Time left %lf", timeRemaining);
 #endif
         [self.alertView setTitle:@"Waiting for auth cooldown..."];
         if (self.oldMode == NO) {

@@ -28,8 +28,7 @@
             return;
         }
     }
-
-    [self setUnread:false];
+    self.unread = false;
 }
 
 @end

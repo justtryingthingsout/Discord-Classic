@@ -50,17 +50,17 @@ static dispatch_queue_t channel_send_queue;
 }
 
 - (void)checkIfRead {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        @try {
-            self.unread =
-                (!self.muted && self.lastReadMessageId != (id)NSNull.null &&
-                 [self.lastReadMessageId isKindOfClass:[NSString class]]
-                 && ![self.lastReadMessageId isEqualToString:self.lastMessageId]
-                );
-            [self.parentGuild checkIfRead];
-        } @catch (NSException *e) {
-        }
-    });
+    self.unread = (!self.muted && self.lastReadMessageId != (id)NSNull.null &&
+                       [self.lastReadMessageId isKindOfClass:[NSString class]]
+                       && ![self.lastReadMessageId isEqualToString:self.lastMessageId]);
+        [self.parentGuild checkIfRead];
+    if (self.unread) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [NSNotificationCenter.defaultCenter
+                postNotificationName:@"RELOAD GUILD LIST"
+                              object:nil];
+        });
+    }
 }
 
 - (void)sendMessage:(NSString *)message {
