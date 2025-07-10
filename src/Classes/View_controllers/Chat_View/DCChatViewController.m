@@ -430,55 +430,8 @@ static dispatch_queue_t chat_messages_queue;
     NSUInteger index = [self.messages indexOfObjectPassingTest:^BOOL(DCMessage *msg, NSUInteger idx, BOOL *stop) {
         return [msg.snowflake isEqualToString:[notification.userInfo valueForKey:@"id"]];
     }];
-    if (index == NSNotFound || index > self.messages.count) {
+    if (index == NSNotFound || index >= self.messages.count) {
         return;
-    }
-
-    if (index + 1 > self.messages.count) {
-        return;
-    }
-    DCMessage *newMessage = [self.messages objectAtIndex:index + 1];
-
-    if (index > 0) {
-        DCMessage *prevMessage = [self.messages objectAtIndex:index - 1];
-        NSDate *currentTimeStamp = newMessage.timestamp;
-
-        if (prevMessage.author.snowflake == newMessage.author.snowflake
-            && ([newMessage.timestamp timeIntervalSince1970] -
-                    [prevMessage.timestamp timeIntervalSince1970]
-                < 420)
-            && [[NSCalendar currentCalendar]
-                rangeOfUnit:NSCalendarUnitDay
-                  startDate:&currentTimeStamp
-                   interval:NULL
-                    forDate:prevMessage.timestamp]
-            && (prevMessage.messageType == DEFAULT || prevMessage.messageType == REPLY)) {
-            Boolean oldGroupedFlag = newMessage.isGrouped;
-            newMessage.isGrouped   = (newMessage.messageType == DEFAULT || newMessage.messageType == REPLY) && (newMessage.referencedMessage == nil);
-
-            if (newMessage.isGrouped
-                && (newMessage.isGrouped != oldGroupedFlag)) {
-                float contentWidth =
-                    UIScreen.mainScreen.bounds.size.width - 63;
-                CGSize authorNameSize = [newMessage.author.globalName
-                         sizeWithFont:[UIFont boldSystemFontOfSize:15]
-                    constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                        lineBreakMode:(NSLineBreakMode
-                                      )UILineBreakModeWordWrap];
-
-                newMessage.contentHeight -= authorNameSize.height + 4;
-            }
-        } else if (newMessage.isGrouped) {
-            newMessage.isGrouped = false;
-            float contentWidth =
-                UIScreen.mainScreen.bounds.size.width - 63;
-            CGSize authorNameSize = [newMessage.author.globalName
-                     sizeWithFont:[UIFont boldSystemFontOfSize:15]
-                constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                    lineBreakMode:(NSLineBreakMode
-                                  )UILineBreakModeWordWrap];
-            newMessage.contentHeight += authorNameSize.height + 4;
-        }
     }
 
     NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
@@ -486,13 +439,61 @@ static dispatch_queue_t chat_messages_queue;
         NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
         [self.messages removeObjectAtIndex:index];
         [self handleAsyncReload];
+    } else {
+        [self.chatTableView beginUpdates];
+        [self.messages removeObjectAtIndex:index];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+        [self.chatTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.chatTableView endUpdates];
+    }
+
+    if (index + 1 >= self.messages.count) {
         return;
     }
-    [self.chatTableView beginUpdates];
-    [self.messages removeObjectAtIndex:index];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-    [self.chatTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    [self.chatTableView endUpdates];
+    DCMessage *newMessage = [self.messages objectAtIndex:index + 1];
+
+    if (index <= 0) {
+        return;
+    }
+    DCMessage *prevMessage = [self.messages objectAtIndex:index - 1];
+    
+    NSDate *currentTimeStamp = newMessage.timestamp;
+    if (prevMessage.author.snowflake == newMessage.author.snowflake
+        && ([newMessage.timestamp timeIntervalSince1970] -
+                [prevMessage.timestamp timeIntervalSince1970]
+            < 420)
+        && [[NSCalendar currentCalendar]
+            rangeOfUnit:NSCalendarUnitDay
+              startDate:&currentTimeStamp
+               interval:NULL
+                forDate:prevMessage.timestamp]
+        && (prevMessage.messageType == DEFAULT || prevMessage.messageType == REPLY)) {
+        Boolean oldGroupedFlag = newMessage.isGrouped;
+        newMessage.isGrouped   = (newMessage.messageType == DEFAULT || newMessage.messageType == REPLY) && (newMessage.referencedMessage == nil);
+
+        if (newMessage.isGrouped
+            && (newMessage.isGrouped != oldGroupedFlag)) {
+            float contentWidth =
+                UIScreen.mainScreen.bounds.size.width - 63;
+            CGSize authorNameSize = [newMessage.author.globalName
+                     sizeWithFont:[UIFont boldSystemFontOfSize:15]
+                constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                    lineBreakMode:(NSLineBreakMode
+                                  )UILineBreakModeWordWrap];
+
+            newMessage.contentHeight -= authorNameSize.height + 4;
+        }
+    } else if (newMessage.isGrouped) {
+        newMessage.isGrouped = false;
+        float contentWidth =
+            UIScreen.mainScreen.bounds.size.width - 63;
+        CGSize authorNameSize = [newMessage.author.globalName
+                 sizeWithFont:[UIFont boldSystemFontOfSize:15]
+            constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                lineBreakMode:(NSLineBreakMode
+                              )UILineBreakModeWordWrap];
+        newMessage.contentHeight += authorNameSize.height + 4;
+    }
 }
 
 
