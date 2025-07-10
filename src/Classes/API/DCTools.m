@@ -7,6 +7,7 @@
 //
 
 #import "DCTools.h"
+#include "TSMarkdownParser.h"
 #include <Foundation/Foundation.h>
 #include <dispatch/dispatch.h>
 #import "DCChatVideoAttachment.h"
@@ -16,6 +17,7 @@
 #import "DCUser.h"
 #import "QuickLook/QuickLook.h"
 #import "UIImage+animatedGIF.h"
+#import "NSString+Emojize.h"
 
 // https://discord.gg/X4NSsMC
 
@@ -998,6 +1000,41 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
         }
     }
 
+    // {
+    //     // emotes
+    //     NSRegularExpression *regex = [NSRegularExpression
+    //         regularExpressionWithPattern:@"\\<a?:(.*?):(\\d+)\\>"
+    //                              options:NSRegularExpressionCaseInsensitive
+    //                                error:NULL];
+    //     NSTextCheckingResult *embeddedMention = [regex
+    //         firstMatchInString:newMessage.content
+    //                    options:0
+    //                      range:NSMakeRange(0, newMessage.content.length)];
+    //     while (embeddedMention) {
+    //         BOOL isAnimated = [newMessage.content
+    //             characterAtIndex:embeddedMention.range.location] == 'a';
+    //         NSString *emoteName = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:1]];
+    //         NSString *emoteID   = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:2]];
+    //         //https://cdn.discordapp.com/emojis/%@.png
+    //         //newMessage.content = [newMessage.content stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
+
+            
+
+    //         embeddedMention    = [regex firstMatchInString:newMessage.content options:0 range:NSMakeRange(0, newMessage.content.length)];
+    //     }
+    // }
+
+    NSString *content = [newMessage.content emojizedString];
+
+    content = [content stringByReplacingOccurrencesOfString:@"\u2122\uFE0F"
+                                                 withString:@"™"];
+    content = [content stringByReplacingOccurrencesOfString:@"\u00AE\uFE0F"
+                                                 withString:@"®"];
+
+    if (newMessage.editedTimestamp != nil) {
+        content = [content stringByAppendingString:@" (edited)"];
+    }
+
     // Calculate height of content to be used when showing messages in a
     // tableview contentHeight does NOT include height of the embeded images or
     // account for height of a grouped message
@@ -1006,10 +1043,21 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
              sizeWithFont:[UIFont boldSystemFontOfSize:15]
         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
             lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
-    CGSize contentSize    = [newMessage.content
+    CGSize contentSize = [newMessage.content
              sizeWithFont:[UIFont systemFontOfSize:14]
         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
             lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
+    
+    if (VERSION_MIN(@"6.0") && [newMessage.content length]) {
+        TSMarkdownParser *parser = [TSMarkdownParser standardParser];
+        NSAttributedString *attributedText =
+            [parser attributedStringFromMarkdown:newMessage.content];
+        if (attributedText) {
+            contentSize = [attributedText boundingRectWithSize:CGSizeMake(contentWidth, CGFLOAT_MAX)
+                options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                context:nil].size;
+        }
+    }
 
     newMessage.contentHeight = authorNameSize.height
         + (newMessage.attachmentCount ? contentSize.height : MAX(contentSize.height, 18))

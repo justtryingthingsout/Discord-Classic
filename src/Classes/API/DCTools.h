@@ -12,6 +12,7 @@
 #import "DCGuild.h"
 #import "DCMessage.h"
 #import "DCUser.h"
+#import "DCChatViewController.h"
 
 #define TICK   NSDate *startTime = [NSDate date]
 #define TOCK   NSLog(@"%s: Time: %f", __PRETTY_FUNCTION__, -[startTime timeIntervalSinceNow])
@@ -78,6 +79,7 @@
 
 @interface DCTools : NSObject
 @property bool oldMode;
+
 + (void)processImageDataWithURLString:(NSString *)urlString
                              andBlock:(void (^)(UIImage *imageData)
                                       )processImage;

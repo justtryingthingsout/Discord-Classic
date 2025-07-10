@@ -18,7 +18,6 @@
 #import "DCServerCommunicator.h"
 #import "DCTools.h"
 #import "DCUser.h"
-#import "NSString+Emojize.h"
 #import "QuickLook/QuickLook.h"
 #import "TRMalleableFrameView.h"
 
@@ -654,21 +653,8 @@ static dispatch_queue_t chat_messages_queue;
         if (!messageAtRowIndex.isGrouped) {
             [cell.authorLabel setText:messageAtRowIndex.author.globalName];
         }
-        // im the dumbest fucking idiot alive kill me
 
-        NSString *content = [messageAtRowIndex.content emojizedString];
-
-        content = [content stringByReplacingOccurrencesOfString:@"\u2122\uFE0F"
-                                                     withString:@"™"];
-        content = [content stringByReplacingOccurrencesOfString:@"\u00AE\uFE0F"
-                                                     withString:@"®"];
-
-        if (messageAtRowIndex.editedTimestamp != nil && (NSNull*)messageAtRowIndex.editedTimestamp != [NSNull null]) {
-            content = [content stringByAppendingString:@" (edited)"];
-        }
-
-        [cell.contentTextView setText:content];
-
+        [cell.contentTextView setText:messageAtRowIndex.content];
 
         [cell.contentTextView
             setHeight:[cell.contentTextView
@@ -681,11 +667,9 @@ static dispatch_queue_t chat_messages_queue;
             [cell.profileImage setImage:messageAtRowIndex.author.profileImage];
         }
 
-
         [cell.contentView setBackgroundColor:messageAtRowIndex.pingingUser
                               ? [UIColor redColor]
                               : [UIColor clearColor]];
-
 
         for (UIView *subView in cell.subviews) {
             if ([subView isKindOfClass:[UIImageView class]]) {
@@ -775,28 +759,7 @@ static dispatch_queue_t chat_messages_queue;
                 [cell addSubview:preview.view];
             }
         }
-        //});
         return cell;
-
-        /*[cell.authorLabel setText:messageAtRowIndex.author.username];
-
-        [cell.contentTextView setText:messageAtRowIndex.content];
-
-        [cell.contentTextView setHeight:[cell.contentTextView
-        sizeThatFits:CGSizeMake(cell.contentTextView.width, MAXFLOAT)].height];
-
-        [cell.profileImage setImage:messageAtRowIndex.author.profileImage];
-
-        [cell.contentView setBackgroundColor:messageAtRowIndex.pingingUser?
-        [UIColor redColor] : [UIColor clearColor]];
-
-        for (UIView *subView in cell.subviews) {
-            if ([subView isKindOfClass:[UIImageView class]]) {
-                [subView removeFromSuperview];
-            }
-        }
-
-               }*/
     } else if (self.oldMode == NO) {
         [tableView registerNib:[UINib nibWithNibName:@"DCChatGroupedTableCell"
                                               bundle:nil]
@@ -880,21 +843,10 @@ static dispatch_queue_t chat_messages_queue;
             cell.universalImageView.image = [UIImage imageNamed:@"U-Boost"];
         }
 
-        NSString *content = [messageAtRowIndex.content emojizedString];
-
-        content = [content stringByReplacingOccurrencesOfString:@"\u2122\uFE0F"
-                                                     withString:@"™"];
-        content = [content stringByReplacingOccurrencesOfString:@"\u00AE\uFE0F"
-                                                     withString:@"®"];
-
-        if (messageAtRowIndex.editedTimestamp != nil) {
-            content = [content stringByAppendingString:@" (edited)"];
-        }
-
         if (VERSION_MIN(@"6.0")) {
-            [cell configureWithMessage:content];
+            [cell configureWithMessage:messageAtRowIndex.content];
         } else {
-            [cell.contentTextView setText:content];
+            [cell.contentTextView setText:messageAtRowIndex.content];
         }
 
         double height = [cell.contentTextView
@@ -1046,7 +998,6 @@ static dispatch_queue_t chat_messages_queue;
                 [cell addSubview:preview.view];
             }
         }
-        //});
         return cell;
     }
     NSCAssert(0, @"Should be unreachable");
