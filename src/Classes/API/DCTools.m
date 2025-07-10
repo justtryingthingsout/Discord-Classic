@@ -1035,6 +1035,8 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
         content = [content stringByAppendingString:@" (edited)"];
     }
 
+    newMessage.content = content;
+
     // Calculate height of content to be used when showing messages in a
     // tableview contentHeight does NOT include height of the embeded images or
     // account for height of a grouped message
