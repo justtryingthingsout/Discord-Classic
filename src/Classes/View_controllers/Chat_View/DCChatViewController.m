@@ -435,13 +435,13 @@ static dispatch_queue_t chat_messages_queue;
         return;
     }
 
-    DCMessage *newMessage = [self.messages objectAtIndex:index + 1];
-    if (newMessage == nil) {
+    if (index + 1 > self.messages.count) {
         return;
     }
+    DCMessage *newMessage = [self.messages objectAtIndex:index + 1];
 
-    DCMessage *prevMessage = [self.messages objectAtIndex:index - 1];
-    if (prevMessage != nil) {
+    if (index > 0) {
+        DCMessage *prevMessage = [self.messages objectAtIndex:index - 1];
         NSDate *currentTimeStamp = newMessage.timestamp;
 
         if (prevMessage.author.snowflake == newMessage.author.snowflake

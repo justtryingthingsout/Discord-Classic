@@ -50,9 +50,14 @@ static dispatch_queue_t channel_send_queue;
 }
 
 - (void)checkIfRead {
-    self.unread = (!self.muted && self.lastReadMessageId != (id)NSNull.null &&
-                       [self.lastReadMessageId isKindOfClass:[NSString class]]
-                       && ![self.lastReadMessageId isEqualToString:self.lastMessageId]);
+    DCChannel *parentChannel = [DCServerCommunicator.sharedInstance.channels objectForKey:self.parentID];
+    self.unread = (
+        !self.muted
+        && (!parentChannel || ![parentChannel muted])
+        && self.lastReadMessageId != (id)NSNull.null
+        && [self.lastReadMessageId isKindOfClass:[NSString class]]
+        && ![self.lastReadMessageId isEqualToString:self.lastMessageId]
+    );
         [self.parentGuild checkIfRead];
     if (self.unread) {
         dispatch_async(dispatch_get_main_queue(), ^{
