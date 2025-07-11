@@ -591,26 +591,32 @@ UIActivityIndicatorView *spinner;
         @synchronized (guild) {
             guild.memberCount = [[d objectForKey:@"member_count"] intValue];
             guild.onlineCount = [[d objectForKey:@"online_count"] intValue];
+        }
+        @synchronized (guild.members) {
             for (NSDictionary *op in [d objectForKey:@"ops"]) {
-                NSLog(@"Handling guild member list update with data: %@", d);
                 if ([[op objectForKey:@"op"] isEqualToString:SYNC]) {
                     if (![[op objectForKey:@"items"] isKindOfClass:[NSArray class]] 
                         || [((NSArray *)[op objectForKey:@"items"]) count] == 0) {
+#ifdef DEBUG
                         NSLog(@"Guild member list update SYNC op without items: %@", op);
+#endif
                         continue;
                     }
-                    NSLog(@"CLEAR CLEAR CLEAR");
                     guild.members = NSMutableArray.new;
-                    NSLog(
-                        @"SYNC: length: %lu, range: [%lu..%lu]", 
-                        (unsigned long)[op[@"items"] count],
-                        (unsigned long)[op[@"range"][0] integerValue],
-                        (unsigned long)[op[@"range"][1] integerValue]
-                    );
+// #ifdef DEBUG
+//                     NSLog(
+//                         @"SYNC: length: %lu, range: [%lu..%lu]", 
+//                         (unsigned long)[op[@"items"] count],
+//                         (unsigned long)[op[@"range"][0] integerValue],
+//                         (unsigned long)[op[@"range"][1] integerValue]
+//                     );
+// #endif
                     for (NSDictionary *item in [op objectForKey:@"items"]) {
                         id member = [self handleGuildMemberItemWithItem:item];
                         if (!member) {
+#ifdef DEBUG
                             NSLog(@"Guild member list update SYNC op with invalid item: %@", item);
+#endif
                             continue;
                         }
                         [guild.members addObject:member];
@@ -619,40 +625,50 @@ UIActivityIndicatorView *spinner;
                     NSDictionary *item = [op objectForKey:@"item"];
                     id member = [self handleGuildMemberItemWithItem:item];
                     if (!member) {
+#ifdef DEBUG
                         NSLog(@"Guild member list update UPDATE op with invalid item: %@", item);
+#endif
                         continue;
                     }
                     NSUInteger index = [[op objectForKey:@"index"] intValue];
                     if (index >= [guild.members count]) {
-                        NSLog(@"Index out of bounds for guild member list UPDATE: %@", op);
-                        continue;
+                        index = [guild.members count] - 1;
+                    } else if (index < 0) {
+                        index = 0;
                     }
-                    NSLog(@"Updating member at index: %lu", (unsigned long)index);
+// #ifdef DEBUG
+//                     NSLog(@"Updating %s at index: %lu", [member isKindOfClass:[DCUser class]] ? "user" : "role", (unsigned long)index);
+// #endif
                     [guild.members replaceObjectAtIndex:(NSUInteger)index withObject:(id)member];
                 } else if ([[op objectForKey:@"op"] isEqualToString:DELETE]) {
                     NSUInteger index = [[op objectForKey:@"index"] intValue];
                     if (index >= [guild.members count]) {
-                        NSLog(@"Index out of bounds for guild member list DELETE: %@", op);
-                        continue;
+                        index = [guild.members count] - 1;
+                    } else if (index < 0) {
+                        index = 0;
                     }
-                    NSLog(@"Deleting member at index: %lu", (unsigned long)index);
+// #ifdef DEBUG
+//                     NSLog(@"Deleting at index: %lu", (unsigned long)index);
+// #endif
                     [guild.members removeObjectAtIndex:index];
                 } else if ([[op objectForKey:@"op"] isEqualToString:INSERT]) {
                     NSUInteger index = [[op objectForKey:@"index"] intValue];
                     if (index > [guild.members count]) {
-                        if (index != [guild.members count] + 1) {
-                            NSLog(@"Index out of bounds for guild member list INSERT: %@", op);
-                            continue;
-                        }
-                        index = [guild.members count];
+                        index = [guild.members count] - 1;
+                    } else if (index < 0) {
+                        index = 0;
                     }
                     NSDictionary *item = [op objectForKey:@"item"];
                     id member = [self handleGuildMemberItemWithItem:item];
                     if (!member) {
+#ifdef DEBUG
                         NSLog(@"Guild member list update INSERT op with invalid item: %@", item);
+#endif
                         continue;
                     }
-                    NSLog(@"Inserting member at index: %lu", (unsigned long)index);
+// #ifdef DEBUG
+//                     NSLog(@"Inserting %s at index: %lu", [member isKindOfClass:[DCUser class]] ? "user" : "role", (unsigned long)index);
+// #endif
                     [guild.members insertObject:member atIndex:index];
                 } else {
 #ifdef DEBUG
@@ -664,9 +680,13 @@ UIActivityIndicatorView *spinner;
                 // NSLog(@"Capping guild members at 100");
                 guild.members = [[guild.members subarrayWithRange:NSMakeRange(0, 100)] mutableCopy];
             }
-            NSLog(@"size: %lu", (unsigned long)[guild.members count]);
+// #ifdef DEBUG
+//             NSLog(@"size: %lu", (unsigned long)[guild.members count]);
+// #endif
         }
-        [NSNotificationCenter.defaultCenter postNotificationName:@"GuildMemberListUpdated" object:nil];
+        if (self.selectedChannel != nil && [self.selectedChannel.parentGuild.snowflake isEqualToString:guild.snowflake]) {
+            [NSNotificationCenter.defaultCenter postNotificationName:@"GuildMemberListUpdated" object:nil];
+        }
     });
 }
 
@@ -797,6 +817,14 @@ UIActivityIndicatorView *spinner;
         return;
     } else if ([t isEqualToString:GUILD_CREATE]) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            for (DCGuild *g in self.guilds) {
+                if ([g.snowflake isEqualToString:[d valueForKey:@"id"]]) {
+#ifdef DEBUG
+                    NSLog(@"Guild with ID %@ ready for member list!", [d valueForKey:@"id"]);
+#endif
+                    return;
+                }
+            }
             [self.guilds addObject:[DCTools convertJsonGuild:d]];
             self.guildsIsSorted = NO;
         });

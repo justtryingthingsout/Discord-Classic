@@ -231,6 +231,9 @@
         }
     } else if (tableView == self.channelTableView) {
         if (!self.selectedGuild || !self.selectedGuild.channels || self.selectedGuild.channels.count <= indexPath.row) {
+#ifdef DEBUG
+            NSLog(@"Selected guild or channels are not set or index out of bounds");
+#endif
             return;
         }
 
@@ -268,13 +271,12 @@
                     self.slideMenuController.contentViewController;
             DCChatViewController *contentViewController =
                 navigationController.viewControllers.firstObject;
-            DCCInfoViewController *rightSidebar =
-                [[DCCInfoViewController alloc] init];
             if ([contentViewController
                     isKindOfClass:[DCChatViewController class]]) {
                 [NSNotificationCenter.defaultCenter
                 postNotificationName:@"NUKE CHAT DATA"
                               object:nil];
+                [NSNotificationCenter.defaultCenter postNotificationName:@"GuildMemberListUpdated" object:nil];
                 NSString *formattedChannelName;
                 if (DCServerCommunicator.sharedInstance.selectedChannel.type
                     == 0) {
@@ -290,7 +292,6 @@
                     setTitle:formattedChannelName];
                 [contentViewController getMessages:50 beforeMessage:nil];
                 [contentViewController setViewingPresentTime:true];
-                [rightSidebar viewDidLoad];
                 [self.slideMenuController hideMenu:YES];
             }
         } else {
@@ -587,6 +588,7 @@
     [NSNotificationCenter.defaultCenter
     postNotificationName:@"NUKE CHAT DATA"
                   object:nil];
+    [NSNotificationCenter.defaultCenter postNotificationName:@"GuildMemberListUpdated" object:nil];
 
     NSString *formattedChannelName;
 

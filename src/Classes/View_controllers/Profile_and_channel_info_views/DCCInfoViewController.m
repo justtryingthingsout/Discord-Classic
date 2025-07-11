@@ -7,7 +7,7 @@
 //
 
 #import "DCCInfoViewController.h"
-#include <dispatch/dispatch.h>
+#include "DCRecipientTableCell.h"
 #include "DCRole.h"
 #include <Foundation/Foundation.h>
 
@@ -19,32 +19,28 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.tableView.dataSource            = self;
+    self.tableView.delegate              = self;
+
     [NSNotificationCenter.defaultCenter
             addObserver:self
                selector:@selector(guildMemberListUpdated:)
                    name:@"GuildMemberListUpdated"
                  object:nil];
-    self.recipients = [NSMutableArray array];
+
     if (DCServerCommunicator.sharedInstance.selectedChannel && [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.snowflake length] > 0) {
         // If a guild is selected, get the members from the guild
         self.title = [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild name];
         self.navigationItem.title = self.title;
-        self.navigationItem.rightBarButtonItem =
-            [[UIBarButtonItem alloc] initWithTitle:@"Members"
-                                             style:UIBarButtonItemStylePlain
-                                            target:self
-                                            action:@selector(showMembers)];
 #ifdef DEBUG
         NSLog(@"Selected channel: #%@ in guild: %@", [DCServerCommunicator.sharedInstance.selectedChannel name], [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild name]);
 #endif
-        NSArray *members = [[DCServerCommunicator.sharedInstance.selectedChannel.parentGuild members] copy];
-        for (id member in members) {
-            [self.recipients addObject:member];
-        }
+        self.recipients = [[DCServerCommunicator.sharedInstance.selectedChannel.parentGuild members] copy];
     } else if (DCServerCommunicator.sharedInstance.selectedChannel) {
 #ifdef DEBUG
         NSLog(@"Selected channel: %@", DCServerCommunicator.sharedInstance.selectedChannel.name);
 #endif
+        self.recipients = [NSMutableArray array];
         NSArray *recipientDictionaries = [DCServerCommunicator.sharedInstance.selectedChannel recipients];
         for (NSDictionary *recipient in recipientDictionaries) {
             DCUser *dcUser = [DCTools convertJsonUser:recipient cache:YES];
@@ -58,17 +54,28 @@
     }
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self.tableView reloadData];
+}
+
 - (void)guildMemberListUpdated:(NSNotification *)notification {
     // Update the recipients list when the guild member list is updated
-#ifdef DEBUG
-    NSLog(@"Guild member list updated notification received.");
-#endif
-    if (!DCServerCommunicator.sharedInstance.selectedChannel 
-    || [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.snowflake length] <= 0) {
+    if (!DCServerCommunicator.sharedInstance.selectedChannel) {
         return;
     }
-    self.recipients = [[DCServerCommunicator.sharedInstance.selectedChannel.parentGuild members] copy];
+    if ([DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.snowflake length] <= 0) {
+        self.recipients = [NSMutableArray array];
+        NSArray *recipientDictionaries = [DCServerCommunicator.sharedInstance.selectedChannel recipients];
+        for (NSDictionary *recipient in recipientDictionaries) {
+            DCUser *dcUser = [DCTools convertJsonUser:recipient cache:YES];
+            [self.recipients addObject:dcUser];
+        }
+        [self.tableView reloadData];
+        return;
+    }
     dispatch_async(dispatch_get_main_queue(), ^{
+        self.recipients = [[DCServerCommunicator.sharedInstance.selectedChannel.parentGuild members] copy];
         [self.tableView reloadData];
     });
 }
@@ -80,7 +87,6 @@
 - (NSInteger)tableView:(UITableView *)tableView
     numberOfRowsInSection:(NSInteger)section {
     if (DCServerCommunicator.sharedInstance.selectedChannel) {
-        //NSLog(@"Returning count of recipients: %lu", (unsigned long)[self.recipients count]);
         return [self.recipients count];
     } else {
 #ifdef DEBUG
@@ -95,6 +101,10 @@
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"]) {
         id item                              = self.recipients[indexPath.row];
         DCRecipientTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Members cell"];
+        if (!cell) {
+            NSCAssert(NO, @"Failed to dequeue DCRecipientTableCell");
+            abort();
+        }
         if ([item isKindOfClass:[DCUser class]]) {
             DCUser *user = item;
             cell.userName.text               = user.globalName;
