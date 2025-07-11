@@ -166,7 +166,8 @@
 // idk what to do with this ngl
 - (void)viewWillAppear:(BOOL)animated {
     if (self.selectedGuild) {
-        [DCServerCommunicator.sharedInstance setSelectedChannel:nil];
+        // NSLog(@"clear selected channel!");
+        // [DCServerCommunicator.sharedInstance setSelectedChannel:nil];
         if ([self.navigationItem.title isEqualToString:@"Direct Messages"]) {
             NSSortDescriptor *sortDescriptor = [NSSortDescriptor
                 sortDescriptorWithKey:@"lastMessageId"
@@ -443,7 +444,7 @@
                 // Update the status image based on the buddy's status
                 if (buddy) {
                     NSString *statusImageName =
-                        [self imageNameForStatus:buddy.status];
+                        [self.class imageNameForStatus:buddy.status];
                     cell.statusImage.image =
                         [UIImage imageNamed:statusImageName];
                 } else {
@@ -540,7 +541,7 @@
 }
 
 
-- (NSString *)imageNameForStatus:(NSString *)status {
++ (NSString *)imageNameForStatus:(NSString *)status {
     if ([status isEqualToString:@"online"]) {
         return @"online";
     } else if ([status isEqualToString:@"dnd"]) {

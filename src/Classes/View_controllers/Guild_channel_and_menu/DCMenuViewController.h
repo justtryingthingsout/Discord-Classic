@@ -52,4 +52,6 @@
 @property bool experimentalMode;
 @property NSOperationQueue *serverIconImageQueue;
 
++ (NSString *)imageNameForStatus:(NSString *)status;
+
 @end

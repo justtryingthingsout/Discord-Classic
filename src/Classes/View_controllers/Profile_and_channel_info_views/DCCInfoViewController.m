@@ -7,6 +7,10 @@
 //
 
 #import "DCCInfoViewController.h"
+#include "DCServerCommunicator.h"
+#include <CoreGraphics/CGGeometry.h>
+#include "DCMenuViewController.h"
+#include "DCTools.h"
 #include "DCRecipientTableCell.h"
 #include "DCRole.h"
 #include <Foundation/Foundation.h>
@@ -111,6 +115,20 @@
             cell.userPFP.image               = user.profileImage;
             cell.userPFP.layer.cornerRadius  = cell.userPFP.frame.size.width / 2.0;
             cell.userPFP.layer.masksToBounds = YES;
+            if ([DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.snowflake length] > 0) {
+                NSString *statusImageName = [DCMenuViewController imageNameForStatus:user.status];
+                UIImageView *statusImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:statusImageName]];
+                statusImageView.contentMode = UIViewContentModeScaleAspectFit;
+                CGFloat statusSize = 13;
+                CGFloat padding = 2;
+                statusImageView.frame = CGRectMake(
+                    CGRectGetMaxX(cell.userPFP.frame) - statusSize + padding,
+                    CGRectGetMaxY(cell.userPFP.frame) - statusSize + padding,
+                    statusSize,
+                    statusSize
+                );
+                [cell addSubview:statusImageView];
+            }
         } else if ([item isKindOfClass:[DCRole class]]) {
             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Roles Cell"];
             if (cell == nil) {
