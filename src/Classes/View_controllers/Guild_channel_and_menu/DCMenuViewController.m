@@ -193,7 +193,7 @@
                       destructiveButtonTitle:nil
                            otherButtonTitles:nil, nil];
     [messageActionSheet setDelegate:self];
-    [messageActionSheet showFromToolbar:self.toolbar];
+    [messageActionSheet showInView:self.view.superview];
 }
 
 - (IBAction)userInfo:(id)sender {
