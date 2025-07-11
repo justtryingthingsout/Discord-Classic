@@ -51,6 +51,12 @@ static dispatch_queue_t chat_messages_queue;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] 
+        initWithTarget:self
+        action:@selector(dismissKeyboard:)];
+    [self.view addGestureRecognizer:gestureRecognizer];
+    gestureRecognizer.cancelsTouchesInView = NO;
+
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"]) {
         [UINavigationBar.appearance
             setBackgroundImage:[UIImage imageNamed:@"TbarBG"]
@@ -317,7 +323,6 @@ static dispatch_queue_t chat_messages_queue;
             }
         }
     }
-
 
     NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
     if (rowCount != self.messages.count) {
@@ -1196,6 +1201,22 @@ static dispatch_queue_t chat_messages_queue;
     [self.chatTableView setHeight:self.view.height - self.toolbar.height];
     [self.toolbar setY:self.view.height - self.toolbar.height];
     [UIView commitAnimations];
+}
+
+- (void)dismissKeyboard:(UITapGestureRecognizer *)sender {
+    [self.view endEditing:YES];
+
+    NSDictionary *userInfo = @{
+        UIKeyboardAnimationDurationUserInfoKey : @(0.25),
+        UIKeyboardAnimationCurveUserInfoKey : @(UIViewAnimationCurveEaseInOut),
+        UIKeyboardFrameBeginUserInfoKey : [NSValue valueWithCGRect:CGRectZero],
+        UIKeyboardFrameEndUserInfoKey : [NSValue valueWithCGRect:CGRectZero],
+    };
+
+    [[NSNotificationCenter defaultCenter]
+        postNotificationName:UIKeyboardWillHideNotification
+        object:nil
+        userInfo:userInfo];
 }
 
 - (IBAction)sendMessage:(id)sender {
