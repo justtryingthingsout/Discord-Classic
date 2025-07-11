@@ -229,9 +229,7 @@
             self.totalView.hidden      = YES;
             self.guildTotalView.hidden = NO;
         }
-    }
-
-    if (tableView == self.channelTableView) {
+    } else if (tableView == self.channelTableView) {
         if (!self.selectedGuild || !self.selectedGuild.channels || self.selectedGuild.channels.count <= indexPath.row) {
             return;
         }
@@ -247,6 +245,10 @@
 
         DCServerCommunicator.sharedInstance.selectedChannel = channelAtRowIndex;
         self.selectedChannel                                = channelAtRowIndex;
+
+        [DCServerCommunicator.sharedInstance
+        sendGuildSubscriptionWithGuildId:self.selectedGuild.snowflake
+                               channelId:self.selectedChannel.snowflake];
 
         // Mark channel messages as read and refresh the channel object
         // accordingly
@@ -566,37 +568,38 @@
 
 // SEGUE
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.destinationViewController class] ==
-        [DCChatViewController class]) {
-        if ([segue.identifier isEqualToString:@"guilds to chat"]) {
-            DCChatViewController *chatViewController =
-                [segue destinationViewController];
-
-            if ([chatViewController isKindOfClass:DCChatViewController.class]) {
-                // Initialize messages
-                [NSNotificationCenter.defaultCenter
-                postNotificationName:@"NUKE CHAT DATA"
-                              object:nil];
-
-                NSString *formattedChannelName;
-
-                if (DCServerCommunicator.sharedInstance.selectedChannel.type
-                    == 0) {
-                    formattedChannelName = [@"#"
-                        stringByAppendingString:DCServerCommunicator
-                                                    .sharedInstance
-                                                    .selectedChannel.name];
-                } else {
-                    formattedChannelName = DCServerCommunicator.sharedInstance
-                                               .selectedChannel.name;
-                }
-                [chatViewController.navigationItem
-                    setTitle:formattedChannelName];
-                [chatViewController getMessages:50 beforeMessage:nil];
-                [chatViewController setViewingPresentTime:true];
-            }
-        }
+    if ([segue.destinationViewController class] != [DCChatViewController class]) {
+        return;
     }
+    if (![segue.identifier isEqualToString:@"guilds to chat"]) {
+        return;
+    }
+    DCChatViewController *chatViewController =
+        [segue destinationViewController];
+
+    if (![chatViewController isKindOfClass:DCChatViewController.class]) {
+        return;
+    }
+    DCChannel *selectedChannel =
+        DCServerCommunicator.sharedInstance.selectedChannel;
+        
+    // Initialize messages
+    [NSNotificationCenter.defaultCenter
+    postNotificationName:@"NUKE CHAT DATA"
+                  object:nil];
+
+    NSString *formattedChannelName;
+
+    if (selectedChannel.type == 0) {
+        formattedChannelName = [@"#"
+            stringByAppendingString:selectedChannel.name];
+    } else {
+        formattedChannelName = selectedChannel.name;
+    }
+    [chatViewController.navigationItem
+        setTitle:formattedChannelName];
+    [chatViewController getMessages:50 beforeMessage:nil];
+    [chatViewController setViewingPresentTime:true];
 }
 // SEGUE END
 @end

@@ -224,23 +224,10 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                                      );
                                  } else {
                                      int selector = 0;
-                                     NSNumberFormatter *f =
-                                         [[NSNumberFormatter alloc] init];
-                                     [f setNumberStyle:
-                                             NSNumberFormatterDecimalStyle];
-                                     NSNumber *discriminator = [f
-                                         numberFromString:
-                                             [jsonUser
-                                                 valueForKey:@"discriminator"]];
+                                     NSNumber *discriminator = @([[jsonUser valueForKey:@"discriminator"] integerValue]);
 
                                      if ([discriminator integerValue] == 0) {
-                                         NSNumberFormatter *f =
-                                             [[NSNumberFormatter alloc] init];
-                                         [f setNumberStyle:
-                                                 NSNumberFormatterDecimalStyle];
-                                         NSNumber *longId = [f
-                                             numberFromString:newUser
-                                                                  .snowflake];
+                                         NSNumber *longId = @([newUser.snowflake longLongValue]);
 
                                          selector =
                                              (int)(([longId longLongValue] >> 22
@@ -1074,8 +1061,8 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 + (DCGuild *)convertJsonGuild:(NSDictionary *)jsonGuild {
     DCGuild *newGuild  = DCGuild.new;
     newGuild.userRoles = NSMutableArray.new;
-    newGuild.members   = NSMutableArray.new;
     newGuild.roles     = NSMutableDictionary.new;
+    newGuild.members   = NSMutableArray.new;
 
     // Get @everyone role
     for (NSDictionary *guildRole in [jsonGuild objectForKey:@"roles"]) {
@@ -1090,8 +1077,10 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
     // Get roles of the current user
     for (NSDictionary *member in [jsonGuild objectForKey:@"members"]) {
-        [newGuild.members
-            addObject:[DCTools convertJsonUser:[member valueForKey:@"user"] cache:true]];
+        [DCServerCommunicator.sharedInstance.loadedUsers
+            setObject:[DCTools convertJsonUser:[member valueForKey:@"user"]
+                                       cache:true]
+               forKey:[member valueForKeyPath:@"user.id"]];
         if ([[member valueForKeyPath:@"user.id"] isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
             [newGuild.userRoles addObjectsFromArray:[member valueForKey:@"roles"]];
         }
@@ -1112,9 +1101,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                       @"https://cdn.discordapp.com/banners/%@/%@.png?size=320",
                       newGuild.snowflake, [jsonGuild valueForKey:@"banner"]];
 
-    NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
-    [f setNumberStyle:NSNumberFormatterDecimalStyle];
-    NSNumber *longId = [f numberFromString:newGuild.snowflake];
+    NSNumber *longId = @([newGuild.snowflake longLongValue]);
 
     int selector = (int)(([longId longLongValue] >> 22) % 6);
 

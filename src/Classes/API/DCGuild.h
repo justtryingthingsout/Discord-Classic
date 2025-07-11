@@ -22,6 +22,10 @@
 @property NSString* ownerID;
 // The number of members in the guild
 @property int memberCount;
+// The number of currently online members in the guild
+@property int onlineCount;
+// Whether it is muted
+@property BOOL muted;
 
 // The guild's icon
 @property UIImage* icon;
@@ -32,7 +36,7 @@
 @property NSMutableArray* channels;
 // Whether or not the guild has any unread child channels
 @property bool unread;
-// Members of the guild (currently unimplemented)
+// Members of the guild for display (can contain roles)
 @property NSMutableArray* members;
 // Roles in the guild
 @property NSMutableDictionary* roles;

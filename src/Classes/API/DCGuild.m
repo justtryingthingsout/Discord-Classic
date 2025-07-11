@@ -19,6 +19,10 @@
 }
 
 - (void)checkIfRead {
+    if (self.muted) {
+        self.unread = false;
+        return;
+    }
     /*Loop through all child channels
      if any single one is unread, the guild
      as a whole is unread*/

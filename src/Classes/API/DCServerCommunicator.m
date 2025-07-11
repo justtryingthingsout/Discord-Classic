@@ -7,6 +7,8 @@
 //
 
 #import "DCServerCommunicator.h"
+#include <objc/NSObjCRuntime.h>
+#include "DCRole.h"
 #include <dispatch/dispatch.h>
 #include <Foundation/Foundation.h>
 #import "DCChannel.h"
@@ -279,9 +281,7 @@ UIActivityIndicatorView *spinner;
                      [usersDict setObject:[user valueForKey:@"avatar"] forKey:@"avatar"];
                      [users addObject:usersDict];
                      }*/
-                    NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
-                    [f setNumberStyle:NSNumberFormatterDecimalStyle];
-                    NSNumber *longId = [f numberFromString:[user valueForKey:@"id"]];
+                    NSNumber *longId = @([[user valueForKey:@"id"] longLongValue]);
                     int selector     = (int)(([longId longLongValue] >> 22) % 6);
                     newChannel.icon  = [DCUser defaultAvatars][selector];
                     CGSize itemSize  = CGSizeMake(32, 32);
@@ -293,9 +293,7 @@ UIActivityIndicatorView *spinner;
                 if ([privateChannel objectForKey:@"icon"] != nil) {
                     NSString *iconURL    = [NSString stringWithFormat:@"https://cdn.discordapp.com/channel-icons/%@/%@.png?size=64",
                                                                    newChannel.snowflake, [privateChannel valueForKey:@"icon"]];
-                    NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
-                    [f setNumberStyle:NSNumberFormatterDecimalStyle];
-                    NSNumber *longId = [f numberFromString:newChannel.snowflake];
+                    NSNumber *longId = @([newChannel.snowflake longLongValue]);
                     int selector     = (int)(([longId longLongValue] >> 22) % 6);
                     newChannel.icon  = [DCUser defaultAvatars][selector];
                     CGSize itemSize  = CGSizeMake(32, 32);
@@ -343,13 +341,9 @@ UIActivityIndicatorView *spinner;
                                                               });
                                                           } else {
                                                               int selector         = 0;
-                                                              NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
-                                                              [f setNumberStyle:NSNumberFormatterDecimalStyle];
-                                                              NSNumber *discriminator = [f numberFromString:[user valueForKey:@"discriminator"]];
+                                                              NSNumber *discriminator = @([[user valueForKey:@"discriminator"] integerValue]);
                                                               if ([discriminator integerValue] == 0) {
-                                                                  NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
-                                                                  [f setNumberStyle:NSNumberFormatterDecimalStyle];
-                                                                  NSNumber *longId = [f numberFromString:[user valueForKey:@"id"]];
+                                                                  NSNumber *longId = @([[user valueForKey:@"id"] longLongValue]);
                                                                   selector         = (int)(([longId longLongValue] >> 22) % 6);
                                                               } else {
                                                                   selector = (int)([discriminator integerValue] % 5);
@@ -421,7 +415,21 @@ UIActivityIndicatorView *spinner;
         [guilds addObject:privateGuild];
         // Get servers (guilds) the user is a member of
         for (NSDictionary *jsonGuild in [d valueForKey:@"guilds"]) {
-            [guilds addObject:[DCTools convertJsonGuild:jsonGuild]];
+            DCGuild *guild = [DCTools convertJsonGuild:jsonGuild];
+            [guilds addObject:guild];
+        }
+        for (NSDictionary *guildSettings in [d valueForKey:@"user_guild_settings"]) {
+            NSString *guildId = [guildSettings valueForKey:@"guild_id"];
+            if ((NSNull *)guildId == [NSNull null]) {
+                ((DCGuild*)guilds[0]).muted = [[guildSettings valueForKey:@"muted"] boolValue];
+                continue;
+            }
+            for (DCGuild *guild in guilds) {
+                if ([guild.snowflake isEqualToString:guildId]) {
+                    guild.muted = [[guildSettings valueForKey:@"muted"] boolValue];
+                    break;
+                }
+            }
         }
         self.guilds         = guilds;
         self.guildsIsSorted = NO;
@@ -436,11 +444,9 @@ UIActivityIndicatorView *spinner;
             channelOfReadstate.lastReadMessageId = readstateMessageId;
             [channelOfReadstate checkIfRead];
         }
-        // dispatch_async(dispatch_get_main_queue(), ^{
         [NSNotificationCenter.defaultCenter postNotificationName:@"READY" object:self];
         // Dismiss the 'reconnecting' dialogue box
         [self.alertView dismissWithClickedButtonIndex:0 animated:YES];
-        //});
     });
 }
 
@@ -463,7 +469,9 @@ UIActivityIndicatorView *spinner;
             }
         }
         // IMPORTANT: Post a notification so we can refresh DM status dots
-        [NSNotificationCenter.defaultCenter postNotificationName:@"USER_PRESENCE_UPDATED" object:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [NSNotificationCenter.defaultCenter postNotificationName:@"USER_PRESENCE_UPDATED" object:nil];
+        });
     } else {
         // NSLog(@"[PRESENCE_UPDATE] Missing user ID or status in payload: %@", d);
     }
@@ -530,6 +538,138 @@ UIActivityIndicatorView *spinner;
     newChannel.position   = rawPosition ? [rawPosition intValue] : 0;
 }
 
+- (id)handleGuildMemberItemWithItem:(NSDictionary *)item {
+    if ([item objectForKey:@"group"]) {
+        NSDictionary *groupItem = [item objectForKey:@"group"];
+        id ret = [self.loadedRoles objectForKey:[groupItem objectForKey:@"id"]];
+        if (!ret) {
+            // fake online/offline roles
+            DCRole *role = DCRole.new;
+            role.snowflake = [groupItem valueForKey:@"id"];
+            if ([role.snowflake isEqualToString:@"online"]) {
+                role.name = @"Online";
+            } else if ([role.snowflake isEqualToString:@"offline"]) {
+                role.name = @"Offline";
+            } else {
+                role.name = [groupItem valueForKey:@"id"];
+            }
+            [self.loadedRoles setObject:role forKey:[groupItem objectForKey:@"id"]];
+            ret = role;
+        }
+        return ret;
+    } else if ([item objectForKey:@"member"]) {
+        NSDictionary *memberItem = [item objectForKey:@"member"];
+        DCUser *user = [self.loadedUsers objectForKey:[memberItem valueForKeyPath:@"user.id"]];
+        if (!user) {
+            user = [DCTools convertJsonUser:[memberItem objectForKey:@"user"] cache:YES];
+            [self.loadedUsers setObject:user forKey:user.snowflake];
+        }
+        user.status = [memberItem valueForKeyPath:@"presence.status"];
+        return user;
+    } else {
+        return nil;
+    }
+}
+
+#define SYNC @"SYNC"
+#define UPDATE @"UPDATE"
+#define DELETE @"DELETE"
+#define INSERT @"INSERT"
+
+- (void)handleGuildMemberListUpdateWithData:(NSDictionary *)d {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        DCGuild *guild = nil;
+        for (DCGuild *g in self.guilds) {
+            if ([g.snowflake isEqualToString:[d objectForKey:@"guild_id"]]) {
+                guild = g;
+                break;
+            }
+        }
+        if (!guild) {
+            return;
+        }
+        @synchronized (guild) {
+            guild.memberCount = [[d objectForKey:@"member_count"] intValue];
+            guild.onlineCount = [[d objectForKey:@"online_count"] intValue];
+            for (NSDictionary *op in [d objectForKey:@"ops"]) {
+                NSLog(@"Handling guild member list update with data: %@", d);
+                if ([[op objectForKey:@"op"] isEqualToString:SYNC]) {
+                    if (![[op objectForKey:@"items"] isKindOfClass:[NSArray class]] 
+                        || [((NSArray *)[op objectForKey:@"items"]) count] == 0) {
+                        NSLog(@"Guild member list update SYNC op without items: %@", op);
+                        continue;
+                    }
+                    NSLog(@"CLEAR CLEAR CLEAR");
+                    guild.members = NSMutableArray.new;
+                    NSLog(
+                        @"SYNC: length: %lu, range: [%lu..%lu]", 
+                        (unsigned long)[op[@"items"] count],
+                        (unsigned long)[op[@"range"][0] integerValue],
+                        (unsigned long)[op[@"range"][1] integerValue]
+                    );
+                    for (NSDictionary *item in [op objectForKey:@"items"]) {
+                        id member = [self handleGuildMemberItemWithItem:item];
+                        if (!member) {
+                            NSLog(@"Guild member list update SYNC op with invalid item: %@", item);
+                            continue;
+                        }
+                        [guild.members addObject:member];
+                    }
+                } else if ([[op objectForKey:@"op"] isEqualToString:UPDATE]) {
+                    NSDictionary *item = [op objectForKey:@"item"];
+                    id member = [self handleGuildMemberItemWithItem:item];
+                    if (!member) {
+                        NSLog(@"Guild member list update UPDATE op with invalid item: %@", item);
+                        continue;
+                    }
+                    NSUInteger index = [[op objectForKey:@"index"] intValue];
+                    if (index >= [guild.members count]) {
+                        NSLog(@"Index out of bounds for guild member list UPDATE: %@", op);
+                        continue;
+                    }
+                    NSLog(@"Updating member at index: %lu", (unsigned long)index);
+                    [guild.members replaceObjectAtIndex:(NSUInteger)index withObject:(id)member];
+                } else if ([[op objectForKey:@"op"] isEqualToString:DELETE]) {
+                    NSUInteger index = [[op objectForKey:@"index"] intValue];
+                    if (index >= [guild.members count]) {
+                        NSLog(@"Index out of bounds for guild member list DELETE: %@", op);
+                        continue;
+                    }
+                    NSLog(@"Deleting member at index: %lu", (unsigned long)index);
+                    [guild.members removeObjectAtIndex:index];
+                } else if ([[op objectForKey:@"op"] isEqualToString:INSERT]) {
+                    NSUInteger index = [[op objectForKey:@"index"] intValue];
+                    if (index > [guild.members count]) {
+                        if (index != [guild.members count] + 1) {
+                            NSLog(@"Index out of bounds for guild member list INSERT: %@", op);
+                            continue;
+                        }
+                        index = [guild.members count];
+                    }
+                    NSDictionary *item = [op objectForKey:@"item"];
+                    id member = [self handleGuildMemberItemWithItem:item];
+                    if (!member) {
+                        NSLog(@"Guild member list update INSERT op with invalid item: %@", item);
+                        continue;
+                    }
+                    NSLog(@"Inserting member at index: %lu", (unsigned long)index);
+                    [guild.members insertObject:member atIndex:index];
+                } else {
+#ifdef DEBUG
+                    NSLog(@"Unhandled guild member list update op: %@", op);
+#endif
+                }
+            }
+            if ([guild.members count] > 100) {
+                // NSLog(@"Capping guild members at 100");
+                guild.members = [[guild.members subarrayWithRange:NSMakeRange(0, 100)] mutableCopy];
+            }
+            NSLog(@"size: %lu", (unsigned long)[guild.members count]);
+        }
+        [NSNotificationCenter.defaultCenter postNotificationName:@"GuildMemberListUpdated" object:nil];
+    });
+}
+
 #pragma mark - WebSocket Event Handlers
 
 - (void)handleHelloWithData:(NSDictionary *)d {
@@ -586,6 +726,33 @@ UIActivityIndicatorView *spinner;
     }
 }
 
+- (void)sendGuildSubscriptionWithGuildId:(NSString *)guildId channelId:(NSString *)channelId {
+    if (!self.token || !self.sessionId) {
+        return;
+    } else if (!guildId || !channelId) {
+        return;
+    }
+// #ifdef DEBUG
+//     NSLog(@"Sending guild subscription for guild %@ and channel %@", guildId, channelId);
+// #endif
+    [self sendJSON:@{
+        @"op" : @GUILD_SUBSCRIPTIONS,
+        @"d" : @{
+            @"guild_id" : guildId,
+            @"typing" : @YES,
+            @"threads" : @YES,
+            @"activities" : @YES,
+            @"thread_member_lists" : @[],
+            @"members": @[],
+            @"channels": @{
+                channelId : @[
+                    @[@0, @99]
+                ]
+            }
+        }
+    }];
+}
+
 - (void)handleDispatchWithResponse:(NSDictionary *)parsedJsonResponse {
     // get data
     NSDictionary *d = [parsedJsonResponse valueForKey:@"d"];
@@ -618,16 +785,14 @@ UIActivityIndicatorView *spinner;
     } else if ([t isEqualToString:MESSAGE_UPDATE]) {
         [self handleMessageUpdateWithData:d];
         return;
+    } else if ([t isEqualToString:MESSAGE_DELETE]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [NSNotificationCenter.defaultCenter postNotificationName:@"MESSAGE DELETE" object:self userInfo:d];
+        });
+        return;
     } else if ([t isEqualToString:MESSAGE_ACK]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [NSNotificationCenter.defaultCenter postNotificationName:@"MESSAGE ACK" object:self];
-        });
-        return;
-    } else if ([t isEqualToString:MESSAGE_DELETE]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            // Send notification with the new message
-            // will be recieved by DCChatViewController
-            [NSNotificationCenter.defaultCenter postNotificationName:@"MESSAGE DELETE" object:self userInfo:d];
         });
         return;
     } else if ([t isEqualToString:GUILD_CREATE]) {
@@ -653,6 +818,9 @@ UIActivityIndicatorView *spinner;
                 }
             }
         }
+    } else if ([t isEqualToString:GUILD_MEMBER_LIST_UPDATE]) {
+        [self handleGuildMemberListUpdateWithData:d];
+        return;
     } else {
 #ifdef DEBUG
         NSLog(@"Unhandled event type: %@, content: %@", t, d);

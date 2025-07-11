@@ -12,7 +12,7 @@
 #import "DCGuildListViewController.h"
 #import "WSWebSocket.h"
 
-// all this info courtesy of https://discord.neko.wtf/
+// following info courtesy of https://discord.neko.wtf/
 #define DISPATCH 0
 #define HEARTBEAT 1
 #define IDENTIFY 2
@@ -47,6 +47,14 @@
 #define SPEED_TEST_DELETE 33
 #define REQUEST_LAST_MESSAGES 34
 #define SEARCH_RECENT_MEMBER 35
+// these from discord itself
+#define REQUEST_CHANNEL_STATUSES 36
+#define GUILD_SUBSCRIPTIONS_BULK 37
+#define GUILD_CHANNELS_RESYNC 38
+#define REQUEST_CHANNEL_MEMBER_COUNT 39
+#define QOS_HEARTBEAT 40
+#define UPDATE_TIME_SPENT_SESSION_ID 41
+
 
 #define ACTIVITY_START @"ACTIVITY_START"
 #define ACTIVITY_USER_ACTION @"ACTIVITY_USER_ACTION"
@@ -198,7 +206,6 @@
 #define VOICE_CHANNEL_EFFECT_SEND @"VOICE_CHANNEL_EFFECT_SEND"
 #define VOICE_SERVER_UPDATE @"VOICE_SERVER_UPDATE"
 #define VOICE_STATE_UPDATE_EVENT @"VOICE_STATE_UPDATE"
-
 #define CHANNEL_UNREAD_UPDATE @"CHANNEL_UNREAD_UPDATE"
 
 @interface DCServerCommunicator : NSObject
@@ -228,4 +235,5 @@
 - (void)reconnect;
 - (void)sendHeartbeat:(NSTimer*)timer;
 - (void)sendJSON:(NSDictionary*)dictionary;
+- (void)sendGuildSubscriptionWithGuildId:(NSString *)guildId channelId:(NSString *)channelId;
 @end

@@ -345,9 +345,18 @@ static dispatch_queue_t chat_messages_queue;
 
 - (void)handleMessageEdit:(NSNotification *)notification {
     NSString *snowflake       = [notification.userInfo valueForKey:@"id"];
-    DCMessage *compareMessage = [self.messages objectAtIndex:[self.messages indexOfObjectPassingTest:^BOOL(DCMessage *msg, NSUInteger idx, BOOL *stop) {
+    if (!snowflake || snowflake.length == 0) {
+        NSLog(@"%s: No snowflake provided for message edit", __PRETTY_FUNCTION__);
+        return;
+    }
+    NSUInteger index = [self.messages indexOfObjectPassingTest:^BOOL(DCMessage *msg, NSUInteger idx, BOOL *stop) {
                                                    return [msg.snowflake isEqualToString:snowflake];
-                                               }]];
+                                               }];
+    if (index == NSNotFound || index >= self.messages.count) {
+        NSLog(@"%s: Message with snowflake %@ not found", __PRETTY_FUNCTION__, snowflake);
+        return;
+    }
+    DCMessage *compareMessage = [self.messages objectAtIndex:index];
 
     DCMessage *newMessage = [DCTools convertJsonMessage:notification.userInfo];
 
