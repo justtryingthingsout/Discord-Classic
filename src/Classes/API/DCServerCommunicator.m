@@ -7,6 +7,7 @@
 //
 
 #import "DCServerCommunicator.h"
+#include "DCGuildFolder.h"
 #include <objc/NSObjCRuntime.h>
 #include "DCRole.h"
 #include <dispatch/dispatch.h>
@@ -213,8 +214,15 @@ UIActivityIndicatorView *spinner;
         if ([d valueForKeyPath:@"user_settings.guild_positions"]) {
             [userInfo[@"guildPositions"] addObjectsFromArray:[d valueForKeyPath:@"user_settings.guild_positions"]];
         } else if ([d valueForKeyPath:@"user_settings.guild_folders"]) {
+            userInfo[@"guildFolders"] = NSMutableArray.new;
             for (NSDictionary *userDict in [d valueForKeyPath:@"user_settings.guild_folders"]) {
+                DCGuildFolder *folder = [DCGuildFolder new];
+                folder.id = [userDict valueForKey:@"id"] != [NSNull null] ? [[userDict valueForKey:@"id"] intValue] : 0;
+                folder.name = [userDict valueForKey:@"name"];
+                folder.color = [userDict valueForKey:@"color"] != [NSNull null] ? [[userDict valueForKey:@"color"] intValue] : 0;
                 NSArray *guildIDs = userDict[@"guild_ids"];
+                folder.firstGuildId = [guildIDs firstObject];
+                [userInfo[@"guildFolders"] addObject:folder];
                 [userInfo[@"guildPositions"] addObjectsFromArray:guildIDs];
             }
         } else {
@@ -404,7 +412,10 @@ UIActivityIndicatorView *spinner;
             [privateGuild.channels addObject:newChannel];
         }
         // Sort the DMs list by most recent...
-        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastMessageId" ascending:NO selector:@selector(localizedStandardCompare:)];
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor 
+            sortDescriptorWithKey:@"lastMessageId"
+            ascending:NO
+            selector:@selector(localizedStandardCompare:)];
         [privateGuild.channels sortUsingDescriptors:@[ sortDescriptor ]];
         NSMutableDictionary *channelsDict = NSMutableDictionary.new;
         for (DCChannel *channel in privateGuild.channels) {
@@ -453,28 +464,28 @@ UIActivityIndicatorView *spinner;
 - (void)handlePresenceUpdateEventWithData:(NSDictionary *)d {
     NSString *userId = [d valueForKeyPath:@"user.id"];
     NSString *status = [d valueForKey:@"status"];
-    if (userId && status) {
-        DCUser *user = [self.loadedUsers objectForKey:userId];
-        if (user) {
-            user.status = status;
-            // NSLog(@"[PRESENCE_UPDATE] Updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
-        } else {
-            // Cache user if not already in loadedUsers
-            NSDictionary *userDict = [d valueForKey:@"user"];
-            if (userDict) {
-                user = [DCTools convertJsonUser:userDict cache:YES];
-                [self.loadedUsers setObject:user forKey:userId];
-                user.status = status;
-                // NSLog(@"[PRESENCE_UPDATE] Cached and updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
-            }
-        }
-        // IMPORTANT: Post a notification so we can refresh DM status dots
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [NSNotificationCenter.defaultCenter postNotificationName:@"USER_PRESENCE_UPDATED" object:nil];
-        });
-    } else {
+    if (!userId || !status) {
         // NSLog(@"[PRESENCE_UPDATE] Missing user ID or status in payload: %@", d);
+        return;
     }
+    DCUser *user = [self.loadedUsers objectForKey:userId];
+    if (user) {
+        user.status = status;
+        // NSLog(@"[PRESENCE_UPDATE] Updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
+    } else {
+        // Cache user if not already in loadedUsers
+        NSDictionary *userDict = [d objectForKey:@"user"];
+        if (userDict) {
+            user = [DCTools convertJsonUser:userDict cache:YES];
+            [self.loadedUsers setObject:user forKey:userId];
+            user.status = status;
+            // NSLog(@"[PRESENCE_UPDATE] Cached and updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
+        }
+    }
+    // IMPORTANT: Post a notification so we can refresh DM status dots
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NSNotificationCenter.defaultCenter postNotificationName:@"USER_PRESENCE_UPDATED" object:nil];
+    });
 }
 
 - (void)handleMessageCreateWithData:(NSDictionary *)d {
@@ -694,7 +705,9 @@ UIActivityIndicatorView *spinner;
 
 - (void)handleHelloWithData:(NSDictionary *)d {
     if (self.shouldResume) {
-        // NSLog(@"Sending Resume with sequence number %i, session ID %@", weakSelf.sequenceNumber, weakSelf.sessionId);
+#ifdef DEBUG
+        NSLog(@"Sending Resume with sequence number %i, session ID %@", self.sequenceNumber, self.sessionId);
+#endif
         // RESUME
         if (!self.token || !self.sessionId) {
             [DCTools
@@ -918,6 +931,10 @@ UIActivityIndicatorView *spinner;
                 weakSelf.didReceiveHeartbeatResponse                              = true;
                 [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                 break;
+            }
+            case RECONNECT: {
+                weakSelf.shouldResume = self.sequenceNumber > 0 && self.sessionId != nil;
+                [weakSelf reconnect];
             }
             case INVALID_SESSION: {
                 dispatch_async(dispatch_get_main_queue(), ^{

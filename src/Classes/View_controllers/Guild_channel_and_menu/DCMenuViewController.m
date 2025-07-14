@@ -7,13 +7,16 @@
 //
 
 #import "DCMenuViewController.h"
+#include <UIKit/UIKit.h>
 #include <dispatch/dispatch.h>
 #include <Foundation/Foundation.h>
 #include <objc/NSObjCRuntime.h>
 #include "DCGuild.h"
 #include "DCServerCommunicator.h"
+#include "DCGuildFolder.h"
 
 @interface DCMenuViewController ()
+@property NSMutableArray *displayGuilds;
 @end
 
 @implementation DCMenuViewController
@@ -193,7 +196,7 @@
                       destructiveButtonTitle:nil
                            otherButtonTitles:nil, nil];
     [messageActionSheet setDelegate:self];
-    [messageActionSheet showInView:self.view.superview];
+    [messageActionSheet showInView:self.view.superview ? self.view.superview : self.view];
 }
 
 - (IBAction)userInfo:(id)sender {
@@ -203,9 +206,13 @@
 - (void)tableView:(UITableView *)tableView
     didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.guildTableView) {
-        self.selectedGuild = [DCServerCommunicator.sharedInstance.guilds
-            objectAtIndex:indexPath.row];
+        id selectedGuild = [self.displayGuilds objectAtIndex:indexPath.row];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        if (![selectedGuild isKindOfClass:[DCGuild class]]) {
+            // guild folders
+            return;
+        }
+        self.selectedGuild = selectedGuild;
         if (self.selectedGuild.banner == nil) {
             self.guildBanner.image = [UIImage imageNamed:@"No-Header"];
         } else {
@@ -315,19 +322,72 @@
     return tableView.rowHeight;
 }
 
+- (UIImage *)compositeImageWithBaseImage:(UIImage *)baseImage icons:(NSArray *)icons {
+    CGSize size = baseImage.size;
+
+    // Begin image context
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);
+
+    // Draw base image first
+    [baseImage drawInRect:CGRectMake(0, 0, size.width, size.height)];
+
+    // Define grid quarters (2x2 grid)
+    CGFloat quarterWidth = size.width / 2.0;
+    CGFloat quarterHeight = size.height / 2.0;
+
+    // Icon size relative to quarter
+    CGFloat iconScale = 0.6; // icons are 60% of the quarter size
+    CGFloat iconWidth = quarterWidth * iconScale;
+    CGFloat iconHeight = quarterHeight * iconScale;
+    CGFloat iconPadding = 25.0; // icon centering
+
+    // Precompute grid quarter centers
+    CGPoint gridCenters[4] = {
+        CGPointMake(quarterWidth * 0.5 + iconPadding, quarterHeight * 0.5 + iconPadding), // Top-left
+        CGPointMake(quarterWidth * 1.5 - iconPadding, quarterHeight * 0.5 + iconPadding), // Top-right
+        CGPointMake(quarterWidth * 0.5 + iconPadding, quarterHeight * 1.5 - iconPadding), // Bottom-left
+        CGPointMake(quarterWidth * 1.5 - iconPadding, quarterHeight * 1.5 - iconPadding)  // Bottom-right
+    };
+
+    // Draw each icon centered in its grid quarter
+    for (NSUInteger i = 0; i < icons.count; i++) {
+        id iconObj = icons[i];
+
+        if (iconObj == nil || ![iconObj isKindOfClass:[UIImage class]]) {
+            continue; // Skip this icon
+        }
+
+        UIImage *icon = iconObj;
+
+        // Compute rect so icon is centered in its quarter
+        CGPoint center = gridCenters[i];
+        CGRect rect = CGRectMake(center.x - iconWidth / 2.0,
+                                 center.y - iconHeight / 2.0,
+                                 iconWidth, iconHeight);
+
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        CGContextSaveGState(context);
+
+        // Clip with rounded corners
+        UIBezierPath *clipPath = [UIBezierPath bezierPathWithRoundedRect:rect
+                                                             cornerRadius:iconWidth / 6.0];
+        [clipPath addClip];
+
+        [icon drawInRect:rect];
+
+        CGContextRestoreGState(context);
+    }
+
+    // Get final composite image
+    UIImage *compositeImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    return compositeImage;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.guildTableView) {
-        // Use the DCGuildTableViewCell
-        DCGuildTableViewCell *cell =
-            [tableView dequeueReusableCellWithIdentifier:@"guild"];
-        if (cell == nil) {
-            cell = [[DCGuildTableViewCell alloc]
-                  initWithStyle:UITableViewCellStyleDefault
-                reuseIdentifier:@"guild"];
-        }
-
-
         // Sorting guilds based on userInfo[@"guildPositions"] array
         if (!DCServerCommunicator.sharedInstance.guildsIsSorted) {
             NSUInteger guildCount        = [DCServerCommunicator.sharedInstance.guilds count];
@@ -341,43 +401,100 @@
                 int index = [DCServerCommunicator.sharedInstance.currentUserInfo[@"guildPositions"] indexOfObject:guild.snowflake];
                 if (index != NSNotFound) {
                     sortedGuilds[index + 1] = guild;
+                } else if ([sortedGuilds[0] isEqual:nullObject]) {
+                    // If the first element is still null, must be private guild
+                    sortedGuilds[0] = guild;
                 } else {
-                    if ([sortedGuilds[0] isEqual:nullObject]) {
-                        // If the first element is still null, must be private guild
-                        sortedGuilds[0] = guild;
-                    } else {
-                        // Otherwise, append to the end of the array
-                        [sortedGuilds addObject:guild];
-                    }
+                    // Otherwise, append to the end of the array
+                    [sortedGuilds addObject:guild];
                 }
             }
             [sortedGuilds removeObjectIdenticalTo:nullObject];
-            DCServerCommunicator.sharedInstance.guilds = sortedGuilds;
             NSAssert(sortedGuilds && [sortedGuilds count] != 0, @"No sorted guilds found");
+            DCServerCommunicator.sharedInstance.guilds = [sortedGuilds mutableCopy];
+            for (DCGuildFolder *folder in DCServerCommunicator.sharedInstance.currentUserInfo[@"guildFolders"]) {
+                if (!folder.id) {
+                    continue;
+                }
+                NSUInteger index = [sortedGuilds indexOfObjectPassingTest:^BOOL(DCGuild * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    if (!obj || ![obj isKindOfClass:[DCGuild class]]) {
+                        return NO; // Skip if not a DCGuild instance
+                    }
+                    return [obj.snowflake isEqualToString:folder.firstGuildId];
+                }];
+                if (index != NSNotFound) {
+                    [sortedGuilds insertObject:folder atIndex:index];
+                }
+            }
+            self.displayGuilds = sortedGuilds;
             DCServerCommunicator.sharedInstance.guildsIsSorted = YES;
+            [self.guildTableView reloadData];
         }
 
         NSCAssert(
-            DCServerCommunicator.sharedInstance.guilds && DCServerCommunicator.sharedInstance.guilds.count > indexPath.row,
+            self.displayGuilds && self.displayGuilds.count > indexPath.row,
             @"Guilds array is empty or index out of bounds"
         );
 
-        DCGuild *guildAtRowIndex = [DCServerCommunicator.sharedInstance.guilds
-            objectAtIndex:indexPath.row];
+        id objectAtRowIndex = [self.displayGuilds objectAtIndex:indexPath.row];
 
-        NSCAssert((NSNull *)guildAtRowIndex != [NSNull null], @"Guild at row index is NSNull");
+        NSCAssert(objectAtRowIndex != [NSNull null], @"Guild at row index is NSNull");
 
-        // Show blue indicator if guild has any unread messages
-        cell.unreadMessages.hidden = !guildAtRowIndex.unread;
+        // Use the DCGuildTableViewCell
+        DCGuildTableViewCell *cell =
+            [tableView dequeueReusableCellWithIdentifier:@"guild"];
+        if (cell == nil) {
+            cell = [[DCGuildTableViewCell alloc]
+                  initWithStyle:UITableViewCellStyleDefault
+                reuseIdentifier:@"guild"];
+        }
+        if ([objectAtRowIndex isKindOfClass:[DCGuild class]]) {
+            DCGuild *guildAtRowIndex = objectAtRowIndex;
 
-        // Guild name and icon
-        [cell.guildAvatar setImage:guildAtRowIndex.icon];
+            // Show blue indicator if guild has any unread messages
+            cell.unreadMessages.hidden = !guildAtRowIndex.unread;
 
-        cell.guildAvatar.layer.cornerRadius =
-            cell.guildAvatar.frame.size.width / 6.0;
-        cell.guildAvatar.layer.masksToBounds = YES;
+            // Guild name and icon
+            [cell.guildAvatar setImage:guildAtRowIndex.icon];
 
-        return cell;
+            cell.guildAvatar.layer.cornerRadius =
+                cell.guildAvatar.frame.size.width / 6.0;
+            cell.guildAvatar.layer.masksToBounds = YES;
+
+            return cell;
+        } else if ([objectAtRowIndex isKindOfClass:[DCGuildFolder class]]) {
+            UIImage *folderIcon = [UIImage imageNamed:@"folder"];
+            NSMutableArray *icons = [NSMutableArray array];
+            if ([self.displayGuilds count] > indexPath.row + 1) {
+                DCGuild *guild1 = [self.displayGuilds objectAtIndex:indexPath.row+1];
+                if ([guild1 isKindOfClass:[DCGuild class]]) {
+                    [icons addObject:guild1.icon];
+                }
+            }
+            if ([self.displayGuilds count] > indexPath.row + 2) {
+                DCGuild *guild2 = [self.displayGuilds objectAtIndex:indexPath.row+2];
+                if ([guild2 isKindOfClass:[DCGuild class]]) {
+                    [icons addObject:guild2.icon];
+                }
+            }
+            if ([self.displayGuilds count] > indexPath.row + 3) {
+                DCGuild *guild3 = [self.displayGuilds objectAtIndex:indexPath.row+3];
+                if ([guild3 isKindOfClass:[DCGuild class]]) {
+                    [icons addObject:guild3.icon];
+                }
+            }
+            if ([self.displayGuilds count] > indexPath.row + 4) {
+                DCGuild *guild4 = [self.displayGuilds objectAtIndex:indexPath.row+4];
+                if ([guild4 isKindOfClass:[DCGuild class]]) {
+                    [icons addObject:guild4.icon];
+                }
+            }
+            UIImage *compositeImage = [self 
+                compositeImageWithBaseImage:folderIcon
+                icons:icons];
+            [cell.guildAvatar setImage:compositeImage];
+            return cell;
+        }
     }
 
     if (tableView == self.channelTableView) {
@@ -560,7 +677,8 @@
 - (NSInteger)tableView:(UITableView *)tableView
     numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.guildTableView && DCServerCommunicator.sharedInstance.guilds) {
-        return DCServerCommunicator.sharedInstance.guilds.count;
+        //return self.displayGuilds.count;
+        return DCServerCommunicator.sharedInstance.guilds.count + ((NSArray *)DCServerCommunicator.sharedInstance.currentUserInfo[@"guildFolders"]).count;
     } else if (tableView == self.channelTableView && self.selectedGuild && self.selectedGuild.channels) {
         return self.selectedGuild.channels.count;
     } else {
