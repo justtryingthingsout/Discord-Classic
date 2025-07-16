@@ -62,8 +62,8 @@ static dispatch_queue_t channel_send_queue;
     if (self.unread) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [NSNotificationCenter.defaultCenter
-                postNotificationName:@"RELOAD GUILD LIST"
-                              object:nil];
+                postNotificationName:@"RELOAD GUILD"
+                              object:self];
         });
     }
 }

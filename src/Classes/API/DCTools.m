@@ -1118,39 +1118,38 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                              andBlock:^(UIImage *imageData) {
                                  UIImage *icon = imageData;
 
-                                 if (icon != nil) {
-                                     newGuild.icon   = icon;
-                                     CGSize itemSize = CGSizeMake(40, 40);
-                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                         UIGraphicsBeginImageContextWithOptions(
-                                             itemSize, NO, UIScreen.mainScreen.scale
-                                         );
-                                         CGRect imageRect = CGRectMake(
-                                             0.0, 0.0, itemSize.width,
-                                             itemSize.height
-                                         );
-                                         [newGuild.icon drawInRect:imageRect];
-                                         newGuild.icon = UIGraphicsGetImageFromCurrentImageContext();
-                                         UIGraphicsEndImageContext();
-                                     });
+                                 if (!icon) {
+                                    return;
                                  }
+                                 newGuild.icon   = icon;
+                                 CGSize itemSize = CGSizeMake(40, 40);
+                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                     UIGraphicsBeginImageContextWithOptions(
+                                         itemSize, NO, UIScreen.mainScreen.scale
+                                     );
+                                     CGRect imageRect = CGRectMake(
+                                         0.0, 0.0, itemSize.width,
+                                         itemSize.height
+                                     );
+                                     [newGuild.icon drawInRect:imageRect];
+                                     newGuild.icon = UIGraphicsGetImageFromCurrentImageContext();
+                                     UIGraphicsEndImageContext();
+                                     [NSNotificationCenter.defaultCenter
+                                         postNotificationName:@"RELOAD GUILD"
+                                                       object:newGuild];
+                                 });
                              }];
 
     [DCTools
         processImageDataWithURLString:bannerURL
                              andBlock:^(UIImage *bannerData) {
                                  UIImage *banner = bannerData;
-                                 if (banner != nil) {
-                                     newGuild.banner = banner;
-                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                         UIGraphicsEndImageContext();
-                                     });
+                                 if (!banner) {
+                                    return;
                                  }
-
+                                 newGuild.banner = banner;
                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                     [NSNotificationCenter.defaultCenter
-                                         postNotificationName:@"RELOAD GUILD LIST"
-                                                       object:DCServerCommunicator.sharedInstance];
+                                     UIGraphicsEndImageContext();
                                  });
                              }];
 

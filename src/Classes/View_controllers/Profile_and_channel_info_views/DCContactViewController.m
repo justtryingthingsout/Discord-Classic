@@ -7,6 +7,9 @@
 //
 
 #import "DCContactViewController.h"
+#include <objc/NSObjCRuntime.h>
+#include "DCServerCommunicator.h"
+#include "DCGuild.h"
 
 
 @interface DCContactViewController ()
@@ -306,14 +309,16 @@
 }
 
 - (DCChannel *)findPrivateChannelForUser:(NSString *)userId {
-    for (DCGuild *guild in DCServerCommunicator.sharedInstance.guilds) {
-        if ([guild.name isEqualToString:@"Direct Messages"]) {
-            for (DCChannel *channel in guild.channels) {
-                for (NSDictionary *userDict in channel.users) {
-                    if ([userDict[@"snowflake"] isEqualToString:userId]) {
-                        return channel;
-                    }
-                }
+    DCGuild *privGuild = [DCServerCommunicator.sharedInstance.guilds 
+        objectAtIndex:[DCServerCommunicator.sharedInstance.guilds
+            indexOfObjectPassingTest:^BOOL(DCGuild *g, NSUInteger idx, BOOL *stop) {
+                return [g.name isEqualToString:@"Direct Messages"];
+            }]
+    ];
+    for (DCChannel *channel in privGuild.channels) {
+        for (NSDictionary *userDict in channel.users) {
+            if ([userDict[@"snowflake"] isEqualToString:userId]) {
+                return channel;
             }
         }
     }

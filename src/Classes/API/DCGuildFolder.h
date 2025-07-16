@@ -7,13 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#include <UIKit/UIKit.h>
 
 @interface DCGuildFolder : NSObject 
 
 @property NSString *name;
 @property int color;
 @property int id;
-@property NSString *firstGuildId;
+@property NSArray *guildIds;
 @property BOOL opened;
+@property UIImage *icon;
 
 @end

@@ -220,10 +220,10 @@ UIActivityIndicatorView *spinner;
                 folder.id = [userDict valueForKey:@"id"] != [NSNull null] ? [[userDict valueForKey:@"id"] intValue] : 0;
                 folder.name = [userDict valueForKey:@"name"];
                 folder.color = [userDict valueForKey:@"color"] != [NSNull null] ? [[userDict valueForKey:@"color"] intValue] : 0;
-                NSArray *guildIDs = userDict[@"guild_ids"];
-                folder.firstGuildId = [guildIDs firstObject];
+                folder.guildIds = [userDict valueForKey:@"guild_ids"];
+                folder.opened = YES; // default to open
                 [userInfo[@"guildFolders"] addObject:folder];
-                [userInfo[@"guildPositions"] addObjectsFromArray:guildIDs];
+                [userInfo[@"guildPositions"] addObjectsFromArray:folder.guildIds];
             }
         } else {
             NSLog(@"no guild positions found in user settings");
