@@ -142,31 +142,22 @@
 
 - (void)reloadGuild:(NSNotification *)notification {
     DCGuild *guild = notification.object;
-    if (self.displayGuilds == nil || ![self.displayGuilds containsObject:guild]) {
-        // If the guild is not in the display list, do nothing
+    if (self.displayGuilds == nil || guild == nil) {
         return;
     }
     [self.guildTableView beginUpdates];
-    NSUInteger folderIdx = [DCServerCommunicator.sharedInstance.currentUserInfo[@"guildFolders"]
+    NSUInteger folderIdx = [self.displayGuilds
         indexOfObjectPassingTest:^BOOL(DCGuildFolder *folder, NSUInteger idx, BOOL *stop) {
-            return [folder.guildIds containsObject:guild.snowflake];
+            return [folder isKindOfClass:[DCGuildFolder class]] && [folder.guildIds indexOfObject:guild.snowflake] < 4;
         }];
-    if (folderIdx != NSNotFound && folderIdx < 4) {
+    if (folderIdx != NSNotFound) {
         // Reload the folder in the list
-        NSArray *indexPaths = @[
-            [NSIndexPath indexPathForRow:folderIdx
-                               inSection:0]
-        ];
-        [self.guildTableView reloadRowsAtIndexPaths:indexPaths
+        [self.guildTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:folderIdx inSection:0]]
                                    withRowAnimation:UITableViewRowAnimationAutomatic];
     }
     NSUInteger index = [self.displayGuilds indexOfObject:guild];
     if (index != NSNotFound) {
-        NSArray *indexPaths = @[
-            [NSIndexPath indexPathForRow:index
-                               inSection:0]
-        ];
-        [self.guildTableView reloadRowsAtIndexPaths:indexPaths
+        [self.guildTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]]
                                    withRowAnimation:UITableViewRowAnimationAutomatic];
     }
     [self.guildTableView endUpdates];
