@@ -221,7 +221,8 @@ UIActivityIndicatorView *spinner;
                 folder.name = [userDict valueForKey:@"name"];
                 folder.color = [userDict valueForKey:@"color"] != [NSNull null] ? [[userDict valueForKey:@"color"] intValue] : 0;
                 folder.guildIds = [userDict valueForKey:@"guild_ids"];
-                folder.opened = YES; // default to open
+                NSNumber *opened = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:[@(folder.id) stringValue]] objectForKey:@"opened"];
+                folder.opened = opened != nil ? [opened boolValue] : YES; // default to opened
                 [userInfo[@"guildFolders"] addObject:folder];
                 [userInfo[@"guildPositions"] addObjectsFromArray:folder.guildIds];
             }

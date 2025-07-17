@@ -245,6 +245,13 @@
             // NSLog(@"Folder selected: %@", selectedGuild);
             DCGuildFolder *folder = selectedGuild;
             folder.opened         = !folder.opened;
+            NSDictionary *constFolderDict = [[NSUserDefaults standardUserDefaults] 
+                dictionaryForKey:[@(folder.id) stringValue]];
+            NSMutableDictionary *folderDict = constFolderDict ? [constFolderDict mutableCopy] : [NSMutableDictionary dictionary];
+            [folderDict setValue:[NSNumber numberWithBool:folder.opened] forKey:@"opened"];
+            [[NSUserDefaults standardUserDefaults] setObject:folderDict
+                                                      forKey:[@(folder.id) stringValue]];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             [self.guildTableView beginUpdates];
             if (folder.opened) {
                 NSMutableArray *newIndexPaths = [NSMutableArray array];
