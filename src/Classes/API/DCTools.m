@@ -1171,14 +1171,13 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
         newChannel.type        = [[jsonChannel valueForKey:@"type"] intValue];
         NSString *rawPosition  = [jsonChannel valueForKey:@"position"];
         newChannel.position    = rawPosition ? [rawPosition intValue] : 0;
+        newChannel.writeable   = true;
 
         // check if channel is muted
         if ([DCServerCommunicator.sharedInstance.userChannelSettings
                 objectForKey:newChannel.snowflake]) {
             newChannel.muted = true;
         }
-
-        [channels setObject:newChannel forKey:newChannel.snowflake];
 
         // Make sure jsonChannel is a text channel or a category
         // we dont want to include voice channels in the text channel list
@@ -1203,6 +1202,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
              3 & 4 are mutually exclusive
              */
             int allowCode = 0;
+            bool canWrite = true;
 
             // Calculate permissions
             NSArray *rawOverwrites =
@@ -1210,20 +1210,29 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
             // sort with role priority
             NSArray *overwrites = [rawOverwrites sortedArrayUsingComparator:
                                                      ^NSComparisonResult(NSDictionary *perm1, NSDictionary *perm2) {
-                                                         DCRole *role1 = [newGuild.roles valueForKey:[perm1 valueForKey:@"id"]];
-                                                         DCRole *role2 = [newGuild.roles valueForKey:[perm2 valueForKey:@"id"]];
+                                                         DCRole *role1 = [newGuild.roles objectForKey:[perm1 objectForKey:@"id"]];
+                                                         DCRole *role2 = [newGuild.roles objectForKey:[perm2 objectForKey:@"id"]];
                                                          return role1.position < role2.position ? NSOrderedAscending : NSOrderedDescending;
                                                      }];
+            if ([newChannel.snowflake isEqualToString:@"1299845889082392636"]) {
+                NSLog(@"Overwrites: %@", overwrites);
+            }
             for (NSDictionary *permission in overwrites) {
-                uint64_t type     = [[permission valueForKey:@"type"] longLongValue];
-                NSString *idValue = [permission valueForKey:@"id"];
-                uint64_t deny     = [[permission valueForKey:@"deny"] longLongValue];
-                uint64_t allow    = [[permission valueForKey:@"allow"] longLongValue];
+                uint64_t type     = [[permission objectForKey:@"type"] longLongValue];
+                NSString *idValue = [permission objectForKey:@"id"];
+                uint64_t deny     = [[permission objectForKey:@"deny"] longLongValue];
+                uint64_t allow    = [[permission objectForKey:@"allow"] longLongValue];
 
                 if (type == 0) { // Role overwrite
                     if ([newGuild.userRoles containsObject:idValue]) {
+                        if ((deny & SEND_MESSAGES) == SEND_MESSAGES) {
+                            canWrite = false;
+                        }
                         if ((deny & VIEW_CHANNEL) == VIEW_CHANNEL) {
                             allowCode = 1;
+                        }
+                        if ((allow & SEND_MESSAGES) == SEND_MESSAGES) {
+                            canWrite = true;
                         }
                         if ((allow & VIEW_CHANNEL) == VIEW_CHANNEL) {
                             allowCode = 2;
@@ -1231,19 +1240,26 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                     }
                 } else if (type == 1) { // Member overwrite, break on these
                     if ([idValue isEqualToString:
-                                     DCServerCommunicator.sharedInstance.snowflake]) {
+                                    DCServerCommunicator.sharedInstance.snowflake]) {
+                        if ((deny & SEND_MESSAGES) == SEND_MESSAGES) {
+                            canWrite = false;
+                        }
                         if ((deny & VIEW_CHANNEL) == VIEW_CHANNEL) {
                             allowCode = 3;
-                            break;
+                        }
+                        if ((allow & SEND_MESSAGES) == SEND_MESSAGES) {
+                            canWrite = true;
                         }
                         if ((allow & VIEW_CHANNEL) == VIEW_CHANNEL) {
                             allowCode = 4;
-                            break;
                         }
+                        break;
                     }
                 }
             }
 
+            newChannel.writeable = canWrite || [[jsonGuild valueForKey:@"owner_id"] isEqualToString:
+                        DCServerCommunicator.sharedInstance.snowflake];
             // ignore perms for guild categories
             if (newChannel.type == 4) { // category
                 [categories addObject:newChannel];
@@ -1253,6 +1269,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                 [newGuild.channels addObject:newChannel];
             }
         }
+        [channels setObject:newChannel forKey:newChannel.snowflake];
     }
 
 #warning TODO: refer to github.com/Rapptz/discord.py/issues/2392#issuecomment-707455919 on how to fix properly

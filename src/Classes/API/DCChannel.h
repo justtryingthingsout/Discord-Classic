@@ -25,6 +25,7 @@
 @property UIImage* icon; 
 @property bool unread;
 @property bool muted;
+@property bool writeable;
 @property int type;
 @property int position;
 // Holds NSDictionary* of Users

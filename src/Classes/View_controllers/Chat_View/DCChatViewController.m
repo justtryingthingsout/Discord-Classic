@@ -183,8 +183,10 @@ static dispatch_queue_t chat_messages_queue;
     lastTimeInterval = 0;
 
     [self.inputField setDelegate:self];
-    self.inputFieldPlaceholder.text =
-        [NSString stringWithFormat:@"Message %@", self.navigationItem.title];
+    self.inputFieldPlaceholder.text = DCServerCommunicator.sharedInstance.selectedChannel.writeable
+        ? [NSString stringWithFormat:@"Message #%@", DCServerCommunicator.sharedInstance.selectedChannel.name]
+        : @"No Permission";
+    self.toolbar.userInteractionEnabled = DCServerCommunicator.sharedInstance.selectedChannel.writeable;
     self.inputFieldPlaceholder.hidden = NO;
 }
 
@@ -212,6 +214,10 @@ static dispatch_queue_t chat_messages_queue;
 - (void)handleChatReset {
     NSLog(@"%s: Resetting chat data", __PRETTY_FUNCTION__);
     self.messages = NSMutableArray.new;
+    self.inputFieldPlaceholder.text = DCServerCommunicator.sharedInstance.selectedChannel.writeable
+        ? [NSString stringWithFormat:@"Message #%@", DCServerCommunicator.sharedInstance.selectedChannel.name]
+        : @"No Permission";
+    self.toolbar.userInteractionEnabled = DCServerCommunicator.sharedInstance.selectedChannel.writeable;
     [self handleAsyncReload];
 }
 
@@ -230,6 +236,10 @@ static dispatch_queue_t chat_messages_queue;
 - (void)handleReady {
     if (DCServerCommunicator.sharedInstance.selectedChannel) {
         self.messages = NSMutableArray.new;
+        self.inputFieldPlaceholder.text = DCServerCommunicator.sharedInstance.selectedChannel.writeable
+            ? [NSString stringWithFormat:@"Message #%@", DCServerCommunicator.sharedInstance.selectedChannel.name]
+            : @"No Permission";
+        self.toolbar.userInteractionEnabled = DCServerCommunicator.sharedInstance.selectedChannel.writeable;
         [self handleAsyncReload];
         [self getMessages:50 beforeMessage:nil];
     }

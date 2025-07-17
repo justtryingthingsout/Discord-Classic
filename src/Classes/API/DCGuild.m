@@ -19,9 +19,10 @@
 }
 
 - (void)checkIfRead {
+    BOOL oldUnread = self.unread;
     if (self.muted) {
         self.unread = false;
-        return;
+        goto refreshMarker;
     }
     /*Loop through all child channels
      if any single one is unread, the guild
@@ -29,10 +30,18 @@
     for (DCChannel* channel in self.channels) {
         if (channel.unread) {
             self.unread = true;
-            return;
+            goto refreshMarker;
         }
     }
     self.unread = false;
+refreshMarker:
+    if (self.unread != oldUnread) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [NSNotificationCenter.defaultCenter
+                postNotificationName:@"RELOAD GUILD"
+                              object:self];
+        });
+    }
 }
 
 @end

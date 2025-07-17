@@ -58,14 +58,7 @@ static dispatch_queue_t channel_send_queue;
         && [self.lastReadMessageId isKindOfClass:[NSString class]]
         && ![self.lastReadMessageId isEqualToString:self.lastMessageId]
     );
-        [self.parentGuild checkIfRead];
-    if (self.unread) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [NSNotificationCenter.defaultCenter
-                postNotificationName:@"RELOAD GUILD"
-                              object:self];
-        });
-    }
+    [self.parentGuild checkIfRead];
 }
 
 - (void)sendMessage:(NSString *)message {
