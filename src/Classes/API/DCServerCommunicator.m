@@ -257,6 +257,7 @@ UIActivityIndicatorView *spinner;
             newChannel.parentGuild   = privateGuild;
             newChannel.type          = 1;
             newChannel.users         = users;
+            newChannel.writeable     = YES; // DMs are always writeable
             if ([privateChannel objectForKey:@"icon"] != nil || [privateChannel objectForKey:@"recipients"] != nil) {
                 if (((NSArray *)[privateChannel valueForKey:@"recipients"]).count > 0) {
                     NSDictionary *user    = [[privateChannel valueForKey:@"recipients"] objectAtIndex:0];

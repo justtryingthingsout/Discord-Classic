@@ -184,7 +184,11 @@ static dispatch_queue_t chat_messages_queue;
 
     [self.inputField setDelegate:self];
     self.inputFieldPlaceholder.text = DCServerCommunicator.sharedInstance.selectedChannel.writeable
-        ? [NSString stringWithFormat:@"Message #%@", DCServerCommunicator.sharedInstance.selectedChannel.name]
+        ? [NSString stringWithFormat:@"Message%@%@", 
+            ![DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.name isEqualToString:@"Direct Messages"] 
+            ? @" #" 
+            : (DCServerCommunicator.sharedInstance.selectedChannel.recipients.count > 2 ? @" " : @" @"), 
+            DCServerCommunicator.sharedInstance.selectedChannel.name]
         : @"No Permission";
     self.toolbar.userInteractionEnabled = DCServerCommunicator.sharedInstance.selectedChannel.writeable;
     self.inputFieldPlaceholder.hidden = NO;
@@ -215,7 +219,11 @@ static dispatch_queue_t chat_messages_queue;
     NSLog(@"%s: Resetting chat data", __PRETTY_FUNCTION__);
     self.messages = NSMutableArray.new;
     self.inputFieldPlaceholder.text = DCServerCommunicator.sharedInstance.selectedChannel.writeable
-        ? [NSString stringWithFormat:@"Message #%@", DCServerCommunicator.sharedInstance.selectedChannel.name]
+        ? [NSString stringWithFormat:@"Message%@%@", 
+            ![DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.name isEqualToString:@"Direct Messages"] 
+            ? @" #" 
+            : (DCServerCommunicator.sharedInstance.selectedChannel.recipients.count > 2 ? @" " : @" @"), 
+            DCServerCommunicator.sharedInstance.selectedChannel.name]
         : @"No Permission";
     self.toolbar.userInteractionEnabled = DCServerCommunicator.sharedInstance.selectedChannel.writeable;
     [self handleAsyncReload];
@@ -237,8 +245,12 @@ static dispatch_queue_t chat_messages_queue;
     if (DCServerCommunicator.sharedInstance.selectedChannel) {
         self.messages = NSMutableArray.new;
         self.inputFieldPlaceholder.text = DCServerCommunicator.sharedInstance.selectedChannel.writeable
-            ? [NSString stringWithFormat:@"Message #%@", DCServerCommunicator.sharedInstance.selectedChannel.name]
-            : @"No Permission";
+        ? [NSString stringWithFormat:@"Message%@%@", 
+            ![DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.name isEqualToString:@"Direct Messages"] 
+            ? @" #" 
+            : (DCServerCommunicator.sharedInstance.selectedChannel.recipients.count > 2 ? @" " : @" @"), 
+            DCServerCommunicator.sharedInstance.selectedChannel.name]
+        : @"No Permission";
         self.toolbar.userInteractionEnabled = DCServerCommunicator.sharedInstance.selectedChannel.writeable;
         [self handleAsyncReload];
         [self getMessages:50 beforeMessage:nil];
