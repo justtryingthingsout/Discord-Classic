@@ -7,6 +7,8 @@
 //
 
 #import "DCTools.h"
+#include <Foundation/NSObjCRuntime.h>
+#include <objc/NSObjCRuntime.h>
 #include "TSMarkdownParser.h"
 #include <Foundation/Foundation.h>
 #include <dispatch/dispatch.h>
@@ -1272,11 +1274,37 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
         [channels setObject:newChannel forKey:newChannel.snowflake];
     }
 
-#warning TODO: refer to github.com/Rapptz/discord.py/issues/2392#issuecomment-707455919 on how to fix properly
+    // refer to https://github.com/Rapptz/discord.py/issues/2392#issuecomment-707455919
     [newGuild.channels sortUsingComparator:^NSComparisonResult(
                            DCChannel *channel1, DCChannel *channel2
     ) {
-        if (channel1.position < channel2.position) {
+        if ([channel1.parentID isKindOfClass:[NSString class]] && ![channel2.parentID isKindOfClass:[NSString class]]) {
+            return NSOrderedDescending;
+        } else if (![channel1.parentID isKindOfClass:[NSString class]] && [channel2.parentID isKindOfClass:[NSString class]]) {
+            return NSOrderedAscending;
+        } else if ([channel1.parentID isKindOfClass:[NSString class]] && [channel2.parentID isKindOfClass:[NSString class]] &&
+                   ![channel1.parentID isEqualToString:channel2.parentID]) {
+            NSUInteger idx1 = [categories indexOfObjectPassingTest:^BOOL(DCChannel *category, NSUInteger idx, BOOL *stop) {
+                return [category.snowflake isEqualToString:channel1.parentID];
+            }], idx2 = [categories indexOfObjectPassingTest:^BOOL(DCChannel *category, NSUInteger idx, BOOL *stop) {
+                return [category.snowflake isEqualToString:channel2.parentID];
+            }];
+            if (idx1 != NSNotFound && idx2 != NSNotFound) {
+                DCChannel *parent1 = [categories objectAtIndex:idx1];
+                DCChannel *parent2 = [categories objectAtIndex:idx2];
+                if (parent1.position < parent2.position) {
+                    return NSOrderedAscending;
+                } else if (parent1.position > parent2.position) {
+                    return NSOrderedDescending;
+                }
+            }
+        }
+        
+        if (channel1.type < channel2.type) {
+            return NSOrderedAscending;
+        } else if (channel1.type > channel2.type) {
+            return NSOrderedDescending;
+        } else if (channel1.position < channel2.position) {
             return NSOrderedAscending;
         } else if (channel1.position > channel2.position) {
             return NSOrderedDescending;
