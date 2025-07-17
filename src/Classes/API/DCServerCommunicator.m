@@ -217,10 +217,10 @@ UIActivityIndicatorView *spinner;
             userInfo[@"guildFolders"] = NSMutableArray.new;
             for (NSDictionary *userDict in [d valueForKeyPath:@"user_settings.guild_folders"]) {
                 DCGuildFolder *folder = [DCGuildFolder new];
-                folder.id = [userDict valueForKey:@"id"] != [NSNull null] ? [[userDict valueForKey:@"id"] intValue] : 0;
-                folder.name = [userDict valueForKey:@"name"];
-                folder.color = [userDict valueForKey:@"color"] != [NSNull null] ? [[userDict valueForKey:@"color"] intValue] : 0;
-                folder.guildIds = [userDict valueForKey:@"guild_ids"];
+                folder.id = [userDict objectForKey:@"id"] != [NSNull null] ? [[userDict objectForKey:@"id"] intValue] : 0;
+                folder.name = [userDict objectForKey:@"name"];
+                folder.color = [userDict objectForKey:@"color"] != [NSNull null] ? [[userDict objectForKey:@"color"] intValue] : 0;
+                folder.guildIds = [userDict objectForKey:@"guild_ids"];
                 NSNumber *opened = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:[@(folder.id) stringValue]] objectForKey:@"opened"];
                 folder.opened = opened != nil ? [opened boolValue] : YES; // default to opened
                 [userInfo[@"guildFolders"] addObject:folder];
@@ -231,9 +231,9 @@ UIActivityIndicatorView *spinner;
         }
         self.currentUserInfo     = userInfo;
         self.userChannelSettings = NSMutableDictionary.new;
-        for (NSDictionary *guildSettings in [d valueForKey:@"user_guild_settings"]) {
+        for (NSDictionary *guildSettings in [d objectForKey:@"user_guild_settings"]) {
             for (NSDictionary *channelSetting in [guildSettings objectForKey:@"channel_overrides"]) {
-                [self.userChannelSettings setValue:@((bool)[channelSetting valueForKey:@"muted"]) forKey:[channelSetting valueForKey:@"channel_id"]];
+                [self.userChannelSettings setValue:@((bool)[channelSetting objectForKey:@"muted"]) forKey:[channelSetting objectForKey:@"channel_id"]];
             }
         }
         // Get user DMs and DM groups
@@ -244,33 +244,33 @@ UIActivityIndicatorView *spinner;
             privateGuild.icon = [UIImage imageNamed:@"privateGuildLogo"];
         }
         privateGuild.channels = NSMutableArray.new;
-        for (NSDictionary *privateChannel in [d valueForKey:@"private_channels"]) {
+        for (NSDictionary *privateChannel in [d objectForKey:@"private_channels"]) {
             // this may actually suck
             //  Initialize users array for the member list
             NSMutableArray *users = NSMutableArray.new;
             // NSLog(@"%@", privateChannel);
             NSMutableDictionary *usersDict;
             DCChannel *newChannel    = DCChannel.new;
-            newChannel.parentID      = [privateChannel valueForKey:@"parent_id"];
-            newChannel.snowflake     = [privateChannel valueForKey:@"id"];
-            newChannel.lastMessageId = [privateChannel valueForKey:@"last_message_id"];
+            newChannel.parentID      = [privateChannel objectForKey:@"parent_id"];
+            newChannel.snowflake     = [privateChannel objectForKey:@"id"];
+            newChannel.lastMessageId = [privateChannel objectForKey:@"last_message_id"];
             newChannel.parentGuild   = privateGuild;
             newChannel.type          = 1;
             newChannel.users         = users;
             newChannel.writeable     = YES; // DMs are always writeable
             if ([privateChannel objectForKey:@"icon"] != nil || [privateChannel objectForKey:@"recipients"] != nil) {
-                if (((NSArray *)[privateChannel valueForKey:@"recipients"]).count > 0) {
-                    NSDictionary *user    = [[privateChannel valueForKey:@"recipients"] objectAtIndex:0];
+                if (((NSArray *)[privateChannel objectForKey:@"recipients"]).count > 0) {
+                    NSDictionary *user    = [[privateChannel objectForKey:@"recipients"] objectAtIndex:0];
                     newChannel.recipients = [privateChannel objectForKey:@"recipients"];
                     for (NSDictionary *user in [privateChannel objectForKey:@"recipients"]) {
                         usersDict = NSMutableDictionary.new;
-                        [usersDict setObject:[user valueForKey:@"global_name"] forKey:@"username"];
-                        [usersDict setObject:[user valueForKey:@"username"] forKey:@"handle"];
-                        [usersDict setObject:[user valueForKey:@"avatar"] forKey:@"avatar"];
-                        [usersDict setObject:[user valueForKey:@"id"] forKey:@"snowflake"];
+                        [usersDict setObject:[user objectForKey:@"global_name"] forKey:@"username"];
+                        [usersDict setObject:[user objectForKey:@"username"] forKey:@"handle"];
+                        [usersDict setObject:[user objectForKey:@"avatar"] forKey:@"avatar"];
+                        [usersDict setObject:[user objectForKey:@"id"] forKey:@"snowflake"];
                         [users addObject:usersDict];
                         // Ensure user is added to loadedUsers
-                        NSString *userId = [user valueForKey:@"id"];
+                        NSString *userId = [user objectForKey:@"id"];
                         if (userId && ![self.loadedUsers objectForKey:userId]) {
                             DCUser *dcUser = [DCTools convertJsonUser:user cache:YES]; // Add to loadedUsers
                             [self.loadedUsers setObject:dcUser forKey:userId];
@@ -280,18 +280,18 @@ UIActivityIndicatorView *spinner;
                     // Add self to users list
                     usersDict = NSMutableDictionary.new;
                     [usersDict setObject:[NSString stringWithFormat:@"You"] forKey:@"username"];
-                    [usersDict setObject:[user valueForKey:@"avatar"] forKey:@"avatar"];
-                    [usersDict setObject:[user valueForKey:@"id"] forKey:@"snowflake"];
+                    [usersDict setObject:[user objectForKey:@"avatar"] forKey:@"avatar"];
+                    [usersDict setObject:[user objectForKey:@"id"] forKey:@"snowflake"];
                     [users addObject:usersDict];
                     // end
                     /*NSMutableDictionary *usersDict;
                      for (NSDictionary* user in [privateChannel objectForKey:@"recipients"]) {
                      usersDict = NSMutableDictionary.new;
-                     [usersDict setObject:[user valueForKey:@"username"] forKey:@"username"];
-                     [usersDict setObject:[user valueForKey:@"avatar"] forKey:@"avatar"];
+                     [usersDict setObject:[user objectForKey:@"username"] forKey:@"username"];
+                     [usersDict setObject:[user objectForKey:@"avatar"] forKey:@"avatar"];
                      [users addObject:usersDict];
                      }*/
-                    NSNumber *longId = @([[user valueForKey:@"id"] longLongValue]);
+                    NSNumber *longId = @([[user objectForKey:@"id"] longLongValue]);
                     int selector     = (int)(([longId longLongValue] >> 22) % 6);
                     newChannel.icon  = [DCUser defaultAvatars][selector];
                     CGSize itemSize  = CGSizeMake(32, 32);
@@ -302,7 +302,7 @@ UIActivityIndicatorView *spinner;
                 }
                 if ([privateChannel objectForKey:@"icon"] != nil) {
                     NSString *iconURL    = [NSString stringWithFormat:@"https://cdn.discordapp.com/channel-icons/%@/%@.png?size=64",
-                                                                   newChannel.snowflake, [privateChannel valueForKey:@"icon"]];
+                                                                   newChannel.snowflake, [privateChannel objectForKey:@"icon"]];
                     NSNumber *longId = @([newChannel.snowflake longLongValue]);
                     int selector     = (int)(([longId longLongValue] >> 22) % 6);
                     newChannel.icon  = [DCUser defaultAvatars][selector];
@@ -330,12 +330,12 @@ UIActivityIndicatorView *spinner;
                                                       //   /*[NSNotificationCenter.defaultCenter postNotificationName:@"RELOAD CHANNEL LIST" object:DCServerCommunicator.sharedInstance];*/
                                                   }];
                 } else {
-                    if (((NSArray *)[privateChannel valueForKey:@"recipients"]).count > 0) {
-                        NSDictionary *user  = [[privateChannel valueForKey:@"recipients"] objectAtIndex:0];
+                    if (((NSArray *)[privateChannel objectForKey:@"recipients"]).count > 0) {
+                        NSDictionary *user  = [[privateChannel objectForKey:@"recipients"] objectAtIndex:0];
                         NSString *avatarURL = [NSString
                             stringWithFormat:@"https://cdn.discordapp.com/avatars/%@/%@.png?size=64",
-                                             [user valueForKey:@"id"],
-                                             [user valueForKey:@"avatar"]];
+                                             [user objectForKey:@"id"],
+                                             [user objectForKey:@"avatar"]];
                         [DCTools processImageDataWithURLString:avatarURL
                                                       andBlock:^(UIImage *imageData) {
                                                           UIImage *retrievedImage = imageData;
@@ -351,9 +351,9 @@ UIActivityIndicatorView *spinner;
                                                               });
                                                           } else {
                                                               int selector         = 0;
-                                                              NSNumber *discriminator = @([[user valueForKey:@"discriminator"] integerValue]);
+                                                              NSNumber *discriminator = @([[user objectForKey:@"discriminator"] integerValue]);
                                                               if ([discriminator integerValue] == 0) {
-                                                                  NSNumber *longId = @([[user valueForKey:@"id"] longLongValue]);
+                                                                  NSNumber *longId = @([[user objectForKey:@"id"] longLongValue]);
                                                                   selector         = (int)(([longId longLongValue] >> 22) % 6);
                                                               } else {
                                                                   selector = (int)([discriminator integerValue] % 5);
@@ -369,10 +369,10 @@ UIActivityIndicatorView *spinner;
                                                               });
                                                           }
                                                           // Process user presences from READY payload
-                                                          NSArray *presences = [d valueForKey:@"presences"];
+                                                          NSArray *presences = [d objectForKey:@"presences"];
                                                           for (NSDictionary *presence in presences) {
                                                               NSString *userId = [presence valueForKeyPath:@"user.id"];
-                                                              NSString *status = [presence valueForKey:@"status"];
+                                                              NSString *status = [presence objectForKey:@"status"];
                                                               if (userId && status) {
                                                                   DCUser *user = [self.loadedUsers objectForKey:userId];
                                                                   if (user) {
@@ -387,25 +387,23 @@ UIActivityIndicatorView *spinner;
                     }
                 }
             }
-            NSString *privateChannelName = [privateChannel valueForKey:@"name"];
+            NSString *privateChannelName = [privateChannel objectForKey:@"name"];
             // Some private channels dont have names, check if nil
-            if (privateChannelName && privateChannelName != (id)NSNull.null) {
+            if (privateChannelName && (NSNull *)privateChannelName != [NSNull null]) {
                 newChannel.name = privateChannelName;
             } else {
                 // If no name, create a name from channel members
                 NSMutableString *fullChannelName = [@"" mutableCopy];
-                NSArray *privateChannelMembers   = [privateChannel valueForKey:@"recipients"];
+                NSArray *privateChannelMembers   = [privateChannel objectForKey:@"recipients"];
                 for (NSDictionary *privateChannelMember in privateChannelMembers) {
                     // add comma between member names
                     if ([privateChannelMembers indexOfObject:privateChannelMember] != 0) {
                         [fullChannelName appendString:@", @"];
                     }
-                    NSString *memberName = [privateChannelMember valueForKey:@"username"];
-                    @try {
-                        if ([privateChannelMember objectForKey:@"global_name"] && [[privateChannelMember valueForKey:@"global_name"] isKindOfClass:[NSString class]]) {
-                            memberName = [privateChannelMember valueForKey:@"global_name"];
-                        }
-                    } @catch (NSException *e) {
+                    NSString *memberName = [privateChannelMember objectForKey:@"username"];
+                    if ([privateChannelMember objectForKey:@"global_name"] 
+                    && [[privateChannelMember objectForKey:@"global_name"] isKindOfClass:[NSString class]]) {
+                        memberName = [privateChannelMember objectForKey:@"global_name"];
                     }
                     [fullChannelName appendString:memberName];
                     newChannel.name = fullChannelName;
@@ -427,19 +425,19 @@ UIActivityIndicatorView *spinner;
         NSMutableArray *guilds = NSMutableArray.new;
         [guilds addObject:privateGuild];
         // Get servers (guilds) the user is a member of
-        for (NSDictionary *jsonGuild in [d valueForKey:@"guilds"]) {
+        for (NSDictionary *jsonGuild in [d objectForKey:@"guilds"]) {
             DCGuild *guild = [DCTools convertJsonGuild:jsonGuild];
             [guilds addObject:guild];
         }
-        for (NSDictionary *guildSettings in [d valueForKey:@"user_guild_settings"]) {
-            NSString *guildId = [guildSettings valueForKey:@"guild_id"];
+        for (NSDictionary *guildSettings in [d objectForKey:@"user_guild_settings"]) {
+            NSString *guildId = [guildSettings objectForKey:@"guild_id"];
             if ((NSNull *)guildId == [NSNull null]) {
-                ((DCGuild*)guilds[0]).muted = [[guildSettings valueForKey:@"muted"] boolValue];
+                ((DCGuild *)guilds[0]).muted = [[guildSettings objectForKey:@"muted"] boolValue];
                 continue;
             }
             for (DCGuild *guild in guilds) {
                 if ([guild.snowflake isEqualToString:guildId]) {
-                    guild.muted = [[guildSettings valueForKey:@"muted"] boolValue];
+                    guild.muted = [[guildSettings objectForKey:@"muted"] boolValue];
                     break;
                 }
             }
@@ -448,10 +446,10 @@ UIActivityIndicatorView *spinner;
         self.guildsIsSorted = NO;
         // Read states are recieved in READY payload
         // they give a channel ID and the ID of the last read message in that channel
-        NSArray *readstatesArray = [d valueForKey:@"read_state"];
+        NSArray *readstatesArray = [d objectForKey:@"read_state"];
         for (NSDictionary *readstate in readstatesArray) {
-            NSString *readstateChannelId = [readstate valueForKey:@"id"];
-            NSString *readstateMessageId = [readstate valueForKey:@"last_message_id"];
+            NSString *readstateChannelId = [readstate objectForKey:@"id"];
+            NSString *readstateMessageId = [readstate objectForKey:@"last_message_id"];
             // Get the channel with the ID of readStateChannelId
             DCChannel *channelOfReadstate        = [self.channels objectForKey:readstateChannelId];
             channelOfReadstate.lastReadMessageId = readstateMessageId;
@@ -465,7 +463,7 @@ UIActivityIndicatorView *spinner;
 
 - (void)handlePresenceUpdateEventWithData:(NSDictionary *)d {
     NSString *userId = [d valueForKeyPath:@"user.id"];
-    NSString *status = [d valueForKey:@"status"];
+    NSString *status = [d objectForKey:@"status"];
     if (!userId || !status) {
         // NSLog(@"[PRESENCE_UPDATE] Missing user ID or status in payload: %@", d);
         return;
@@ -533,21 +531,21 @@ UIActivityIndicatorView *spinner;
 
 - (void)handleChannelCreateWithData:(NSDictionary *)d {
     DCChannel *newChannel = DCChannel.new;
-    newChannel.snowflake  = [d valueForKey:@"id"];
-    newChannel.parentID   = [d valueForKey:@"parent_id"];
-    newChannel.name       = [d valueForKey:@"name"];
+    newChannel.snowflake  = [d objectForKey:@"id"];
+    newChannel.parentID   = [d objectForKey:@"parent_id"];
+    newChannel.name       = [d objectForKey:@"name"];
     newChannel.lastMessageId =
-        [d valueForKey:@"last_message_id"];
-    if ([d valueForKey:@"guild_id"] != nil) {
+        [d objectForKey:@"last_message_id"];
+    if ([d objectForKey:@"guild_id"] != nil) {
         for (DCGuild *guild in self.guilds) {
-            if ([guild.snowflake isEqualToString:[d valueForKey:@"guild_id"]]) {
+            if ([guild.snowflake isEqualToString:[d objectForKey:@"guild_id"]]) {
                 newChannel.parentGuild = guild;
                 break;
             }
         }
     }
-    newChannel.type       = [[d valueForKey:@"type"] intValue];
-    NSString *rawPosition = [d valueForKey:@"position"];
+    newChannel.type       = [[d objectForKey:@"type"] intValue];
+    NSString *rawPosition = [d objectForKey:@"position"];
     newChannel.position   = rawPosition ? [rawPosition intValue] : 0;
 }
 
@@ -558,13 +556,13 @@ UIActivityIndicatorView *spinner;
         if (!ret) {
             // fake online/offline roles
             DCRole *role = DCRole.new;
-            role.snowflake = [groupItem valueForKey:@"id"];
+            role.snowflake = [groupItem objectForKey:@"id"];
             if ([role.snowflake isEqualToString:@"online"]) {
                 role.name = @"Online";
             } else if ([role.snowflake isEqualToString:@"offline"]) {
                 role.name = @"Offline";
             } else {
-                role.name = [groupItem valueForKey:@"id"];
+                role.name = [groupItem objectForKey:@"id"];
             }
             [self.loadedRoles setObject:role forKey:[groupItem objectForKey:@"id"]];
             ret = role;
@@ -747,7 +745,7 @@ UIActivityIndicatorView *spinner;
         self.loadedRoles                                                  = NSMutableDictionary.new;
         self.didReceiveHeartbeatResponse                                  = true;
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        int heartbeatInterval                                             = [[d valueForKey:@"heartbeat_interval"] intValue];
+        int heartbeatInterval                                             = [[d objectForKey:@"heartbeat_interval"] intValue];
         dispatch_async(dispatch_get_main_queue(), ^{
             static dispatch_once_t once;
             dispatch_once(&once, ^{
@@ -790,14 +788,14 @@ UIActivityIndicatorView *spinner;
 
 - (void)handleDispatchWithResponse:(NSDictionary *)parsedJsonResponse {
     // get data
-    NSDictionary *d = [parsedJsonResponse valueForKey:@"d"];
+    NSDictionary *d = [parsedJsonResponse objectForKey:@"d"];
 
     // Get event type and sequence number
-    NSString *t         = [parsedJsonResponse valueForKey:@"t"];
-    self.sequenceNumber = [[parsedJsonResponse valueForKey:@"s"] integerValue];
+    NSString *t         = [parsedJsonResponse objectForKey:@"t"];
+    self.sequenceNumber = [[parsedJsonResponse objectForKey:@"s"] integerValue];
     // NSLog(@"Got event %@ with sequence number %i", t, self.sequenceNumber);
     // received READY
-    if (![[parsedJsonResponse valueForKey:@"t"] isKindOfClass:[NSString class]]) {
+    if (![[parsedJsonResponse objectForKey:@"t"] isKindOfClass:[NSString class]]) {
         return;
     }
 
@@ -833,9 +831,9 @@ UIActivityIndicatorView *spinner;
     } else if ([t isEqualToString:GUILD_CREATE]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             for (DCGuild *g in self.guilds) {
-                if ([g.snowflake isEqualToString:[d valueForKey:@"id"]]) {
+                if ([g.snowflake isEqualToString:[d objectForKey:@"id"]]) {
 #ifdef DEBUG
-                    NSLog(@"Guild with ID %@ ready for member list!", [d valueForKey:@"id"]);
+                    NSLog(@"Guild with ID %@ ready for member list!", [d objectForKey:@"id"]);
 #endif
                     return;
                 }
@@ -848,12 +846,12 @@ UIActivityIndicatorView *spinner;
         [self handleChannelCreateWithData:d];
         return;
     } else if ([t isEqualToString:CHANNEL_UNREAD_UPDATE]) {
-        NSArray *unreads = [d valueForKey:@"channel_unread_updates"];
+        NSArray *unreads = [d objectForKey:@"channel_unread_updates"];
         for (NSDictionary *unread in unreads) {
-            NSString *channelId = [unread valueForKey:@"id"];
+            NSString *channelId = [unread objectForKey:@"id"];
             DCChannel *channel  = [self.channels objectForKey:channelId];
             if (channel) {
-                channel.lastMessageId = [unread valueForKey:@"last_message_id"];
+                channel.lastMessageId = [unread objectForKey:@"last_message_id"];
                 BOOL oldUnread = channel.unread;
                 [channel checkIfRead];
                 if (oldUnread != channel.unread) {
@@ -913,8 +911,8 @@ UIActivityIndicatorView *spinner;
         // NSLog(responseString);
 
         // Data values for easy access
-        int op          = [[parsedJsonResponse valueForKey:@"op"] integerValue];
-        NSDictionary *d = [parsedJsonResponse valueForKey:@"d"];
+        int op          = [[parsedJsonResponse objectForKey:@"op"] integerValue];
+        NSDictionary *d = [parsedJsonResponse objectForKey:@"d"];
 
         // #ifdef DEBUG
         //         NSLog(@"Got op code %i", op);

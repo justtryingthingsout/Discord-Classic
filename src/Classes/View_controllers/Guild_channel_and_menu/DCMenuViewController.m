@@ -547,7 +547,7 @@
 
                 // Iterate over users to find the DM partner
                 for (NSDictionary *userDict in channelAtRowIndex.users) {
-                    NSString *userId = [userDict valueForKey:@"snowflake"];
+                    NSString *userId = [userDict objectForKey:@"snowflake"];
 
                     // Exclude self from buddy selection
                     if (![userId
@@ -562,9 +562,9 @@
                         if (!buddy) {
                             buddy           = [[DCUser alloc] init];
                             buddy.snowflake = userId;
-                            buddy.username  = [userDict valueForKey:@"username"];
+                            buddy.username  = [userDict objectForKey:@"username"];
                             buddy.status =
-                                [userDict valueForKey:@"status"] ?: @"offline";
+                                [userDict objectForKey:@"status"] ?: @"offline";
                         }
                         break;
                     }

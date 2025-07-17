@@ -371,7 +371,7 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleMessageEdit:(NSNotification *)notification {
-    NSString *snowflake       = [notification.userInfo valueForKey:@"id"];
+    NSString *snowflake       = [notification.userInfo objectForKey:@"id"];
     if (!snowflake || snowflake.length == 0) {
         NSLog(@"%s: No snowflake provided for message edit", __PRETTY_FUNCTION__);
         return;
@@ -464,7 +464,7 @@ static dispatch_queue_t chat_messages_queue;
     }
 
     NSUInteger index = [self.messages indexOfObjectPassingTest:^BOOL(DCMessage *msg, NSUInteger idx, BOOL *stop) {
-        return [msg.snowflake isEqualToString:[notification.userInfo valueForKey:@"id"]];
+        return [msg.snowflake isEqualToString:[notification.userInfo objectForKey:@"id"]];
     }];
     if (index == NSNotFound || index >= self.messages.count) {
         return;

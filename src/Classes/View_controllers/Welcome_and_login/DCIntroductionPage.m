@@ -57,7 +57,7 @@
         // changed
         if (![DCServerCommunicator.sharedInstance.token
                 isEqual:[NSUserDefaults.standardUserDefaults
-                            valueForKey:@"token"]]) {
+                            objectForKey:@"token"]]) {
             DCServerCommunicator.sharedInstance.token =
                 self.tokenInputField.text;
             [DCServerCommunicator.sharedInstance reconnect];

@@ -16,7 +16,6 @@ Discord_FILES = $(shell find . -name "*.m")
 Discord_FRAMEWORKS = AssetsLibrary QuickLook ImageIO MediaPlayer AVFoundation Security CFNetwork UIKit Foundation CoreGraphics QuartzCore
 Discord_BUNDLE_RESOURCES = Theos/
 Discord_CFLAGS = -ObjC -fobjc-arc -Wno-unused-const-variable -Wno-gnu-folding-constant -Wno-error=\#warnings -include Discord_Classic/Discord_Classic-Prefix.pch $(INCLUDE_FLAGS)
-# -fobjc-weak -Wno-objc-property-no-attribute 
 
 after-Discord-all::
 	$(ECHO_BEGIN)codesign --force --deep --sign - $(THEOS_OBJ_DIR)/Discord.app$(ECHO_END)

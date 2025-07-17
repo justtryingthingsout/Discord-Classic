@@ -32,7 +32,7 @@
     // Save the entered values and reauthenticate if the token has been changed
     if (![DCServerCommunicator.sharedInstance.token
             isEqual:[NSUserDefaults.standardUserDefaults
-                        valueForKey:@"token"]]) {
+                        objectForKey:@"token"]]) {
         DCServerCommunicator.sharedInstance.token = self.tokenInputField.text;
         [DCServerCommunicator.sharedInstance reconnect];
     }
@@ -62,7 +62,7 @@
         if ([chatViewController isKindOfClass:DCChatViewController.class]) {
             DCServerCommunicator.sharedInstance.selectedChannel =
                 [DCServerCommunicator.sharedInstance.channels
-                    valueForKey:@"1184464173795651594"];
+                    objectForKey:@"1184464173795651594"];
 
             // Initialize messages
             [NSNotificationCenter.defaultCenter

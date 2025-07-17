@@ -39,41 +39,23 @@ static dispatch_queue_t messages_delete_queue;
                 cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
             timeoutInterval:10];
         [urlRequest setValue:@"no-store" forHTTPHeaderField:@"Cache-Control"];
-
         [urlRequest setHTTPMethod:@"DELETE"];
-
         [urlRequest addValue:DCServerCommunicator.sharedInstance.token
             forHTTPHeaderField:@"Authorization"];
         [urlRequest addValue:@"application/json"
             forHTTPHeaderField:@"Content-Type"];
 
-
-        /*NSError *error = nil;
-        NSHTTPURLResponse *responseCode = nil;
-        int attempts = 0;
-        while (attempts == 0 || (attempts <= 10 && error.code ==
-        NSURLErrorTimedOut)) { attempts++; error = nil; [UIApplication
-        sharedApplication].networkActivityIndicatorVisible++; [DCTools
-        checkData:[NSURLConnection sendSynchronousRequest:urlRequest
-        returningResponse:&responseCode error:&error] withError:error];
-            [UIApplication
-        sharedApplication].networkActivityIndicatorVisible--;*/
         dispatch_sync(dispatch_get_main_queue(), ^{
-            [UIApplication sharedApplication].networkActivityIndicatorVisible =
-                YES;
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
         });
         [NSURLConnection
             sendAsynchronousRequest:urlRequest
                               queue:[NSOperationQueue currentQueue]
-                  completionHandler:^(
-                      NSURLResponse *response, NSData *data, NSError *connError
-                  ) {
+                  completionHandler:^(NSURLResponse *response, NSData *data, NSError *connError) {
                       dispatch_sync(dispatch_get_main_queue(), ^{
-                          [UIApplication sharedApplication]
-                              .networkActivityIndicatorVisible = NO;
+                          [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                       });
                   }];
-        //}
     });
 }
 

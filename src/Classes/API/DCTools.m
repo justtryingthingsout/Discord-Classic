@@ -191,23 +191,23 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 + (DCUser *)convertJsonUser:(NSDictionary *)jsonUser cache:(bool)cache {
     // NSLog(@"%@", jsonUser);
     DCUser *newUser    = DCUser.new;
-    newUser.username   = [jsonUser valueForKey:@"username"];
+    newUser.username   = [jsonUser objectForKey:@"username"];
     newUser.globalName = newUser.username;
     @try {
         if ([jsonUser objectForKey:@"global_name"] &&
-            [[jsonUser valueForKey:@"global_name"]
+            [[jsonUser objectForKey:@"global_name"]
                 isKindOfClass:[NSString class]]) {
-            newUser.globalName = [jsonUser valueForKey:@"global_name"];
+            newUser.globalName = [jsonUser objectForKey:@"global_name"];
         }
     } @catch (NSException *e) {
     }
-    newUser.snowflake = [jsonUser valueForKey:@"id"];
+    newUser.snowflake = [jsonUser objectForKey:@"id"];
 
     // Load profile image
     NSString *avatarURL =
         [NSString stringWithFormat:
                       @"https://cdn.discordapp.com/avatars/%@/%@.png?size=80",
-                      newUser.snowflake, [jsonUser valueForKey:@"avatar"]];
+                      newUser.snowflake, [jsonUser objectForKey:@"avatar"]];
     [DCTools
         processImageDataWithURLString:avatarURL
                              andBlock:^(UIImage *imageData) {
@@ -226,7 +226,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                                      );
                                  } else {
                                      int selector = 0;
-                                     NSNumber *discriminator = @([[jsonUser valueForKey:@"discriminator"] integerValue]);
+                                     NSNumber *discriminator = @([[jsonUser objectForKey:@"discriminator"] integerValue]);
 
                                      if ([discriminator integerValue] == 0) {
                                          NSNumber *longId = @([newUser.snowflake longLongValue]);
@@ -284,11 +284,11 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 + (DCRole *)convertJsonRole:(NSDictionary *)jsonRole cache:(bool)cache {
     // NSLog(@"%@", jsonUser);
     DCRole *newRole   = DCRole.new;
-    newRole.snowflake = [jsonRole valueForKey:@"id"];
-    newRole.name      = [jsonRole valueForKey:@"name"];
-    newRole.color     = [[jsonRole valueForKey:@"color"] intValue];
-    newRole.hoist     = [[jsonRole valueForKey:@"hoist"] boolValue];
-    NSString *icon    = [jsonRole valueForKey:@"icon"]; // can be nil
+    newRole.snowflake = [jsonRole objectForKey:@"id"];
+    newRole.name      = [jsonRole objectForKey:@"name"];
+    newRole.color     = [[jsonRole objectForKey:@"color"] intValue];
+    newRole.hoist     = [[jsonRole objectForKey:@"hoist"] boolValue];
+    NSString *icon    = [jsonRole objectForKey:@"icon"]; // can be nil
     if (icon != nil && ![icon isKindOfClass:[NSNull class]]) {
         NSString *iconURL = [NSString
             stringWithFormat:
@@ -316,11 +316,11 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
     } else {
         newRole.icon = nil;
     }
-    newRole.unicodeEmoji = [jsonRole valueForKey:@"unicode_emoji"]; // can be nil
-    newRole.position     = [[jsonRole valueForKey:@"position"] intValue];
-    newRole.permissions  = [jsonRole valueForKey:@"permissions"];
-    newRole.managed      = [[jsonRole valueForKey:@"managed"] boolValue];
-    newRole.mentionable  = [[jsonRole valueForKey:@"mentionable"] boolValue];
+    newRole.unicodeEmoji = [jsonRole objectForKey:@"unicode_emoji"]; // can be nil
+    newRole.position     = [[jsonRole objectForKey:@"position"] intValue];
+    newRole.permissions  = [jsonRole objectForKey:@"permissions"];
+    newRole.managed      = [[jsonRole objectForKey:@"managed"] boolValue];
+    newRole.mentionable  = [[jsonRole objectForKey:@"mentionable"] boolValue];
 
     // Save to DCServerCommunicator.loadedRoles
     if (cache) {
@@ -351,7 +351,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
     NSDictionary *referencedJsonMessage =
         [jsonMessage objectForKey:@"referenced_message"];
-    if ([[jsonMessage valueForKey:@"referenced_message"]
+    if ([[jsonMessage objectForKey:@"referenced_message"]
             isKindOfClass:[NSDictionary class]]) {
         DCMessage *referencedMessage = DCMessage.new;
 
@@ -368,16 +368,16 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
         referencedMessage.author =
             [DCServerCommunicator.sharedInstance.loadedUsers
-                valueForKey:referencedAuthorId];
-        if ([[referencedJsonMessage valueForKey:@"content"]
+                objectForKey:referencedAuthorId];
+        if ([[referencedJsonMessage objectForKey:@"content"]
                 isKindOfClass:[NSString class]]) {
             referencedMessage.content =
-                [referencedJsonMessage valueForKey:@"content"];
+                [referencedJsonMessage objectForKey:@"content"];
         } else {
             referencedMessage.content = @"";
         }
-        referencedMessage.messageType     = [[referencedJsonMessage valueForKey:@"type"] intValue];
-        referencedMessage.snowflake       = [referencedJsonMessage valueForKey:@"id"];
+        referencedMessage.messageType     = [[referencedJsonMessage objectForKey:@"type"] intValue];
+        referencedMessage.snowflake       = [referencedJsonMessage objectForKey:@"id"];
         CGSize authorNameSize             = [referencedMessage.author.globalName
                  sizeWithFont:[UIFont boldSystemFontOfSize:10]
             constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
@@ -388,10 +388,10 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
     }
 
     newMessage.author =
-        [DCServerCommunicator.sharedInstance.loadedUsers valueForKey:authorId];
-    newMessage.messageType     = [[jsonMessage valueForKey:@"type"] intValue];
-    newMessage.content         = [jsonMessage valueForKey:@"content"];
-    newMessage.snowflake       = [jsonMessage valueForKey:@"id"];
+        [DCServerCommunicator.sharedInstance.loadedUsers objectForKey:authorId];
+    newMessage.messageType     = [[jsonMessage objectForKey:@"type"] intValue];
+    newMessage.content         = [jsonMessage objectForKey:@"content"];
+    newMessage.snowflake       = [jsonMessage objectForKey:@"id"];
     newMessage.attachments     = NSMutableArray.new;
     newMessage.attachmentCount = 0;
 
@@ -401,21 +401,21 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
         setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
 
     newMessage.timestamp =
-        [dateFormatter dateFromString:[jsonMessage valueForKey:@"timestamp"]];
+        [dateFormatter dateFromString:[jsonMessage objectForKey:@"timestamp"]];
     if (newMessage.timestamp == nil) {
         dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
         newMessage.timestamp     = [dateFormatter
-            dateFromString:[jsonMessage valueForKey:@"timestamp"]];
+            dateFromString:[jsonMessage objectForKey:@"timestamp"]];
     }
 
-    if ([jsonMessage valueForKey:@"edited_timestamp"] != [NSNull null]) {
+    if ([jsonMessage objectForKey:@"edited_timestamp"] != [NSNull null]) {
         newMessage.editedTimestamp = [dateFormatter
-            dateFromString:[jsonMessage valueForKey:@"edited_timestamp"]];
+            dateFromString:[jsonMessage objectForKey:@"edited_timestamp"]];
         if (newMessage.editedTimestamp == nil) {
             dateFormatter.dateFormat   = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
             newMessage.editedTimestamp = [dateFormatter
                 dateFromString:[jsonMessage
-                                   valueForKey:@"edited_timestamp"]];
+                                   objectForKey:@"edited_timestamp"]];
         }
     }
 
@@ -433,7 +433,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
     NSArray *embeds = [jsonMessage objectForKey:@"embeds"];
     if (embeds) {
         for (NSDictionary *embed in embeds) {
-            NSString *embedType = [embed valueForKey:@"type"];
+            NSString *embedType = [embed objectForKey:@"type"];
             if ([embedType isEqualToString:@"image"]) {
                 newMessage.attachmentCount++;
 
@@ -452,7 +452,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                                                   withString:
                                                       @"media.discordapp.net"];
                 } else {
-                    attachmentURL = [[embed valueForKey:@"url"]
+                    attachmentURL = [[embed objectForKey:@"url"]
                         stringByReplacingOccurrencesOfString:@"cdn.discordapp.com"
                                                   withString:
                                                       @"media.discordapp.net"];
@@ -532,7 +532,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                     attachmentURL =
                         [NSURL URLWithString:[embed valueForKeyPath:@"video.url"]];
                 } else {
-                    attachmentURL = [NSURL URLWithString:[embed valueForKey:@"url"]];
+                    attachmentURL = [NSURL URLWithString:[embed objectForKey:@"url"]];
                 }
 
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -546,7 +546,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
                     video.videoURL = attachmentURL;
 
-                    NSString *baseURL = [[embed valueForKey:@"url"]
+                    NSString *baseURL = [[embed objectForKey:@"url"]
                         stringByReplacingOccurrencesOfString:
                             @"cdn.discordapp.com"
                                                   withString:
@@ -665,19 +665,19 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
     NSArray *attachments = [jsonMessage objectForKey:@"attachments"];
     if (attachments) {
         for (NSDictionary *attachment in attachments) {
-            NSString *fileType = [attachment valueForKey:@"content_type"];
+            NSString *fileType = [attachment objectForKey:@"content_type"];
             if ([fileType rangeOfString:@"image/"].location != NSNotFound) {
                 newMessage.attachmentCount++;
 
-                NSString *attachmentURL = [[attachment valueForKey:@"url"]
+                NSString *attachmentURL = [[attachment objectForKey:@"url"]
                     stringByReplacingOccurrencesOfString:@"cdn.discordapp.com"
                                               withString:
                                                   @"media.discordapp.net"];
 
                 NSInteger width =
-                    [[attachment valueForKey:@"width"] integerValue];
+                    [[attachment objectForKey:@"width"] integerValue];
                 NSInteger height =
-                    [[attachment valueForKey:@"height"] integerValue];
+                    [[attachment objectForKey:@"height"] integerValue];
                 CGFloat aspectRatio = (CGFloat)width / (CGFloat)height;
 
                 if (height > 1024) {
@@ -734,7 +734,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                 newMessage.attachmentCount++;
 
                 NSURL *attachmentURL =
-                    [NSURL URLWithString:[attachment valueForKey:@"url"]];
+                    [NSURL URLWithString:[attachment objectForKey:@"url"]];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     //[newMessage.attachments
                     // addObject:[[MPMoviePlayerViewController alloc]
@@ -746,16 +746,16 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
                     video.videoURL = attachmentURL;
 
-                    NSString *baseURL = [[attachment valueForKey:@"url"]
+                    NSString *baseURL = [[attachment objectForKey:@"url"]
                         stringByReplacingOccurrencesOfString:
                             @"cdn.discordapp.com"
                                                   withString:
                                                       @"media.discordapp.net"];
 
                     NSInteger width =
-                        [[attachment valueForKey:@"width"] integerValue];
+                        [[attachment objectForKey:@"width"] integerValue];
                     NSInteger height =
-                        [[attachment valueForKey:@"height"] integerValue];
+                        [[attachment objectForKey:@"height"] integerValue];
                     CGFloat aspectRatio = (CGFloat)width / (CGFloat)height;
 
                     if (height > 1024) {
@@ -821,7 +821,7 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                 // NSLog(@"unknown attachment type %@", fileType);
                 newMessage.content =
                     [NSString stringWithFormat:@"%@\n%@", newMessage.content,
-                                               [attachment valueForKey:@"url"]];
+                                               [attachment objectForKey:@"url"]];
                 continue;
             }
         }
@@ -832,18 +832,18 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
     NSArray *mentions     = [jsonMessage objectForKey:@"mentions"];
     NSArray *mentionRoles = [jsonMessage objectForKey:@"mention_roles"];
 
-    if ([[jsonMessage valueForKey:@"mention_everyone"] boolValue]) {
+    if ([[jsonMessage objectForKey:@"mention_everyone"] boolValue]) {
         newMessage.pingingUser = true;
     }
 
     if (mentions.count || mentionRoles.count) {
         for (NSDictionary *mention in mentions) {
-            if ([[mention valueForKey:@"id"] isEqualToString:
+            if ([[mention objectForKey:@"id"] isEqualToString:
                                                  DCServerCommunicator.sharedInstance.snowflake]) {
                 newMessage.pingingUser = true;
             }
             if (![DCServerCommunicator.sharedInstance.loadedUsers
-                    valueForKey:[mention valueForKey:@"id"]]) {
+                    objectForKey:[mention objectForKey:@"id"]]) {
                 (void)[DCTools convertJsonUser:mention cache:true];
             }
         }
@@ -867,10 +867,10 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                     componentsJoinedByString:@""];
 
             DCUser *user = [DCServerCommunicator.sharedInstance.loadedUsers
-                valueForKey:mentionSnowflake];
+                objectForKey:mentionSnowflake];
 
             DCRole *role = [DCServerCommunicator.sharedInstance.loadedRoles
-                valueForKey:mentionSnowflake];
+                objectForKey:mentionSnowflake];
 
             for (DCGuild *guild in DCServerCommunicator.sharedInstance.guilds) {
                 if ([guild.userRoles containsObject:mentionSnowflake]) {
@@ -1068,40 +1068,40 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
     // Get @everyone role
     for (NSDictionary *guildRole in [jsonGuild objectForKey:@"roles"]) {
-        if ([[guildRole valueForKey:@"name"] isEqualToString:@"@everyone"]) {
+        if ([[guildRole objectForKey:@"name"] isEqualToString:@"@everyone"]) {
 #warning TODO: do permissions for @everyone
-            [newGuild.userRoles addObject:[guildRole valueForKey:@"id"]];
+            [newGuild.userRoles addObject:[guildRole objectForKey:@"id"]];
         }
         [newGuild.roles
             setObject:[DCTools convertJsonRole:guildRole cache:true]
-               forKey:[guildRole valueForKey:@"id"]];
+               forKey:[guildRole objectForKey:@"id"]];
     }
 
     // Get roles of the current user
     for (NSDictionary *member in [jsonGuild objectForKey:@"members"]) {
         [DCServerCommunicator.sharedInstance.loadedUsers
-            setObject:[DCTools convertJsonUser:[member valueForKey:@"user"]
+            setObject:[DCTools convertJsonUser:[member objectForKey:@"user"]
                                        cache:true]
                forKey:[member valueForKeyPath:@"user.id"]];
         if ([[member valueForKeyPath:@"user.id"] isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
-            [newGuild.userRoles addObjectsFromArray:[member valueForKey:@"roles"]];
+            [newGuild.userRoles addObjectsFromArray:[member objectForKey:@"roles"]];
         }
     }
 
-    newGuild.name = [jsonGuild valueForKey:@"name"];
+    newGuild.name = [jsonGuild objectForKey:@"name"];
 
     // add new types here.
-    newGuild.snowflake = [jsonGuild valueForKey:@"id"];
+    newGuild.snowflake = [jsonGuild objectForKey:@"id"];
     newGuild.channels  = NSMutableArray.new;
 
     NSString *iconURL = [NSString
         stringWithFormat:@"https://cdn.discordapp.com/icons/%@/%@.png?size=80",
-                         newGuild.snowflake, [jsonGuild valueForKey:@"icon"]];
+                         newGuild.snowflake, [jsonGuild objectForKey:@"icon"]];
 
     NSString *bannerURL =
         [NSString stringWithFormat:
                       @"https://cdn.discordapp.com/banners/%@/%@.png?size=320",
-                      newGuild.snowflake, [jsonGuild valueForKey:@"banner"]];
+                      newGuild.snowflake, [jsonGuild objectForKey:@"banner"]];
 
     NSNumber *longId = @([newGuild.snowflake longLongValue]);
 
@@ -1158,20 +1158,20 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
     NSMutableArray *categories = NSMutableArray.new;
 
-    NSArray *combined             = [[jsonGuild valueForKey:@"channels"] arrayByAddingObjectsFromArray:[jsonGuild valueForKey:@"threads"]];
+    NSArray *combined             = [[jsonGuild objectForKey:@"channels"] arrayByAddingObjectsFromArray:[jsonGuild objectForKey:@"threads"]];
     NSMutableDictionary *channels = NSMutableDictionary.new;
     for (NSDictionary *jsonChannel in combined) {
         // regardless of implementation or permissions, add to channels list so they're visible in <#snowflake>
         DCChannel *newChannel = DCChannel.new;
 
-        newChannel.snowflake = [jsonChannel valueForKey:@"id"];
-        newChannel.parentID  = [jsonChannel valueForKey:@"parent_id"];
-        newChannel.name      = [jsonChannel valueForKey:@"name"];
+        newChannel.snowflake = [jsonChannel objectForKey:@"id"];
+        newChannel.parentID  = [jsonChannel objectForKey:@"parent_id"];
+        newChannel.name      = [jsonChannel objectForKey:@"name"];
         newChannel.lastMessageId =
-            [jsonChannel valueForKey:@"last_message_id"];
+            [jsonChannel objectForKey:@"last_message_id"];
         newChannel.parentGuild = newGuild;
-        newChannel.type        = [[jsonChannel valueForKey:@"type"] intValue];
-        NSString *rawPosition  = [jsonChannel valueForKey:@"position"];
+        newChannel.type        = [[jsonChannel objectForKey:@"type"] intValue];
+        NSString *rawPosition  = [jsonChannel objectForKey:@"position"];
         newChannel.position    = rawPosition ? [rawPosition intValue] : 0;
         newChannel.writeable   = true;
 
@@ -1183,9 +1183,9 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
 
         // Make sure jsonChannel is a text channel or a category
         // we dont want to include voice channels in the text channel list
-        if ([[jsonChannel valueForKey:@"type"] isEqual:@0] || // text channel
-            [[jsonChannel valueForKey:@"type"] isEqual:@5] || // announcements
-            [[jsonChannel valueForKey:@"type"] isEqual:@4]) { // category
+        if ([[jsonChannel objectForKey:@"type"] isEqual:@0] || // text channel
+            [[jsonChannel objectForKey:@"type"] isEqual:@5] || // announcements
+            [[jsonChannel objectForKey:@"type"] isEqual:@4]) { // category
             // Allow code is used to determine if the user should see the
             // channel in question.
             /*
@@ -1260,13 +1260,13 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                 }
             }
 
-            newChannel.writeable = canWrite || [[jsonGuild valueForKey:@"owner_id"] isEqualToString:
+            newChannel.writeable = canWrite || [[jsonGuild objectForKey:@"owner_id"] isEqualToString:
                         DCServerCommunicator.sharedInstance.snowflake];
             // ignore perms for guild categories
             if (newChannel.type == 4) { // category
                 [categories addObject:newChannel];
             } else if (allowCode == 0 || allowCode == 2 || allowCode == 4 ||
-                       [[jsonGuild valueForKey:@"owner_id"] isEqualToString:
+                       [[jsonGuild objectForKey:@"owner_id"] isEqualToString:
                                                                 DCServerCommunicator.sharedInstance.snowflake]) {
                 [newGuild.channels addObject:newChannel];
             }

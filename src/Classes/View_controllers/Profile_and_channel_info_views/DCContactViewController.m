@@ -115,7 +115,7 @@
                         self.pronounLabel.text =
                             [userProfile objectForKey:@"pronouns"];
                         self.descriptionBox.text =
-                            [userProfile valueForKey:@"bio"];
+                            [userProfile objectForKey:@"bio"];
                         [self.conTableView reloadData];
                     });
 
