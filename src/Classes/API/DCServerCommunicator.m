@@ -299,6 +299,7 @@ UIActivityIndicatorView *spinner;
                     CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
                     [newChannel.icon drawInRect:imageRect];
                     newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
+                    UIGraphicsEndImageContext();
                 }
                 if ([privateChannel objectForKey:@"icon"] != nil) {
                     NSString *iconURL    = [NSString stringWithFormat:@"https://cdn.discordapp.com/channel-icons/%@/%@.png?size=64",
@@ -484,7 +485,7 @@ UIActivityIndicatorView *spinner;
     }
     // IMPORTANT: Post a notification so we can refresh DM status dots
     dispatch_async(dispatch_get_main_queue(), ^{
-        [NSNotificationCenter.defaultCenter postNotificationName:@"USER_PRESENCE_UPDATED" object:nil];
+        [NSNotificationCenter.defaultCenter postNotificationName:@"USER_PRESENCE_UPDATED" object:user];
     });
 }
 

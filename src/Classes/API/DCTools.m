@@ -1216,9 +1216,6 @@ static dispatch_queue_t dispatchQueues[MAX_IMAGE_THREADS];
                                                          DCRole *role2 = [newGuild.roles objectForKey:[perm2 objectForKey:@"id"]];
                                                          return role1.position < role2.position ? NSOrderedAscending : NSOrderedDescending;
                                                      }];
-            if ([newChannel.snowflake isEqualToString:@"1299845889082392636"]) {
-                NSLog(@"Overwrites: %@", overwrites);
-            }
             for (NSDictionary *permission in overwrites) {
                 uint64_t type     = [[permission objectForKey:@"type"] longLongValue];
                 NSString *idValue = [permission objectForKey:@"id"];

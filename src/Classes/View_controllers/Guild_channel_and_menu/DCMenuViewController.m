@@ -7,14 +7,15 @@
 //
 
 #import "DCMenuViewController.h"
-#include <Foundation/NSObjCRuntime.h>
 #include <Foundation/Foundation.h>
+#include <Foundation/NSObjCRuntime.h>
 #include <UIKit/UIKit.h>
 #include <dispatch/dispatch.h>
 #include <objc/NSObjCRuntime.h>
 #include "DCGuild.h"
 #include "DCGuildFolder.h"
 #include "DCServerCommunicator.h"
+#include "DCUser.h"
 
 @interface DCMenuViewController ()
 @property NSMutableArray *displayGuilds;
@@ -39,6 +40,11 @@
     [NSNotificationCenter.defaultCenter addObserver:self
                                            selector:@selector(reloadGuild:)
                                                name:@"RELOAD GUILD"
+                                             object:nil];
+
+    [NSNotificationCenter.defaultCenter addObserver:self
+                                           selector:@selector(updateStatusForUser:)
+                                               name:@"USER_PRESENCE_UPDATED"
                                              object:nil];
 
     // these are resource intensive, do not use whenever possible
@@ -152,15 +158,40 @@
         }];
     if (folderIdx != NSNotFound) {
         // Reload the folder in the list
-        [self.guildTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:folderIdx inSection:0]]
+        [self.guildTableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:folderIdx inSection:0] ]
                                    withRowAnimation:UITableViewRowAnimationAutomatic];
     }
     NSUInteger index = [self.displayGuilds indexOfObject:guild];
     if (index != NSNotFound) {
-        [self.guildTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]]
+        [self.guildTableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:index inSection:0] ]
                                    withRowAnimation:UITableViewRowAnimationAutomatic];
     }
     [self.guildTableView endUpdates];
+}
+
+- (void)updateStatusForUser:(DCUser *)user {
+    if (!user || ![user isKindOfClass:[DCUser class]]) {
+        return;
+    }
+    NSUInteger idx = [DCServerCommunicator.sharedInstance.guilds[0] indexOfObjectPassingTest:^BOOL(DCChannel *chan, NSUInteger idx, BOOL *stop) {
+        if (chan.type != 1 || chan.users.count != 2) {
+            return NO;
+        }
+        for (NSDictionary *userDict in chan.users) {
+            if ([userDict[@"snowflake"] isEqualToString:user.snowflake]) {
+                return YES;
+            }
+        }
+        return NO;
+    }];
+    if (idx == NSNotFound) {
+        return;
+    }
+    [self.channelTableView beginUpdates];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+    [self.channelTableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                 withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.channelTableView endUpdates];
 }
 
 - (void)reloadTable {
@@ -234,9 +265,9 @@
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         if ([selectedGuild isKindOfClass:[DCGuildFolder class]]) {
             // NSLog(@"Folder selected: %@", selectedGuild);
-            DCGuildFolder *folder = selectedGuild;
-            folder.opened         = !folder.opened;
-            NSDictionary *constFolderDict = [[NSUserDefaults standardUserDefaults] 
+            DCGuildFolder *folder           = selectedGuild;
+            folder.opened                   = !folder.opened;
+            NSDictionary *constFolderDict   = [[NSUserDefaults standardUserDefaults]
                 dictionaryForKey:[@(folder.id) stringValue]];
             NSMutableDictionary *folderDict = constFolderDict ? [constFolderDict mutableCopy] : [NSMutableDictionary dictionary];
             [folderDict setValue:[NSNumber numberWithBool:folder.opened] forKey:@"opened"];
@@ -246,7 +277,7 @@
             [self.guildTableView beginUpdates];
             if (folder.opened) {
                 NSMutableArray *newIndexPaths = [NSMutableArray array];
-                NSUInteger curIdx = [self.displayGuilds indexOfObject:folder] + 1;
+                NSUInteger curIdx             = [self.displayGuilds indexOfObject:folder] + 1;
                 for (NSString *guildId in folder.guildIds) {
                     DCGuild *guild = [DCServerCommunicator.sharedInstance.guilds
                         objectAtIndex:[DCServerCommunicator.sharedInstance.guilds indexOfObjectPassingTest:^BOOL(DCGuild *g, NSUInteger idx, BOOL *stop) {
@@ -261,7 +292,7 @@
                 [self.guildTableView insertRowsAtIndexPaths:newIndexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
             } else {
                 NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-                NSUInteger idx = [self.displayGuilds indexOfObject:folder] + 1;
+                NSUInteger idx                     = [self.displayGuilds indexOfObject:folder] + 1;
                 for (NSUInteger i = 0; i < folder.guildIds.count; i++) {
                     if (idx >= self.displayGuilds.count) {
                         break; // Prevent out of bounds
@@ -494,8 +525,8 @@
             NSMutableArray *icons = [NSMutableArray array];
             for (int i = 0; i < MIN(folderAtRowIndex.guildIds.count, 4); i++) {
                 DCGuild *guild = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:[DCServerCommunicator.sharedInstance.guilds indexOfObjectPassingTest:^BOOL(DCGuild *obj, NSUInteger idx, BOOL *stop) {
-                    return [obj isKindOfClass:[DCGuild class]] && [obj.snowflake isEqualToString:folderAtRowIndex.guildIds[i]];
-                }]];
+                                                                                 return [obj isKindOfClass:[DCGuild class]] && [obj.snowflake isEqualToString:folderAtRowIndex.guildIds[i]];
+                                                                             }]];
                 if (!guild || ![guild isKindOfClass:[DCGuild class]]) {
                     break;
                 }
@@ -507,9 +538,7 @@
             [cell.guildAvatar setImage:compositeImage];
             return cell;
         }
-    }
-
-    if (tableView == self.channelTableView) {
+    } else if (tableView == self.channelTableView) {
         if (self.guildLabel &&
             [self.guildLabel.text isEqualToString:@"Direct Messages"]) {
             DCPrivateChannelTableCell *cell =
@@ -560,11 +589,10 @@
                         // If not in cache, construct user manually from
                         // dictionary
                         if (!buddy) {
-                            buddy           = [[DCUser alloc] init];
+                            buddy           = [DCUser new];
                             buddy.snowflake = userId;
                             buddy.username  = [userDict objectForKey:@"username"];
-                            buddy.status =
-                                [userDict objectForKey:@"status"] ?: @"offline";
+                            buddy.status    = [userDict objectForKey:@"status"] ? [userDict objectForKey:@"status"] : @"offline";
                         }
                         break;
                     }
@@ -587,7 +615,6 @@
             }
 
             return cell;
-
         } else {
             NSCAssert(self.selectedGuild && self.selectedGuild.channels && self.selectedGuild.channels.count > indexPath.row, @"Invalid guild, channel, or index");
 
@@ -714,7 +741,7 @@
             NSAssert(sortedGuilds && [sortedGuilds count] != 0, @"No sorted guilds found");
             DCServerCommunicator.sharedInstance.guilds = sortedGuilds;
             sortedGuilds                               = [NSMutableArray arrayWithObject:
-                DCServerCommunicator.sharedInstance.guilds[0]]; // Add private guild at index 0
+                                               DCServerCommunicator.sharedInstance.guilds[0]]; // Add private guild at index 0
             NSUInteger idx                             = 1;
             for (DCGuildFolder *folder in DCServerCommunicator.sharedInstance.currentUserInfo[@"guildFolders"]) {
                 if (!folder.id) {
