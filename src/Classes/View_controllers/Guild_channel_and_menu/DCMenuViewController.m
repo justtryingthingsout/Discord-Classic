@@ -19,6 +19,7 @@
 
 @interface DCMenuViewController ()
 @property NSMutableArray *displayGuilds;
+@property DCChannel *optionChannel;
 @end
 
 @implementation DCMenuViewController
@@ -81,8 +82,38 @@
     self.experimentalMode =
         [[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"];
     self.totalView.hidden = YES;
+
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] 
+        initWithTarget:self 
+        action:@selector(handleLongPress:)];
+    longPress.minimumPressDuration = 0.5; // seconds
+    [self.channelTableView addGestureRecognizer:longPress];
 }
 
+- (void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        CGPoint point = [gestureRecognizer locationInView:self.channelTableView];
+        NSIndexPath *indexPath = [self.channelTableView indexPathForRowAtPoint:point];
+        if (!indexPath) {
+            return;
+        }
+        DCChannel *channelAtRowIndex = [self.selectedGuild.channels objectAtIndex:indexPath.row];
+        if (!channelAtRowIndex) {
+            return;
+        }
+        self.optionChannel = channelAtRowIndex;
+
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:channelAtRowIndex.name
+                                                                 delegate:self
+                                                        cancelButtonTitle:@"Okay"
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:@"Copy Channel ID", 
+                                                                          nil];
+
+        actionSheet.tag = 2;
+        [actionSheet showInView:self.view.superview ? self.view.superview : self.view];
+    }
+}
 
 // block that handles what the app does if you open it via a push ntoification
 
@@ -102,24 +133,25 @@
 - (void)navigateToChannelWithId:(NSString *)channelId {
     for (DCGuild *guild in DCServerCommunicator.sharedInstance.guilds) {
         for (DCChannel *channel in guild.channels) {
-            if ([channel.snowflake isEqualToString:channelId]) {
-                // NSLog(@"channel id: %@", channelId);
-                if (self.selectedChannel &&
-                    [self.selectedChannel.snowflake
-                        isEqualToString:channelId]) {
-                    // NSLog(@"ok");
-                    return;
-                }
-                self.selectedGuild                                  = guild;
-                self.selectedChannel                                = channel;
-                DCServerCommunicator.sharedInstance.selectedChannel = channel;
-
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self performSegueWithIdentifier:@"guilds to chat"
-                                              sender:self];
-                });
+            if (![channel.snowflake isEqualToString:channelId]) {
+                continue;
+            }
+            // NSLog(@"channel id: %@", channelId);
+            if (self.selectedChannel &&
+                [self.selectedChannel.snowflake
+                    isEqualToString:channelId]) {
+                // NSLog(@"ok");
                 return;
             }
+            self.selectedGuild                                  = guild;
+            self.selectedChannel                                = channel;
+            DCServerCommunicator.sharedInstance.selectedChannel = channel;
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self performSegueWithIdentifier:@"guilds to chat"
+                                          sender:self];
+            });
+            return;
         }
     }
 }
@@ -249,9 +281,47 @@
                                     delegate:self
                            cancelButtonTitle:@"Okay"
                       destructiveButtonTitle:nil
-                           otherButtonTitles:nil, nil];
-    [messageActionSheet setDelegate:self];
+                           otherButtonTitles:self.selectedGuild ? @"Copy Guild ID" : nil,
+                                             nil];
+    messageActionSheet.tag = 1;
+    messageActionSheet.delegate = self;
     [messageActionSheet showInView:self.view.superview ? self.view.superview : self.view];
+}
+
+- (void)actionSheet:(UIActionSheet *)popup
+    clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (popup.tag == 1) {
+        switch (buttonIndex) {
+            case 0: {
+                if (!self.selectedGuild) {
+                    break; // No guild selected
+                }
+                // Copy guild ID
+                UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                pasteboard.string = self.selectedGuild.snowflake;
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+    } else if (popup.tag == 2) {
+        switch (buttonIndex) {
+            case 0: {
+                if (!self.optionChannel) {
+                    break; // No channel selected
+                }
+                // Copy channel ID
+                UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                pasteboard.string = self.optionChannel.snowflake;
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        self.optionChannel = nil;
+    }
 }
 
 - (IBAction)userInfo:(id)sender {

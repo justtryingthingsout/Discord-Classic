@@ -7,6 +7,7 @@
 //
 
 #import "DCChatViewController.h"
+#include <UIKit/UIKit.h>
 #include <Foundation/NSObjCRuntime.h>
 #include <objc/NSObjCRuntime.h>
 #include <Foundation/Foundation.h>
@@ -1088,7 +1089,9 @@ static dispatch_queue_t chat_messages_queue;
                                         delegate:self
                                cancelButtonTitle:@"Cancel"
                           destructiveButtonTitle:@"Delete"
-                               otherButtonTitles:@"View Profile", nil];
+                               otherButtonTitles:@"Copy Message ID", 
+                                                 @"View Profile", 
+                                                 nil];
         [messageActionSheet setTag:1];
         [messageActionSheet setDelegate:self];
         [messageActionSheet showFromToolbar:self.toolbar];
@@ -1098,7 +1101,11 @@ static dispatch_queue_t chat_messages_queue;
                           delegate:self
                  cancelButtonTitle:@"Cancel"
             destructiveButtonTitle:nil
-                 otherButtonTitles:@"Reply", @"Mention", @"View Profile", nil];
+                 otherButtonTitles:@"Reply", 
+                                   @"Mention", 
+                                   @"Copy Message ID", 
+                                   @"View Profile", 
+                                   nil];
         [messageActionSheet setTag:3];
         [messageActionSheet setDelegate:self];
         [messageActionSheet showFromToolbar:self.toolbar];
@@ -1111,6 +1118,9 @@ static dispatch_queue_t chat_messages_queue;
         if (buttonIndex == 0) {
             [self.selectedMessage deleteMessage];
         } else if (buttonIndex == 1) {
+            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            [pasteboard setString:self.selectedMessage.snowflake];
+        } else if (buttonIndex == 2) {
             [self performSegueWithIdentifier:@"chat to contact" sender:self];
         }
     } else if ([popup tag] == 2) { // Image Source selection
@@ -1147,12 +1157,14 @@ static dispatch_queue_t chat_messages_queue;
             self.inputField.text = [NSString
                 stringWithFormat:@"> %@\n<@%@> ", self.selectedMessage.content,
                                  self.selectedMessage.author.snowflake];
-
         } else if (buttonIndex == 1) {
             self.inputField.text = [NSString
                 stringWithFormat:@"%@<@%@> ", self.inputField.text,
                                  self.selectedMessage.author.snowflake];
         } else if (buttonIndex == 2) {
+            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            [pasteboard setString:self.selectedMessage.snowflake];
+        } else if (buttonIndex == 3) {
             [self performSegueWithIdentifier:@"chat to contact" sender:self];
         }
     }
