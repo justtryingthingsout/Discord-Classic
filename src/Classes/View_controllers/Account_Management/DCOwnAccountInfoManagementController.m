@@ -8,6 +8,7 @@
 
 #import "DCOwnAccountInfoManagementController.h"
 #include <Foundation/Foundation.h>
+#import "SDWebImageManager.h"
 
 @interface DCOwnAccountInfoManagementController ()
 
@@ -80,29 +81,35 @@
     dispatch_async(
         dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
         ^{
-            NSString *avatarURL = [NSString
-                stringWithFormat:
-                    @"https://cdn.discordapp.com/avatars/%@/%@.png?size=64",
-                    [userInfo objectForKey:@"id"],
-                    [userInfo objectForKey:@"avatar"]];
+            NSURL *avatarURL = [NSURL
+                URLWithString:[NSString
+                                  stringWithFormat:
+                                      @"https://cdn.discordapp.com/avatars/%@/%@.png?size=64",
+                                      [userInfo objectForKey:@"id"],
+                                      [userInfo objectForKey:@"avatar"]]];
 
-            [DCTools
-                processImageDataWithURLString:avatarURL
-                                     andBlock:^(UIImage *imageData) {
-                                         UIImage *retrievedImage = imageData;
-                                         dispatch_async(
-                                             dispatch_get_main_queue(),
-                                             ^{
-                                                 self.pfp.image =
-                                                     retrievedImage;
-                                                 self.pfp.layer.cornerRadius =
-                                                     self.pfp.frame.size.width
-                                                     / 2.0;
-                                                 self.pfp.layer.masksToBounds =
-                                                     YES;
-                                             }
-                                         );
-                                     }];
+            SDWebImageManager *manager = [SDWebImageManager sharedManager];
+            [manager downloadImageWithURL:avatarURL
+                                  options:0
+                                 progress:nil
+                                completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                    if (!retrievedImage || !finished) {
+                                        NSLog(@"Failed to download avatar with URL %@: %@", avatarURL, error);
+                                        return;
+                                    }
+                                    dispatch_async(
+                                        dispatch_get_main_queue(),
+                                        ^{
+                                            self.pfp.image =
+                                                retrievedImage;
+                                            self.pfp.layer.cornerRadius =
+                                                self.pfp.frame.size.width
+                                                / 2.0;
+                                            self.pfp.layer.masksToBounds =
+                                                YES;
+                                        }
+                                    );
+                                }];
         }
     );
 

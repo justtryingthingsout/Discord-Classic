@@ -80,11 +80,9 @@
     );
 
     if (launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]) {
-        NSDictionary *notification =
-            launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
-        NSDictionary *aps = notification[@"aps"];
-        NSString *channelId =
-            aps[@"channelId"]; // Adjusted to reflect your payload structure
+        NSDictionary *notification = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
+        NSDictionary *aps          = notification[@"aps"];
+        NSString *channelId        = aps[@"channelId"]; // Adjusted to reflect your payload structure
         // NSLog(@"Channel id: %@", channelId);
         if (channelId) {
             // NSLog(@"App launched with notification, channelId: %@",

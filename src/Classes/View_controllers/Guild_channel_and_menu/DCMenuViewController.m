@@ -83,16 +83,16 @@
         [[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"];
     self.totalView.hidden = YES;
 
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] 
-        initWithTarget:self 
-        action:@selector(handleLongPress:)];
-    longPress.minimumPressDuration = 0.5; // seconds
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]
+        initWithTarget:self
+                action:@selector(handleLongPress:)];
+    longPress.minimumPressDuration          = 0.5; // seconds
     [self.channelTableView addGestureRecognizer:longPress];
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        CGPoint point = [gestureRecognizer locationInView:self.channelTableView];
+        CGPoint point          = [gestureRecognizer locationInView:self.channelTableView];
         NSIndexPath *indexPath = [self.channelTableView indexPathForRowAtPoint:point];
         if (!indexPath) {
             return;
@@ -107,7 +107,7 @@
                                                                  delegate:self
                                                         cancelButtonTitle:@"Okay"
                                                    destructiveButtonTitle:nil
-                                                        otherButtonTitles:@"Copy Channel ID", 
+                                                        otherButtonTitles:@"Copy Channel ID",
                                                                           nil];
 
         actionSheet.tag = 2;
@@ -283,7 +283,7 @@
                       destructiveButtonTitle:nil
                            otherButtonTitles:self.selectedGuild ? @"Copy Guild ID" : nil,
                                              nil];
-    messageActionSheet.tag = 1;
+    messageActionSheet.tag      = 1;
     messageActionSheet.delegate = self;
     [messageActionSheet showInView:self.view.superview ? self.view.superview : self.view];
 }
@@ -298,7 +298,7 @@
                 }
                 // Copy guild ID
                 UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-                pasteboard.string = self.selectedGuild.snowflake;
+                pasteboard.string        = self.selectedGuild.snowflake;
                 break;
             }
             default: {
@@ -313,7 +313,7 @@
                 }
                 // Copy channel ID
                 UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-                pasteboard.string = self.optionChannel.snowflake;
+                pasteboard.string        = self.optionChannel.snowflake;
                 break;
             }
             default: {
@@ -788,7 +788,7 @@
     if (tableView == self.guildTableView && DCServerCommunicator.sharedInstance.guilds) {
         // Sorting guilds based on userInfo[@"guildPositions"] array
         if (!DCServerCommunicator.sharedInstance.guildsIsSorted) {
-            NSUInteger guildCount        = [DCServerCommunicator.sharedInstance.guilds count];
+            NSUInteger guildCount        = [DCServerCommunicator.sharedInstance.currentUserInfo[@"guildPositions"] count] + 1;
             NSMutableArray *sortedGuilds = [NSMutableArray arrayWithCapacity:guildCount];
             NSNull *nullObject           = [NSNull null];
             // init to be able to index
@@ -810,8 +810,7 @@
             [sortedGuilds removeObjectIdenticalTo:nullObject];
             NSAssert(sortedGuilds && [sortedGuilds count] != 0, @"No sorted guilds found");
             DCServerCommunicator.sharedInstance.guilds = sortedGuilds;
-            sortedGuilds                               = [NSMutableArray arrayWithObject:
-                                               DCServerCommunicator.sharedInstance.guilds[0]]; // Add private guild at index 0
+            sortedGuilds                               = [NSMutableArray arrayWithObject:DCServerCommunicator.sharedInstance.guilds[0]]; // Add private guild at index 0
             NSUInteger idx                             = 1;
             for (DCGuildFolder *folder in DCServerCommunicator.sharedInstance.currentUserInfo[@"guildFolders"]) {
                 if (!folder.id) {

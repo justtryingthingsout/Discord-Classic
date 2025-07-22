@@ -80,11 +80,6 @@
 @interface DCTools : NSObject
 @property bool oldMode;
 
-+ (void)processImageDataWithURLString:(NSString *)urlString
-                             andBlock:(void (^)(UIImage *imageData)
-                                      )processImage;
-
-
 // UNTIL RELEASE ONLY
 + (void)checkForAppUpdate;
 
