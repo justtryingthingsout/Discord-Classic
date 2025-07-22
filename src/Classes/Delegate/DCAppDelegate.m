@@ -7,6 +7,8 @@
 //
 
 #import "DCAppDelegate.h"
+#include <UIKit/UIKit.h>
+// #import "UIDeviceAdditions.h"
 
 @interface DCAppDelegate ()
 @property bool shouldReload;
@@ -14,8 +16,18 @@
 
 @implementation DCAppDelegate
 
+// - (void)printMemoryUsage:(NSTimer *)timer {
+//     NSLog(@"Current memory usage: %f MB", [[UIDevice currentDevice] currentMemoryUsage]);
+// }
+
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // [NSTimer scheduledTimerWithTimeInterval:2.0
+    //     target:self
+    //     selector:@selector(printMemoryUsage:)
+    //     userInfo:nil
+    //     repeats:YES];
+
     self.window.backgroundColor = [UIColor clearColor];
     self.window.opaque          = NO;
     self.shouldReload           = false;
@@ -49,20 +61,17 @@
             [storyboard instantiateInitialViewController];
         self.window.rootViewController = initialViewController;
         [self.window makeKeyAndVisible];
-    } else {
-        if (self.hackyMode) {
-            UIStoryboard *storyboard =
-                [UIStoryboard storyboardWithName:@"Throwback"
-                                          bundle:nil];
-            UIViewController *initialViewController =
-                [storyboard instantiateInitialViewController];
-            self.window.rootViewController = initialViewController;
-            [self.window makeKeyAndVisible];
-            [UINavigationBar.appearance
-                setBackgroundImage:[UIImage imageNamed:@"OldTitlebarTexture"]
-                     forBarMetrics:UIBarMetricsDefault];
-        } else {
-        }
+    } else if (self.hackyMode) {
+        UIStoryboard *storyboard =
+            [UIStoryboard storyboardWithName:@"Throwback"
+                                      bundle:nil];
+        UIViewController *initialViewController =
+            [storyboard instantiateInitialViewController];
+        self.window.rootViewController = initialViewController;
+        [self.window makeKeyAndVisible];
+        [UINavigationBar.appearance
+            setBackgroundImage:[UIImage imageNamed:@"OldTitlebarTexture"]
+                 forBarMetrics:UIBarMetricsDefault];
     }
 
     //}

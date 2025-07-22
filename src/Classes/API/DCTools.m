@@ -306,31 +306,18 @@
             if ([embedType isEqualToString:@"image"]) {
                 newMessage.attachmentCount++;
 
-                NSString *attachmentURL = nil;
+                NSString *attachmentURL;
 
                 if ([embed valueForKeyPath:@"image.proxy_url"] != nil) {
-                    attachmentURL = [[embed valueForKeyPath:@"image.proxy_url"]
-                        stringByReplacingOccurrencesOfString:
-                            @"cdn.discordapp.com"
-                                                  withString:
-                                                      @"media.discordapp.net"];
+                    attachmentURL = [embed valueForKeyPath:@"image.proxy_url"];
                 } else if ([embed valueForKeyPath:@"image.url"] != nil) {
-                    attachmentURL = [[embed valueForKeyPath:@"image.url"]
-                        stringByReplacingOccurrencesOfString:
-                            @"cdn.discordapp.com"
-                                                  withString:
-                                                      @"media.discordapp.net"];
+                    attachmentURL = [embed valueForKeyPath:@"image.url"];
                 } else {
-                    attachmentURL = [[embed objectForKey:@"url"]
-                        stringByReplacingOccurrencesOfString:@"cdn.discordapp.com"
-                                                  withString:
-                                                      @"media.discordapp.net"];
+                    attachmentURL = [embed objectForKey:@"url"];
                 }
 
-                NSInteger width =
-                    [[embed valueForKeyPath:@"image.width"] integerValue];
-                NSInteger height =
-                    [[embed valueForKeyPath:@"image.height"] integerValue];
+                NSInteger width     = [[embed valueForKeyPath:@"image.width"] integerValue];
+                NSInteger height    = [[embed valueForKeyPath:@"image.height"] integerValue];
                 CGFloat aspectRatio = (CGFloat)width / (CGFloat)height;
 
                 if (height > 1024) {
@@ -352,16 +339,15 @@
                 NSURL *urlString = [NSURL URLWithString:attachmentURL];
 
                 if (width != 0 || height != 0) {
-                    if ([urlString query].length == 0) {
-                        urlString = [NSURL URLWithString:[NSString
-                                                             stringWithFormat:@"%@?width=%d&height=%d",
-                                                                              urlString, width, height]];
-                    } else {
-                        urlString = [NSURL URLWithString:[NSString
-                                                             stringWithFormat:@"%@&width=%d&height=%d",
-                                                                              urlString, width, height]];
-                    }
+                    urlString = [NSURL URLWithString:[NSString
+                                                         stringWithFormat:@"%@%cwidth=%d&height=%d",
+                                                                          urlString,
+                                                                          [urlString query].length == 0 ? '?' : '&',
+                                                                          width, height]];
                 }
+
+                NSUInteger idx = [newMessage.attachments count];
+                [newMessage.attachments addObject:@[@(width), @(height)]];
 
                 SDWebImageManager *manager = [SDWebImageManager sharedManager];
                 [manager downloadImageWithURL:urlString
@@ -372,34 +358,25 @@
                                             NSLog(@"Failed to load embed image with URL %@: %@", urlString, error);
                                             return;
                                         }
-                                        [newMessage.attachments
-                                            addObject:retrievedImage];
+                                        [newMessage.attachments replaceObjectAtIndex:idx withObject:retrievedImage];
 
-                                        dispatch_async(
-                                            dispatch_get_main_queue(),
-                                            ^{
-                                                [NSNotificationCenter
-                                                        .defaultCenter
-                                                    postNotificationName:
-                                                        @"RELOAD MESSAGE DATA"
-                                                                  object:newMessage];
-                                            }
-                                        );
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            [NSNotificationCenter.defaultCenter
+                                                postNotificationName:@"RELOAD MESSAGE DATA"
+                                                              object:newMessage];
+                                        });
                                     }];
             } else if ([embedType isEqualToString:@"video"] ||
                        [embedType isEqualToString:@"gifv"]) {
-                NSURL *attachmentURL = nil;
+                NSURL *attachmentURL;
 
                 if ([embed valueForKeyPath:@"video.proxy_url"] != nil &&
                     [[embed valueForKeyPath:@"video.proxy_url"]
                         isKindOfClass:[NSString class]]) {
-                    attachmentURL = [NSURL
-                        URLWithString:[embed valueForKeyPath:@"video.proxy_url"]];
+                    attachmentURL = [NSURL URLWithString:[embed valueForKeyPath:@"video.proxy_url"]];
                 } else if ([embed valueForKeyPath:@"video.url"] != nil &&
-                           [[embed valueForKeyPath:@"video.url"]
-                               isKindOfClass:[NSString class]]) {
-                    attachmentURL =
-                        [NSURL URLWithString:[embed valueForKeyPath:@"video.url"]];
+                           [[embed valueForKeyPath:@"video.url"] isKindOfClass:[NSString class]]) {
+                    attachmentURL = [NSURL URLWithString:[embed valueForKeyPath:@"video.url"]];
                 } else {
                     attachmentURL = [NSURL URLWithString:[embed objectForKey:@"url"]];
                 }
@@ -415,29 +392,16 @@
 
                     video.videoURL = attachmentURL;
 
-                    NSString *baseURL = [[embed objectForKey:@"url"]
-                        stringByReplacingOccurrencesOfString:
-                            @"cdn.discordapp.com"
-                                                  withString:
-                                                      @"media.discordapp.net"];
-
+                    NSString *baseURL = [embed objectForKey:@"url"];
 
                     if ([embed valueForKeyPath:@"thumbnail.proxy_url"] != nil &&
                         [[embed valueForKeyPath:@"thumbnail.proxy_url"]
                             isKindOfClass:[NSString class]]) {
-                        baseURL = [[embed valueForKeyPath:@"thumbnail.proxy_url"]
-                            stringByReplacingOccurrencesOfString:
-                                @"cdn.discordapp.com"
-                                                      withString:
-                                                          @"media.discordapp.net"];
+                        baseURL = [embed valueForKeyPath:@"thumbnail.proxy_url"];
                     } else if ([embed valueForKeyPath:@"thumbnail.url"] != nil &&
                                [[embed valueForKeyPath:@"thumbnail.url"]
                                    isKindOfClass:[NSString class]]) {
-                        baseURL = [[embed valueForKeyPath:@"thumbnail.url"]
-                            stringByReplacingOccurrencesOfString:
-                                @"cdn.discordapp.com"
-                                                      withString:
-                                                          @"media.discordapp.net"];
+                        baseURL = [embed valueForKeyPath:@"thumbnail.url"];
                     }
 
                     NSInteger width =
@@ -501,6 +465,9 @@
                         }
                     }
 
+                    NSUInteger idx = [newMessage.attachments count];
+                    [newMessage.attachments addObject:@[@(width), @(height)]];
+
                     SDWebImageManager *manager = [SDWebImageManager sharedManager];
                     [manager downloadImageWithURL:urlString
                                           options:0
@@ -514,6 +481,7 @@
                                                 dispatch_get_main_queue(),
                                                 ^{
                                                     [video.thumbnail setImage:retrievedImage];
+                                                    [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
                                                     [NSNotificationCenter.defaultCenter
                                                         postNotificationName:@"RELOAD CHAT DATA"
                                                                       object:newMessage];
@@ -524,7 +492,6 @@
                     video.layer.cornerRadius     = 6;
                     video.layer.masksToBounds    = YES;
                     video.userInteractionEnabled = YES;
-                    [newMessage.attachments addObject:video];
                     newMessage.attachmentCount++;
                 });
             } else {
@@ -541,10 +508,7 @@
             if ([fileType rangeOfString:@"image/"].location != NSNotFound) {
                 newMessage.attachmentCount++;
 
-                NSString *attachmentURL = [[attachment objectForKey:@"url"]
-                    stringByReplacingOccurrencesOfString:@"cdn.discordapp.com"
-                                              withString:
-                                                  @"media.discordapp.net"];
+                NSString *attachmentURL = [attachment objectForKey:@"url"];
 
                 NSInteger width =
                     [[attachment objectForKey:@"width"] integerValue];
@@ -579,6 +543,9 @@
                                                                         (long)height]];
                 }
 
+                NSUInteger idx = [newMessage.attachments count];
+                [newMessage.attachments addObject:@[@(width), @(height)]];
+
                 SDWebImageManager *manager = [SDWebImageManager sharedManager];
                 [manager downloadImageWithURL:urlString
                                       options:0
@@ -588,8 +555,7 @@
                                             NSLog(@"Failed to load image with URL %@: %@", urlString, error);
                                             return;
                                         }
-                                        [newMessage.attachments
-                                            addObject:retrievedImage];
+                                        [newMessage.attachments replaceObjectAtIndex:idx withObject:retrievedImage];
                                         dispatch_async(
                                             dispatch_get_main_queue(),
                                             ^{
@@ -619,11 +585,7 @@
 
                     video.videoURL = attachmentURL;
 
-                    NSString *baseURL = [[attachment objectForKey:@"url"]
-                        stringByReplacingOccurrencesOfString:
-                            @"cdn.discordapp.com"
-                                                  withString:
-                                                      @"media.discordapp.net"];
+                    NSString *baseURL = [attachment objectForKey:@"proxy_url"];
 
                     NSInteger width =
                         [[attachment objectForKey:@"width"] integerValue];
@@ -658,13 +620,16 @@
                                                                        baseURL, width, height]];
                     }
 
+                    NSUInteger idx = [newMessage.attachments count];
+                    [newMessage.attachments addObject:@[@(width), @(height)]];
+
                     SDWebImageManager *manager = [SDWebImageManager sharedManager];
                     [manager downloadImageWithURL:urlString
                                           options:0
                                          progress:nil
                                         completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                            if (!retrievedImage || !finished 
-                                                || !video || !video.thumbnail 
+                                            if (!retrievedImage || !finished
+                                                || !video || !video.thumbnail
                                                 || ![video.thumbnail isKindOfClass:[UIImageView class]]) {
                                                 NSLog(@"Failed to load video thumbnail with URL %@: %@", imageURL, error);
                                                 return;
@@ -674,6 +639,7 @@
                                                 ^{
                                                     [video.thumbnail
                                                         setImage:retrievedImage];
+                                                    [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
                                                     [NSNotificationCenter.defaultCenter
                                                         postNotificationName:@"RELOAD MESSAGE DATA"
                                                                       object:newMessage];
@@ -684,7 +650,6 @@
                     video.layer.cornerRadius     = 6;
                     video.layer.masksToBounds    = YES;
                     video.userInteractionEnabled = YES;
-                    [newMessage.attachments addObject:video];
                 });
             } else {
                 // NSLog(@"unknown attachment type %@", fileType);
@@ -1153,9 +1118,10 @@
         } else if ([channel1.parentID isKindOfClass:[NSString class]] && [channel2.parentID isKindOfClass:[NSString class]] && ![channel1.parentID isEqualToString:channel2.parentID]) {
             NSUInteger idx1 = [categories indexOfObjectPassingTest:^BOOL(DCChannel *category, NSUInteger idx, BOOL *stop) {
                 return [category.snowflake isEqualToString:channel1.parentID];
-            }], idx2 = [categories indexOfObjectPassingTest:^BOOL(DCChannel *category, NSUInteger idx, BOOL *stop) {
-                return [category.snowflake isEqualToString:channel2.parentID];
-            }];
+            }],
+                       idx2 = [categories indexOfObjectPassingTest:^BOOL(DCChannel *category, NSUInteger idx, BOOL *stop) {
+                           return [category.snowflake isEqualToString:channel2.parentID];
+                       }];
             if (idx1 != NSNotFound && idx2 != NSNotFound) {
                 DCChannel *parent1 = [categories objectAtIndex:idx1];
                 DCChannel *parent2 = [categories objectAtIndex:idx2];

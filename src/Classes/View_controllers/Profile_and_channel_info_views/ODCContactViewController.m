@@ -111,11 +111,9 @@
                         NSURL *url   = [NSURL
                             URLWithString:[NSString
                                               stringWithFormat:
-                                                  @"https://cdn.discordapp.com/"
-                                                    @"banners/%@/%@.png?size=480",
+                                                  @"https://cdn.discordapp.com/banners/%@/%@.png?size=480",
                                                   [userInfo objectForKey:@"id"],
-                                                  [userInfo
-                                                      objectForKey:@"banner"]]];
+                                                  [userInfo objectForKey:@"banner"]]];
                         NSData *data = [NSData dataWithContentsOfURL:url];
                         dispatch_async(dispatch_get_main_queue(), ^{
                             self.profileBanner.image =

@@ -217,7 +217,9 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleChatReset {
+#ifdef DEBUG
     NSLog(@"%s: Resetting chat data", __PRETTY_FUNCTION__);
+#endif
     self.messages = NSMutableArray.new;
     self.inputFieldPlaceholder.text = DCServerCommunicator.sharedInstance.selectedChannel.writeable
         ? [NSString stringWithFormat:@"Message%@%@", 
@@ -589,6 +591,20 @@ static dispatch_queue_t chat_messages_queue;
                                 newHeight = newWidth / aspectRatio;
                             }
                             attachmentHeight += newHeight;
+                        } else if ([attachment isKindOfClass:[NSArray class]]) {
+                            NSArray *dimensions = attachment;
+                            if (dimensions.count == 2) {
+                                int width  = [dimensions[0] intValue];
+                                int height = [dimensions[1] intValue];
+                                CGFloat aspectRatio = (CGFloat)width / height;
+                                int newWidth  = 200 * aspectRatio;
+                                int newHeight = 200;
+                                if (newWidth > self.chatTableView.width - 66) {
+                                    newWidth  = self.chatTableView.width - 66;
+                                    newHeight = newWidth / aspectRatio;
+                                }
+                                attachmentHeight += newHeight;
+                            }
                         }
                     }
                     scrollOffset += newMessage.contentHeight
@@ -795,6 +811,32 @@ static dispatch_queue_t chat_messages_queue;
                 imageViewOffset += 210;
 
                 [cell addSubview:preview.view];
+            } else if ([attachment isKindOfClass:[NSArray class]]) {
+                NSArray *dimensions = attachment;
+                if (dimensions.count == 2) {
+                    int width  = [dimensions[0] intValue];
+                    int height = [dimensions[1] intValue];
+                    CGFloat aspectRatio = (CGFloat)width / height;
+                    int newWidth  = 200 * aspectRatio;
+                    int newHeight = 200;
+                    if (newWidth > self.chatTableView.width - 66) {
+                        newWidth  = self.chatTableView.width - 66;
+                        newHeight = newWidth / aspectRatio;
+                    }
+                    UIActivityIndicatorView *activityIndicator =
+                        [[UIActivityIndicatorView alloc]
+                            initWithActivityIndicatorStyle:
+                                UIActivityIndicatorViewStyleWhite];
+                    [activityIndicator setFrame:CGRectMake(
+                                            11, imageViewOffset, newWidth,
+                                            newHeight
+                                        )];
+                    [activityIndicator setContentMode:UIViewContentModeScaleAspectFit];
+                    imageViewOffset += newHeight + 11;
+
+                    [cell addSubview:activityIndicator];
+                    [activityIndicator startAnimating];
+                }
             }
         }
         return cell;
@@ -1034,6 +1076,32 @@ static dispatch_queue_t chat_messages_queue;
                 imageViewOffset += 210;
 
                 [cell addSubview:preview.view];
+            } else if ([attachment isKindOfClass:[NSArray class]]) {
+                NSArray *dimensions = attachment;
+                if (dimensions.count == 2) {
+                    int width  = [dimensions[0] intValue];
+                    int height = [dimensions[1] intValue];
+                    CGFloat aspectRatio = (CGFloat)width / height;
+                    int newWidth  = 200 * aspectRatio;
+                    int newHeight = 200;
+                    if (newWidth > self.chatTableView.width - 66) {
+                        newWidth  = self.chatTableView.width - 66;
+                        newHeight = newWidth / aspectRatio;
+                    }
+                    UIActivityIndicatorView *activityIndicator =
+                        [[UIActivityIndicatorView alloc]
+                            initWithActivityIndicatorStyle:
+                                UIActivityIndicatorViewStyleWhite];
+                    [activityIndicator setFrame:CGRectMake(
+                                            55, imageViewOffset, newWidth,
+                                            newHeight
+                                        )];
+                    [activityIndicator setContentMode:UIViewContentModeScaleAspectFit];
+                    imageViewOffset += newHeight + 11;
+
+                    [cell addSubview:activityIndicator];
+                    [activityIndicator startAnimating];
+                }
             }
         }
         return cell;
@@ -1070,6 +1138,20 @@ static dispatch_queue_t chat_messages_queue;
                 newHeight = newWidth / aspectRatio;
             }
             attachmentHeight += newHeight;
+        } else if ([attachment isKindOfClass:[NSArray class]]) {
+            NSArray *dimensions = attachment;
+            if (dimensions.count == 2) {
+                int width  = [dimensions[0] intValue];
+                int height = [dimensions[1] intValue];
+                CGFloat aspectRatio = (CGFloat)width / height;
+                int newWidth  = 200 * aspectRatio;
+                int newHeight = 200;
+                if (newWidth > self.chatTableView.width - 66) {
+                    newWidth  = self.chatTableView.width - 66;
+                    newHeight = newWidth / aspectRatio;
+                }
+                attachmentHeight += newHeight;
+            }
         }
     }
     return messageAtRowIndex.contentHeight
