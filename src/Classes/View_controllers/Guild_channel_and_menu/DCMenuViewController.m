@@ -349,15 +349,19 @@
                 NSMutableArray *newIndexPaths = [NSMutableArray array];
                 NSUInteger curIdx             = [self.displayGuilds indexOfObject:folder] + 1;
                 for (NSString *guildId in folder.guildIds) {
-                    DCGuild *guild = [DCServerCommunicator.sharedInstance.guilds
-                        objectAtIndex:[DCServerCommunicator.sharedInstance.guilds indexOfObjectPassingTest:^BOOL(DCGuild *g, NSUInteger idx, BOOL *stop) {
-                            return [g.snowflake isEqualToString:guildId];
-                        }]];
-                    if (guild) {
-                        // NSLog(@"add index: %lu, name: %@", (unsigned long)curIdx, guild.name);
-                        [self.displayGuilds insertObject:guild atIndex:curIdx];
-                        [newIndexPaths addObject:[NSIndexPath indexPathForRow:curIdx++ inSection:0]];
+                    NSUInteger idx = [DCServerCommunicator.sharedInstance.guilds indexOfObjectPassingTest:^BOOL(DCGuild *g, NSUInteger idx, BOOL *stop) {
+                        return [g.snowflake isEqualToString:guildId];
+                    }];
+                    if (idx == NSNotFound) {
+                        continue;
                     }
+                    DCGuild *guild = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:idx];
+                    if (!guild) {
+                        continue;
+                    }
+                    // NSLog(@"add index: %lu, name: %@", (unsigned long)curIdx, guild.name);
+                    [self.displayGuilds insertObject:guild atIndex:curIdx];
+                    [newIndexPaths addObject:[NSIndexPath indexPathForRow:curIdx++ inSection:0]];
                 }
                 [self.guildTableView insertRowsAtIndexPaths:newIndexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
             } else {
@@ -594,11 +598,15 @@
             UIImage *folderIcon   = [UIImage imageNamed:@"folder"];
             NSMutableArray *icons = [NSMutableArray array];
             for (int i = 0; i < MIN(folderAtRowIndex.guildIds.count, 4); i++) {
-                DCGuild *guild = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:[DCServerCommunicator.sharedInstance.guilds indexOfObjectPassingTest:^BOOL(DCGuild *obj, NSUInteger idx, BOOL *stop) {
-                                                                                 return [obj isKindOfClass:[DCGuild class]] && [obj.snowflake isEqualToString:folderAtRowIndex.guildIds[i]];
-                                                                             }]];
+                NSUInteger idx = [DCServerCommunicator.sharedInstance.guilds indexOfObjectPassingTest:^BOOL(DCGuild *obj, NSUInteger idx, BOOL *stop) {
+                    return [obj isKindOfClass:[DCGuild class]] && [obj.snowflake isEqualToString:folderAtRowIndex.guildIds[i]];
+                }];
+                if (idx == NSNotFound) {
+                    continue;
+                }
+                DCGuild *guild = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:idx];
                 if (!guild || ![guild isKindOfClass:[DCGuild class]]) {
-                    break;
+                    continue;
                 }
                 [icons addObject:guild.icon];
             }

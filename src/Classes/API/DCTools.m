@@ -1153,10 +1153,9 @@
         } else if ([channel1.parentID isKindOfClass:[NSString class]] && [channel2.parentID isKindOfClass:[NSString class]] && ![channel1.parentID isEqualToString:channel2.parentID]) {
             NSUInteger idx1 = [categories indexOfObjectPassingTest:^BOOL(DCChannel *category, NSUInteger idx, BOOL *stop) {
                 return [category.snowflake isEqualToString:channel1.parentID];
-            }],
-                       idx2 = [categories indexOfObjectPassingTest:^BOOL(DCChannel *category, NSUInteger idx, BOOL *stop) {
-                           return [category.snowflake isEqualToString:channel2.parentID];
-                       }];
+            }], idx2 = [categories indexOfObjectPassingTest:^BOOL(DCChannel *category, NSUInteger idx, BOOL *stop) {
+                return [category.snowflake isEqualToString:channel2.parentID];
+            }];
             if (idx1 != NSNotFound && idx2 != NSNotFound) {
                 DCChannel *parent1 = [categories objectAtIndex:idx1];
                 DCChannel *parent2 = [categories objectAtIndex:idx2];

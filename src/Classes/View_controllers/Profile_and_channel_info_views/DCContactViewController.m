@@ -309,12 +309,13 @@
 }
 
 - (DCChannel *)findPrivateChannelForUser:(NSString *)userId {
-    DCGuild *privGuild = [DCServerCommunicator.sharedInstance.guilds 
-        objectAtIndex:[DCServerCommunicator.sharedInstance.guilds
-            indexOfObjectPassingTest:^BOOL(DCGuild *g, NSUInteger idx, BOOL *stop) {
-                return [g.name isEqualToString:@"Direct Messages"];
-            }]
-    ];
+    NSUInteger idx = [DCServerCommunicator.sharedInstance.guilds indexOfObjectPassingTest:^BOOL(DCGuild *g, NSUInteger idx, BOOL *stop) {
+        return [g.name isEqualToString:@"Direct Messages"];
+    }];
+    if (idx == NSNotFound) {
+        return nil;
+    }
+    DCGuild *privGuild = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:idx];
     for (DCChannel *channel in privGuild.channels) {
         for (NSDictionary *userDict in channel.users) {
             if ([userDict[@"snowflake"] isEqualToString:userId]) {
