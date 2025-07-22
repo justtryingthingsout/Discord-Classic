@@ -193,6 +193,7 @@ static dispatch_queue_t chat_messages_queue;
         : @"No Permission";
     self.toolbar.userInteractionEnabled = DCServerCommunicator.sharedInstance.selectedChannel.writeable;
     self.inputFieldPlaceholder.hidden = NO;
+
 }
 
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
@@ -596,6 +597,9 @@ static dispatch_queue_t chat_messages_queue;
                             if (dimensions.count == 2) {
                                 int width  = [dimensions[0] intValue];
                                 int height = [dimensions[1] intValue];
+                                if (width <= 0 || height <= 0) {
+                                    continue;
+                                }
                                 CGFloat aspectRatio = (CGFloat)width / height;
                                 int newWidth  = 200 * aspectRatio;
                                 int newHeight = 200;
@@ -816,6 +820,9 @@ static dispatch_queue_t chat_messages_queue;
                 if (dimensions.count == 2) {
                     int width  = [dimensions[0] intValue];
                     int height = [dimensions[1] intValue];
+                    if (width <= 0 || height <= 0) {
+                        continue;
+                    }
                     CGFloat aspectRatio = (CGFloat)width / height;
                     int newWidth  = 200 * aspectRatio;
                     int newHeight = 200;
@@ -828,7 +835,7 @@ static dispatch_queue_t chat_messages_queue;
                             initWithActivityIndicatorStyle:
                                 UIActivityIndicatorViewStyleWhite];
                     [activityIndicator setFrame:CGRectMake(
-                                            55, imageViewOffset, newWidth,
+                                            11, imageViewOffset, newWidth,
                                             newHeight
                                         )];
                     [activityIndicator setContentMode:UIViewContentModeScaleAspectFit];
@@ -839,6 +846,7 @@ static dispatch_queue_t chat_messages_queue;
                 }
             }
         }
+        
         return cell;
     } else if (self.oldMode == NO) {
         [tableView registerNib:[UINib nibWithNibName:@"DCChatGroupedTableCell"
@@ -1081,6 +1089,9 @@ static dispatch_queue_t chat_messages_queue;
                 if (dimensions.count == 2) {
                     int width  = [dimensions[0] intValue];
                     int height = [dimensions[1] intValue];
+                    if (width <= 0 || height <= 0) {
+                        continue;
+                    }
                     CGFloat aspectRatio = (CGFloat)width / height;
                     int newWidth  = 200 * aspectRatio;
                     int newHeight = 200;
@@ -1143,6 +1154,9 @@ static dispatch_queue_t chat_messages_queue;
             if (dimensions.count == 2) {
                 int width  = [dimensions[0] intValue];
                 int height = [dimensions[1] intValue];
+                if (width <= 0 || height <= 0) {
+                    continue;
+                }
                 CGFloat aspectRatio = (CGFloat)width / height;
                 int newWidth  = 200 * aspectRatio;
                 int newHeight = 200;

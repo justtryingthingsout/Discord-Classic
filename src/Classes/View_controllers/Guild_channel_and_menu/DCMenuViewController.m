@@ -614,6 +614,7 @@
                 compositeImageWithBaseImage:folderIcon
                                       icons:icons];
             [cell.guildAvatar setImage:compositeImage];
+            folderAtRowIndex.icon = compositeImage;
             return cell;
         }
     } else if (tableView == self.channelTableView) {
