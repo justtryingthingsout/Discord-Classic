@@ -382,12 +382,14 @@ UIActivityIndicatorView *spinner;
                                                     NSString *userId = [presence valueForKeyPath:@"user.id"];
                                                     NSString *status = [presence objectForKey:@"status"];
                                                     if (userId && status) {
-                                                        DCUser *user = [self.loadedUsers objectForKey:userId];
-                                                        if (user) {
-                                                            user.status = status;
-                                                            // NSLog(@"[READY] Updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
-                                                        } else {
-                                                            // NSLog(@"[READY] Presence received for unknown user ID: %@", userId);
+                                                        @synchronized (self.loadedUsers) {
+                                                            DCUser *user = [self.loadedUsers objectForKey:userId];
+                                                            if (user) {
+                                                                user.status = status;
+                                                                // NSLog(@"[READY] Updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
+                                                            } else {
+                                                                // NSLog(@"[READY] Presence received for unknown user ID: %@", userId);
+                                                            }
                                                         }
                                                     }
                                                 }

@@ -7,18 +7,15 @@
 //
 
 #import "DCAppDelegate.h"
+#include "SDWebImageManager.h"
 #include <UIKit/UIKit.h>
-// #import "UIDeviceAdditions.h"
+#import "UIDeviceAdditions.h"
 
 @interface DCAppDelegate ()
 @property bool shouldReload;
 @end
 
 @implementation DCAppDelegate
-
-// - (void)printMemoryUsage:(NSTimer *)timer {
-//     NSLog(@"Current memory usage: %f MB", [[UIDevice currentDevice] currentMemoryUsage]);
-// }
 
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -175,6 +172,11 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
     [[NSUserDefaults standardUserDefaults] synchronize];
     // NSLog(@"Will terminate");
+}
+
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
+    NSLog(@"Memory warning received, clearing image cache! Current memory usage: %f MB", [[UIDevice currentDevice] currentMemoryUsage]);
+    [SDWebImageManager.sharedManager.imageCache clearMemory];
 }
 
 @end

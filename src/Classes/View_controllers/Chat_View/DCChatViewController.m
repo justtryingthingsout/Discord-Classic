@@ -828,7 +828,7 @@ static dispatch_queue_t chat_messages_queue;
                             initWithActivityIndicatorStyle:
                                 UIActivityIndicatorViewStyleWhite];
                     [activityIndicator setFrame:CGRectMake(
-                                            11, imageViewOffset, newWidth,
+                                            55, imageViewOffset, newWidth,
                                             newHeight
                                         )];
                     [activityIndicator setContentMode:UIViewContentModeScaleAspectFit];

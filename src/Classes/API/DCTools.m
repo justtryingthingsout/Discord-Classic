@@ -308,16 +308,16 @@
 
                 NSString *attachmentURL;
 
-                if ([embed valueForKeyPath:@"image.proxy_url"] != nil) {
-                    attachmentURL = [embed valueForKeyPath:@"image.proxy_url"];
-                } else if ([embed valueForKeyPath:@"image.url"] != nil) {
-                    attachmentURL = [embed valueForKeyPath:@"image.url"];
+                if ([embed valueForKeyPath:@"thumbnail.proxy_url"] != [NSNull null]) {
+                    attachmentURL = [embed valueForKeyPath:@"thumbnail.proxy_url"];
+                } else if ([embed valueForKeyPath:@"thumbnail.url"] != [NSNull null]) {
+                    attachmentURL = [embed valueForKeyPath:@"thumbnail.url"];
                 } else {
                     attachmentURL = [embed objectForKey:@"url"];
                 }
 
-                NSInteger width     = [[embed valueForKeyPath:@"image.width"] integerValue];
-                NSInteger height    = [[embed valueForKeyPath:@"image.height"] integerValue];
+                NSInteger width     = [[embed valueForKeyPath:@"thumbnail.width"] integerValue];
+                NSInteger height    = [[embed valueForKeyPath:@"thumbnail.height"] integerValue];
                 CGFloat aspectRatio = (CGFloat)width / (CGFloat)height;
 
                 if (height > 1024) {
@@ -508,7 +508,15 @@
             if ([fileType rangeOfString:@"image/"].location != NSNotFound) {
                 newMessage.attachmentCount++;
 
-                NSString *attachmentURL = [attachment objectForKey:@"url"];
+                NSString *attachmentURL;
+                if ([attachment valueForKeyPath:@"image.proxy_url"] != nil) {
+                    attachmentURL = [attachment valueForKeyPath:@"image.proxy_url"];
+                } else if ([attachment valueForKeyPath:@"image.url"] != nil) {
+                    attachmentURL = [attachment valueForKeyPath:@"image.url"];
+                } else {
+                    attachmentURL = [attachment objectForKey:@"url"];
+                }
+
 
                 NSInteger width =
                     [[attachment objectForKey:@"width"] integerValue];
