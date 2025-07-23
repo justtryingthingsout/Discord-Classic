@@ -54,9 +54,9 @@ static dispatch_queue_t channel_send_queue;
     self.unread = (
         !self.muted
         && (!parentChannel || ![parentChannel muted])
-        && self.lastReadMessageId != (id)NSNull.null
-        && [self.lastReadMessageId isKindOfClass:[NSString class]]
-        && ![self.lastReadMessageId isEqualToString:self.lastMessageId]
+        && self.lastMessageId && self.lastMessageId != (id)NSNull.null
+        && [self.lastMessageId isKindOfClass:[NSString class]]
+        && ![self.lastMessageId isEqualToString:self.lastReadMessageId]
     );
     [self.parentGuild checkIfRead];
 }

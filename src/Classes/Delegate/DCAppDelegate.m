@@ -19,9 +19,11 @@
 
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // setenv("MallocStackLogging", "1", 1);
+    // setenv("MallocStackLoggingNoCompact", "1", 1);
     // [NSTimer scheduledTimerWithTimeInterval:2.0
-    //     target:self
-    //     selector:@selector(printMemoryUsage:)
+    //     target:[UIDevice currentDevice]
+    //     selector:@selector(currentMemoryUsage)
     //     userInfo:nil
     //     repeats:YES];
 
@@ -175,7 +177,8 @@
 }
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
-    NSLog(@"Memory warning received, clearing image cache! Current memory usage: %f MB", [[UIDevice currentDevice] currentMemoryUsage]);
+    NSLog(@"Memory warning received, clearing image cache!");
+    // [[UIDevice currentDevice] currentMemoryUsage];
     [SDWebImageManager.sharedManager.imageCache clearMemory];
 }
 

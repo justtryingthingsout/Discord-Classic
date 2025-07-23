@@ -194,6 +194,33 @@ static dispatch_queue_t chat_messages_queue;
     self.toolbar.userInteractionEnabled = DCServerCommunicator.sharedInstance.selectedChannel.writeable;
     self.inputFieldPlaceholder.hidden = NO;
 
+    if (self.oldMode) {
+        [self.chatTableView registerNib:[UINib nibWithNibName:@"O-DCChatTableCell"
+                                              bundle:nil]
+            forCellReuseIdentifier:@"OldMode Message Cell"];
+        [self.chatTableView registerNib:[UINib nibWithNibName:@"O-DCChatGroupedTableCell"
+                                              bundle:nil]
+            forCellReuseIdentifier:@"OldMode Grouped Message Cell"];
+        [self.chatTableView registerNib:[UINib nibWithNibName:@"O-DCChatReplyTableCell"
+                                              bundle:nil]
+            forCellReuseIdentifier:@"OldMode Reply Message Cell"];
+        [self.chatTableView registerNib:[UINib nibWithNibName:@"O-DCUniversalTableCell"
+                                              bundle:nil]
+            forCellReuseIdentifier:@"OldMode Universal Typehandler Cell"];
+    } else {
+        [self.chatTableView registerNib:[UINib nibWithNibName:@"DCChatGroupedTableCell"
+                                              bundle:nil]
+            forCellReuseIdentifier:@"Grouped Message Cell"];
+        [self.chatTableView registerNib:[UINib nibWithNibName:@"DCChatTableCell"
+                                              bundle:nil]
+            forCellReuseIdentifier:@"Message Cell"];
+        [self.chatTableView registerNib:[UINib nibWithNibName:@"DCChatReplyTableCell"
+                                              bundle:nil]
+            forCellReuseIdentifier:@"Reply Message Cell"];
+        [self.chatTableView registerNib:[UINib nibWithNibName:@"DCUniversalTableCell"
+                                              bundle:nil]
+            forCellReuseIdentifier:@"Universal Typehandler Cell"];
+    }
 }
 
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
@@ -656,18 +683,6 @@ static dispatch_queue_t chat_messages_queue;
     DCMessage *messageAtRowIndex = [self.messages objectAtIndex:indexPath.row];
 
     if (self.oldMode == YES) {
-        [tableView registerNib:[UINib nibWithNibName:@"O-DCChatTableCell"
-                                              bundle:nil]
-            forCellReuseIdentifier:@"OldMode Message Cell"];
-        [tableView registerNib:[UINib nibWithNibName:@"O-DCChatGroupedTableCell"
-                                              bundle:nil]
-            forCellReuseIdentifier:@"OldMode Grouped Message Cell"];
-        [tableView registerNib:[UINib nibWithNibName:@"O-DCChatReplyTableCell"
-                                              bundle:nil]
-            forCellReuseIdentifier:@"OldMode Reply Message Cell"];
-        [tableView registerNib:[UINib nibWithNibName:@"O-DCUniversalTableCell"
-                                              bundle:nil]
-            forCellReuseIdentifier:@"OldMode Universal Typehandler Cell"];
         NSSet *specialMessageTypes =
             [NSSet setWithArray:@[ @1, @2, @3, @4, @5, @6, @7, @8, @18 ]];
 
@@ -849,19 +864,6 @@ static dispatch_queue_t chat_messages_queue;
         
         return cell;
     } else if (self.oldMode == NO) {
-        [tableView registerNib:[UINib nibWithNibName:@"DCChatGroupedTableCell"
-                                              bundle:nil]
-            forCellReuseIdentifier:@"Grouped Message Cell"];
-        [tableView registerNib:[UINib nibWithNibName:@"DCChatTableCell"
-                                              bundle:nil]
-            forCellReuseIdentifier:@"Message Cell"];
-        [tableView registerNib:[UINib nibWithNibName:@"DCChatReplyTableCell"
-                                              bundle:nil]
-            forCellReuseIdentifier:@"Reply Message Cell"];
-        [tableView registerNib:[UINib nibWithNibName:@"DCUniversalTableCell"
-                                              bundle:nil]
-            forCellReuseIdentifier:@"Universal Typehandler Cell"];
-
         NSSet *specialMessageTypes =
             [NSSet setWithArray:@[ @1, @2, @3, @4, @5, @6, @7, @8, @18 ]];
 
