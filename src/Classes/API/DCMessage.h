@@ -54,6 +54,7 @@ typedef NS_ENUM(NSInteger, message_types) {
 @property NSString* snowflake;
 @property DCUser* author;
 @property NSString* content;
+@property NSAttributedString* attributedContent;
 @property int attachmentCount;
 @property NSMutableArray* attachments;
 @property int contentHeight;

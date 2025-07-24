@@ -15,7 +15,7 @@
 #import "DCChatViewController.h"
 
 #define TICK(var)   NSDate *tick_##var = [NSDate date]
-#define TOCK(var)   NSLog(@"%s @ %s: Time: %f", __PRETTY_FUNCTION__, #var, -[tick_##var timeIntervalSinceNow])
+#define TOCK(var)   NSTimeInterval tick_end_##var = -[tick_##var timeIntervalSinceNow] * 1000.0; if (tick_end_##var > 16.6666666667) NSLog(@"%s @ %s: Time: %f ms (%f frames)", __PRETTY_FUNCTION__, #var, tick_end_##var, tick_end_##var / 16.6666666667)
 
 #define VERSION_MIN(v)                                                  \
     ([[[UIDevice currentDevice] systemVersion] compare:v                \

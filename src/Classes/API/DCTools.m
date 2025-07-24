@@ -880,15 +880,16 @@
         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
             lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
 
-    if (VERSION_MIN(@"6.0") && [newMessage.content length]) {
+    newMessage.attributedContent = nil;
+    if (VERSION_MIN(@"6.0") && [newMessage.content length] > 0) {
         TSMarkdownParser *parser = [TSMarkdownParser standardParser];
         NSAttributedString *attributedText =
             [parser attributedStringFromMarkdown:newMessage.content];
-        if (attributedText) {
+        if (attributedText && ![attributedText.string isEqualToString:newMessage.content]) {
             contentSize = [attributedText boundingRectWithSize:CGSizeMake(contentWidth, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
-                                                       context:nil]
-                              .size;
+                                                       context:nil].size;
+            newMessage.attributedContent = attributedText;
         }
     }
 

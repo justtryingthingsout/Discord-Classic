@@ -7,6 +7,7 @@
 //
 
 #import "DCChatTableCell.h"
+#include "DCChatVideoAttachment.h"
 
 @implementation DCChatTableCell
 
@@ -33,6 +34,5 @@
     newFrame.size.height       = newSize.height;
     self.contentTextView.frame = newFrame;
 }
-
 
 @end

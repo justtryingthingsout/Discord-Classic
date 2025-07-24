@@ -22,5 +22,6 @@
 @property (strong, nonatomic) IBOutlet UILabel *referencedMessage;
 
 - (void)configureWithMessage:(NSString *)messageText;
+- (void)adjustTextViewSize;
 
 @end
