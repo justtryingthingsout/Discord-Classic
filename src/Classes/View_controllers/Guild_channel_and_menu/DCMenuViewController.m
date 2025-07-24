@@ -833,7 +833,14 @@
                 }
                 idx += folder.guildIds.count;
             }
-            self.displayGuilds                                 = sortedGuilds;
+            NSMutableArray *origCopy = [[[DCServerCommunicator.sharedInstance.guilds reverseObjectEnumerator] allObjects] mutableCopy];
+            [origCopy removeObjectsInArray:sortedGuilds]; // get difference
+            if (origCopy.count > 0) {
+                NSRange range = NSMakeRange(1, [origCopy count]);
+                NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+                [sortedGuilds insertObjects:origCopy atIndexes:indexSet];
+            }
+            self.displayGuilds                      = sortedGuilds;
             DCServerCommunicator.sharedInstance.guildsIsSorted = YES;
         }
 

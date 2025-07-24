@@ -869,7 +869,9 @@ UIActivityIndicatorView *spinner;
                 BOOL oldUnread = channel.unread;
                 [channel checkIfRead];
                 if (oldUnread != channel.unread) {
+#ifdef DEBUG
                     NSLog(@"Channel %@ (%@) unread state changed to %d", channel.name, channel.snowflake, channel.unread);
+#endif
                 }
             }
         }
