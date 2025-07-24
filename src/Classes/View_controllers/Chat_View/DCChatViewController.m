@@ -863,7 +863,6 @@ static dispatch_queue_t chat_messages_queue;
         }
         return cell;
     } else if (self.oldMode == NO) {
-        TICK(init);
         static NSSet *specialMessageTypes = nil;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
@@ -886,7 +885,6 @@ static dispatch_queue_t chat_messages_queue;
             cell =
                 [tableView dequeueReusableCellWithIdentifier:@"Message Cell"];
         }
-        TOCK(init);
 
         if (messageAtRowIndex.referencedMessage != nil) {
             [cell.referencedAuthorLabel
