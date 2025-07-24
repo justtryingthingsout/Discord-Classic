@@ -12,7 +12,7 @@
 #import "UIDeviceAdditions.h"
 
 @interface DCAppDelegate ()
-@property bool shouldReload;
+@property (assign, nonatomic) BOOL shouldReload;
 @end
 
 @implementation DCAppDelegate

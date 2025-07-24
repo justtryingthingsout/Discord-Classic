@@ -78,7 +78,7 @@
 
 
 @interface DCTools : NSObject
-@property bool oldMode;
+@property (assign, nonatomic) BOOL oldMode;
 
 // UNTIL RELEASE ONLY
 + (void)checkForAppUpdate;
@@ -89,7 +89,7 @@
 
 + (DCMessage *)convertJsonMessage:(NSDictionary *)jsonMessage;
 + (DCGuild *)convertJsonGuild:(NSDictionary *)jsonGuild;
-+ (DCUser *)convertJsonUser:(NSDictionary *)jsonUser cache:(bool)cache;
++ (DCUser *)convertJsonUser:(NSDictionary *)jsonUser cache:(BOOL)cache;
 
 + (void)joinGuild:(NSString *)inviteCode;
 @end

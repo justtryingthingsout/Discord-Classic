@@ -15,24 +15,24 @@
 #import "DCMessage.h"
 
 @interface DCChannel : NSObject<NSURLConnectionDelegate>
-@property NSString* snowflake;
+@property (strong, nonatomic) NSString* snowflake;
 // parent category (for channels) or id of text channel (for threads)
-@property NSString* parentID; 
-@property NSString* name;
-@property NSString* lastMessageId;
-@property NSString* lastReadMessageId;
+@property (strong, nonatomic) NSString* parentID; 
+@property (strong, nonatomic) NSString* name;
+@property (strong, nonatomic) NSString* lastMessageId;
+@property (strong, nonatomic) NSString* lastReadMessageId;
 // Icon for a DM
-@property UIImage* icon; 
-@property bool unread;
-@property bool muted;
-@property bool writeable;
-@property int type;
-@property int position;
+@property (strong, nonatomic) UIImage* icon; 
+@property (assign, nonatomic) BOOL unread;
+@property (assign, nonatomic) BOOL muted;
+@property (assign, nonatomic) BOOL writeable;
+@property (assign, nonatomic) NSInteger type;
+@property (assign, nonatomic) NSInteger position;
 // Holds NSDictionary* of Users
-@property NSMutableArray* recipients;
-@property DCGuild* parentGuild;
+@property (strong, nonatomic) NSMutableArray* recipients;
+@property (weak, nonatomic) DCGuild* parentGuild;
 // Holds NSDictionary* of Users
-@property NSArray* users;
+@property (strong, nonatomic) NSArray* users;
 
 - (void)checkIfRead;
 - (void)sendTypingIndicator;

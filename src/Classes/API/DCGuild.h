@@ -15,33 +15,33 @@
 
 @interface DCGuild : NSObject
 // ID/snowflake
-@property NSString* snowflake;
+@property (strong, nonatomic) NSString* snowflake;
 // Name
-@property NSString* name;
+@property (strong, nonatomic) NSString* name;
 // The ID of the guild's owner
-@property NSString* ownerID;
+@property (strong, nonatomic) NSString* ownerID;
 // The number of members in the guild
-@property int memberCount;
+@property (assign, nonatomic) NSInteger memberCount;
 // The number of currently online members in the guild
-@property int onlineCount;
+@property (assign, nonatomic) NSInteger onlineCount;
 // Whether it is muted
-@property BOOL muted;
+@property (assign, nonatomic) BOOL muted;
 
 // The guild's icon
-@property UIImage* icon;
+@property (strong, nonatomic) UIImage* icon;
 // The guild's banner
-@property UIImage* banner;
+@property (strong, nonatomic) UIImage* banner;
 
 // Array of child DCChannel objects
-@property NSMutableArray* channels;
+@property (strong, nonatomic) NSMutableArray* channels;
 // Whether or not the guild has any unread child channels
-@property bool unread;
+@property (assign, nonatomic) BOOL unread;
 // Members of the guild for display (can contain roles)
-@property NSMutableArray* members;
+@property (strong, nonatomic) NSMutableArray* members;
 // Roles in the guild
-@property NSMutableDictionary* roles;
+@property (strong, nonatomic) NSMutableDictionary* roles;
 // Array of the current user's roles in the guild
-@property NSMutableArray* userRoles;
+@property (strong, nonatomic) NSMutableArray* userRoles;
 
 - (void)checkIfRead;
 @end

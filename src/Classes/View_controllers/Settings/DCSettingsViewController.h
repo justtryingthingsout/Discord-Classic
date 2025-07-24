@@ -9,5 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface DCSettingsViewController : UITableViewController
+
 @property (weak, nonatomic) IBOutlet UITextField *tokenInputField;
+
 @end

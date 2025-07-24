@@ -6,41 +6,21 @@
 //  Copyright (c) 2018 bag.xml. All rights reserved.
 //
 
-#import "DCServerCommunicator.h"
-#include <UIKit/UIKit.h>
-#include "DCGuildFolder.h"
-#include <objc/NSObjCRuntime.h>
-#include "DCRole.h"
-#include <dispatch/dispatch.h>
+#include <malloc/malloc.h>
+#import "DCServerCommunicator+Internal.h"
+
 #include <Foundation/Foundation.h>
-#import "DCChannel.h"
-#import "DCGuild.h"
-#import "DCTools.h"
-#import "SDWebImageManager.h"
+#include <UIKit/UIKit.h>
+#include <dispatch/dispatch.h>
 
-@interface DCServerCommunicator ()
-@property (strong, nonatomic) UIView *notificationView;
-@property bool didReceiveHeartbeatResponse;
-@property bool didTryResume;
-@property bool shouldResume;
-@property bool heartbeatDefined;
-
-@property bool identifyCooldown;
-
-@property int sequenceNumber;
-@property NSString *sessionId;
-
-@property NSTimer *cooldownTimer;
-@property UIAlertView *alertView;
-@property bool oldMode;
-+ (DCServerCommunicator *)sharedInstance;
-- (void)showNonIntrusiveNotificationWithTitle:(NSString *)title;
-- (void)dismissNotification;
-@end
-
+#include "SDWebImageManager.h"
+#include "DCRole.h"
+#include "DCGuildFolder.h"
+#include "DCChannel.h"
+#include "DCGuild.h"
+#include "DCTools.h"
 
 @implementation DCServerCommunicator
-
 UIActivityIndicatorView *spinner;
 
 + (DCServerCommunicator *)sharedInstance {
@@ -1082,6 +1062,20 @@ UIActivityIndicatorView *spinner;
         NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         [self.websocket sendText:jsonString];
     });
+}
+
+- (void)description {
+    NSLog(@"DCServerCommunicator lengths: \n"
+          "channels: %lu (element %zu)\n"
+          "guilds: %lu (element %zu)\n"
+          "loadedUsers: %lu (element %zu)\n"
+          "loadedRoles: %lu (element %zu)\n"
+          "currentUserInfo: %lu (element %zu)\n",
+          (unsigned long)self.channels.count, malloc_size((__bridge const void *)(self.channels.allValues.firstObject)),
+          (unsigned long)self.guilds.count, malloc_size((__bridge const void *)(self.guilds.firstObject)),
+          (unsigned long)self.loadedUsers.count, malloc_size((__bridge const void *)(self.loadedUsers.allValues.firstObject)),
+          (unsigned long)self.loadedRoles.count, malloc_size((__bridge const void *)(self.loadedRoles.allValues.firstObject)),
+          (unsigned long)self.currentUserInfo.count, malloc_size((__bridge const void *)(self.currentUserInfo.allValues.firstObject)));
 }
 
 @end

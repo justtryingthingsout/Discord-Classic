@@ -7,10 +7,14 @@
 //
 
 #import "DCChatViewController.h"
+#include <objc/runtime.h>
+
 #include <Foundation/Foundation.h>
 #include <Foundation/NSObjCRuntime.h>
 #include <UIKit/UIKit.h>
 #include <objc/NSObjCRuntime.h>
+#include <malloc/malloc.h>
+
 #import "DCCInfoViewController.h"
 #import "DCChatTableCell.h"
 #import "DCChatVideoAttachment.h"
@@ -24,7 +28,7 @@
 
 @interface DCChatViewController ()
 @property (nonatomic, strong) NSMutableArray *messages;
-@property (nonatomic, assign) int numberOfMessagesLoaded;
+@property (nonatomic, assign) NSInteger numberOfMessagesLoaded;
 @property (nonatomic, strong) UIImage *selectedImage;
 @property (nonatomic, assign) BOOL oldMode;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
@@ -258,6 +262,7 @@ static dispatch_queue_t chat_messages_queue;
             : @"No Permission";
     self.toolbar.userInteractionEnabled = DCServerCommunicator.sharedInstance.selectedChannel.writeable;
     [self handleAsyncReload];
+    [DCServerCommunicator.sharedInstance description];
 }
 
 - (void)handleAsyncReload {

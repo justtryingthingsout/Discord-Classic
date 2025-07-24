@@ -68,7 +68,7 @@
 
 // Converts an NSDictionary created from json representing a user into a DCUser
 // object Also keeps the user in DCServerCommunicator.loadedUsers if cache:YES
-+ (DCUser *)convertJsonUser:(NSDictionary *)jsonUser cache:(bool)cache {
++ (DCUser *)convertJsonUser:(NSDictionary *)jsonUser cache:(BOOL)cache {
     // NSLog(@"%@", jsonUser);
     DCUser *newUser    = DCUser.new;
     newUser.username   = [jsonUser objectForKey:@"username"];
@@ -427,7 +427,7 @@
                     }
 
                     NSURL *urlString = [NSURL URLWithString:baseURL];
-                    bool isDiscord   = [baseURL
+                    BOOL isDiscord   = [baseURL
                         hasPrefix:@"https://media.discordapp.net/"];
 
                     if (isDiscord) {
@@ -1050,7 +1050,7 @@
              3 & 4 are mutually exclusive
              */
             int allowCode = 0;
-            bool canWrite = true;
+            BOOL canWrite = true;
 
             // Calculate permissions
             NSArray *rawOverwrites =

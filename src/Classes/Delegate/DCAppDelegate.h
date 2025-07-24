@@ -14,6 +14,6 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property bool experimental;
-@property bool hackyMode;
+@property (assign, nonatomic) BOOL experimental;
+@property (assign, nonatomic) BOOL hackyMode;
 @end

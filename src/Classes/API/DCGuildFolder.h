@@ -7,15 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+#include <objc/NSObjCRuntime.h>
 #include <UIKit/UIKit.h>
 
 @interface DCGuildFolder : NSObject 
 
-@property NSString *name;
-@property int color;
-@property int id;
-@property NSArray *guildIds;
-@property BOOL opened;
-@property UIImage *icon;
+@property (strong, nonatomic) NSString *name;
+@property (assign, nonatomic) NSInteger color;
+@property (assign, nonatomic) NSInteger id;
+@property (strong, nonatomic) NSArray *guildIds;
+@property (assign, nonatomic) BOOL opened;
+@property (strong, nonatomic) UIImage *icon;
 
 @end

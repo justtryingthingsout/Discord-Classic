@@ -32,15 +32,15 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *guildTableView;
 @property (weak, nonatomic) IBOutlet UITableView *channelTableView;
-@property DCGuild *selectedGuild;
-@property DCChannel *selectedChannel;
-@property UIRefreshControl *refreshControl;
-@property UIRefreshControl *reloadControl;
+@property (strong, nonatomic) DCGuild *selectedGuild;
+@property (strong, nonatomic) DCChannel *selectedChannel;
+@property (strong, nonatomic) UIRefreshControl *refreshControl;
+@property (strong, nonatomic) UIRefreshControl *reloadControl;
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UILabel *guildLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *guildBanner;
 
-@property UIImage *dmIcon; // Icon for a DM
+@property (strong, nonatomic) UIImage *dmIcon; // Icon for a DM
 @property (weak, nonatomic) IBOutlet UILabel *userName;
 @property (weak, nonatomic) IBOutlet UILabel *globalName;
 
@@ -49,7 +49,7 @@
 @property (weak, nonatomic) IBOutlet UIView *guildTotalView;
 
 
-@property bool experimentalMode;
+@property BOOL experimentalMode;
 @property NSOperationQueue *serverIconImageQueue;
 
 + (NSString *)imageNameForStatus:(NSString *)status;

@@ -210,30 +210,32 @@
 
 @interface DCServerCommunicator : NSObject
 
-@property WSWebSocket* websocket;
-@property NSString* token;
-@property NSDictionary* currentUserInfo;
-@property NSString* gatewayURL;
-@property NSMutableDictionary* userChannelSettings;
+@property (strong, nonatomic) WSWebSocket* websocket;
+@property (strong, nonatomic) NSString* token;
+@property (strong, nonatomic) NSDictionary* currentUserInfo;
+@property (strong, nonatomic) NSString* gatewayURL;
+@property (strong, nonatomic) NSMutableDictionary* userChannelSettings;
 
-@property NSString* snowflake;
+@property (strong, nonatomic) NSString* snowflake;
 
-@property NSMutableArray* guilds;
-@property bool guildsIsSorted;
-@property NSMutableDictionary* channels;
-@property NSMutableDictionary* loadedUsers;
-@property NSMutableDictionary* loadedRoles;
+@property (strong, nonatomic) NSMutableArray* guilds;
+@property (assign, nonatomic) BOOL guildsIsSorted;
+@property (strong, nonatomic) NSMutableDictionary* channels;
+@property (strong, nonatomic) NSMutableDictionary* loadedUsers;
+@property (strong, nonatomic) NSMutableDictionary* loadedRoles;
 
-@property DCGuild* selectedGuild;
-@property DCChannel* selectedChannel;
+@property (strong, nonatomic) DCGuild* selectedGuild;
+@property (strong, nonatomic) DCChannel* selectedChannel;
 
-@property bool didAuthenticate;
+@property (assign, nonatomic) BOOL didAuthenticate;
 
 + (DCServerCommunicator*)sharedInstance;
+- (void)description;
 - (void)startCommunicator;
 - (void)sendResume;
 - (void)reconnect;
 - (void)sendHeartbeat:(NSTimer*)timer;
 - (void)sendJSON:(NSDictionary*)dictionary;
 - (void)sendGuildSubscriptionWithGuildId:(NSString *)guildId channelId:(NSString *)channelId;
+
 @end

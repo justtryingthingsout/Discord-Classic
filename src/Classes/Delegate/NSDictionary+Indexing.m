@@ -5,6 +5,7 @@
     return [self objectAtIndex:idx];
 }
 @end
+
 @implementation NSMutableArray (Indexing)
 - (void)setObject:(id)obj atIndexedSubscript:(NSUInteger)idx
 {
@@ -14,12 +15,12 @@
 
 // NSMutableDictionary+Indexing.m
 @implementation  NSDictionary (Indexing)
-
 - (id)objectForKeyedSubscript:(id)key
 {
     return [self objectForKey:key];
 }
 @end
+
 @implementation  NSMutableDictionary (Indexing)
 - (void)setObject:(id)obj forKeyedSubscript:(id)key
 {

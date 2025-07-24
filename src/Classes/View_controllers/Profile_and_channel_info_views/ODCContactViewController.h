@@ -22,9 +22,9 @@
 @property (weak, nonatomic) IBOutlet UIButton* chatButton;
 @property (weak, nonatomic) IBOutlet UIButton* mutualFriendsButton;
 
-@property bool noConnections;
-@property NSString* snowflake;
-@property NSDictionary* connectedAccounts;
-@property NSArray* mutualFriends;
-@property NSDictionary* mutualGuilds;
+@property (assign, nonatomic) BOOL noConnections;
+@property (strong, nonatomic) NSString* snowflake;
+@property (strong, nonatomic) NSDictionary* connectedAccounts;
+@property (strong, nonatomic) NSArray* mutualFriends;
+@property (strong, nonatomic) NSDictionary* mutualGuilds;
 @end

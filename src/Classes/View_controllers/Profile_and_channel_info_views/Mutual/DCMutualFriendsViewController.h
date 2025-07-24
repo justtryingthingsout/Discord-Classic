@@ -14,14 +14,14 @@
 
 @interface DCMutualFriendsViewController
     : UIViewController<UITableViewDelegate, UITableViewDataSource>
-@property DCUser *user;
-@property (nonatomic, strong) DCUser *selectedUser;
+@property (strong, nonatomic) DCUser *user;
+@property (strong, nonatomic) DCUser *selectedUser;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 @property (weak, nonatomic) IBOutlet UINavigationBar *titleBar;
 @property (weak, nonatomic) IBOutlet UITableView *mutTableView;
 
 // Holds NSDictionary*
-@property NSArray *mutualFriendsList;
+@property (strong, nonatomic) NSArray *mutualFriendsList;
 // Holds DCUser*
-@property NSMutableArray *recipients;
+@property (strong, nonatomic) NSMutableArray *recipients;
 @end

@@ -40,11 +40,8 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *photoButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
 
-@property bool viewingPresentTime;
-
-@property DCMessage *selectedMessage;
-
-@property (nonatomic, strong) UIPopoverController *imagePopoverController;
-
+@property (assign, nonatomic) BOOL viewingPresentTime;
+@property (strong, nonatomic) DCMessage *selectedMessage;
+@property (strong, nonatomic) UIPopoverController *imagePopoverController;
 
 @end

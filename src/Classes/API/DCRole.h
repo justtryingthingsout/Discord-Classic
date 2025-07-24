@@ -1,20 +1,21 @@
 #import <Foundation/Foundation.h>
+#include <UIKit/UIKit.h>
 
 @interface DCRole : NSObject
 
-@property (nonnull) NSString* snowflake;
-@property (nonnull) NSString* name;
-@property int color;
+@property (strong, nonnull) NSString* snowflake;
+@property (strong, nonnull) NSString* name;
+@property (assign, nonatomic) NSInteger color;
 // colors
-@property bool hoist;
-@property (nullable) UIImage* icon;
-@property (nullable) NSString* unicodeEmoji;
-@property int position;
-@property (nonnull) NSString* permissions;
-@property bool managed;
-@property bool mentionable;
+@property (assign, nonatomic) BOOL hoist;
+@property (strong, nullable, nonatomic) UIImage* icon;
+@property (strong, nullable, nonatomic) NSString* unicodeEmoji;
+@property (assign, nonatomic) NSInteger position;
+@property (strong, nonnull, nonatomic) NSString* permissions;
+@property (assign, nonatomic) BOOL managed;
+@property (assign, nonatomic) BOOL mentionable;
 // tags
-@property int flags;
+@property (assign, nonatomic) NSInteger flags;
 
 - (NSString* _Nonnull)description;
 

@@ -30,7 +30,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *userID;
 @property (weak, nonatomic) IBOutlet UILabel *token;
 
-@property NSDictionary *activeConnections;
-@property bool noConnections;
+@property (strong, nonatomic) NSDictionary *activeConnections;
+@property (assign, nonatomic) BOOL noConnections;
 
 @end

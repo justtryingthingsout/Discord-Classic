@@ -51,23 +51,23 @@ typedef NS_ENUM(NSInteger, message_types) {
 };
 
 @interface DCMessage : NSObject
-@property NSString* snowflake;
-@property DCUser* author;
-@property NSString* content;
-@property NSAttributedString* attributedContent;
-@property int attachmentCount;
-@property NSMutableArray* attachments;
-@property int contentHeight;
-@property int authorNameWidth;
-@property NSDate* timestamp;
-@property NSDate* editedTimestamp;
-@property NSString* prettyTimestamp;
-@property bool pingingUser;
-@property bool isGrouped;
-@property NSString* preDefinedContent;
-@property int messageType;
-@property DCMessage* referencedMessage;
-@property UITableViewCell* cell;
+@property(strong, nonatomic) NSString* snowflake;
+@property(strong, nonatomic) DCUser* author;
+@property(strong, nonatomic) NSString* content;
+@property(strong, nonatomic) NSAttributedString* attributedContent;
+@property(assign, nonatomic) NSInteger attachmentCount;
+@property(strong, nonatomic) NSMutableArray* attachments;
+@property(assign, nonatomic) NSInteger contentHeight;
+@property(assign, nonatomic) NSInteger authorNameWidth;
+@property(strong, nonatomic) NSDate* timestamp;
+@property(strong, nonatomic) NSDate* editedTimestamp;
+@property(strong, nonatomic) NSString* prettyTimestamp;
+@property(assign, nonatomic) BOOL pingingUser;
+@property(assign, nonatomic) BOOL isGrouped;
+@property(strong, nonatomic) NSString* preDefinedContent;
+@property(assign, nonatomic) NSInteger messageType;
+@property(strong, nonatomic) DCMessage* referencedMessage;
+@property(weak, nonatomic) UITableViewCell* cell;
 
 // embed
 //@property NSString *

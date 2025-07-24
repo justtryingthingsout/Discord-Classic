@@ -11,6 +11,6 @@
 
 @interface DCChannelListViewController
     : UITableViewController<UIAlertViewDelegate>
-@property DCGuild* selectedGuild;
+@property (strong, nonatomic) DCGuild* selectedGuild;
 
 @end

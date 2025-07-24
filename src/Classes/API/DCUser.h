@@ -10,16 +10,16 @@
 #include <UIKit/UIKit.h>
 
 @interface DCUser : NSObject
-@property NSString* snowflake;
-@property NSString* username;
-@property NSString* globalName;
-@property NSString* biography;
-@property NSString* customStatus;
-@property NSString* status;
-@property UIImage* profileImage;
-@property UIImage* profileBanner;
-@property NSString* discriminator;
-@property UIImage* avatarDecoration;
+@property (strong, nonatomic) NSString* snowflake;
+@property (strong, nonatomic) NSString* username;
+@property (strong, nonatomic) NSString* globalName;
+@property (strong, nonatomic) NSString* biography;
+@property (strong, nonatomic) NSString* customStatus;
+@property (strong, nonatomic) NSString* status;
+@property (strong, nonatomic) UIImage* profileImage;
+@property (strong, nonatomic) UIImage* profileBanner;
+@property (strong, nonatomic) NSString* discriminator;
+@property (strong, nonatomic) UIImage* avatarDecoration;
 
 + (NSArray*)defaultAvatars;
 

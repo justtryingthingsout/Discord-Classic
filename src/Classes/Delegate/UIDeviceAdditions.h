@@ -13,7 +13,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // Returns the amount of memory which is currently used (in MB).
-@property(readonly) void currentMemoryUsage; 
+@property (readonly) void currentMemoryUsage; 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

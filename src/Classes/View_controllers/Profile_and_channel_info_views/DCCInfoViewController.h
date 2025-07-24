@@ -16,8 +16,8 @@
 #import "DCUser.h"
 @interface DCCInfoViewController : UITableViewController
 
-@property NSMutableArray* recipients;
-@property (nonatomic, strong) DCUser* selectedUser;
+@property (strong, nonatomic) NSMutableArray* recipients;
+@property (strong, nonatomic) DCUser* selectedUser;
 
-@property DCUser* user;
+@property (strong, nonatomic) DCUser* user;
 @end
