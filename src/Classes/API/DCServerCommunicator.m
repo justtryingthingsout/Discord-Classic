@@ -745,12 +745,12 @@ UIActivityIndicatorView *spinner;
         }];
         // Disable ability to identify until reenabled 5 seconds later.
         // API only allows once identify every 5 seconds
-        self.identifyCooldown = false;
+        self.canIdentify = false;
         /* do not initialize guilds and channels here,
            could cause concurrency issues while guilds and channels are being loaded */
         self.loadedUsers                                                  = NSMutableDictionary.new;
         self.loadedRoles                                                  = NSMutableDictionary.new;
-        self.didReceiveHeartbeatResponse                                  = true;
+        self.gotHeartbeat                                                 = true;
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         int heartbeatInterval                                             = [[d objectForKey:@"heartbeat_interval"] intValue];
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -761,7 +761,7 @@ UIActivityIndicatorView *spinner;
                 [NSTimer scheduledTimerWithTimeInterval:(float)heartbeatInterval / 1000 target:self selector:@selector(sendHeartbeat:) userInfo:nil repeats:YES];
             });
             // Reenable ability to identify in 5 seconds
-            self.cooldownTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(refreshIdentifyCooldown:) userInfo:nil repeats:NO];
+            self.cooldownTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(refreshcanIdentify:) userInfo:nil repeats:NO];
         });
     }
 }
@@ -929,7 +929,7 @@ UIActivityIndicatorView *spinner;
         //         NSLog(@"Got op code %i", op);
         // #endif
 
-        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             switch (op) {
                 case HELLO: {
                     [weakSelf handleHelloWithData:d];
@@ -940,7 +940,7 @@ UIActivityIndicatorView *spinner;
                     break;
                 }
                 case HEARTBEAT_ACK: {
-                    weakSelf.didReceiveHeartbeatResponse                              = true;
+                    weakSelf.gotHeartbeat = true;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                     });
@@ -982,7 +982,7 @@ UIActivityIndicatorView *spinner;
 
 - (void)reconnect {
 #ifdef DEBUG
-    NSLog(@"Identify cooldown %s", self.identifyCooldown ? "true" : "false");
+    NSLog(@"Identify cooldown %s", self.canIdentify ? "true" : "false");
 #endif
 
     // Begin new session
@@ -995,7 +995,7 @@ UIActivityIndicatorView *spinner;
 
     // If an identify cooldown is in effect, wait for the time needed until sending another IDENTIFY
     // if not, send immediately
-    if (self.identifyCooldown) {
+    if (self.canIdentify) {
 #ifdef DEBUG
         NSLog(@"No cooldown in effect. Authenticating...");
 #endif
@@ -1008,24 +1008,24 @@ UIActivityIndicatorView *spinner;
 #endif
         [self.alertView setTitle:@"Waiting for auth cooldown..."];
         if (self.oldMode == NO) {
-            [self showNonIntrusiveNotificationWithTitle:@"Re-Authenticating..."];
+            [self showNonIntrusiveNotificationWithTitle:@"Awaiting cooldown..."];
         }
         [self performSelector:@selector(startCommunicator) withObject:nil afterDelay:timeRemaining + 1];
     }
 
-    self.identifyCooldown = false;
+    self.canIdentify = false;
 }
 
 
 - (void)sendHeartbeat:(NSTimer *)timer {
     // Check that we've recieved a response since the last heartbeat
-    if (self.didReceiveHeartbeatResponse) {
+    if (self.gotHeartbeat) {
         [NSTimer scheduledTimerWithTimeInterval:8 target:self selector:@selector(checkForRecievedHeartbeat:) userInfo:nil repeats:NO];
         [self sendJSON:@{@"op" : @1, @"d" : @(self.sequenceNumber)}];
 #ifdef DEBUG
         NSLog(@"Sent heartbeat");
 #endif
-        self.didReceiveHeartbeatResponse = false;
+        self.gotHeartbeat = false;
         self.didTryResume = false;
     } else if (self.didTryResume) {
 #ifdef DEBUG
@@ -1044,7 +1044,7 @@ UIActivityIndicatorView *spinner;
 }
 
 - (void)checkForRecievedHeartbeat:(NSTimer *)timer {
-    if (!self.didReceiveHeartbeatResponse) {
+    if (!self.gotHeartbeat) {
 #ifdef DEBUG
         NSLog(@"Did not get heartbeat response, sending RESUME with sequence %i %@ (checkForRecievedHeartbeat)", self.sequenceNumber, self.sessionId);
 #endif
@@ -1053,8 +1053,8 @@ UIActivityIndicatorView *spinner;
 }
 
 // Once the 5 second identify cooldown is over
-- (void)refreshIdentifyCooldown:(NSTimer *)timer {
-    self.identifyCooldown = true;
+- (void)refreshcanIdentify:(NSTimer *)timer {
+    self.canIdentify = true;
 #ifdef DEBUG
     NSLog(@"Authentication cooldown ended");
 #endif
