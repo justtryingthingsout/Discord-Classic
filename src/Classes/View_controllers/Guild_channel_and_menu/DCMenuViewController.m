@@ -352,17 +352,14 @@
                     NSUInteger idx = [DCServerCommunicator.sharedInstance.guilds indexOfObjectPassingTest:^BOOL(DCGuild *g, NSUInteger idx, BOOL *stop) {
                         return [g.snowflake isEqualToString:guildId];
                     }];
-                    if (idx == NSNotFound) {
-                        continue;
-                    }
+                    NSAssert(idx != NSNotFound, @"Guild ID %@ not found", guildId);
                     DCGuild *guild = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:idx];
-                    if (!guild) {
-                        continue;
-                    }
-                    // NSLog(@"add index: %lu, name: %@", (unsigned long)curIdx, guild.name);
+                    NSAssert(guild != nil, @"Guild not found for ID %@", guildId);
+                    NSLog(@"add index: %lu, name: %@", (unsigned long)curIdx, guild.name);
                     [self.displayGuilds insertObject:guild atIndex:curIdx];
                     [newIndexPaths addObject:[NSIndexPath indexPathForRow:curIdx++ inSection:0]];
                 }
+                NSAssert(newIndexPaths.count == folder.guildIds.count, @"New index paths count does not match folder guild IDs count (%@ != %@)", @(newIndexPaths.count), @(folder.guildIds.count));
                 [self.guildTableView insertRowsAtIndexPaths:newIndexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
             } else {
                 NSMutableArray *indexPathsToDelete = [NSMutableArray array];
@@ -379,6 +376,7 @@
                     [self.displayGuilds removeObjectAtIndex:idx];
                     [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:idx + i inSection:0]];
                 }
+                NSAssert(indexPathsToDelete.count == folder.guildIds.count, @"Index paths to delete count does not match folder guild IDs count (%@ != %@)", @(indexPathsToDelete.count), @(folder.guildIds.count));
                 [self.guildTableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
             }
             [self.guildTableView endUpdates];
@@ -820,21 +818,27 @@
             NSAssert(sortedGuilds && [sortedGuilds count] != 0, @"No sorted guilds found");
             DCServerCommunicator.sharedInstance.guilds = sortedGuilds;
             sortedGuilds                               = [NSMutableArray arrayWithObject:DCServerCommunicator.sharedInstance.guilds[0]]; // Add private guild at index 0
-            NSUInteger idx                             = 1;
+            NSMutableSet *handledGuildIds = NSMutableSet.new;
             for (DCGuildFolder *folder in DCServerCommunicator.sharedInstance.currentUserInfo[@"guildFolders"]) {
-                if (!folder.id) {
-                    [sortedGuilds addObject:[DCServerCommunicator.sharedInstance.guilds objectAtIndex:idx++]];
-                    continue;
+                if (folder.id) {
+                    [sortedGuilds addObject:folder];
                 }
-                [sortedGuilds addObject:folder];
                 if (folder.opened) {
-                    [sortedGuilds addObjectsFromArray:[DCServerCommunicator.sharedInstance.guilds
-                                                          subarrayWithRange:NSMakeRange(idx, folder.guildIds.count)]];
+                    [sortedGuilds addObjectsFromArray:[DCServerCommunicator.sharedInstance.guilds 
+                        filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCGuild *guild, NSDictionary *bindings) {
+                            return [folder.guildIds containsObject:guild.snowflake];
+                        }]]];
                 }
-                idx += folder.guildIds.count;
+                [handledGuildIds addObjectsFromArray:folder.guildIds];
             }
             NSMutableArray *origCopy = [[[DCServerCommunicator.sharedInstance.guilds reverseObjectEnumerator] allObjects] mutableCopy];
-            [origCopy removeObjectsInArray:sortedGuilds]; // get difference
+            [origCopy filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+                if ([evaluatedObject isKindOfClass:[DCGuild class]]) {
+                    DCGuild *guild = (DCGuild *)evaluatedObject;
+                    return guild.snowflake && ![handledGuildIds containsObject:guild.snowflake];
+                }
+                return NO;
+            }]]; // get difference
             if (origCopy.count > 0) {
                 NSRange range = NSMakeRange(1, [origCopy count]);
                 NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];

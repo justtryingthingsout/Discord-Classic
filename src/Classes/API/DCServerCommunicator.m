@@ -211,25 +211,6 @@ UIActivityIndicatorView *spinner;
     userInfo[@"clan"]              = [d valueForKeyPath:@"user.clan"];
     userInfo[@"id"]                = [d valueForKeyPath:@"user.id"];
     userInfo[@"connectedAccounts"] = [d valueForKeyPath:@"connected_accounts"];
-    userInfo[@"guildPositions"]    = NSMutableArray.new;
-    if ([d valueForKeyPath:@"user_settings.guild_positions"]) {
-        [userInfo[@"guildPositions"] addObjectsFromArray:[d valueForKeyPath:@"user_settings.guild_positions"]];
-    } else if ([d valueForKeyPath:@"user_settings.guild_folders"]) {
-        userInfo[@"guildFolders"] = NSMutableArray.new;
-        for (NSDictionary *userDict in [d valueForKeyPath:@"user_settings.guild_folders"]) {
-            DCGuildFolder *folder = [DCGuildFolder new];
-            folder.id = [userDict objectForKey:@"id"] != [NSNull null] ? [[userDict objectForKey:@"id"] intValue] : 0;
-            folder.name = [userDict objectForKey:@"name"];
-            folder.color = [userDict objectForKey:@"color"] != [NSNull null] ? [[userDict objectForKey:@"color"] intValue] : 0;
-            folder.guildIds = [userDict objectForKey:@"guild_ids"];
-            NSNumber *opened = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:[@(folder.id) stringValue]] objectForKey:@"opened"];
-            folder.opened = opened != nil ? [opened boolValue] : YES; // default to opened
-            [userInfo[@"guildFolders"] addObject:folder];
-            [userInfo[@"guildPositions"] addObjectsFromArray:folder.guildIds];
-        }
-    } else {
-        NSLog(@"no guild positions found in user settings");
-    }
     self.currentUserInfo     = userInfo;
     self.userChannelSettings = NSMutableDictionary.new;
     for (NSDictionary *guildSettings in [d objectForKey:@"user_guild_settings"]) {
@@ -245,6 +226,7 @@ UIActivityIndicatorView *spinner;
         privateGuild.icon = [UIImage imageNamed:@"privateGuildLogo"];
     }
     privateGuild.channels = NSMutableArray.new;
+    privateGuild.snowflake = nil;
     for (NSDictionary *privateChannel in [d objectForKey:@"private_channels"]) {
         // this may actually suck
         //  Initialize users array for the member list
@@ -438,6 +420,36 @@ UIActivityIndicatorView *spinner;
     for (NSDictionary *jsonGuild in [d objectForKey:@"guilds"]) {
         DCGuild *guild = [DCTools convertJsonGuild:jsonGuild];
         [guilds addObject:guild];
+    }
+    userInfo[@"guildPositions"]    = NSMutableArray.new;
+    if ([d valueForKeyPath:@"user_settings.guild_positions"]) {
+        [userInfo[@"guildPositions"] addObjectsFromArray:[d valueForKeyPath:@"user_settings.guild_positions"]];
+    } else if ([d valueForKeyPath:@"user_settings.guild_folders"]) {
+        userInfo[@"guildFolders"] = NSMutableArray.new;
+        for (NSDictionary *userDict in [d valueForKeyPath:@"user_settings.guild_folders"]) {
+            DCGuildFolder *folder = [DCGuildFolder new];
+            folder.id = [userDict objectForKey:@"id"] != [NSNull null] ? [[userDict objectForKey:@"id"] intValue] : 0;
+            folder.name = [userDict objectForKey:@"name"];
+            folder.color = [userDict objectForKey:@"color"] != [NSNull null] ? [[userDict objectForKey:@"color"] intValue] : 0;
+            NSMutableArray *guildIds = [[userDict objectForKey:@"guild_ids"] mutableCopy];
+            // below code required for deleted but not updated guilds
+            for (NSString *guildId in [guildIds copy]) {
+                if ([guilds indexOfObjectPassingTest:
+                        ^BOOL(DCGuild *guild, NSUInteger idx, BOOL *stop) {
+                    return [guild.snowflake isEqualToString:guildId];
+                }] == NSNotFound) {
+                    NSLog(@"[READY] Guild ID %@ not found in guilds array!", guildId);
+                    [guildIds removeObject:guildId];
+                }
+            }
+            folder.guildIds = guildIds;
+            NSNumber *opened = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:[@(folder.id) stringValue]] objectForKey:@"opened"];
+            folder.opened = opened != nil ? [opened boolValue] : YES; // default to opened
+            [userInfo[@"guildFolders"] addObject:folder];
+            [userInfo[@"guildPositions"] addObjectsFromArray:folder.guildIds];
+        }
+    } else {
+        NSLog(@"no guild positions found in user settings");
     }
     for (NSDictionary *guildSettings in [d objectForKey:@"user_guild_settings"]) {
         NSString *guildId = [guildSettings objectForKey:@"guild_id"];

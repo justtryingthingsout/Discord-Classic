@@ -14,8 +14,8 @@
 #import "DCUser.h"
 #import "DCChatViewController.h"
 
-#define TICK   NSDate *startTime = [NSDate date]
-#define TOCK   NSLog(@"%s: Time: %f", __PRETTY_FUNCTION__, -[startTime timeIntervalSinceNow])
+#define TICK(var)   NSDate *tick_##var = [NSDate date]
+#define TOCK(var)   NSLog(@"%s @ %s: Time: %f", __PRETTY_FUNCTION__, #var, -[tick_##var timeIntervalSinceNow])
 
 #define VERSION_MIN(v)                                                  \
     ([[[UIDevice currentDevice] systemVersion] compare:v                \
