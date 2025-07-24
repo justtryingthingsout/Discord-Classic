@@ -7,6 +7,7 @@
 //
 
 #import "DCChannel.h"
+#include <Foundation/Foundation.h>
 #include "DCMessage.h"
 #import "DCServerCommunicator.h"
 #import "DCTools.h"
@@ -75,7 +76,7 @@ static dispatch_queue_t channel_send_queue;
             timeoutInterval:10];
         [urlRequest setValue:@"no-store" forHTTPHeaderField:@"Cache-Control"];
 
-        NSString *escapedMessage = [[message mutableCopy] emojizedString];
+        NSString *escapedMessage = [message emojizedString];
 
         CFStringRef transform = CFSTR("Any-Hex/Java");
         CFStringTransform(
@@ -417,14 +418,14 @@ static dispatch_queue_t channel_send_queue;
            beforeMessage:(DCMessage *)message {
     NSMutableArray *messages = NSMutableArray.new;
     // Generate URL from args
-    NSMutableString *getChannelAddress = [[NSString
+    NSMutableString *getChannelAddress = [NSMutableString
         stringWithFormat:@"https://discordapp.com/api/v9/channels/%@/messages?",
-                         self.snowflake] mutableCopy];
+                         self.snowflake];
 
     if (numberOfMessages) {
         [getChannelAddress
             appendString:[NSString
-                             stringWithFormat:@"limit=%i", numberOfMessages]];
+                             stringWithFormat:@"limit=%d", numberOfMessages]];
     }
     if (numberOfMessages && message) {
         [getChannelAddress appendString:@"&"];

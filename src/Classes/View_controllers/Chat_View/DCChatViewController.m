@@ -1392,23 +1392,15 @@ static dispatch_queue_t chat_messages_queue;
     NSLog(@"Tapped video!");
 #endif
     dispatch_async(dispatch_get_main_queue(), ^{
-        MPMoviePlayerViewController *player;
-        @try {
-            NSURL *url = ((DCChatVideoAttachment *)sender.view.superview).videoURL;
-            player     = [[MPMoviePlayerViewController alloc] initWithContentURL:url];
-        } @catch (id exception) {
-#ifdef DEBUG
-            NSLog(@"Silly movie error %@", exception);
-#endif
-        }
+        NSURL *url = ((DCChatVideoAttachment *)sender.view.superview).videoURL;
+        MPMoviePlayerViewController *player     = [[MPMoviePlayerViewController alloc] initWithContentURL:url];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(moviePlaybackDidFinish:)
                                                      name:MPMoviePlayerPlaybackDidFinishNotification
                                                    object:player.moviePlayer];
         player.moviePlayer.repeatMode = MPMovieRepeatModeOne;
-        UIWindow *backgroundWindow =
-            [[UIApplication sharedApplication] keyWindow];
-        [player.view setFrame:backgroundWindow.frame];
+        UIWindow *backgroundWindow = [UIApplication sharedApplication].keyWindow;
+        player.view.frame = backgroundWindow.frame;
         //[self.view addSubview:player.moviePlayer.view];
         [self presentMoviePlayerViewControllerAnimated:player];
         [player.moviePlayer play];

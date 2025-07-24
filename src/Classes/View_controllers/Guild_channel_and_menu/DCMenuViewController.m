@@ -395,13 +395,10 @@
             [self.guildLabel.text isEqualToString:@"Direct Messages"]) {
             self.totalView.hidden = NO;
             self.userName.text =
-                [[DCServerCommunicator.sharedInstance currentUserInfo]
-                    objectForKey:@"global_name"];
+                DCServerCommunicator.sharedInstance.currentUserInfo.globalName;
             self.globalName.text       = [NSString
                 stringWithFormat:@"@%@",
-                                 [[DCServerCommunicator
-                                         .sharedInstance currentUserInfo]
-                                     objectForKey:@"username"]];
+                                 DCServerCommunicator.sharedInstance.currentUserInfo.username];
             self.guildTotalView.hidden = YES;
         } else {
             self.totalView.hidden      = YES;
@@ -795,7 +792,7 @@
     if (tableView == self.guildTableView && DCServerCommunicator.sharedInstance.guilds) {
         // Sorting guilds based on userInfo[@"guildPositions"] array
         if (!DCServerCommunicator.sharedInstance.guildsIsSorted) {
-            NSUInteger guildCount        = [DCServerCommunicator.sharedInstance.currentUserInfo[@"guildPositions"] count] + 1;
+            NSUInteger guildCount        = [DCServerCommunicator.sharedInstance.currentUserInfo.guildPositions count] + 1;
             NSMutableArray *sortedGuilds = [NSMutableArray arrayWithCapacity:guildCount];
             NSNull *nullObject           = [NSNull null];
             // init to be able to index
@@ -803,12 +800,12 @@
                 [sortedGuilds addObject:nullObject];
             }
             for (DCGuild *guild in DCServerCommunicator.sharedInstance.guilds) {
-                int index = [DCServerCommunicator.sharedInstance.currentUserInfo[@"guildPositions"] indexOfObject:guild.snowflake];
+                int index = [DCServerCommunicator.sharedInstance.currentUserInfo.guildPositions indexOfObject:guild.snowflake];
                 if (index != NSNotFound) {
-                    sortedGuilds[index + 1] = guild;
-                } else if ([sortedGuilds[0] isEqual:nullObject]) {
+                    [sortedGuilds insertObject:guild atIndex:index + 1];
+                } else if ([[sortedGuilds objectAtIndex:0] isEqual:nullObject]) {
                     // If the first element is still null, must be private guild
-                    sortedGuilds[0] = guild;
+                    [sortedGuilds insertObject:(id)guild atIndex:0];
                 } else {
                     // Otherwise, append to the end of the array
                     [sortedGuilds addObject:guild];
@@ -819,7 +816,7 @@
             DCServerCommunicator.sharedInstance.guilds = sortedGuilds;
             sortedGuilds                               = [NSMutableArray arrayWithObject:DCServerCommunicator.sharedInstance.guilds[0]]; // Add private guild at index 0
             NSMutableSet *handledGuildIds = NSMutableSet.new;
-            for (DCGuildFolder *folder in DCServerCommunicator.sharedInstance.currentUserInfo[@"guildFolders"]) {
+            for (DCGuildFolder *folder in DCServerCommunicator.sharedInstance.currentUserInfo.guildFolders) {
                 if (folder.id) {
                     [sortedGuilds addObject:folder];
                 }

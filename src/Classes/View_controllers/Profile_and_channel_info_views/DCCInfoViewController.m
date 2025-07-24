@@ -39,7 +39,7 @@
 #ifdef DEBUG
         NSLog(@"Selected channel: #%@ in guild: %@", [DCServerCommunicator.sharedInstance.selectedChannel name], [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild name]);
 #endif
-        self.recipients = [[DCServerCommunicator.sharedInstance.selectedChannel.parentGuild members] copy];
+        self.recipients = DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.members;
     } else if (DCServerCommunicator.sharedInstance.selectedChannel) {
 #ifdef DEBUG
         NSLog(@"Selected channel: %@", DCServerCommunicator.sharedInstance.selectedChannel.name);
@@ -79,7 +79,7 @@
         return;
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.recipients = [[DCServerCommunicator.sharedInstance.selectedChannel.parentGuild members] copy];
+        self.recipients = DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.members;
         [self.tableView reloadData];
     });
 }

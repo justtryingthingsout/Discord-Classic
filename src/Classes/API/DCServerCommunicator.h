@@ -6,6 +6,7 @@
 //  Copyright (c) 2018 bag.xml. All rights reserved.
 //
 
+#include "DCUserInfo.h"
 #import <Foundation/Foundation.h>
 #import "DCChannelListViewController.h"
 #import "DCChatViewController.h"
@@ -212,7 +213,7 @@
 
 @property (strong, nonatomic) WSWebSocket* websocket;
 @property (strong, nonatomic) NSString* token;
-@property (strong, nonatomic) NSDictionary* currentUserInfo;
+@property (strong, nonatomic) DCUserInfo* currentUserInfo;
 @property (strong, nonatomic) NSString* gatewayURL;
 @property (strong, nonatomic) NSMutableDictionary* userChannelSettings;
 

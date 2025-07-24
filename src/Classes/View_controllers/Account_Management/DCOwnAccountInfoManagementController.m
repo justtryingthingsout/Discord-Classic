@@ -7,6 +7,7 @@
 //
 
 #import "DCOwnAccountInfoManagementController.h"
+#include "DCUser.h"
 #include <Foundation/Foundation.h>
 #import "SDWebImageManager.h"
 
@@ -51,9 +52,7 @@
         setBackgroundImage:[UIImage imageNamed:@"TbarBG"]
              forBarMetrics:UIBarMetricsDefault];
     self.navigationItem.title = [NSString
-        stringWithFormat:@"Me (%@)",
-                         [[DCServerCommunicator.sharedInstance currentUserInfo]
-                             objectForKey:@"global_name"]];
+        stringWithFormat:@"Me (%@)", DCServerCommunicator.sharedInstance.currentUserInfo.globalName];
     [self.doneButton setBackgroundImage:[UIImage imageNamed:@"BarButton"]
                                forState:UIControlStateNormal
                              barMetrics:UIBarMetricsDefault];
@@ -61,23 +60,23 @@
                                forState:UIControlStateHighlighted
                              barMetrics:UIBarMetricsDefault];
 
-    NSDictionary *userInfo =
-        [DCServerCommunicator.sharedInstance currentUserInfo];
+    DCUserInfo *userInfo =
+        DCServerCommunicator.sharedInstance.currentUserInfo;
 
-    self.trueusername.text = [userInfo objectForKey:@"username"];
-    self.username.text     = [userInfo objectForKey:@"global_name"];
-    self.pronouns.text     = [userInfo objectForKey:@"pronouns"];
+    self.trueusername.text = userInfo.username;
+    self.username.text     = userInfo.globalName;
+    self.pronouns.text     = userInfo.pronouns;
 
-    self.bio.text = [userInfo objectForKey:@"bio"];
+    self.bio.text = userInfo.bio;
 
-    self.email.text = [userInfo objectForKey:@"email"];
-    if ([[userInfo objectForKey:@"phone"] isKindOfClass:[NSNull class]]) {
+    self.email.text = userInfo.email;
+    if ([userInfo.phone isKindOfClass:[NSNull class]]) {
         self.phoneNumber.text = @"None";
     } else {
-        self.phoneNumber.text = [userInfo objectForKey:@"phone"];
+        self.phoneNumber.text = userInfo.phone;
     }
 
-    self.userID.text = [userInfo objectForKey:@"id"];
+    self.userID.text = userInfo.id;
     dispatch_async(
         dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
         ^{
@@ -85,8 +84,8 @@
                 URLWithString:[NSString
                                   stringWithFormat:
                                       @"https://cdn.discordapp.com/avatars/%@/%@.png?size=64",
-                                      [userInfo objectForKey:@"id"],
-                                      [userInfo objectForKey:@"avatar"]]];
+                                      userInfo.id,
+                                      userInfo.avatar]];
 
             SDWebImageManager *manager = [SDWebImageManager sharedManager];
             [manager downloadImageWithURL:avatarURL
@@ -113,22 +112,20 @@
         }
     );
 
-    if ([userInfo objectForKey:@"banner"]
-        && ![[userInfo objectForKey:@"banner"] isKindOfClass:[NSNull class]]) {
+    if (userInfo.banner && ![userInfo.banner isKindOfClass:[NSNull class]]) {
         NSURL *url   = [NSURL
             URLWithString:[NSString
                               stringWithFormat:@"https://cdn.discordapp.com/banners/%@/%@.png?size=480",
-                                               [userInfo objectForKey:@"id"],
-                                               [userInfo objectForKey:@"banner"]]];
+                                               userInfo.id,
+                                               userInfo.banner]];
         NSData *data = [NSData dataWithContentsOfURL:url];
         dispatch_async(dispatch_get_main_queue(), ^{
             self.banner.image = [UIImage imageWithData:data];
         });
     } else {
-        if (![[userInfo objectForKey:@"banner_color"]
-                isKindOfClass:[NSNull class]]) {
+        if (![userInfo.bannerColor isKindOfClass:[NSNull class]]) {
             UIColor *backgroundColor = [UIColorHex
-                colorWithHexString:[userInfo objectForKey:@"banner_color"]];
+                colorWithHexString:userInfo.bannerColor];
             if (backgroundColor) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.bannerView.backgroundColor = backgroundColor;
@@ -138,11 +135,11 @@
     }
 
 
-    NSDictionary *connections = [userInfo objectForKey:@"connectedAccounts"];
+    NSDictionary *connections = userInfo.connectedAccounts;
     self.activeConnections    = connections;
     // Token
 
-    self.token.text = [DCServerCommunicator.sharedInstance token];
+    self.token.text = DCServerCommunicator.sharedInstance.token;
 }
 
 
