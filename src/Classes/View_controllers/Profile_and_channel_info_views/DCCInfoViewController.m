@@ -94,7 +94,7 @@
         return [self.recipients count];
     } else {
 #ifdef DEBUG
-        NSLog(@"No channel or guild selected!");
+        NSLog(@"No rows for nothing...");
 #endif
         return 0;
     }
@@ -112,7 +112,11 @@
         if ([item isKindOfClass:[DCUser class]]) {
             DCUser *user = item;
             cell.userName.text               = user.globalName;
-            cell.userPFP.image               = user.profileImage;
+            if (user.profileImage) {
+                cell.userPFP.image = user.profileImage;
+            } else {
+                [DCTools getUserAvatar:user];
+            }
             cell.userPFP.layer.cornerRadius  = cell.userPFP.frame.size.width / 2.0;
             cell.userPFP.layer.masksToBounds = YES;
             if ([DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.snowflake length] > 0) {

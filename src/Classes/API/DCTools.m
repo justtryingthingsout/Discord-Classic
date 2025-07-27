@@ -77,62 +77,10 @@
         [[jsonUser objectForKey:@"global_name"] isKindOfClass:[NSString class]]) {
         newUser.globalName = [jsonUser objectForKey:@"global_name"];
     }
-    newUser.snowflake = [jsonUser objectForKey:@"id"];
-
-    SDWebImageManager *manager = [SDWebImageManager sharedManager];
-    // Load profile image
-    NSURL *avatarURL =
-        [NSURL URLWithString:[NSString stringWithFormat:
-                                           @"https://cdn.discordapp.com/avatars/%@/%@.png?size=80",
-                                           newUser.snowflake, [jsonUser objectForKey:@"avatar"]]];
-    [manager downloadImageWithURL:avatarURL
-                          options:0
-                         progress:nil
-                        completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                            if (retrievedImage && finished) {
-                                newUser.profileImage = retrievedImage;
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    [NSNotificationCenter.defaultCenter
-                                        postNotificationName:
-                                            @"RELOAD USER DATA"
-                                                      object:newUser];
-                                });
-                            } else {
-                                // NSLog(@"Failed to download user profile image with URL %@: %@", avatarURL, error);
-                                int selector            = 0;
-                                NSNumber *discriminator = @([[jsonUser objectForKey:@"discriminator"] integerValue]);
-
-                                if ([discriminator integerValue] == 0) {
-                                    NSNumber *longId = @([newUser.snowflake longLongValue]);
-                                    selector         = (int)(([longId longLongValue] >> 22) % 6);
-                                } else {
-                                    selector = (int)([discriminator integerValue] % 5);
-                                }
-                                newUser.profileImage = [DCUser defaultAvatars][selector];
-                            }
-                        }];
-
-    if ([jsonUser valueForKeyPath:@"avatar_decoration_data.asset"] && [jsonUser valueForKeyPath:@"avatar_decoration_data.asset"] != [NSNull null]) {
-        NSURL *avatarDecorationURL = [NSURL URLWithString:[NSString
-                                                              stringWithFormat:@"https://cdn.discordapp.com/avatar-decoration-presets/%@.png?size=96&passthrough=false",
-                                                                               [jsonUser valueForKeyPath:@"avatar_decoration_data.asset"]]];
-        [manager downloadImageWithURL:avatarDecorationURL
-                              options:0
-                             progress:nil
-                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                if (!retrievedImage || !finished) {
-                                    NSLog(@"Failed to download user avatar decoration with URL %@: %@", avatarDecorationURL, error);
-                                    return;
-                                }
-                                newUser.avatarDecoration = retrievedImage;
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    [NSNotificationCenter.defaultCenter
-                                        postNotificationName:
-                                            @"RELOAD USER DATA"
-                                                      object:newUser];
-                                });
-                            }];
-    }
+    newUser.snowflake          = [jsonUser objectForKey:@"id"];
+    newUser.avatarID           = [jsonUser objectForKey:@"avatar"];
+    newUser.avatarDecorationID = [jsonUser valueForKeyPath:@"avatar_decoration_data.asset"];
+    newUser.discriminator      = [[jsonUser objectForKey:@"discriminator"] integerValue];
 
     // Save to DCServerCommunicator.loadedUsers
     if (cache) {
@@ -144,47 +92,75 @@
     return newUser;
 }
 
++ (void)getUserAvatar:(DCUser *)user {
+    user.profileImage     = [UIImage new];
+    user.avatarDecoration = [UIImage new];
+
+    SDWebImageManager *manager = [SDWebImageManager sharedManager];
+    // Load profile image
+    NSURL *avatarURL =
+        [NSURL URLWithString:[NSString stringWithFormat:
+                                           @"https://cdn.discordapp.com/avatars/%@/%@.png?size=80",
+                                           user.snowflake, user.avatarID]];
+    [manager downloadImageWithURL:avatarURL
+                          options:0
+                         progress:nil
+                        completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                            if (retrievedImage && finished) {
+                                user.profileImage = retrievedImage;
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [NSNotificationCenter.defaultCenter
+                                        postNotificationName:
+                                            @"RELOAD USER DATA"
+                                                      object:user];
+                                });
+                            } else {
+                                // NSLog(@"Failed to download user profile image with URL %@: %@", avatarURL, error);
+                                int selector = 0;
+
+                                if (user.discriminator == 0) {
+                                    NSNumber *longId = @([user.snowflake longLongValue]);
+                                    selector         = ([longId longLongValue] >> 22) % 6;
+                                } else {
+                                    selector = user.discriminator % 5;
+                                }
+                                user.profileImage = [DCUser defaultAvatars][selector];
+                            }
+                        }];
+
+    if (user.avatarDecorationID && (NSNull *)user.avatarDecorationID != [NSNull null]) {
+        NSURL *avatarDecorationURL = [NSURL URLWithString:[NSString
+                                                              stringWithFormat:@"https://cdn.discordapp.com/avatar-decoration-presets/%@.png?size=96&passthrough=false",
+                                                                               user.avatarDecorationID]];
+        [manager downloadImageWithURL:avatarDecorationURL
+                              options:0
+                             progress:nil
+                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                if (!retrievedImage || !finished) {
+                                    NSLog(@"Failed to download user avatar decoration with URL %@: %@", avatarDecorationURL, error);
+                                    return;
+                                }
+                                user.avatarDecoration = retrievedImage;
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [NSNotificationCenter.defaultCenter
+                                        postNotificationName:
+                                            @"RELOAD USER DATA"
+                                                      object:user];
+                                });
+                            }];
+    }
+}
 
 // Converts an NSDictionary created from json representing a role into a DCRole
 // object Also keeps the role in DCServerCommunicator.loadedUsers if cache:YES
 + (DCRole *)convertJsonRole:(NSDictionary *)jsonRole cache:(bool)cache {
     // NSLog(@"%@", jsonUser);
-    DCRole *newRole   = DCRole.new;
-    newRole.snowflake = [jsonRole objectForKey:@"id"];
-    newRole.name      = [jsonRole objectForKey:@"name"];
-    newRole.color     = [[jsonRole objectForKey:@"color"] intValue];
-    newRole.hoist     = [[jsonRole objectForKey:@"hoist"] boolValue];
-    NSString *icon    = [jsonRole objectForKey:@"icon"]; // can be NSNull
-    if ((NSNull *)newRole.snowflake != [NSNull null] && (NSNull *)icon != [NSNull null]) {
-        SDWebImageManager *manager = [SDWebImageManager sharedManager];
-        NSURL *iconURL             = [NSURL
-            URLWithString:[NSString
-                              stringWithFormat:
-                                  @"https://cdn.discordapp.com/role-icons/%@/%@.png?size=80",
-                                  newRole.snowflake, icon]];
-        [manager downloadImageWithURL:iconURL
-                              options:0
-                             progress:nil
-                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                if (!retrievedImage || !finished) {
-                                    NSLog(@"Failed to download role icon with URL %@: %@", iconURL, error);
-                                    return;
-                                }
-                                newRole.icon = retrievedImage;
-                                //  dispatch_async(
-                                //      dispatch_get_main_queue(),
-                                //      ^{
-                                //          [NSNotificationCenter
-                                //                  .defaultCenter
-                                //              postNotificationName:
-                                //                  @"RELOAD CHAT DATA"
-                                //                            object:nil];
-                                //      }
-                                //  );
-                            }];
-    } else {
-        newRole.icon = nil;
-    }
+    DCRole *newRole      = DCRole.new;
+    newRole.snowflake    = [jsonRole objectForKey:@"id"];
+    newRole.name         = [jsonRole objectForKey:@"name"];
+    newRole.color        = [[jsonRole objectForKey:@"color"] intValue];
+    newRole.hoist        = [[jsonRole objectForKey:@"hoist"] boolValue];
+    newRole.iconID       = [jsonRole objectForKey:@"icon"];          // can be NSNull
     newRole.unicodeEmoji = [jsonRole objectForKey:@"unicode_emoji"]; // can be nil
     newRole.position     = [[jsonRole objectForKey:@"position"] intValue];
     newRole.permissions  = [jsonRole objectForKey:@"permissions"];
@@ -201,6 +177,37 @@
     return newRole;
 }
 
++ (void)getRoleIcon:(DCRole *)role {
+    role.icon = [UIImage new];
+
+    if ((NSNull *)role.snowflake != [NSNull null] && (NSNull *)role.iconID != [NSNull null]) {
+        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+        NSURL *iconURL             = [NSURL URLWithString:[NSString
+                                                  stringWithFormat:
+                                                      @"https://cdn.discordapp.com/role-icons/%@/%@.png?size=80",
+                                                      role.snowflake, role.iconID]];
+        [manager downloadImageWithURL:iconURL
+                              options:0
+                             progress:nil
+                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                if (!retrievedImage || !finished) {
+                                    NSLog(@"Failed to download role icon with URL %@: %@", iconURL, error);
+                                    return;
+                                }
+                                role.icon = retrievedImage;
+                                dispatch_async(
+                                    dispatch_get_main_queue(),
+                                    ^{
+                                        [NSNotificationCenter
+                                                .defaultCenter
+                                            postNotificationName:
+                                                @"RELOAD CHAT DATA"
+                                                          object:nil];
+                                    }
+                                );
+                            }];
+    }
+}
 
 // Converts an NSDictionary created from json representing a message into a
 // message object
@@ -347,7 +354,7 @@
                 }
 
                 NSUInteger idx = [newMessage.attachments count];
-                [newMessage.attachments addObject:@[@(width), @(height)]];
+                [newMessage.attachments addObject:@[ @(width), @(height) ]];
 
                 SDWebImageManager *manager = [SDWebImageManager sharedManager];
                 [manager downloadImageWithURL:urlString
@@ -466,7 +473,7 @@
                     }
 
                     NSUInteger idx = [newMessage.attachments count];
-                    [newMessage.attachments addObject:@[@(width), @(height)]];
+                    [newMessage.attachments addObject:@[ @(width), @(height) ]];
 
                     SDWebImageManager *manager = [SDWebImageManager sharedManager];
                     [manager downloadImageWithURL:urlString
@@ -552,7 +559,7 @@
                 }
 
                 NSUInteger idx = [newMessage.attachments count];
-                [newMessage.attachments addObject:@[@(width), @(height)]];
+                [newMessage.attachments addObject:@[ @(width), @(height) ]];
 
                 SDWebImageManager *manager = [SDWebImageManager sharedManager];
                 [manager downloadImageWithURL:urlString
@@ -629,7 +636,7 @@
                     }
 
                     NSUInteger idx = [newMessage.attachments count];
-                    [newMessage.attachments addObject:@[@(width), @(height)]];
+                    [newMessage.attachments addObject:@[ @(width), @(height) ]];
 
                     SDWebImageManager *manager = [SDWebImageManager sharedManager];
                     [manager downloadImageWithURL:urlString
@@ -888,7 +895,8 @@
         if (attributedText && ![attributedText.string isEqualToString:newMessage.content]) {
             contentSize = [attributedText boundingRectWithSize:CGSizeMake(contentWidth, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
-                                                       context:nil].size;
+                                                       context:nil]
+                              .size;
             newMessage.attributedContent = attributedText;
         }
     }

@@ -38,12 +38,16 @@
     self.statusIcon.image =
         [UIImage imageNamed:[self imageNameForStatus:user.status]];
     // image
-    self.profileImageView.image = user.profileImage;
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"] == NO) {
-        self.profileImageView.layer.cornerRadius =
-            self.profileImageView.frame.size.width / 2.0;
+    if (user.profileImage) {
+        self.profileImageView.image = user.profileImage;
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"] == NO) {
+            self.profileImageView.layer.cornerRadius =
+                self.profileImageView.frame.size.width / 2.0;
+        }
+        self.profileImageView.layer.masksToBounds = YES;
+    } else {
+        [DCTools getUserAvatar:user];
     }
-    self.profileImageView.layer.masksToBounds = YES;
 
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"] == NO) {
         dispatch_async(

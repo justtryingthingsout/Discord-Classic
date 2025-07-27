@@ -8,6 +8,7 @@
 @property (assign, nonatomic) NSInteger color;
 // colors
 @property (assign, nonatomic) BOOL hoist;
+@property (strong, nullable, nonatomic) NSString* iconID;
 @property (strong, nullable, nonatomic) UIImage* icon;
 @property (strong, nullable, nonatomic) NSString* unicodeEmoji;
 @property (assign, nonatomic) NSInteger position;

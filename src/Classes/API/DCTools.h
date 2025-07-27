@@ -90,6 +90,7 @@
 + (DCMessage *)convertJsonMessage:(NSDictionary *)jsonMessage;
 + (DCGuild *)convertJsonGuild:(NSDictionary *)jsonGuild;
 + (DCUser *)convertJsonUser:(NSDictionary *)jsonUser cache:(BOOL)cache;
++ (void)getUserAvatar:(DCUser *)user;
 
 + (void)joinGuild:(NSString *)inviteCode;
 @end

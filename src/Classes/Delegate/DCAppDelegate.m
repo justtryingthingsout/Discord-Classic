@@ -10,6 +10,9 @@
 #include "SDWebImageManager.h"
 #include <UIKit/UIKit.h>
 #import "UIDeviceAdditions.h"
+#import "DCServerCommunicator.h"
+#import "DCUser.h"
+#import "DCRole.h"
 
 @interface DCAppDelegate ()
 @property (assign, nonatomic) BOOL shouldReload;
@@ -178,6 +181,13 @@
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
     NSLog(@"Memory warning received, clearing image cache!");
+    for (DCUser *user in DCServerCommunicator.sharedInstance.loadedUsers.allValues) {
+        user.profileImage = nil;
+        user.avatarDecoration = nil;
+    }
+    for (DCRole *role in DCServerCommunicator.sharedInstance.loadedRoles.allValues) {
+        role.icon = nil;
+    }
     // [[UIDevice currentDevice] currentMemoryUsage];
     [SDWebImageManager.sharedManager.imageCache clearMemory];
 }

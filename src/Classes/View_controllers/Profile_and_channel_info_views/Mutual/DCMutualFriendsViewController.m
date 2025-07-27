@@ -55,7 +55,11 @@
         [tableView dequeueReusableCellWithIdentifier:@"Members cell"];
     DCUser *user                     = self.recipients[indexPath.row];
     cell.userName.text               = user.globalName;
-    cell.userPFP.image               = user.profileImage;
+    if (user.profileImage) {
+        cell.userPFP.image = user.profileImage;
+    } else {
+        [DCTools getUserAvatar:user];
+    }
     cell.userPFP.layer.cornerRadius  = cell.userPFP.frame.size.width / 2.0;
     cell.userPFP.layer.masksToBounds = YES;
     return cell;

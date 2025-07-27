@@ -67,7 +67,6 @@ typedef NS_ENUM(NSInteger, message_types) {
 @property(strong, nonatomic) NSString* preDefinedContent;
 @property(assign, nonatomic) NSInteger messageType;
 @property(strong, nonatomic) DCMessage* referencedMessage;
-@property(weak, nonatomic) UITableViewCell* cell;
 
 // embed
 //@property NSString *

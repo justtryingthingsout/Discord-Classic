@@ -12,8 +12,8 @@
 #include <Foundation/Foundation.h>
 #include <Foundation/NSObjCRuntime.h>
 #include <UIKit/UIKit.h>
-#include <objc/NSObjCRuntime.h>
 #include <malloc/malloc.h>
+#include <objc/NSObjCRuntime.h>
 
 #import "DCCInfoViewController.h"
 #import "DCChatTableCell.h"
@@ -32,6 +32,9 @@
 @property (nonatomic, strong) UIImage *selectedImage;
 @property (nonatomic, assign) BOOL oldMode;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (nonatomic, strong) UIView *typingIndicatorView;
+@property (nonatomic, strong) UILabel *typingLabel;
+@property (nonatomic, strong) NSMutableDictionary *typingUsers;
 @end
 
 @implementation DCChatViewController
@@ -94,6 +97,18 @@ static dispatch_queue_t chat_messages_queue;
         addObserver:self
            selector:@selector(handleMessageEdit:)
                name:@"MESSAGE EDIT"
+             object:nil];
+
+    [NSNotificationCenter.defaultCenter
+        addObserver:self
+           selector:@selector(handleTyping:)
+               name:@"TYPING START"
+             object:nil];
+
+    [NSNotificationCenter.defaultCenter
+        addObserver:self
+           selector:@selector(handleStopTyping:)
+               name:@"TYPING STOP"
              object:nil];
 
     // use NUKE/RELOAD CHAT DATA very sparingly, it is very expensive and lags the chat
@@ -198,6 +213,29 @@ static dispatch_queue_t chat_messages_queue;
     self.toolbar.userInteractionEnabled = DCServerCommunicator.sharedInstance.selectedChannel.writeable;
     self.inputFieldPlaceholder.hidden   = NO;
 
+    self.typingIndicatorView                  = [[UIView alloc] initWithFrame:CGRectMake(
+                                                                 0,
+                                                                 self.view.frame.size.height - self.view.frame.origin.y - self.toolbar.height - 43,
+                                                                 self.view.frame.size.width,
+                                                                 20
+                                                             )];
+    self.typingIndicatorView.backgroundColor  = [UIColor darkGrayColor];
+    self.typingIndicatorView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.typingIndicatorView.hidden           = YES;
+
+    self.typingLabel                 = [[UILabel alloc] initWithFrame:CGRectMake(
+                                                          8, 0,
+                                                          self.typingIndicatorView.frame.size.width - 16,
+                                                          20
+                                                      )];
+    self.typingLabel.font            = [UIFont systemFontOfSize:12];
+    self.typingLabel.textColor       = [UIColor lightGrayColor];
+    self.typingLabel.backgroundColor = [UIColor clearColor];
+
+    [self.typingIndicatorView addSubview:self.typingLabel];
+    [self.view addSubview:self.typingIndicatorView];
+    self.typingUsers = [NSMutableDictionary dictionary];
+
     if (self.oldMode) {
         [self.chatTableView registerNib:[UINib nibWithNibName:@"O-DCChatTableCell"
                                                        bundle:nil]
@@ -262,7 +300,7 @@ static dispatch_queue_t chat_messages_queue;
             : @"No Permission";
     self.toolbar.userInteractionEnabled = DCServerCommunicator.sharedInstance.selectedChannel.writeable;
     [self handleAsyncReload];
-    [DCServerCommunicator.sharedInstance description];
+    // [DCServerCommunicator.sharedInstance description];
 }
 
 - (void)handleAsyncReload {
@@ -350,6 +388,10 @@ static dispatch_queue_t chat_messages_queue;
     // dispatch_async(dispatch_get_main_queue(), ^{
     DCMessage *newMessage = [DCTools convertJsonMessage:notification.userInfo];
 
+    if (!newMessage.author.profileImage) {
+        [DCTools getUserAvatar:newMessage.author];
+    }
+
     if (self.messages.count > 0) {
         DCMessage *prevMessage =
             [self.messages objectAtIndex:self.messages.count - 1];
@@ -404,6 +446,10 @@ static dispatch_queue_t chat_messages_queue;
                              )
                     animated:NO];
     }
+
+    [NSNotificationCenter.defaultCenter
+        postNotificationName:@"TYPING STOP"
+                      object:newMessage.author.snowflake];
 }
 
 - (void)handleMessageEdit:(NSNotification *)notification {
@@ -568,6 +614,111 @@ static dispatch_queue_t chat_messages_queue;
     }
 }
 
+- (void)handleTyping:(NSNotification *)notification {
+    if (!self.typingIndicatorView) {
+        NSLog(@"%s: Typing indicator view is not initialized", __PRETTY_FUNCTION__);
+        return;
+    }
+
+    NSString *typingUserId = notification.object;
+    if (!typingUserId) {
+        NSLog(@"%s: No typing user provided", __PRETTY_FUNCTION__);
+        return;
+    }
+
+    NSTimer *existingTimer = [self.typingUsers objectForKey:typingUserId];
+    if (existingTimer) {
+        [existingTimer invalidate];
+        [self.typingUsers removeObjectForKey:typingUserId];
+    }
+
+    self.typingUsers[typingUserId] = [NSTimer scheduledTimerWithTimeInterval:10.0
+                                                                      target:self
+                                                                    selector:@selector(typingTimerFired:)
+                                                                    userInfo:typingUserId
+                                                                     repeats:NO];
+    NSLog(@"%s: User %@ is typing, count: %lu", __PRETTY_FUNCTION__, ((DCUser *)[DCServerCommunicator.sharedInstance.loadedUsers objectForKey:typingUserId]).globalName, (unsigned long)self.typingUsers.count);
+    [self updateTypingIndicator];
+}
+
+- (void)typingTimerFired:(NSTimer *)timer {
+    NSString *typingUserId = timer.userInfo;
+    [NSNotificationCenter.defaultCenter
+        postNotificationName:@"TYPING STOP"
+                      object:typingUserId];
+}
+
+- (void)handleStopTyping:(NSNotification *)notification {
+    if (!self.typingIndicatorView) {
+        NSLog(@"%s: Typing indicator view is not initialized", __PRETTY_FUNCTION__);
+        return;
+    }
+
+    NSString *typingUserId = notification.object;
+    if (!typingUserId) {
+        NSLog(@"%s: No typing user provided", __PRETTY_FUNCTION__);
+        return;
+    }
+    NSTimer *existingTimer = [self.typingUsers objectForKey:typingUserId];
+    if (existingTimer) {
+        [existingTimer invalidate];
+        [self.typingUsers removeObjectForKey:typingUserId];
+    }
+    NSLog(@"%s: User %@ stopped typing, count: %lu", __PRETTY_FUNCTION__, ((DCUser *)[DCServerCommunicator.sharedInstance.loadedUsers objectForKey:typingUserId]).globalName, (unsigned long)self.typingUsers.count);
+    [self updateTypingIndicator];
+}
+
+- (void)updateTypingIndicator {
+    if (self.typingUsers.count == 0) {
+        self.typingIndicatorView.hidden = YES;
+        [self.typingIndicatorView setNeedsDisplay];
+        [self.chatTableView
+            setHeight:self.view.height - self.toolbar.height];
+        [self.chatTableView
+            setContentOffset:CGPointMake(
+                                 0,
+                                 self.chatTableView.contentSize.height
+                                     - self.chatTableView.frame.size.height
+                             )
+                    animated:NO];
+        [UIView commitAnimations];
+        return;
+    }
+
+    NSMutableArray *typingNames = [NSMutableArray array];
+    for (NSString *userId in self.typingUsers.allKeys) {
+        DCUser *user = [DCServerCommunicator.sharedInstance.loadedUsers objectForKey:userId];
+        if (user) {
+            [typingNames addObject:user.globalName];
+        }
+    }
+
+    NSString *typingText;
+    if (typingNames.count == 1) {
+        typingText = [NSString stringWithFormat:@"%@ is typing...", typingNames.firstObject];
+    } else if (typingNames.count == 2) {
+        typingText = [NSString stringWithFormat:@"%@ and %@ are typing...", typingNames[0], typingNames[1]];
+    } else if (typingNames.count == 3) {
+        typingText = [NSString stringWithFormat:@"%@, %@, and %@ are typing...", typingNames[0], typingNames[1], typingNames[2]];
+    } else {
+        typingText = @"Several users are typing...";
+    }
+
+    self.typingLabel.text           = typingText;
+    self.typingIndicatorView.hidden = NO;
+    [self.typingIndicatorView setNeedsDisplay];
+
+    [self.chatTableView
+        setHeight:self.view.height - 20 - self.toolbar.height];
+    [self.chatTableView
+        setContentOffset:CGPointMake(
+                             0,
+                             self.chatTableView.contentSize.height
+                                 - self.chatTableView.frame.size.height
+                         )
+                animated:NO];
+    [UIView commitAnimations];
+}
 
 - (void)getMessages:(int)numberOfMessages beforeMessage:(DCMessage *)message {
     dispatch_async([self get_chat_messages_queue], ^{
@@ -600,6 +751,10 @@ static dispatch_queue_t chat_messages_queue;
 
                 int scrollOffset = -self.chatTableView.height;
                 for (DCMessage *newMessage in newMessages) {
+                    if (!newMessage.author.profileImage) {
+                        [DCTools getUserAvatar:newMessage.author];
+                    }
+
                     int attachmentHeight = 0;
                     for (id attachment in newMessage.attachments) {
                         if ([attachment isKindOfClass:[UIImage class]]) {
@@ -687,7 +842,7 @@ static dispatch_queue_t chat_messages_queue;
     }
     DCMessage *messageAtRowIndex = [self.messages objectAtIndex:indexPath.row];
 
-    if (self.oldMode == YES) {
+    if (self.oldMode) {
         NSSet *specialMessageTypes =
             [NSSet setWithArray:@[ @1, @2, @3, @4, @5, @6, @7, @8, @18 ]];
 
@@ -723,9 +878,13 @@ static dispatch_queue_t chat_messages_queue;
                              cell.referencedMessage.height
                          )];
 
-            [cell.referencedProfileImage
-                setImage:messageAtRowIndex.referencedMessage.author
-                             .profileImage];
+            if (messageAtRowIndex.referencedMessage.author.profileImage) {
+                [cell.referencedProfileImage
+                    setImage:messageAtRowIndex.referencedMessage.author
+                                 .profileImage];
+            } else {
+                [DCTools getUserAvatar:messageAtRowIndex.referencedMessage.author];
+            }
         }
 
         if (!messageAtRowIndex.isGrouped) {
@@ -867,7 +1026,7 @@ static dispatch_queue_t chat_messages_queue;
             }
         }
         return cell;
-    } else if (self.oldMode == NO) {
+    } else {
         static NSSet *specialMessageTypes = nil;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
@@ -955,7 +1114,7 @@ static dispatch_queue_t chat_messages_queue;
             if (messageAtRowIndex.author.avatarDecoration &&
                 [messageAtRowIndex.author.avatarDecoration class] ==
                     [UIImage class]) {
-                cell.avatarDecoration.image = messageAtRowIndex.author.avatarDecoration;
+                cell.avatarDecoration.image        = messageAtRowIndex.author.avatarDecoration;
                 cell.avatarDecoration.layer.hidden = NO;
                 cell.avatarDecoration.opaque       = NO;
             } else {
@@ -1312,7 +1471,6 @@ static dispatch_queue_t chat_messages_queue;
     [self.toolbar setY:self.view.height - keyboardHeight - self.toolbar.height];
     [UIView commitAnimations];
 
-
     if (self.viewingPresentTime) {
         [self.chatTableView
             setContentOffset:CGPointMake(
@@ -1392,15 +1550,15 @@ static dispatch_queue_t chat_messages_queue;
     NSLog(@"Tapped video!");
 #endif
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSURL *url = ((DCChatVideoAttachment *)sender.view.superview).videoURL;
-        MPMoviePlayerViewController *player     = [[MPMoviePlayerViewController alloc] initWithContentURL:url];
+        NSURL *url                          = ((DCChatVideoAttachment *)sender.view.superview).videoURL;
+        MPMoviePlayerViewController *player = [[MPMoviePlayerViewController alloc] initWithContentURL:url];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(moviePlaybackDidFinish:)
                                                      name:MPMoviePlayerPlaybackDidFinishNotification
                                                    object:player.moviePlayer];
         player.moviePlayer.repeatMode = MPMovieRepeatModeOne;
-        UIWindow *backgroundWindow = [UIApplication sharedApplication].keyWindow;
-        player.view.frame = backgroundWindow.frame;
+        UIWindow *backgroundWindow    = [UIApplication sharedApplication].keyWindow;
+        player.view.frame             = backgroundWindow.frame;
         //[self.view addSubview:player.moviePlayer.view];
         [self presentMoviePlayerViewControllerAnimated:player];
         [player.moviePlayer play];

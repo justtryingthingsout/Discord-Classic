@@ -6,6 +6,7 @@
 //  Copyright (c) 2018 bag.xml. All rights reserved.
 //
 
+#include "DCServerCommunicator.h"
 #include <malloc/malloc.h>
 #include <objc/NSObjCRuntime.h>
 #import "DCServerCommunicator+Internal.h"
@@ -837,6 +838,27 @@ UIActivityIndicatorView *spinner;
             [NSNotificationCenter.defaultCenter postNotificationName:@"MESSAGE ACK" object:self];
         });
         return;
+    } else if ([t isEqualToString:TYPING_START]) {
+        if (![d[@"channel_id"] isEqualToString:self.selectedChannel.snowflake]
+            || ![d[@"guild_id"] isEqualToString:self.selectedChannel.parentGuild.snowflake]) {
+#ifdef DEBUG
+            NSLog(@"Ignoring typing start event for channel %@ in guild %@, not currently selected channel/guild",
+                  d[@"channel_id"], d[@"guild_id"]);
+#endif
+            return;
+        }
+#ifdef DEBUG
+        NSLog(@"Got typing start event for channel %@ in guild %@", d[@"channel_id"], d[@"guild_id"]);
+#endif
+        if (![DCServerCommunicator.sharedInstance.loadedUsers objectForKey:d[@"user_id"]] 
+          || [DCServerCommunicator.sharedInstance.loadedUsers objectForKey:d[@"user_id"]] == [NSNull null]) {
+            [DCTools convertJsonUser:[d valueForKeyPath:@"member.user"] cache:YES];
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [NSNotificationCenter.defaultCenter
+                postNotificationName:@"TYPING START"
+                              object:d[@"user_id"]];
+        });
     } else if ([t isEqualToString:GUILD_CREATE]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             for (DCGuild *g in self.guilds) {
@@ -939,6 +961,7 @@ UIActivityIndicatorView *spinner;
                     [weakSelf handleDispatchWithResponse:parsedJsonResponse];
                     break;
                 }
+                case HEARTBEAT:
                 case HEARTBEAT_ACK: {
                     weakSelf.gotHeartbeat = true;
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -957,7 +980,7 @@ UIActivityIndicatorView *spinner;
                 }
                 default: {
 #ifdef DEBUG
-                    NSLog(@"Got unknown op code %i, content: %@", op, d);
+                    NSLog(@"Unhandled op code: %i, content: %@", op, d);
 #endif
                     break;
                 }
