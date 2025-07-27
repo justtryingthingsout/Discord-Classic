@@ -35,6 +35,7 @@
 @property (nonatomic, strong) UIView *typingIndicatorView;
 @property (nonatomic, strong) UILabel *typingLabel;
 @property (nonatomic, strong) NSMutableDictionary *typingUsers;
+@property (assign, nonatomic) CGFloat keyboardHeight;
 @end
 
 @implementation DCChatViewController
@@ -616,13 +617,17 @@ static dispatch_queue_t chat_messages_queue;
 
 - (void)handleTyping:(NSNotification *)notification {
     if (!self.typingIndicatorView) {
+#ifdef DEBUG
         NSLog(@"%s: Typing indicator view is not initialized", __PRETTY_FUNCTION__);
+#endif
         return;
     }
 
     NSString *typingUserId = notification.object;
     if (!typingUserId) {
+#ifdef DEBUG
         NSLog(@"%s: No typing user provided", __PRETTY_FUNCTION__);
+#endif
         return;
     }
 
@@ -637,7 +642,7 @@ static dispatch_queue_t chat_messages_queue;
                                                                     selector:@selector(typingTimerFired:)
                                                                     userInfo:typingUserId
                                                                      repeats:NO];
-    NSLog(@"%s: User %@ is typing, count: %lu", __PRETTY_FUNCTION__, ((DCUser *)[DCServerCommunicator.sharedInstance.loadedUsers objectForKey:typingUserId]).globalName, (unsigned long)self.typingUsers.count);
+    // NSLog(@"%s: User %@ is typing, count: %lu", __PRETTY_FUNCTION__, ((DCUser *)[DCServerCommunicator.sharedInstance.loadedUsers objectForKey:typingUserId]).globalName, (unsigned long)self.typingUsers.count);
     [self updateTypingIndicator];
 }
 
@@ -650,13 +655,17 @@ static dispatch_queue_t chat_messages_queue;
 
 - (void)handleStopTyping:(NSNotification *)notification {
     if (!self.typingIndicatorView) {
+#ifdef DEBUG
         NSLog(@"%s: Typing indicator view is not initialized", __PRETTY_FUNCTION__);
+#endif
         return;
     }
 
     NSString *typingUserId = notification.object;
     if (!typingUserId) {
+#ifdef DEBUG
         NSLog(@"%s: No typing user provided", __PRETTY_FUNCTION__);
+#endif
         return;
     }
     NSTimer *existingTimer = [self.typingUsers objectForKey:typingUserId];
@@ -664,16 +673,18 @@ static dispatch_queue_t chat_messages_queue;
         [existingTimer invalidate];
         [self.typingUsers removeObjectForKey:typingUserId];
     }
-    NSLog(@"%s: User %@ stopped typing, count: %lu", __PRETTY_FUNCTION__, ((DCUser *)[DCServerCommunicator.sharedInstance.loadedUsers objectForKey:typingUserId]).globalName, (unsigned long)self.typingUsers.count);
+    // NSLog(@"%s: User %@ stopped typing, count: %lu", __PRETTY_FUNCTION__, ((DCUser *)[DCServerCommunicator.sharedInstance.loadedUsers objectForKey:typingUserId]).globalName, (unsigned long)self.typingUsers.count);
     [self updateTypingIndicator];
 }
 
 - (void)updateTypingIndicator {
     if (self.typingUsers.count == 0) {
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationBeginsFromCurrentState:YES];
         self.typingIndicatorView.hidden = YES;
-        [self.typingIndicatorView setNeedsDisplay];
         [self.chatTableView
-            setHeight:self.view.height - self.toolbar.height];
+            setHeight:self.view.height - self.keyboardHeight - self.toolbar.height];
+        [self.typingIndicatorView setY:self.view.height - self.keyboardHeight - self.toolbar.height - 20];
         [self.chatTableView
             setContentOffset:CGPointMake(
                                  0,
@@ -704,12 +715,14 @@ static dispatch_queue_t chat_messages_queue;
         typingText = @"Several users are typing...";
     }
 
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationBeginsFromCurrentState:YES];
     self.typingLabel.text           = typingText;
     self.typingIndicatorView.hidden = NO;
     [self.typingIndicatorView setNeedsDisplay];
 
     [self.chatTableView
-        setHeight:self.view.height - 20 - self.toolbar.height];
+        setHeight:self.view.height - self.keyboardHeight - 20 - self.toolbar.height];
     [self.chatTableView
         setContentOffset:CGPointMake(
                              0,
@@ -717,6 +730,7 @@ static dispatch_queue_t chat_messages_queue;
                                  - self.chatTableView.frame.size.height
                          )
                 animated:NO];
+    [self.typingIndicatorView setY:self.view.height - self.keyboardHeight - self.toolbar.height - 20];
     [UIView commitAnimations];
 }
 
@@ -1452,11 +1466,9 @@ static dispatch_queue_t chat_messages_queue;
 - (void)keyboardWillShow:(NSNotification *)notification {
     // thx to Pierre Legrain
     // http://pyl.io/2015/08/17/animating-in-sync-with-ios-keyboard/
-
-    int keyboardHeight =
+    self.keyboardHeight =
         [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey]
-            CGRectValue]
-            .size.height;
+            CGRectValue].size.height;
     float keyboardAnimationDuration = [[notification.userInfo
         objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
     int keyboardAnimationCurve      = [[notification.userInfo
@@ -1467,8 +1479,11 @@ static dispatch_queue_t chat_messages_queue;
     [UIView setAnimationCurve:keyboardAnimationCurve];
     [UIView setAnimationBeginsFromCurrentState:YES];
     [self.chatTableView
-        setHeight:self.view.height - keyboardHeight - self.toolbar.height];
-    [self.toolbar setY:self.view.height - keyboardHeight - self.toolbar.height];
+        setHeight:self.view.height - self.keyboardHeight - self.toolbar.height - (self.typingUsers.count > 0 ? 20 : 0)];
+    if (self.typingUsers.count > 0) {
+        [self.typingIndicatorView setY:self.view.height - self.keyboardHeight - self.toolbar.height - 20];
+    }
+    [self.toolbar setY:self.view.height - self.keyboardHeight - self.toolbar.height];
     [UIView commitAnimations];
 
     if (self.viewingPresentTime) {
@@ -1484,6 +1499,7 @@ static dispatch_queue_t chat_messages_queue;
 
 
 - (void)keyboardWillHide:(NSNotification *)notification {
+    self.keyboardHeight = 0;
     float keyboardAnimationDuration = [[notification.userInfo
         objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
     int keyboardAnimationCurve      = [[notification.userInfo
@@ -1493,7 +1509,10 @@ static dispatch_queue_t chat_messages_queue;
     [UIView setAnimationDuration:keyboardAnimationDuration];
     [UIView setAnimationCurve:keyboardAnimationCurve];
     [UIView setAnimationBeginsFromCurrentState:YES];
-    [self.chatTableView setHeight:self.view.height - self.toolbar.height];
+    [self.chatTableView setHeight:self.view.height - self.toolbar.height - (self.typingUsers.count > 0 ? 20 : 0)];
+    if (self.typingUsers.count > 0) {
+        [self.typingIndicatorView setY:self.view.height - self.toolbar.height - 20];
+    }
     [self.toolbar setY:self.view.height - self.toolbar.height];
     [UIView commitAnimations];
 }

@@ -355,7 +355,7 @@
                     NSAssert(idx != NSNotFound, @"Guild ID %@ not found", guildId);
                     DCGuild *guild = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:idx];
                     NSAssert(guild != nil, @"Guild not found for ID %@", guildId);
-                    NSLog(@"add index: %lu, name: %@", (unsigned long)curIdx, guild.name);
+                    // NSLog(@"add index: %lu, name: %@", (unsigned long)curIdx, guild.name);
                     [self.displayGuilds insertObject:guild atIndex:curIdx];
                     [newIndexPaths addObject:[NSIndexPath indexPathForRow:curIdx++ inSection:0]];
                 }
