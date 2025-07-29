@@ -271,10 +271,13 @@
     newMessage.attachments     = NSMutableArray.new;
     newMessage.attachmentCount = 0;
 
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat       = @"yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ";
-    [dateFormatter
-        setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+    static dispatch_once_t dateFormatOnceToken;
+    static NSDateFormatter *dateFormatter;
+    dispatch_once(&dateFormatOnceToken, ^{
+        dateFormatter = [NSDateFormatter new];
+        dateFormatter.dateFormat       = @"yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ";
+        [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+    });
 
     newMessage.timestamp =
         [dateFormatter dateFromString:[jsonMessage objectForKey:@"timestamp"]];
@@ -295,11 +298,13 @@
         }
     }
 
-    NSDateFormatter *prettyDateFormatter = [NSDateFormatter new];
-
+    static dispatch_once_t prettyFormatOnceToken;
+    static NSDateFormatter *prettyDateFormatter;
+    dispatch_once(&prettyFormatOnceToken, ^{
+        prettyDateFormatter = [NSDateFormatter new];
+    });
     prettyDateFormatter.dateStyle = NSDateFormatterShortStyle;
     prettyDateFormatter.timeStyle = NSDateFormatterShortStyle;
-
     prettyDateFormatter.doesRelativeDateFormatting = YES;
 
     newMessage.prettyTimestamp =
@@ -593,10 +598,10 @@
                     //[newMessage.attachments
                     // addObject:[[MPMoviePlayerViewController alloc]
                     // initWithContentURL:attachmentURL]];
-                    DCChatVideoAttachment *video = [[[NSBundle mainBundle]
+                    DCChatVideoAttachment *video = [[NSBundle mainBundle]
                         loadNibNamed:@"DCChatVideoAttachment"
                                owner:self
-                             options:nil] objectAtIndex:0];
+                             options:nil].firstObject;
 
                     video.videoURL = attachmentURL;
 
@@ -697,10 +702,14 @@
             }
         }
 
-        NSRegularExpression *regex = [NSRegularExpression
-            regularExpressionWithPattern:@"\\<@(.*?)\\>"
+        static dispatch_once_t onceToken;
+        static NSRegularExpression *regex;
+        dispatch_once(&onceToken, ^{
+            regex = [NSRegularExpression
+                regularExpressionWithPattern:@"\\<@(.*?)\\>"
                                  options:NSRegularExpressionCaseInsensitive
                                    error:NULL];
+        });
 
         NSTextCheckingResult *embeddedMention = [regex
             firstMatchInString:newMessage.content
@@ -757,10 +766,14 @@
 
     {
         // channels
-        NSRegularExpression *regex = [NSRegularExpression
-            regularExpressionWithPattern:@"\\<#(.*?)\\>"
+        static dispatch_once_t onceToken;
+        static NSRegularExpression *regex;
+        dispatch_once(&onceToken, ^{
+            regex = [NSRegularExpression
+                regularExpressionWithPattern:@"\\<#(.*?)\\>"
                                  options:NSRegularExpressionCaseInsensitive
                                    error:NULL];
+        });
 
         NSTextCheckingResult *embeddedMention = [regex
             firstMatchInString:newMessage.content
@@ -793,10 +806,14 @@
 
     {
         // <t:timestamp:format>
-        NSRegularExpression *regex            = [NSRegularExpression
-            regularExpressionWithPattern:@"\\<t:(\\d+)(?::(\\w+))?\\>"
+        static dispatch_once_t onceToken;
+        static NSRegularExpression *regex;
+        dispatch_once(&onceToken, ^{
+            regex = [NSRegularExpression
+                regularExpressionWithPattern:@"\\<t:(\\d+)(?::(\\w+))?\\>"
                                  options:NSRegularExpressionCaseInsensitive
                                    error:NULL];
+        });
         NSTextCheckingResult *embeddedMention = [regex
             firstMatchInString:newMessage.content
                        options:0
