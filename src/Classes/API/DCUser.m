@@ -26,6 +26,33 @@
     return _defaultAvatars;
 }
 
++ (DCUserStatus)statusFromString:(NSString *)statusString {
+    if ([statusString isEqualToString:@"online"]) {
+        return DCUserStatusOnline;
+    } else if ([statusString isEqualToString:@"idle"]) {
+        return DCUserStatusIdle;
+    } else if ([statusString isEqualToString:@"dnd"]) {
+        return DCUserStatusDoNotDisturb;
+    } else {
+        return DCUserStatusOffline;
+    }
+}
+
++ (NSString *)stringFromStatus:(DCUserStatus)status {
+    switch (status) {
+        case DCUserStatusOnline:
+            return @"online";
+        case DCUserStatusIdle:
+            return @"idle";
+        case DCUserStatusDoNotDisturb:
+            return @"dnd";
+        case DCUserStatusOffline:
+            return @"offline";
+        default:
+            return @"unknown";
+    }
+}
+
 - (NSString *)description {
     return [NSString
         stringWithFormat:@"[User] Snowflake: %@, Username: %@, Display name %@",

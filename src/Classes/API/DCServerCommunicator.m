@@ -10,6 +10,7 @@
 #include <malloc/malloc.h>
 #include <objc/NSObjCRuntime.h>
 #import "DCServerCommunicator+Internal.h"
+#include "DCUser.h"
 
 #include <Foundation/Foundation.h>
 #include <UIKit/UIKit.h>
@@ -345,14 +346,12 @@ UIActivityIndicatorView *spinner;
                                                 NSString *userId = [presence valueForKeyPath:@"user.id"];
                                                 NSString *status = [presence objectForKey:@"status"];
                                                 if (userId && status) {
-                                                    @synchronized(self.loadedUsers) {
-                                                        DCUser *user = [self.loadedUsers objectForKey:userId];
-                                                        if (user) {
-                                                            user.status = status;
-                                                            // NSLog(@"[READY] Updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
-                                                        } else {
-                                                            // NSLog(@"[READY] Presence received for unknown user ID: %@", userId);
-                                                        }
+                                                    DCUser *user = [self.loadedUsers objectForKey:userId];
+                                                    if (user) {
+                                                        user.status = [DCUser statusFromString:status];
+                                                        // NSLog(@"[READY] Updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
+                                                    } else {
+                                                        // NSLog(@"[READY] Presence received for unknown user ID: %@", userId);
                                                     }
                                                 }
                                             }
@@ -477,16 +476,16 @@ UIActivityIndicatorView *spinner;
     }
     DCUser *user = [self.loadedUsers objectForKey:userId];
     if (user) {
-        user.status = status;
-        // NSLog(@"[PRESENCE_UPDATE] Updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
+        user.status = [DCUser statusFromString:status];
+        // NSLog(@"[PRESENCE_UPDATE] Updated user %@ (ID: %@) to status: %ld", user.username, userId, (long)user.status);
     } else {
         // Cache user if not already in loadedUsers
         NSDictionary *userDict = [d objectForKey:@"user"];
         if (userDict) {
             user = [DCTools convertJsonUser:userDict cache:YES];
             [self.loadedUsers setObject:user forKey:userId];
-            user.status = status;
-            // NSLog(@"[PRESENCE_UPDATE] Cached and updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
+            user.status = [DCUser statusFromString:status];
+            // NSLog(@"[PRESENCE_UPDATE] Cached and updated user %@ (ID: %@) to status: %ld", user.username, userId, (long)user.status);
         }
     }
     // IMPORTANT: Post a notification so we can refresh DM status dots
@@ -495,12 +494,13 @@ UIActivityIndicatorView *spinner;
     });
 }}
 
-- (void)handleMessageCreateWithData:(NSDictionary *)d {
+- (void)handleMessageCreateWithData:(NSDictionary *)d { @autoreleasepool {
     NSString *channelIdOfMessage = [d objectForKey:@"channel_id"];
     NSString *messageId          = [d objectForKey:@"id"];
     // Check if a channel is currently being viewed
     // and if so, if that channel is the same the message was sent in
     if (self.selectedChannel != nil && [channelIdOfMessage isEqualToString:self.selectedChannel.snowflake]) {
+        // NSLog(@"[MESSAGE_CREATE] Message received in currently selected channel: %@", self.selectedChannel.name);
         dispatch_async(dispatch_get_main_queue(), ^{
             // Send notification with the new message
             // will be recieved by DCChatViewController
@@ -511,13 +511,14 @@ UIActivityIndicatorView *spinner;
         [self.selectedChannel ackMessage:messageId];
     } else {
         DCChannel *channelOfMessage    = [self.channels objectForKey:channelIdOfMessage];
+        // NSLog(@"[MESSAGE_CREATE] Message received in channel %@ (ID: %@) not currently selected", channelOfMessage.name, channelIdOfMessage);
         channelOfMessage.lastMessageId = messageId;
         [channelOfMessage checkIfRead];
         dispatch_async(dispatch_get_main_queue(), ^{
             [NSNotificationCenter.defaultCenter postNotificationName:@"MESSAGE ACK" object:self];
         });
     }
-}
+}}
 
 - (void)handleMessageUpdateWithData:(NSDictionary *)d {
     NSString *channelIdOfMessage = [d objectForKey:@"channel_id"];
@@ -583,7 +584,7 @@ UIActivityIndicatorView *spinner;
             user = [DCTools convertJsonUser:[memberItem objectForKey:@"user"] cache:YES];
             [self.loadedUsers setObject:user forKey:user.snowflake];
         }
-        user.status = [memberItem valueForKeyPath:@"presence.status"];
+        user.status = [DCUser statusFromString:[memberItem valueForKeyPath:@"presence.status"]];
         return user;
     } else {
         return nil;

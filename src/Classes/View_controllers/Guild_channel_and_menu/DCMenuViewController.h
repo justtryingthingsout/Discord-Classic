@@ -52,6 +52,6 @@
 @property BOOL experimentalMode;
 @property NSOperationQueue *serverIconImageQueue;
 
-+ (NSString *)imageNameForStatus:(NSString *)status;
++ (NSString *)imageNameForStatus:(DCUserStatus)status;
 
 @end

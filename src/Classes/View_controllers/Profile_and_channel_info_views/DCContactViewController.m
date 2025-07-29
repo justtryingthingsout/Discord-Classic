@@ -7,6 +7,7 @@
 //
 
 #import "DCContactViewController.h"
+#include "DCUser.h"
 #include <objc/NSObjCRuntime.h>
 #include "DCServerCommunicator.h"
 #include "DCGuild.h"
@@ -265,15 +266,17 @@
 }
 
 
-- (NSString *)imageNameForStatus:(NSString *)status {
-    if ([status isEqualToString:@"online"]) {
-        return @"online";
-    } else if ([status isEqualToString:@"dnd"]) {
-        return @"dnd";
-    } else if ([status isEqualToString:@"idle"]) {
-        return @"absent";
-    } else {
-        return @"offline";
+- (NSString *)imageNameForStatus:(DCUserStatus)status {
+    switch (status) {
+        case DCUserStatusOnline:
+            return @"online";
+        case DCUserStatusDoNotDisturb:
+            return @"dnd";
+        case DCUserStatusIdle:
+            return @"idle";
+        case DCUserStatusOffline:
+        default:
+            return @"offline";
     }
 }
 

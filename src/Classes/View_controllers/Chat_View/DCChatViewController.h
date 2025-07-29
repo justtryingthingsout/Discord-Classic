@@ -16,6 +16,8 @@
 #import "ODCContactViewController.h"
 #import "CKRefreshControl.h"
 
+#define assertMainThread() NSAssert([NSThread isMainThread], @"Method called using a thread other than main!")
+
 @interface DCChatViewController : UIViewController<
                                       UINavigationControllerDelegate,
                                       UITextViewDelegate,

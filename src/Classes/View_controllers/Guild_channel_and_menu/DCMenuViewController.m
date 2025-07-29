@@ -179,6 +179,7 @@
 }
 
 - (void)reloadGuild:(NSNotification *)notification {
+    assertMainThread();
     DCGuild *guild = notification.object;
     if (self.displayGuilds == nil || guild == nil) {
         return;
@@ -202,6 +203,7 @@
 }
 
 - (void)updateStatusForUser:(DCUser *)user {
+    assertMainThread();
     if (!user || ![user isKindOfClass:[DCUser class]]) {
         return;
     }
@@ -671,7 +673,7 @@
                                 buddy           = [DCUser new];
                                 buddy.snowflake = userId;
                                 buddy.username  = [userDict objectForKey:@"username"];
-                                buddy.status    = [userDict objectForKey:@"status"] ? [userDict objectForKey:@"status"] : @"offline";
+                                buddy.status    = [userDict objectForKey:@"status"] ? [DCUser statusFromString:[userDict objectForKey:@"status"]] : DCUserStatusOffline;
                             }
                             break;
                         }
@@ -777,15 +779,17 @@
 }
 
 
-+ (NSString *)imageNameForStatus:(NSString *)status {
-    if ([status isEqualToString:@"online"]) {
-        return @"online";
-    } else if ([status isEqualToString:@"dnd"]) {
-        return @"dnd";
-    } else if ([status isEqualToString:@"idle"]) {
-        return @"absent";
-    } else {
-        return @"offline";
++ (NSString *)imageNameForStatus:(DCUserStatus)status {
+    switch (status) {
+        case DCUserStatusOnline:
+            return @"online";
+        case DCUserStatusDoNotDisturb:
+            return @"dnd";
+        case DCUserStatusIdle:
+            return @"idle";
+        case DCUserStatusOffline:
+        default:
+            return @"offline";
     }
 }
 

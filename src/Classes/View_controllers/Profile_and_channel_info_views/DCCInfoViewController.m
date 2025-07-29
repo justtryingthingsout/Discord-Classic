@@ -7,6 +7,7 @@
 //
 
 #import "DCCInfoViewController.h"
+#include "DCUser.h"
 #include "DCServerCommunicator.h"
 #include <CoreGraphics/CGGeometry.h>
 #include "DCMenuViewController.h"

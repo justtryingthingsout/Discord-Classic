@@ -289,6 +289,7 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleChatReset {
+    assertMainThread();
 #ifdef DEBUG
     NSLog(@"%s: Resetting chat data", __PRETTY_FUNCTION__);
 #endif
@@ -332,6 +333,7 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleReady {
+    assertMainThread();
     if (DCServerCommunicator.sharedInstance.selectedChannel) {
         @autoreleasepool {
             [self.messages removeAllObjects];
@@ -354,6 +356,7 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleReloadUser:(NSNotification *)notification {
+    assertMainThread();
     if (!self.chatTableView) {
         return;
     }
@@ -381,6 +384,7 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleReloadMessage:(NSNotification *)notification {
+    assertMainThread();
     if (!self.chatTableView) {
         return;
     }
@@ -404,7 +408,7 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleMessageCreate:(NSNotification *)notification {
-    // dispatch_async(dispatch_get_main_queue(), ^{
+    assertMainThread();
     DCMessage *newMessage = [DCTools convertJsonMessage:notification.userInfo];
 
     if (!newMessage.author.profileImage) {
@@ -477,6 +481,7 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleMessageEdit:(NSNotification *)notification {
+    assertMainThread();
     NSString *snowflake = [notification.userInfo objectForKey:@"id"];
     if (!snowflake || snowflake.length == 0) {
         NSLog(@"%s: No snowflake provided for message edit", __PRETTY_FUNCTION__);
@@ -565,6 +570,7 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)handleMessageDelete:(NSNotification *)notification {
+    assertMainThread();
     if (!self.messages || self.messages.count == 0) {
         return;
     }
@@ -701,7 +707,9 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)updateTypingIndicator {
+    assertMainThread();
     if (self.typingUsers.count == 0) {
+        [UIView setAnimationsEnabled:NO];
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationBeginsFromCurrentState:YES];
         self.typingIndicatorView.hidden = YES;
@@ -738,6 +746,7 @@ static dispatch_queue_t chat_messages_queue;
         typingText = @"Several users are typing...";
     }
 
+    [UIView setAnimationsEnabled:NO];
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationBeginsFromCurrentState:YES];
     self.typingLabel.text           = typingText;
@@ -1589,12 +1598,14 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)tappedImage:(UITapGestureRecognizer *)sender {
+    assertMainThread();
     [self.inputField resignFirstResponder];
     self.selectedImage = ((UIImageView *)sender.view).image;
     [self performSegueWithIdentifier:@"Chat to Gallery" sender:self];
 }
 
 - (void)tappedVideo:(UITapGestureRecognizer *)sender {
+    assertMainThread();
     [self.inputField resignFirstResponder];
 #ifdef DEBUG
     NSLog(@"Tapped video!");
@@ -1811,6 +1822,7 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (void)get50MoreMessages:(UIRefreshControl *)control {
+    assertMainThread();
     if (self.messages == nil || self.messages.count == 0) {
         [control endRefreshing];
         return;
