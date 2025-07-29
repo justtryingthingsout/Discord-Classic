@@ -675,7 +675,7 @@
                 // Update the status image based on the buddy's status
                 if (buddy) {
                     NSString *statusImageName =
-                        [self.class imageNameForStatus:buddy.status];
+                        [DCMenuViewController imageNameForStatus:buddy.status];
                     cell.statusImage.image =
                         [UIImage imageNamed:statusImageName];
                 } else {

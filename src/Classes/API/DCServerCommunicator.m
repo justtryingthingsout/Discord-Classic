@@ -801,7 +801,7 @@ UIActivityIndicatorView *spinner;
     // Get event type and sequence number
     NSString *t         = [parsedJsonResponse objectForKey:@"t"];
     self.sequenceNumber = [[parsedJsonResponse objectForKey:@"s"] integerValue];
-    // NSLog(@"Got event %@ with sequence number %i", t, self.sequenceNumber);
+    // NSLog(@"Got event %@", t);
     // received READY
     if (![[parsedJsonResponse objectForKey:@"t"] isKindOfClass:[NSString class]]) {
         return;

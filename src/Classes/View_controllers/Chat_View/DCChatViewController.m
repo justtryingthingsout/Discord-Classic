@@ -291,7 +291,9 @@ static dispatch_queue_t chat_messages_queue;
 #ifdef DEBUG
     NSLog(@"%s: Resetting chat data", __PRETTY_FUNCTION__);
 #endif
-    self.messages                       = NSMutableArray.new;
+    @autoreleasepool {
+        [self.messages removeAllObjects];
+    }
     self.inputFieldPlaceholder.text     = DCServerCommunicator.sharedInstance.selectedChannel.writeable
             ? [NSString stringWithFormat:@"Message%@%@",
                                      ![DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.name isEqualToString:@"Direct Messages"]
@@ -300,6 +302,17 @@ static dispatch_queue_t chat_messages_queue;
                                      DCServerCommunicator.sharedInstance.selectedChannel.name]
             : @"No Permission";
     self.toolbar.userInteractionEnabled = DCServerCommunicator.sharedInstance.selectedChannel.writeable;
+    self.typingIndicatorView.hidden = YES;
+    [self.chatTableView
+            setHeight:self.view.height - self.keyboardHeight - self.toolbar.height];
+    [self.typingIndicatorView setY:self.view.height - self.keyboardHeight - self.toolbar.height - 20];
+    [self.chatTableView
+        setContentOffset:CGPointMake(
+                             0,
+                             self.chatTableView.contentSize.height
+                                 - self.chatTableView.frame.size.height
+                         )
+                animated:NO];
     [self handleAsyncReload];
     // [DCServerCommunicator.sharedInstance description];
 }
@@ -352,7 +365,8 @@ static dispatch_queue_t chat_messages_queue;
     NSMutableArray *indexPaths = NSMutableArray.new;
     for (int i = 0; i < self.messages.count; i++) {
         DCMessage *message = [self.messages objectAtIndex:i];
-        if ([message.author.snowflake isEqualToString:user.snowflake]) {
+        if ([message.author.snowflake isEqualToString:user.snowflake] 
+         || [message.referencedMessage.author.snowflake isEqualToString:user.snowflake]) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
             [indexPaths addObject:indexPath];
         }
@@ -451,6 +465,11 @@ static dispatch_queue_t chat_messages_queue;
     [NSNotificationCenter.defaultCenter
         postNotificationName:@"TYPING STOP"
                       object:newMessage.author.snowflake];
+    
+    [NSNotificationCenter.defaultCenter
+        postNotificationName:@"MESSAGE DELETE"
+                      object:nil
+                      userInfo:@{@"id": ((DCMessage *)self.messages.firstObject).snowflake}];
 }
 
 - (void)handleMessageEdit:(NSNotification *)notification {
@@ -922,14 +941,13 @@ static dispatch_queue_t chat_messages_queue;
                               ? [UIColor redColor]
                               : [UIColor clearColor]];
 
+        // NSLog(@"%@", cell.subviews);
         for (UIView *subView in cell.subviews) {
             if ([subView isKindOfClass:[UIImageView class]]) {
                 [subView removeFromSuperview];
-            }
-            if ([subView isKindOfClass:[DCChatVideoAttachment class]]) {
+            } else if ([subView isKindOfClass:[DCChatVideoAttachment class]]) {
                 [subView removeFromSuperview];
-            }
-            if ([subView isKindOfClass:[QLPreviewController class]]) {
+            } else if ([subView isKindOfClass:[QLPreviewController class]]) {
                 [subView removeFromSuperview];
             }
         }
@@ -1047,6 +1065,7 @@ static dispatch_queue_t chat_messages_queue;
             specialMessageTypes = [NSSet setWithArray:@[ @1, @2, @3, @4, @5, @6, @7, @8, @18 ]];
         });
 
+        // TICK(init);
         if (messageAtRowIndex.isGrouped
             && ![specialMessageTypes
                 containsObject:@(messageAtRowIndex.messageType)]) {
@@ -1063,6 +1082,7 @@ static dispatch_queue_t chat_messages_queue;
             cell =
                 [tableView dequeueReusableCellWithIdentifier:@"Message Cell"];
         }
+        // TOCK(init);
 
         if (messageAtRowIndex.referencedMessage != nil) {
             [cell.referencedAuthorLabel
@@ -1112,12 +1132,14 @@ static dispatch_queue_t chat_messages_queue;
             cell.universalImageView.image = [UIImage imageNamed:@"U-Boost"];
         }
 
+        // TICK(content);
         if (VERSION_MIN(@"6.0") && messageAtRowIndex.attributedContent) {
             cell.contentTextView.attributedText = messageAtRowIndex.attributedContent;
             [cell adjustTextViewSize];
         } else {
             cell.contentTextView.text = messageAtRowIndex.content;
         }
+        // TOCK(content);
 
         double height = [cell.contentTextView
                             sizeThatFits:CGSizeMake(cell.contentTextView.width, MAXFLOAT)]

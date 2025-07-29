@@ -1,5 +1,3 @@
-THEOS_DEVICE_IP = 192.168.0.105
-
 ARCHS = armv7 armv7s
 TARGET := iphone:clang:7.1:5.0
 PREFIX = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/

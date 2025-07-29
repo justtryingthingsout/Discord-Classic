@@ -22,8 +22,6 @@
 
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // setenv("MallocStackLogging", "1", 1);
-    // setenv("MallocStackLoggingNoCompact", "1", 1);
     // [NSTimer scheduledTimerWithTimeInterval:2.0
     //     target:[UIDevice currentDevice]
     //     selector:@selector(currentMemoryUsage)
@@ -182,11 +180,15 @@
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
     NSLog(@"Memory warning received, clearing image cache!");
     for (DCUser *user in DCServerCommunicator.sharedInstance.loadedUsers.allValues) {
-        user.profileImage = nil;
-        user.avatarDecoration = nil;
+        @autoreleasepool {
+            user.profileImage = nil;
+            user.avatarDecoration = nil;
+        }
     }
     for (DCRole *role in DCServerCommunicator.sharedInstance.loadedRoles.allValues) {
-        role.icon = nil;
+        @autoreleasepool {
+            role.icon = nil;
+        }
     }
     // [[UIDevice currentDevice] currentMemoryUsage];
     [SDWebImageManager.sharedManager.imageCache clearMemory];
