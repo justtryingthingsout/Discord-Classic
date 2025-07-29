@@ -14,7 +14,11 @@
 - (void)configureWithMessage:(NSString *)messageText {
     // @available doesn't exist on iOS 5, use respondsToSelector instead
     if ([self.contentTextView respondsToSelector:@selector(setAttributedText:)]) {
-        TSMarkdownParser *parser = [TSMarkdownParser standardParser];
+        static dispatch_once_t onceToken;
+        static TSMarkdownParser *parser;
+        dispatch_once(&onceToken, ^{
+            parser = [TSMarkdownParser standardParser];
+        });
         NSAttributedString *attributedText =
             [parser attributedStringFromMarkdown:messageText];
         if (attributedText) {
