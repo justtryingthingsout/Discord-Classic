@@ -208,7 +208,7 @@ UIActivityIndicatorView *spinner;
     }
     privateGuild.channels  = NSMutableArray.new;
     privateGuild.snowflake = nil;
-    for (NSDictionary *privateChannel in [d objectForKey:@"private_channels"]) {
+    for (NSDictionary *privateChannel in [d objectForKey:@"private_channels"]) { @autoreleasepool {
         // this may actually suck
         //  Initialize users array for the member list
         NSMutableArray *users = NSMutableArray.new;
@@ -226,7 +226,7 @@ UIActivityIndicatorView *spinner;
             if (((NSArray *)[privateChannel objectForKey:@"recipients"]).count > 0) {
                 NSDictionary *user    = [[privateChannel objectForKey:@"recipients"] objectAtIndex:0];
                 newChannel.recipients = [privateChannel objectForKey:@"recipients"];
-                for (NSDictionary *user in [privateChannel objectForKey:@"recipients"]) {
+                for (NSDictionary *user in [privateChannel objectForKey:@"recipients"]) { @autoreleasepool {
                     usersDict = NSMutableDictionary.new;
                     [usersDict setObject:[user objectForKey:@"global_name"] forKey:@"username"];
                     [usersDict setObject:[user objectForKey:@"username"] forKey:@"handle"];
@@ -240,7 +240,7 @@ UIActivityIndicatorView *spinner;
                         [self.loadedUsers setObject:dcUser forKey:userId];
                         // NSLog(@"[READY] Cached user: %@ (ID: %@)", dcUser.username, dcUser.snowflake);
                     }
-                }
+                }}
                 // Add self to users list
                 usersDict = NSMutableDictionary.new;
                 [usersDict setObject:[NSString stringWithFormat:@"You"] forKey:@"username"];
@@ -368,7 +368,7 @@ UIActivityIndicatorView *spinner;
             // If no name, create a name from channel members
             NSMutableString *fullChannelName = [@"" mutableCopy];
             NSArray *privateChannelMembers   = [privateChannel objectForKey:@"recipients"];
-            for (NSDictionary *privateChannelMember in privateChannelMembers) {
+            for (NSDictionary *privateChannelMember in privateChannelMembers) { @autoreleasepool {
                 // add comma between member names
                 if ([privateChannelMembers indexOfObject:privateChannelMember] != 0) {
                     [fullChannelName appendString:@", @"];
@@ -380,10 +380,10 @@ UIActivityIndicatorView *spinner;
                 }
                 [fullChannelName appendString:memberName];
                 newChannel.name = fullChannelName;
-            }
+            }}
         }
         [privateGuild.channels addObject:newChannel];
-    }
+    }}
     // Sort the DMs list by most recent...
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor
         sortDescriptorWithKey:@"lastMessageId"
@@ -398,16 +398,16 @@ UIActivityIndicatorView *spinner;
     NSMutableArray *guilds = NSMutableArray.new;
     [guilds addObject:privateGuild];
     // Get servers (guilds) the user is a member of
-    for (NSDictionary *jsonGuild in [d objectForKey:@"guilds"]) {
+    for (NSDictionary *jsonGuild in [d objectForKey:@"guilds"]) { @autoreleasepool {
         DCGuild *guild = [DCTools convertJsonGuild:jsonGuild];
         [guilds addObject:guild];
-    }
+    }}
     userInfo.guildPositions = NSMutableArray.new;
     if ([d valueForKeyPath:@"user_settings.guild_positions"]) {
         [userInfo.guildPositions addObjectsFromArray:[d valueForKeyPath:@"user_settings.guild_positions"]];
     } else if ([d valueForKeyPath:@"user_settings.guild_folders"]) {
         userInfo.guildFolders = NSMutableArray.new;
-        for (NSDictionary *userDict in [d valueForKeyPath:@"user_settings.guild_folders"]) {
+        for (NSDictionary *userDict in [d valueForKeyPath:@"user_settings.guild_folders"]) { @autoreleasepool {
             DCGuildFolder *folder    = [DCGuildFolder new];
             folder.id                = [userDict objectForKey:@"id"] != [NSNull null] ? [[userDict objectForKey:@"id"] intValue] : 0;
             folder.name              = [userDict objectForKey:@"name"];
@@ -430,7 +430,7 @@ UIActivityIndicatorView *spinner;
             folder.opened    = opened != nil ? [opened boolValue] : YES; // default to opened
             [userInfo.guildFolders addObject:folder];
             [userInfo.guildPositions addObjectsFromArray:folder.guildIds];
-        }
+        }}
     } else {
         NSLog(@"no guild positions found in user settings");
     }
