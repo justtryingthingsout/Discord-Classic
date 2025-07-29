@@ -215,6 +215,20 @@
     }
 }
 
++ (UIImage *)scaledImageFromImage:(UIImage *)image {
+    if (!image) {
+        return nil;
+    }
+    CGFloat aspectRatio = image.size.width / image.size.height;
+    int newWidth  = 200 * aspectRatio;
+    int newHeight = 200;
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(newWidth, newHeight), NO, 0.0);
+    [image drawInRect:CGRectMake(0, 0, newWidth, newHeight)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 // Converts an NSDictionary created from json representing a message into a
 // message object
 + (DCMessage *)convertJsonMessage:(NSDictionary *)jsonMessage {
@@ -377,7 +391,7 @@
                                                 NSLog(@"Failed to load embed image with URL %@: %@", urlString, error);
                                                 return;
                                             }
-                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:retrievedImage];
+                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:[DCTools scaledImageFromImage:retrievedImage]];
 
                                             dispatch_async(dispatch_get_main_queue(), ^{
                                                 [NSNotificationCenter.defaultCenter
@@ -451,37 +465,24 @@
 
                         if (isDiscord) {
                             if (width != 0 || height != 0) {
-                                if ([urlString query].length == 0) {
-                                    urlString = [NSURL URLWithString:
+                                urlString = [NSURL URLWithString:
                                                            [NSString stringWithFormat:
-                                                                         @"%@?format=png&width=%d&height=%d",
-                                                                         urlString, width, height]];
-                                } else {
-                                    urlString = [NSURL URLWithString:
-                                                           [NSString stringWithFormat:
-                                                                         @"%@&format=png&width=%d&height=%d",
-                                                                         urlString, width, height]];
-                                }
+                                                                         @"%@%cformat=png&width=%d&height=%d",
+                                                                         urlString,
+                                                                         [urlString query].length == 0 ? '?' : '&',
+                                                                         width, height]];
                             } else {
-                                if ([urlString query].length == 0) {
-                                    urlString = [NSURL URLWithString:
-                                                           [NSString stringWithFormat:
-                                                                         @"%@?format=png", urlString]];
-                                } else {
-                                    urlString = [NSURL URLWithString:
-                                                           [NSString stringWithFormat:
-                                                                         @"%@&format=png&width=%d&height=%d",
-                                                                         urlString, width, height]];
-                                }
+                                urlString = [NSURL URLWithString:
+                                                       [NSString stringWithFormat:
+                                                                     @"%@%cformat=png",
+                                                                     urlString,
+                                                                     [urlString query].length == 0 ? '?' : '&']];
                             }
                         } else {
-                            if ([urlString query].length == 0) {
-                                urlString = [NSURL URLWithString:
-                                                       [NSString stringWithFormat:@"%@?format=png", urlString]];
-                            } else {
-                                urlString = [NSURL URLWithString:
-                                                       [NSString stringWithFormat:@"%@&format=png", urlString]];
-                            }
+                            urlString = [NSURL URLWithString:
+                                                   [NSString stringWithFormat:@"%@%cformat=png",
+                                                   urlString,
+                                                   [urlString query].length == 0 ? '?' : '&']];
                         }
 
                         NSUInteger idx = [newMessage.attachments count];
@@ -499,7 +500,7 @@
                                                 dispatch_async(
                                                     dispatch_get_main_queue(),
                                                     ^{
-                                                        [video.thumbnail setImage:retrievedImage];
+                                                        [video.thumbnail setImage:[DCTools scaledImageFromImage:retrievedImage]];
                                                         [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
                                                         [NSNotificationCenter.defaultCenter
                                                             postNotificationName:@"RELOAD CHAT DATA"
@@ -561,14 +562,9 @@
 
                     NSURL *urlString = [NSURL
                         URLWithString:[NSString
-                                          stringWithFormat:@"%@&width=%ld&height=%ld", attachmentURL,
+                                          stringWithFormat:@"%@%cwidth=%ld&height=%ld", attachmentURL,
+                                                           [attachmentURL rangeOfString:@"?"].location == NSNotFound ? '?' : '&',
                                                            (long)width, (long)height]];
-                    if ([urlString query].length == 0) {
-                        urlString =
-                            [NSURL URLWithString:[NSString stringWithFormat:@"%@?width=%ld&height=%ld",
-                                                                            attachmentURL, (long)width,
-                                                                            (long)height]];
-                    }
 
                     NSUInteger idx = [newMessage.attachments count];
                     [newMessage.attachments addObject:@[ @(width), @(height) ]];
@@ -582,7 +578,7 @@
                                                 NSLog(@"Failed to load image with URL %@: %@", urlString, error);
                                                 return;
                                             }
-                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:retrievedImage];
+                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:[DCTools scaledImageFromImage:retrievedImage]];
                                             dispatch_async(
                                                 dispatch_get_main_queue(),
                                                 ^{
@@ -665,7 +661,7 @@
                                                     dispatch_get_main_queue(),
                                                     ^{
                                                         [video.thumbnail
-                                                            setImage:retrievedImage];
+                                                            setImage:[DCTools scaledImageFromImage:retrievedImage]];
                                                         [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
                                                         [NSNotificationCenter.defaultCenter
                                                             postNotificationName:@"RELOAD MESSAGE DATA"

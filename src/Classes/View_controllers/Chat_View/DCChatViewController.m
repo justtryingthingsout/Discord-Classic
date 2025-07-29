@@ -733,7 +733,7 @@ static dispatch_queue_t chat_messages_queue;
             setHeight:self.view.height - self.keyboardHeight - self.toolbar.height];
         self.chatTableView.contentOffset = CGPointMake(
             0,
-            self.chatTableView.contentOffset.y + (wasVisible ? 20 : 0)
+            self.chatTableView.contentOffset.y - (wasVisible ? 20 : 0)
         );
         [UIView setAnimationsEnabled:YES];
         return;
