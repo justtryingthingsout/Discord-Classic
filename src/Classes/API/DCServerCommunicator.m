@@ -468,7 +468,7 @@ UIActivityIndicatorView *spinner;
     });
 }
 
-- (void)handlePresenceUpdateEventWithData:(NSDictionary *)d {
+- (void)handlePresenceUpdateEventWithData:(NSDictionary *)d { @autoreleasepool {
     NSString *userId = [d valueForKeyPath:@"user.id"];
     NSString *status = [d objectForKey:@"status"];
     if (!userId || !status) {
@@ -493,7 +493,7 @@ UIActivityIndicatorView *spinner;
     dispatch_async(dispatch_get_main_queue(), ^{
         [NSNotificationCenter.defaultCenter postNotificationName:@"USER_PRESENCE_UPDATED" object:user];
     });
-}
+}}
 
 - (void)handleMessageCreateWithData:(NSDictionary *)d {
     NSString *channelIdOfMessage = [d objectForKey:@"channel_id"];

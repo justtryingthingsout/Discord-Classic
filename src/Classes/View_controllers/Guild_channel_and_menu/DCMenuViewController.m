@@ -574,48 +574,48 @@
                   initWithStyle:UITableViewCellStyleDefault
                 reuseIdentifier:@"guild"];
         }
-        if ([objectAtRowIndex isKindOfClass:[DCGuild class]]) {
-            DCGuild *guildAtRowIndex = objectAtRowIndex;
+        @autoreleasepool {
+            if ([objectAtRowIndex isKindOfClass:[DCGuild class]]) {
+                DCGuild *guildAtRowIndex = objectAtRowIndex;
 
-            // Show blue indicator if guild has any unread messages
-            cell.unreadMessages.hidden = !guildAtRowIndex.unread;
+                // Show blue indicator if guild has any unread messages
+                cell.unreadMessages.hidden = !guildAtRowIndex.unread;
 
-            // Guild name and icon
-            [cell.guildAvatar setImage:guildAtRowIndex.icon];
+                // Guild name and icon
+                [cell.guildAvatar setImage:guildAtRowIndex.icon];
 
-            cell.guildAvatar.layer.cornerRadius =
-                cell.guildAvatar.frame.size.width / 6.0;
-            cell.guildAvatar.layer.masksToBounds = YES;
-
-            return cell;
-        } else if ([objectAtRowIndex isKindOfClass:[DCGuildFolder class]]) {
-            DCGuildFolder *folderAtRowIndex = objectAtRowIndex;
-            if (folderAtRowIndex.icon != nil) {
-                [cell.guildAvatar setImage:folderAtRowIndex.icon];
-                return cell;
-            }
-            UIImage *folderIcon   = [UIImage imageNamed:@"folder"];
-            NSMutableArray *icons = [NSMutableArray array];
-            for (int i = 0; i < MIN(folderAtRowIndex.guildIds.count, 4); i++) {
-                NSUInteger idx = [DCServerCommunicator.sharedInstance.guilds indexOfObjectPassingTest:^BOOL(DCGuild *obj, NSUInteger idx, BOOL *stop) {
-                    return [obj isKindOfClass:[DCGuild class]] && [obj.snowflake isEqualToString:folderAtRowIndex.guildIds[i]];
-                }];
-                if (idx == NSNotFound) {
-                    continue;
+                cell.guildAvatar.layer.cornerRadius =
+                    cell.guildAvatar.frame.size.width / 6.0;
+                cell.guildAvatar.layer.masksToBounds = YES;
+            } else if ([objectAtRowIndex isKindOfClass:[DCGuildFolder class]]) {
+                DCGuildFolder *folderAtRowIndex = objectAtRowIndex;
+                if (folderAtRowIndex.icon != nil) {
+                    [cell.guildAvatar setImage:folderAtRowIndex.icon];
+                    return cell;
                 }
-                DCGuild *guild = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:idx];
-                if (!guild || ![guild isKindOfClass:[DCGuild class]]) {
-                    continue;
+                UIImage *folderIcon   = [UIImage imageNamed:@"folder"];
+                NSMutableArray *icons = [NSMutableArray array];
+                for (int i = 0; i < MIN(folderAtRowIndex.guildIds.count, 4); i++) {
+                    NSUInteger idx = [DCServerCommunicator.sharedInstance.guilds indexOfObjectPassingTest:^BOOL(DCGuild *obj, NSUInteger idx, BOOL *stop) {
+                        return [obj isKindOfClass:[DCGuild class]] && [obj.snowflake isEqualToString:folderAtRowIndex.guildIds[i]];
+                    }];
+                    if (idx == NSNotFound) {
+                        continue;
+                    }
+                    DCGuild *guild = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:idx];
+                    if (!guild || ![guild isKindOfClass:[DCGuild class]]) {
+                        continue;
+                    }
+                    [icons addObject:guild.icon];
                 }
-                [icons addObject:guild.icon];
+                UIImage *compositeImage = [self
+                    compositeImageWithBaseImage:folderIcon
+                                          icons:icons];
+                [cell.guildAvatar setImage:compositeImage];
+                folderAtRowIndex.icon = compositeImage;
             }
-            UIImage *compositeImage = [self
-                compositeImageWithBaseImage:folderIcon
-                                      icons:icons];
-            [cell.guildAvatar setImage:compositeImage];
-            folderAtRowIndex.icon = compositeImage;
-            return cell;
         }
+        return cell;
     } else if (tableView == self.channelTableView) {
         if (self.guildLabel &&
             [self.guildLabel.text isEqualToString:@"Direct Messages"]) {
@@ -632,64 +632,66 @@
                 @"Invalid guild, channel, or index"
             );
 
-            DCChannel *channelAtRowIndex =
-                [self.selectedGuild.channels objectAtIndex:indexPath.row];
+            @autoreleasepool {
+                DCChannel *channelAtRowIndex =
+                    [self.selectedGuild.channels objectAtIndex:indexPath.row];
 
-            NSCAssert((NSNull *)channelAtRowIndex != [NSNull null], @"Channel at row index is NSNull");
+                NSCAssert((NSNull *)channelAtRowIndex != [NSNull null], @"Channel at row index is NSNull");
 
-            cell.unreadMessages.hidden = !channelAtRowIndex.unread;
-            [cell.nameLabel setText:channelAtRowIndex.name];
+                cell.unreadMessages.hidden = !channelAtRowIndex.unread;
+                [cell.nameLabel setText:channelAtRowIndex.name];
 
-            if (channelAtRowIndex.icon != nil &&
-                [channelAtRowIndex.icon class] == [UIImage class]) {
-                [cell.pfp setImage:channelAtRowIndex.icon];
-                cell.pfp.layer.cornerRadius  = cell.pfp.frame.size.width / 2.0;
-                cell.pfp.layer.masksToBounds = YES;
-            }
+                if (channelAtRowIndex.icon != nil &&
+                    [channelAtRowIndex.icon class] == [UIImage class]) {
+                    [cell.pfp setImage:channelAtRowIndex.icon];
+                    cell.pfp.layer.cornerRadius  = cell.pfp.frame.size.width / 2.0;
+                    cell.pfp.layer.masksToBounds = YES;
+                }
 
-            // Presence indicator logic for DM channels (type 1, one-on-one)
-            if (channelAtRowIndex.type == 1
-                && channelAtRowIndex.users.count == 2) {
-                DCUser *buddy = nil;
+                // Presence indicator logic for DM channels (type 1, one-on-one)
+                if (channelAtRowIndex.type == 1
+                    && channelAtRowIndex.users.count == 2) {
+                    DCUser *buddy = nil;
 
-                // Iterate over users to find the DM partner
-                for (NSDictionary *userDict in channelAtRowIndex.users) {
-                    NSString *userId = [userDict objectForKey:@"snowflake"];
+                    // Iterate over users to find the DM partner
+                    for (NSDictionary *userDict in channelAtRowIndex.users) {
+                        NSString *userId = [userDict objectForKey:@"snowflake"];
 
-                    // Exclude self from buddy selection
-                    if (![userId
-                            isEqualToString:DCServerCommunicator.sharedInstance
-                                                .snowflake]) {
-                        // Attempt to fetch from cache
-                        buddy = [DCServerCommunicator.sharedInstance.loadedUsers
-                            objectForKey:userId];
+                        // Exclude self from buddy selection
+                        if (![userId
+                                isEqualToString:DCServerCommunicator.sharedInstance
+                                                    .snowflake]) {
+                            // Attempt to fetch from cache
+                            buddy = [DCServerCommunicator.sharedInstance.loadedUsers
+                                objectForKey:userId];
 
-                        // If not in cache, construct user manually from
-                        // dictionary
-                        if (!buddy) {
-                            buddy           = [DCUser new];
-                            buddy.snowflake = userId;
-                            buddy.username  = [userDict objectForKey:@"username"];
-                            buddy.status    = [userDict objectForKey:@"status"] ? [userDict objectForKey:@"status"] : @"offline";
+                            // If not in cache, construct user manually from
+                            // dictionary
+                            if (!buddy) {
+                                buddy           = [DCUser new];
+                                buddy.snowflake = userId;
+                                buddy.username  = [userDict objectForKey:@"username"];
+                                buddy.status    = [userDict objectForKey:@"status"] ? [userDict objectForKey:@"status"] : @"offline";
+                            }
+                            break;
                         }
-                        break;
                     }
-                }
 
-                // Update the status image based on the buddy's status
-                if (buddy) {
-                    NSString *statusImageName =
-                        [DCMenuViewController imageNameForStatus:buddy.status];
-                    cell.statusImage.image =
-                        [UIImage imageNamed:statusImageName];
+                    // Update the status image based on the buddy's status
+                    if (buddy) {
+                        NSString *statusImageName =
+                            [DCMenuViewController imageNameForStatus:buddy.status];
+                        cell.statusImage.image =
+                            [UIImage imageNamed:statusImageName];
+                    } else {
+                        cell.statusImage.image = [UIImage imageNamed:@"offline"];
+                    }
+
+                    cell.statusImage.hidden = NO;
                 } else {
-                    cell.statusImage.image = [UIImage imageNamed:@"offline"];
+                    // Hide status indicator for non-DM or group channels
+                    cell.statusImage.hidden = YES;
                 }
-
-                cell.statusImage.hidden = NO;
-            } else {
-                // Hide status indicator for non-DM or group channels
-                cell.statusImage.hidden = YES;
             }
 
             return cell;
