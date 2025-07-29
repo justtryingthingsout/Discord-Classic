@@ -282,7 +282,7 @@ UIActivityIndicatorView *spinner;
                 [manager downloadImageWithURL:iconURL
                                       options:0
                                      progress:nil
-                                    completed:^(UIImage *icon, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                    completed:^(UIImage *icon, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                         if (!icon || !finished) {
                                             NSLog(@"Failed to load channel icon with URL %@: %@", iconURL, error);
                                             return;
@@ -296,7 +296,7 @@ UIActivityIndicatorView *spinner;
                                             newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
                                             UIGraphicsEndImageContext();
                                         });
-                                    }];
+                                    }}];
             } else {
                 if (((NSArray *)[privateChannel objectForKey:@"recipients"]).count > 0) {
                     NSDictionary *user         = [[privateChannel objectForKey:@"recipients"] objectAtIndex:0];
@@ -308,7 +308,7 @@ UIActivityIndicatorView *spinner;
                     [manager downloadImageWithURL:avatarURL
                                           options:0
                                          progress:nil
-                                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                             if (image && finished) {
                                                 newChannel.icon = image;
                                                 CGSize itemSize = CGSizeMake(32, 32);
@@ -355,7 +355,7 @@ UIActivityIndicatorView *spinner;
                                                     }
                                                 }
                                             }
-                                        }];
+                                        }}];
                 }
             }
         }

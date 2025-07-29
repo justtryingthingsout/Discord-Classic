@@ -106,7 +106,7 @@
         [manager downloadImageWithURL:avatarURL
                               options:0
                              progress:nil
-                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                 if (retrievedImage && finished) {
                                     user.profileImage = retrievedImage;
                                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -127,7 +127,7 @@
                                     }
                                     user.profileImage = [DCUser defaultAvatars][selector];
                                 }
-                            }];
+                            }}];
 
         if (!user.avatarDecorationID || (NSNull *)user.avatarDecorationID == [NSNull null]) {
             return;
@@ -195,7 +195,7 @@
         [manager downloadImageWithURL:iconURL
                               options:0
                              progress:nil
-                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                 if (!retrievedImage || !finished) {
                                     NSLog(@"Failed to download role icon with URL %@: %@", iconURL, error);
                                     return;
@@ -211,7 +211,7 @@
                                                           object:nil];
                                     }
                                 );
-                            }];
+                            }}];
     }
 }
 
@@ -372,7 +372,7 @@
                     [manager downloadImageWithURL:urlString
                                           options:0
                                          progress:nil
-                                        completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                        completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                             if (!retrievedImage || !finished) {
                                                 NSLog(@"Failed to load embed image with URL %@: %@", urlString, error);
                                                 return;
@@ -384,7 +384,7 @@
                                                     postNotificationName:@"RELOAD MESSAGE DATA"
                                                                   object:newMessage];
                                             });
-                                        }];
+                                        }}];
                 } else if ([embedType isEqualToString:@"video"] ||
                            [embedType isEqualToString:@"gifv"]) {
                     NSURL *attachmentURL;
@@ -491,7 +491,7 @@
                         [manager downloadImageWithURL:urlString
                                               options:0
                                              progress:nil
-                                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                                 if (!retrievedImage || !finished) {
                                                     NSLog(@"Failed to load video thumbnail with URL %@: %@", urlString, error);
                                                     return;
@@ -506,7 +506,7 @@
                                                                           object:newMessage];
                                                     }
                                                 );
-                                            }];
+                                            }}];
 
                         video.layer.cornerRadius     = 6;
                         video.layer.masksToBounds    = YES;
@@ -577,7 +577,7 @@
                     [manager downloadImageWithURL:urlString
                                           options:0
                                          progress:nil
-                                        completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                        completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                             if (!retrievedImage || !finished) {
                                                 NSLog(@"Failed to load image with URL %@: %@", urlString, error);
                                                 return;
@@ -591,7 +591,7 @@
                                                                       object:newMessage];
                                                 }
                                             );
-                                        }];
+                                        }}];
                 } else if ([fileType rangeOfString:@"video/quicktime"].location != NSNotFound ||
                            [fileType rangeOfString:@"video/mp4"].location != NSNotFound ||
                            [fileType rangeOfString:@"video/mpv"].location != NSNotFound ||
@@ -654,7 +654,7 @@
                         [manager downloadImageWithURL:urlString
                                               options:0
                                              progress:nil
-                                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                                 if (!retrievedImage || !finished
                                                     || !video || !video.thumbnail
                                                     || ![video.thumbnail isKindOfClass:[UIImageView class]]) {
@@ -672,7 +672,7 @@
                                                                           object:newMessage];
                                                     }
                                                 );
-                                            }];
+                                            }}];
 
                         video.layer.cornerRadius     = 6;
                         video.layer.masksToBounds    = YES;
@@ -995,7 +995,7 @@
         [manager downloadImageWithURL:iconURL
                               options:0
                              progress:nil
-                            completed:^(UIImage *icon, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                            completed:^(UIImage *icon, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                 if (!icon || !finished) {
                                     NSLog(@"Failed to load guild icon with URL %@: %@", iconURL, error);
                                     return;
@@ -1017,17 +1017,17 @@
                                         postNotificationName:@"RELOAD GUILD"
                                                       object:newGuild];
                                 });
-                            }];
+                            }}];
     }
 
-    if ([jsonGuild objectForKey:@"banner"] && [jsonGuild objectForKey:@"banner"] != [NSNull null]) {
+    if ([jsonGuild objectForKey:@"banner"] && [jsonGuild objectForKey:@"banner"] != [NSNull null]) { 
         NSURL *bannerURL = [NSURL URLWithString:[NSString
                                                     stringWithFormat:@"https://cdn.discordapp.com/banners/%@/%@.png?size=320",
                                                                      newGuild.snowflake, [jsonGuild objectForKey:@"banner"]]];
         [manager downloadImageWithURL:bannerURL
                               options:0
                              progress:nil
-                            completed:^(UIImage *banner, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                            completed:^(UIImage *banner, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                 if (!banner || !finished) {
                                     NSLog(@"Failed to load guild banner with URL %@: %@", bannerURL, error);
                                     return;
@@ -1036,7 +1036,7 @@
                                 dispatch_async(dispatch_get_main_queue(), ^{
                                     UIGraphicsEndImageContext();
                                 });
-                            }];
+                            }}];
     }
 
     NSMutableArray *categories = NSMutableArray.new;

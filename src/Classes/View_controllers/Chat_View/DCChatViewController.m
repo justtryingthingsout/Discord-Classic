@@ -355,6 +355,22 @@ static dispatch_queue_t chat_messages_queue;
     }
 }
 
+- (BOOL)scrollWithIndex:(NSIndexPath *)idx {
+    [self.chatTableView visibleCells];
+    NSArray *visibleIdx = [self.chatTableView indexPathsForVisibleRows];
+    if ([visibleIdx containsObject:idx]) {
+        [self.chatTableView
+            setContentOffset:CGPointMake(
+                                 0,
+                                 self.chatTableView.contentSize.height
+                                     - self.chatTableView.frame.size.height
+                             )
+                    animated:NO];
+        return YES;
+    }
+    return NO;
+}
+
 - (void)handleReloadUser:(NSNotification *)notification {
     assertMainThread();
     if (!self.chatTableView) {
@@ -381,6 +397,11 @@ static dispatch_queue_t chat_messages_queue;
     [self.chatTableView beginUpdates];
     [self.chatTableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
     [self.chatTableView endUpdates];
+    for (NSIndexPath *indexPath in indexPaths) {
+        if ([self scrollWithIndex:indexPath]) {
+            break;
+        }
+    }
 }
 
 - (void)handleReloadMessage:(NSNotification *)notification {
@@ -405,6 +426,7 @@ static dispatch_queue_t chat_messages_queue;
     [self.chatTableView beginUpdates];
     [self.chatTableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
     [self.chatTableView endUpdates];
+    [self scrollWithIndex:indexPath];
 }
 
 - (void)handleMessageCreate:(NSNotification *)notification {
@@ -448,27 +470,21 @@ static dispatch_queue_t chat_messages_queue;
     }
 
     NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
+    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
     if (rowCount != self.messages.count) {
         NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
         [self.messages addObject:newMessage];
         [self handleAsyncReload];
     } else {
+        [UIView setAnimationsEnabled:NO];
         [self.chatTableView beginUpdates];
         [self.messages addObject:newMessage];
-        NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
         [self.chatTableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
         [self.chatTableView endUpdates];
+        [UIView setAnimationsEnabled:YES];
     }
 
-    if (self.viewingPresentTime) {
-        [self.chatTableView
-            setContentOffset:CGPointMake(
-                                 0,
-                                 self.chatTableView.contentSize.height
-                                     - self.chatTableView.frame.size.height
-                             )
-                    animated:NO];
-    }
+    [self scrollWithIndex:newIndexPath];
 
     [NSNotificationCenter.defaultCenter
         postNotificationName:@"TYPING STOP"
@@ -567,6 +583,7 @@ static dispatch_queue_t chat_messages_queue;
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
     [self.chatTableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
     [self.chatTableView endUpdates];
+    [self scrollWithIndex:indexPath];
 }
 
 - (void)handleMessageDelete:(NSNotification *)notification {
@@ -710,20 +727,14 @@ static dispatch_queue_t chat_messages_queue;
     assertMainThread();
     if (self.typingUsers.count == 0) {
         [UIView setAnimationsEnabled:NO];
-        [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationBeginsFromCurrentState:YES];
+        BOOL wasVisible = !self.typingIndicatorView.hidden;
         self.typingIndicatorView.hidden = YES;
         [self.chatTableView
             setHeight:self.view.height - self.keyboardHeight - self.toolbar.height];
-        [self.typingIndicatorView setY:self.view.height - self.keyboardHeight - self.toolbar.height - 20];
-        [self.chatTableView
-            setContentOffset:CGPointMake(
-                                 0,
-                                 self.chatTableView.contentSize.height
-                                     - self.chatTableView.frame.size.height
-                             )
-                    animated:NO];
-        [UIView commitAnimations];
+        self.chatTableView.contentOffset = CGPointMake(
+            0,
+            self.chatTableView.contentOffset.y + (wasVisible ? 20 : 0)
+        );
         [UIView setAnimationsEnabled:YES];
         return;
     }
@@ -748,23 +759,17 @@ static dispatch_queue_t chat_messages_queue;
     }
 
     [UIView setAnimationsEnabled:NO];
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationBeginsFromCurrentState:YES];
     self.typingLabel.text           = typingText;
+    BOOL wasHidden = self.typingIndicatorView.hidden;
     self.typingIndicatorView.hidden = NO;
     [self.typingIndicatorView setNeedsDisplay];
-
+    self.chatTableView.contentOffset = CGPointMake(
+        0,
+        self.chatTableView.contentOffset.y + (wasHidden ? 20 : 0)
+    );
     [self.chatTableView
         setHeight:self.view.height - self.keyboardHeight - 20 - self.toolbar.height];
-    [self.chatTableView
-        setContentOffset:CGPointMake(
-                             0,
-                             self.chatTableView.contentSize.height
-                                 - self.chatTableView.frame.size.height
-                         )
-                animated:NO];
     [self.typingIndicatorView setY:self.view.height - self.keyboardHeight - self.toolbar.height - 20];
-    [UIView commitAnimations];
     [UIView setAnimationsEnabled:YES];
 }
 
@@ -1504,7 +1509,6 @@ static dispatch_queue_t chat_messages_queue;
     return [self.messages count];
 }
 
-
 - (void)keyboardWillShow:(NSNotification *)notification {
     // thx to Pierre Legrain
     // http://pyl.io/2015/08/17/animating-in-sync-with-ios-keyboard/
@@ -1587,15 +1591,13 @@ static dispatch_queue_t chat_messages_queue;
             [self.inputField resignFirstResponder];
         }
 
-        if (self.viewingPresentTime) {
-            [self.chatTableView
-                setContentOffset:CGPointMake(
-                                     0,
-                                     self.chatTableView.contentSize.height
-                                         - self.chatTableView.frame.size.height
-                                 )
-                        animated:YES];
-        }
+        [self.chatTableView
+            setContentOffset:CGPointMake(
+                                 0,
+                                 self.chatTableView.contentSize.height
+                                     - self.chatTableView.frame.size.height
+                             )
+                    animated:YES];
     });
 }
 

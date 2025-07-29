@@ -179,17 +179,17 @@
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
     NSLog(@"Memory warning received, clearing image cache!");
-    for (DCUser *user in DCServerCommunicator.sharedInstance.loadedUsers.allValues) {
-        @autoreleasepool {
-            user.profileImage = nil;
-            user.avatarDecoration = nil;
-        }
-    }
-    for (DCRole *role in DCServerCommunicator.sharedInstance.loadedRoles.allValues) {
-        @autoreleasepool {
-            role.icon = nil;
-        }
-    }
+    // for (DCUser *user in DCServerCommunicator.sharedInstance.loadedUsers.allValues) {
+    //     @autoreleasepool {
+    //         user.profileImage = nil;
+    //         user.avatarDecoration = nil;
+    //     }
+    // }
+    // for (DCRole *role in DCServerCommunicator.sharedInstance.loadedRoles.allValues) {
+    //     @autoreleasepool {
+    //         role.icon = nil;
+    //     }
+    // }
     // [[UIDevice currentDevice] currentMemoryUsage];
     [SDWebImageManager.sharedManager.imageCache clearMemory];
 }

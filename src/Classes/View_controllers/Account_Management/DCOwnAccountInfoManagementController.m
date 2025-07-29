@@ -91,7 +91,7 @@
             [manager downloadImageWithURL:avatarURL
                                   options:0
                                  progress:nil
-                                completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                     if (!retrievedImage || !finished) {
                                         NSLog(@"Failed to download avatar with URL %@: %@", avatarURL, error);
                                         return;
@@ -108,7 +108,7 @@
                                                 YES;
                                         }
                                     );
-                                }];
+                                }}];
         }
     );
 
