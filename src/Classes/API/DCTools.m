@@ -93,42 +93,45 @@
 }
 
 + (void)getUserAvatar:(DCUser *)user {
-    user.profileImage     = [UIImage new];
-    user.avatarDecoration = [UIImage new];
+    @autoreleasepool {
+        user.profileImage     = [UIImage new];
+        user.avatarDecoration = [UIImage new];
 
-    SDWebImageManager *manager = [SDWebImageManager sharedManager];
-    // Load profile image
-    NSURL *avatarURL =
-        [NSURL URLWithString:[NSString stringWithFormat:
-                                           @"https://cdn.discordapp.com/avatars/%@/%@.png?size=80",
-                                           user.snowflake, user.avatarID]];
-    [manager downloadImageWithURL:avatarURL
-                          options:0
-                         progress:nil
-                        completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                            if (retrievedImage && finished) {
-                                user.profileImage = retrievedImage;
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    [NSNotificationCenter.defaultCenter
-                                        postNotificationName:
-                                            @"RELOAD USER DATA"
-                                                      object:user];
-                                });
-                            } else {
-                                // NSLog(@"Failed to download user profile image with URL %@: %@", avatarURL, error);
-                                int selector = 0;
-
-                                if (user.discriminator == 0) {
-                                    NSNumber *longId = @([user.snowflake longLongValue]);
-                                    selector         = ([longId longLongValue] >> 22) % 6;
+        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+        // Load profile image
+        NSURL *avatarURL =
+            [NSURL URLWithString:[NSString stringWithFormat:
+                                               @"https://cdn.discordapp.com/avatars/%@/%@.png?size=80",
+                                               user.snowflake, user.avatarID]];
+        [manager downloadImageWithURL:avatarURL
+                              options:0
+                             progress:nil
+                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                if (retrievedImage && finished) {
+                                    user.profileImage = retrievedImage;
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        [NSNotificationCenter.defaultCenter
+                                            postNotificationName:
+                                                @"RELOAD USER DATA"
+                                                          object:user];
+                                    });
                                 } else {
-                                    selector = user.discriminator % 5;
-                                }
-                                user.profileImage = [DCUser defaultAvatars][selector];
-                            }
-                        }];
+                                    // NSLog(@"Failed to download user profile image with URL %@: %@", avatarURL, error);
+                                    int selector = 0;
 
-    if (user.avatarDecorationID && (NSNull *)user.avatarDecorationID != [NSNull null]) {
+                                    if (user.discriminator == 0) {
+                                        NSNumber *longId = @([user.snowflake longLongValue]);
+                                        selector         = ([longId longLongValue] >> 22) % 6;
+                                    } else {
+                                        selector = user.discriminator % 5;
+                                    }
+                                    user.profileImage = [DCUser defaultAvatars][selector];
+                                }
+                            }];
+
+        if (!user.avatarDecorationID || (NSNull *)user.avatarDecorationID == [NSNull null]) {
+            return;
+        }
         NSURL *avatarDecorationURL = [NSURL URLWithString:[NSString
                                                               stringWithFormat:@"https://cdn.discordapp.com/avatar-decoration-presets/%@.png?size=96&passthrough=false",
                                                                                user.avatarDecorationID]];
@@ -178,9 +181,12 @@
 }
 
 + (void)getRoleIcon:(DCRole *)role {
-    role.icon = [UIImage new];
+    @autoreleasepool {
+        role.icon = [UIImage new];
 
-    if ((NSNull *)role.snowflake != [NSNull null] && (NSNull *)role.iconID != [NSNull null]) {
+        if ((NSNull *)role.snowflake == [NSNull null] || (NSNull *)role.iconID == [NSNull null]) {
+            return;
+        }
         SDWebImageManager *manager = [SDWebImageManager sharedManager];
         NSURL *iconURL             = [NSURL URLWithString:[NSString
                                                   stringWithFormat:
@@ -213,213 +219,124 @@
 // message object
 + (DCMessage *)convertJsonMessage:(NSDictionary *)jsonMessage {
     DCMessage *newMessage = DCMessage.new;
-    NSDictionary *author  = [jsonMessage objectForKey:@"author"];
-    NSString *authorId    = author ? [author objectForKey:@"id"] : nil;
+    @autoreleasepool {
+        NSDictionary *author  = [jsonMessage objectForKey:@"author"];
+        NSString *authorId    = author ? [author objectForKey:@"id"] : nil;
 
-    if (![DCServerCommunicator.sharedInstance.loadedUsers objectForKey:authorId]
-        && authorId != nil && ![authorId isKindOfClass:[NSNull class]]) {
-        [DCTools convertJsonUser:[jsonMessage valueForKeyPath:@"author"]
-                           cache:true];
-    }
-
-    // load referenced message if it exists
-    float contentWidth = UIScreen.mainScreen.bounds.size.width - 63;
-
-    NSDictionary *referencedJsonMessage =
-        [jsonMessage objectForKey:@"referenced_message"];
-    if ([[jsonMessage objectForKey:@"referenced_message"]
-            isKindOfClass:[NSDictionary class]]) {
-        DCMessage *referencedMessage = DCMessage.new;
-
-        NSString *referencedAuthorId =
-            [jsonMessage valueForKeyPath:@"referenced_message.author.id"];
-
-        if (![DCServerCommunicator.sharedInstance.loadedUsers
-                objectForKey:referencedAuthorId]) {
-            [DCTools
-                convertJsonUser:
-                    [jsonMessage valueForKeyPath:@"referenced_message.author"]
-                          cache:true];
+        if (![DCServerCommunicator.sharedInstance.loadedUsers objectForKey:authorId]
+            && authorId != nil && ![authorId isKindOfClass:[NSNull class]]) {
+            [DCTools convertJsonUser:[jsonMessage valueForKeyPath:@"author"]
+                               cache:true];
         }
 
-        referencedMessage.author =
-            [DCServerCommunicator.sharedInstance.loadedUsers
-                objectForKey:referencedAuthorId];
-        if ([[referencedJsonMessage objectForKey:@"content"]
-                isKindOfClass:[NSString class]]) {
-            referencedMessage.content =
-                [referencedJsonMessage objectForKey:@"content"];
-        } else {
-            referencedMessage.content = @"";
+        // load referenced message if it exists
+        float contentWidth = UIScreen.mainScreen.bounds.size.width - 63;
+
+        NSDictionary *referencedJsonMessage =
+            [jsonMessage objectForKey:@"referenced_message"];
+        if ([[jsonMessage objectForKey:@"referenced_message"]
+                isKindOfClass:[NSDictionary class]]) {
+            DCMessage *referencedMessage = DCMessage.new;
+
+            NSString *referencedAuthorId =
+                [jsonMessage valueForKeyPath:@"referenced_message.author.id"];
+
+            if (![DCServerCommunicator.sharedInstance.loadedUsers
+                    objectForKey:referencedAuthorId]) {
+                [DCTools
+                    convertJsonUser:
+                        [jsonMessage valueForKeyPath:@"referenced_message.author"]
+                              cache:true];
+            }
+
+            referencedMessage.author =
+                [DCServerCommunicator.sharedInstance.loadedUsers
+                    objectForKey:referencedAuthorId];
+            if ([[referencedJsonMessage objectForKey:@"content"]
+                    isKindOfClass:[NSString class]]) {
+                referencedMessage.content =
+                    [referencedJsonMessage objectForKey:@"content"];
+            } else {
+                referencedMessage.content = @"";
+            }
+            referencedMessage.messageType     = [[referencedJsonMessage objectForKey:@"type"] intValue];
+            referencedMessage.snowflake       = [referencedJsonMessage objectForKey:@"id"];
+            CGSize authorNameSize             = [referencedMessage.author.globalName
+                     sizeWithFont:[UIFont boldSystemFontOfSize:10]
+                constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                    lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
+            referencedMessage.authorNameWidth = 80 + authorNameSize.width;
+
+            newMessage.referencedMessage = referencedMessage;
         }
-        referencedMessage.messageType     = [[referencedJsonMessage objectForKey:@"type"] intValue];
-        referencedMessage.snowflake       = [referencedJsonMessage objectForKey:@"id"];
-        CGSize authorNameSize             = [referencedMessage.author.globalName
-                 sizeWithFont:[UIFont boldSystemFontOfSize:10]
-            constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
-        referencedMessage.authorNameWidth = 80 + authorNameSize.width;
 
-        newMessage.referencedMessage = referencedMessage;
-    }
+        newMessage.author =
+            [DCServerCommunicator.sharedInstance.loadedUsers objectForKey:authorId];
+        newMessage.messageType     = [[jsonMessage objectForKey:@"type"] intValue];
+        newMessage.content         = [jsonMessage objectForKey:@"content"];
+        newMessage.snowflake       = [jsonMessage objectForKey:@"id"];
+        newMessage.attachments     = NSMutableArray.new;
+        newMessage.attachmentCount = 0;
 
-    newMessage.author =
-        [DCServerCommunicator.sharedInstance.loadedUsers objectForKey:authorId];
-    newMessage.messageType     = [[jsonMessage objectForKey:@"type"] intValue];
-    newMessage.content         = [jsonMessage objectForKey:@"content"];
-    newMessage.snowflake       = [jsonMessage objectForKey:@"id"];
-    newMessage.attachments     = NSMutableArray.new;
-    newMessage.attachmentCount = 0;
+        static dispatch_once_t dateFormatOnceToken;
+        static NSDateFormatter *dateFormatter;
+        dispatch_once(&dateFormatOnceToken, ^{
+            dateFormatter = [NSDateFormatter new];
+            dateFormatter.dateFormat       = @"yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ";
+            [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+        });
 
-    static dispatch_once_t dateFormatOnceToken;
-    static NSDateFormatter *dateFormatter;
-    dispatch_once(&dateFormatOnceToken, ^{
-        dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat       = @"yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ";
-        [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
-    });
+        newMessage.timestamp =
+            [dateFormatter dateFromString:[jsonMessage objectForKey:@"timestamp"]];
+        if (newMessage.timestamp == nil) {
+            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+            newMessage.timestamp     = [dateFormatter
+                dateFromString:[jsonMessage objectForKey:@"timestamp"]];
+        }
 
-    newMessage.timestamp =
-        [dateFormatter dateFromString:[jsonMessage objectForKey:@"timestamp"]];
-    if (newMessage.timestamp == nil) {
-        dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-        newMessage.timestamp     = [dateFormatter
-            dateFromString:[jsonMessage objectForKey:@"timestamp"]];
-    }
-
-    if ([jsonMessage objectForKey:@"edited_timestamp"] != [NSNull null]) {
-        newMessage.editedTimestamp = [dateFormatter
-            dateFromString:[jsonMessage objectForKey:@"edited_timestamp"]];
-        if (newMessage.editedTimestamp == nil) {
-            dateFormatter.dateFormat   = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+        if ([jsonMessage objectForKey:@"edited_timestamp"] != [NSNull null]) {
             newMessage.editedTimestamp = [dateFormatter
-                dateFromString:[jsonMessage
-                                   objectForKey:@"edited_timestamp"]];
+                dateFromString:[jsonMessage objectForKey:@"edited_timestamp"]];
+            if (newMessage.editedTimestamp == nil) {
+                dateFormatter.dateFormat   = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+                newMessage.editedTimestamp = [dateFormatter
+                    dateFromString:[jsonMessage
+                                       objectForKey:@"edited_timestamp"]];
+            }
         }
-    }
 
-    static dispatch_once_t prettyFormatOnceToken;
-    static NSDateFormatter *prettyDateFormatter;
-    dispatch_once(&prettyFormatOnceToken, ^{
-        prettyDateFormatter = [NSDateFormatter new];
-    });
-    prettyDateFormatter.dateStyle = NSDateFormatterShortStyle;
-    prettyDateFormatter.timeStyle = NSDateFormatterShortStyle;
-    prettyDateFormatter.doesRelativeDateFormatting = YES;
+        static dispatch_once_t prettyFormatOnceToken;
+        static NSDateFormatter *prettyDateFormatter;
+        dispatch_once(&prettyFormatOnceToken, ^{
+            prettyDateFormatter = [NSDateFormatter new];
+        });
+        prettyDateFormatter.dateStyle = NSDateFormatterShortStyle;
+        prettyDateFormatter.timeStyle = NSDateFormatterShortStyle;
+        prettyDateFormatter.doesRelativeDateFormatting = YES;
 
-    newMessage.prettyTimestamp =
-        [prettyDateFormatter stringFromDate:newMessage.timestamp];
-    // dispatch_sync(dispatch_get_main_queue(), ^{
-    // Load embeded images from both links and attatchments
-    NSArray *embeds = [jsonMessage objectForKey:@"embeds"];
-    if (embeds) {
-        for (NSDictionary *embed in embeds) {
-            NSString *embedType = [embed objectForKey:@"type"];
-            if ([embedType isEqualToString:@"image"]) {
-                newMessage.attachmentCount++;
+        newMessage.prettyTimestamp =
+            [prettyDateFormatter stringFromDate:newMessage.timestamp];
+        // dispatch_sync(dispatch_get_main_queue(), ^{
+        // Load embeded images from both links and attatchments
+        NSArray *embeds = [jsonMessage objectForKey:@"embeds"];
+        if (embeds) {
+            for (NSDictionary *embed in embeds) {
+                NSString *embedType = [embed objectForKey:@"type"];
+                if ([embedType isEqualToString:@"image"]) {
+                    newMessage.attachmentCount++;
 
-                NSString *attachmentURL;
+                    NSString *attachmentURL;
 
-                if ([embed valueForKeyPath:@"thumbnail.proxy_url"] != [NSNull null]) {
-                    attachmentURL = [embed valueForKeyPath:@"thumbnail.proxy_url"];
-                } else if ([embed valueForKeyPath:@"thumbnail.url"] != [NSNull null]) {
-                    attachmentURL = [embed valueForKeyPath:@"thumbnail.url"];
-                } else {
-                    attachmentURL = [embed objectForKey:@"url"];
-                }
-
-                NSInteger width     = [[embed valueForKeyPath:@"thumbnail.width"] integerValue];
-                NSInteger height    = [[embed valueForKeyPath:@"thumbnail.height"] integerValue];
-                CGFloat aspectRatio = (CGFloat)width / (CGFloat)height;
-
-                if (height > 1024) {
-                    height = 1024;
-                    width  = height * aspectRatio;
-                    if (width > 1024) {
-                        width  = 1024;
-                        height = width / aspectRatio;
-                    }
-                } else if (width > 1024) {
-                    width  = 1024;
-                    height = width / aspectRatio;
-                    if (height > 1024) {
-                        height = 1024;
-                        width  = height * aspectRatio;
-                    }
-                }
-
-                NSURL *urlString = [NSURL URLWithString:attachmentURL];
-
-                if (width != 0 || height != 0) {
-                    urlString = [NSURL URLWithString:[NSString
-                                                         stringWithFormat:@"%@%cwidth=%d&height=%d",
-                                                                          urlString,
-                                                                          [urlString query].length == 0 ? '?' : '&',
-                                                                          width, height]];
-                }
-
-                NSUInteger idx = [newMessage.attachments count];
-                [newMessage.attachments addObject:@[ @(width), @(height) ]];
-
-                SDWebImageManager *manager = [SDWebImageManager sharedManager];
-                [manager downloadImageWithURL:urlString
-                                      options:0
-                                     progress:nil
-                                    completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                        if (!retrievedImage || !finished) {
-                                            NSLog(@"Failed to load embed image with URL %@: %@", urlString, error);
-                                            return;
-                                        }
-                                        [newMessage.attachments replaceObjectAtIndex:idx withObject:retrievedImage];
-
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            [NSNotificationCenter.defaultCenter
-                                                postNotificationName:@"RELOAD MESSAGE DATA"
-                                                              object:newMessage];
-                                        });
-                                    }];
-            } else if ([embedType isEqualToString:@"video"] ||
-                       [embedType isEqualToString:@"gifv"]) {
-                NSURL *attachmentURL;
-
-                if ([embed valueForKeyPath:@"video.proxy_url"] != nil &&
-                    [[embed valueForKeyPath:@"video.proxy_url"]
-                        isKindOfClass:[NSString class]]) {
-                    attachmentURL = [NSURL URLWithString:[embed valueForKeyPath:@"video.proxy_url"]];
-                } else if ([embed valueForKeyPath:@"video.url"] != nil &&
-                           [[embed valueForKeyPath:@"video.url"] isKindOfClass:[NSString class]]) {
-                    attachmentURL = [NSURL URLWithString:[embed valueForKeyPath:@"video.url"]];
-                } else {
-                    attachmentURL = [NSURL URLWithString:[embed objectForKey:@"url"]];
-                }
-
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    //[newMessage.attachments
-                    // addObject:[[MPMoviePlayerViewController alloc]
-                    // initWithContentURL:attachmentURL]];
-                    DCChatVideoAttachment *video = [[[NSBundle mainBundle]
-                        loadNibNamed:@"DCChatVideoAttachment"
-                               owner:self
-                             options:nil] objectAtIndex:0];
-
-                    video.videoURL = attachmentURL;
-
-                    NSString *baseURL = [embed objectForKey:@"url"];
-
-                    if ([embed valueForKeyPath:@"thumbnail.proxy_url"] != nil &&
-                        [[embed valueForKeyPath:@"thumbnail.proxy_url"]
-                            isKindOfClass:[NSString class]]) {
-                        baseURL = [embed valueForKeyPath:@"thumbnail.proxy_url"];
-                    } else if ([embed valueForKeyPath:@"thumbnail.url"] != nil &&
-                               [[embed valueForKeyPath:@"thumbnail.url"]
-                                   isKindOfClass:[NSString class]]) {
-                        baseURL = [embed valueForKeyPath:@"thumbnail.url"];
+                    if ([embed valueForKeyPath:@"thumbnail.proxy_url"] != [NSNull null]) {
+                        attachmentURL = [embed valueForKeyPath:@"thumbnail.proxy_url"];
+                    } else if ([embed valueForKeyPath:@"thumbnail.url"] != [NSNull null]) {
+                        attachmentURL = [embed valueForKeyPath:@"thumbnail.url"];
+                    } else {
+                        attachmentURL = [embed objectForKey:@"url"];
                     }
 
-                    NSInteger width =
-                        [[embed valueForKeyPath:@"video.width"] integerValue];
-                    NSInteger height =
-                        [[embed valueForKeyPath:@"video.height"] integerValue];
+                    NSInteger width     = [[embed valueForKeyPath:@"thumbnail.width"] integerValue];
+                    NSInteger height    = [[embed valueForKeyPath:@"thumbnail.height"] integerValue];
                     CGFloat aspectRatio = (CGFloat)width / (CGFloat)height;
 
                     if (height > 1024) {
@@ -438,43 +355,14 @@
                         }
                     }
 
-                    NSURL *urlString = [NSURL URLWithString:baseURL];
-                    BOOL isDiscord   = [baseURL
-                        hasPrefix:@"https://media.discordapp.net/"];
+                    NSURL *urlString = [NSURL URLWithString:attachmentURL];
 
-                    if (isDiscord) {
-                        if (width != 0 || height != 0) {
-                            if ([urlString query].length == 0) {
-                                urlString = [NSURL URLWithString:
-                                                       [NSString stringWithFormat:
-                                                                     @"%@?format=png&width=%d&height=%d",
-                                                                     urlString, width, height]];
-                            } else {
-                                urlString = [NSURL URLWithString:
-                                                       [NSString stringWithFormat:
-                                                                     @"%@&format=png&width=%d&height=%d",
-                                                                     urlString, width, height]];
-                            }
-                        } else {
-                            if ([urlString query].length == 0) {
-                                urlString = [NSURL URLWithString:
-                                                       [NSString stringWithFormat:
-                                                                     @"%@?format=png", urlString]];
-                            } else {
-                                urlString = [NSURL URLWithString:
-                                                       [NSString stringWithFormat:
-                                                                     @"%@&format=png&width=%d&height=%d",
-                                                                     urlString, width, height]];
-                            }
-                        }
-                    } else {
-                        if ([urlString query].length == 0) {
-                            urlString = [NSURL URLWithString:
-                                                   [NSString stringWithFormat:@"%@?format=png", urlString]];
-                        } else {
-                            urlString = [NSURL URLWithString:
-                                                   [NSString stringWithFormat:@"%@&format=png", urlString]];
-                        }
+                    if (width != 0 || height != 0) {
+                        urlString = [NSURL URLWithString:[NSString
+                                                             stringWithFormat:@"%@%cwidth=%d&height=%d",
+                                                                              urlString,
+                                                                              [urlString query].length == 0 ? '?' : '&',
+                                                                              width, height]];
                     }
 
                     NSUInteger idx = [newMessage.attachments count];
@@ -486,126 +374,168 @@
                                          progress:nil
                                         completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                             if (!retrievedImage || !finished) {
-                                                NSLog(@"Failed to load video thumbnail with URL %@: %@", urlString, error);
+                                                NSLog(@"Failed to load embed image with URL %@: %@", urlString, error);
                                                 return;
                                             }
-                                            dispatch_async(
-                                                dispatch_get_main_queue(),
-                                                ^{
-                                                    [video.thumbnail setImage:retrievedImage];
-                                                    [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
-                                                    [NSNotificationCenter.defaultCenter
-                                                        postNotificationName:@"RELOAD CHAT DATA"
-                                                                      object:newMessage];
-                                                }
-                                            );
-                                        }];
+                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:retrievedImage];
 
-                    video.layer.cornerRadius     = 6;
-                    video.layer.masksToBounds    = YES;
-                    video.userInteractionEnabled = YES;
-                    newMessage.attachmentCount++;
-                });
-            } else {
-                // NSLog(@"unknown embed type %@", embedType);
-                continue;
-            }
-        }
-    }
-
-    NSArray *attachments = [jsonMessage objectForKey:@"attachments"];
-    if (attachments) {
-        for (NSDictionary *attachment in attachments) {
-            NSString *fileType = [attachment objectForKey:@"content_type"];
-            if ([fileType rangeOfString:@"image/"].location != NSNotFound) {
-                newMessage.attachmentCount++;
-
-                NSString *attachmentURL;
-                if ([attachment valueForKeyPath:@"image.proxy_url"] != nil) {
-                    attachmentURL = [attachment valueForKeyPath:@"image.proxy_url"];
-                } else if ([attachment valueForKeyPath:@"image.url"] != nil) {
-                    attachmentURL = [attachment valueForKeyPath:@"image.url"];
-                } else {
-                    attachmentURL = [attachment objectForKey:@"url"];
-                }
-
-
-                NSInteger width =
-                    [[attachment objectForKey:@"width"] integerValue];
-                NSInteger height =
-                    [[attachment objectForKey:@"height"] integerValue];
-                CGFloat aspectRatio = (CGFloat)width / (CGFloat)height;
-
-                if (height > 1024) {
-                    height = 1024;
-                    width  = height * aspectRatio;
-                    if (width > 1024) {
-                        width  = 1024;
-                        height = width / aspectRatio;
-                    }
-                } else if (width > 1024) {
-                    width  = 1024;
-                    height = width / aspectRatio;
-                    if (height > 1024) {
-                        height = 1024;
-                        width  = height * aspectRatio;
-                    }
-                }
-
-                NSURL *urlString = [NSURL
-                    URLWithString:[NSString
-                                      stringWithFormat:@"%@&width=%ld&height=%ld", attachmentURL,
-                                                       (long)width, (long)height]];
-                if ([urlString query].length == 0) {
-                    urlString =
-                        [NSURL URLWithString:[NSString stringWithFormat:@"%@?width=%ld&height=%ld",
-                                                                        attachmentURL, (long)width,
-                                                                        (long)height]];
-                }
-
-                NSUInteger idx = [newMessage.attachments count];
-                [newMessage.attachments addObject:@[ @(width), @(height) ]];
-
-                SDWebImageManager *manager = [SDWebImageManager sharedManager];
-                [manager downloadImageWithURL:urlString
-                                      options:0
-                                     progress:nil
-                                    completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                        if (!retrievedImage || !finished) {
-                                            NSLog(@"Failed to load image with URL %@: %@", urlString, error);
-                                            return;
-                                        }
-                                        [newMessage.attachments replaceObjectAtIndex:idx withObject:retrievedImage];
-                                        dispatch_async(
-                                            dispatch_get_main_queue(),
-                                            ^{
+                                            dispatch_async(dispatch_get_main_queue(), ^{
                                                 [NSNotificationCenter.defaultCenter
                                                     postNotificationName:@"RELOAD MESSAGE DATA"
                                                                   object:newMessage];
-                                            }
-                                        );
-                                    }];
-            } else if ([fileType rangeOfString:@"video/quicktime"].location != NSNotFound ||
-                       [fileType rangeOfString:@"video/mp4"].location != NSNotFound ||
-                       [fileType rangeOfString:@"video/mpv"].location != NSNotFound ||
-                       [fileType rangeOfString:@"video/3gpp"].location != NSNotFound) {
-                // iOS only supports these video formats
-                newMessage.attachmentCount++;
+                                            });
+                                        }];
+                } else if ([embedType isEqualToString:@"video"] ||
+                           [embedType isEqualToString:@"gifv"]) {
+                    NSURL *attachmentURL;
 
-                NSURL *attachmentURL =
-                    [NSURL URLWithString:[attachment objectForKey:@"url"]];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    //[newMessage.attachments
-                    // addObject:[[MPMoviePlayerViewController alloc]
-                    // initWithContentURL:attachmentURL]];
-                    DCChatVideoAttachment *video = [[NSBundle mainBundle]
-                        loadNibNamed:@"DCChatVideoAttachment"
-                               owner:self
-                             options:nil].firstObject;
+                    if ([embed valueForKeyPath:@"video.proxy_url"] != nil &&
+                        [[embed valueForKeyPath:@"video.proxy_url"]
+                            isKindOfClass:[NSString class]]) {
+                        attachmentURL = [NSURL URLWithString:[embed valueForKeyPath:@"video.proxy_url"]];
+                    } else if ([embed valueForKeyPath:@"video.url"] != nil &&
+                               [[embed valueForKeyPath:@"video.url"] isKindOfClass:[NSString class]]) {
+                        attachmentURL = [NSURL URLWithString:[embed valueForKeyPath:@"video.url"]];
+                    } else {
+                        attachmentURL = [NSURL URLWithString:[embed objectForKey:@"url"]];
+                    }
 
-                    video.videoURL = attachmentURL;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        //[newMessage.attachments
+                        // addObject:[[MPMoviePlayerViewController alloc]
+                        // initWithContentURL:attachmentURL]];
+                        DCChatVideoAttachment *video = [[[NSBundle mainBundle]
+                            loadNibNamed:@"DCChatVideoAttachment"
+                                   owner:self
+                                 options:nil] objectAtIndex:0];
 
-                    NSString *baseURL = [attachment objectForKey:@"proxy_url"];
+                        video.videoURL = attachmentURL;
+
+                        NSString *baseURL = [embed objectForKey:@"url"];
+
+                        if ([embed valueForKeyPath:@"thumbnail.proxy_url"] != nil &&
+                            [[embed valueForKeyPath:@"thumbnail.proxy_url"]
+                                isKindOfClass:[NSString class]]) {
+                            baseURL = [embed valueForKeyPath:@"thumbnail.proxy_url"];
+                        } else if ([embed valueForKeyPath:@"thumbnail.url"] != nil &&
+                                   [[embed valueForKeyPath:@"thumbnail.url"]
+                                       isKindOfClass:[NSString class]]) {
+                            baseURL = [embed valueForKeyPath:@"thumbnail.url"];
+                        }
+
+                        NSInteger width =
+                            [[embed valueForKeyPath:@"video.width"] integerValue];
+                        NSInteger height =
+                            [[embed valueForKeyPath:@"video.height"] integerValue];
+                        CGFloat aspectRatio = (CGFloat)width / (CGFloat)height;
+
+                        if (height > 1024) {
+                            height = 1024;
+                            width  = height * aspectRatio;
+                            if (width > 1024) {
+                                width  = 1024;
+                                height = width / aspectRatio;
+                            }
+                        } else if (width > 1024) {
+                            width  = 1024;
+                            height = width / aspectRatio;
+                            if (height > 1024) {
+                                height = 1024;
+                                width  = height * aspectRatio;
+                            }
+                        }
+
+                        NSURL *urlString = [NSURL URLWithString:baseURL];
+                        BOOL isDiscord   = [baseURL
+                            hasPrefix:@"https://media.discordapp.net/"];
+
+                        if (isDiscord) {
+                            if (width != 0 || height != 0) {
+                                if ([urlString query].length == 0) {
+                                    urlString = [NSURL URLWithString:
+                                                           [NSString stringWithFormat:
+                                                                         @"%@?format=png&width=%d&height=%d",
+                                                                         urlString, width, height]];
+                                } else {
+                                    urlString = [NSURL URLWithString:
+                                                           [NSString stringWithFormat:
+                                                                         @"%@&format=png&width=%d&height=%d",
+                                                                         urlString, width, height]];
+                                }
+                            } else {
+                                if ([urlString query].length == 0) {
+                                    urlString = [NSURL URLWithString:
+                                                           [NSString stringWithFormat:
+                                                                         @"%@?format=png", urlString]];
+                                } else {
+                                    urlString = [NSURL URLWithString:
+                                                           [NSString stringWithFormat:
+                                                                         @"%@&format=png&width=%d&height=%d",
+                                                                         urlString, width, height]];
+                                }
+                            }
+                        } else {
+                            if ([urlString query].length == 0) {
+                                urlString = [NSURL URLWithString:
+                                                       [NSString stringWithFormat:@"%@?format=png", urlString]];
+                            } else {
+                                urlString = [NSURL URLWithString:
+                                                       [NSString stringWithFormat:@"%@&format=png", urlString]];
+                            }
+                        }
+
+                        NSUInteger idx = [newMessage.attachments count];
+                        [newMessage.attachments addObject:@[ @(width), @(height) ]];
+
+                        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+                        [manager downloadImageWithURL:urlString
+                                              options:0
+                                             progress:nil
+                                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                if (!retrievedImage || !finished) {
+                                                    NSLog(@"Failed to load video thumbnail with URL %@: %@", urlString, error);
+                                                    return;
+                                                }
+                                                dispatch_async(
+                                                    dispatch_get_main_queue(),
+                                                    ^{
+                                                        [video.thumbnail setImage:retrievedImage];
+                                                        [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
+                                                        [NSNotificationCenter.defaultCenter
+                                                            postNotificationName:@"RELOAD CHAT DATA"
+                                                                          object:newMessage];
+                                                    }
+                                                );
+                                            }];
+
+                        video.layer.cornerRadius     = 6;
+                        video.layer.masksToBounds    = YES;
+                        video.userInteractionEnabled = YES;
+                        newMessage.attachmentCount++;
+                    });
+                } else {
+                    // NSLog(@"unknown embed type %@", embedType);
+                    continue;
+                }
+            }
+        }
+
+        NSArray *attachments = [jsonMessage objectForKey:@"attachments"];
+        if (attachments) {
+            for (NSDictionary *attachment in attachments) {
+                NSString *fileType = [attachment objectForKey:@"content_type"];
+                if ([fileType rangeOfString:@"image/"].location != NSNotFound) {
+                    newMessage.attachmentCount++;
+
+                    NSString *attachmentURL;
+                    if ([attachment valueForKeyPath:@"image.proxy_url"] != nil) {
+                        attachmentURL = [attachment valueForKeyPath:@"image.proxy_url"];
+                    } else if ([attachment valueForKeyPath:@"image.url"] != nil) {
+                        attachmentURL = [attachment valueForKeyPath:@"image.url"];
+                    } else {
+                        attachmentURL = [attachment objectForKey:@"url"];
+                    }
+
 
                     NSInteger width =
                         [[attachment objectForKey:@"width"] integerValue];
@@ -629,15 +559,15 @@
                         }
                     }
 
-
                     NSURL *urlString = [NSURL
                         URLWithString:[NSString
-                                          stringWithFormat:@"%@format=png&width=%d&height=%d",
-                                                           baseURL, width, height]];
+                                          stringWithFormat:@"%@&width=%ld&height=%ld", attachmentURL,
+                                                           (long)width, (long)height]];
                     if ([urlString query].length == 0) {
-                        urlString = [NSURL URLWithString:[NSString stringWithFormat:
-                                                                       @"%@?format=png&width=%d&height=%d",
-                                                                       baseURL, width, height]];
+                        urlString =
+                            [NSURL URLWithString:[NSString stringWithFormat:@"%@?width=%ld&height=%ld",
+                                                                            attachmentURL, (long)width,
+                                                                            (long)height]];
                     }
 
                     NSUInteger idx = [newMessage.attachments count];
@@ -648,285 +578,363 @@
                                           options:0
                                          progress:nil
                                         completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                            if (!retrievedImage || !finished
-                                                || !video || !video.thumbnail
-                                                || ![video.thumbnail isKindOfClass:[UIImageView class]]) {
-                                                NSLog(@"Failed to load video thumbnail with URL %@: %@", imageURL, error);
+                                            if (!retrievedImage || !finished) {
+                                                NSLog(@"Failed to load image with URL %@: %@", urlString, error);
                                                 return;
                                             }
+                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:retrievedImage];
                                             dispatch_async(
                                                 dispatch_get_main_queue(),
                                                 ^{
-                                                    [video.thumbnail
-                                                        setImage:retrievedImage];
-                                                    [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
                                                     [NSNotificationCenter.defaultCenter
                                                         postNotificationName:@"RELOAD MESSAGE DATA"
                                                                       object:newMessage];
                                                 }
                                             );
                                         }];
+                } else if ([fileType rangeOfString:@"video/quicktime"].location != NSNotFound ||
+                           [fileType rangeOfString:@"video/mp4"].location != NSNotFound ||
+                           [fileType rangeOfString:@"video/mpv"].location != NSNotFound ||
+                           [fileType rangeOfString:@"video/3gpp"].location != NSNotFound) {
+                    // iOS only supports these video formats
+                    newMessage.attachmentCount++;
 
-                    video.layer.cornerRadius     = 6;
-                    video.layer.masksToBounds    = YES;
-                    video.userInteractionEnabled = YES;
-                });
-            } else {
-                // NSLog(@"unknown attachment type %@", fileType);
-                newMessage.content =
-                    [NSString stringWithFormat:@"%@\n%@", newMessage.content,
-                                               [attachment objectForKey:@"url"]];
-                continue;
+                    NSURL *attachmentURL =
+                        [NSURL URLWithString:[attachment objectForKey:@"url"]];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        //[newMessage.attachments
+                        // addObject:[[MPMoviePlayerViewController alloc]
+                        // initWithContentURL:attachmentURL]];
+                        DCChatVideoAttachment *video = [[NSBundle mainBundle]
+                            loadNibNamed:@"DCChatVideoAttachment"
+                                   owner:self
+                                 options:nil].firstObject;
+
+                        video.videoURL = attachmentURL;
+
+                        NSString *baseURL = [attachment objectForKey:@"proxy_url"];
+
+                        NSInteger width =
+                            [[attachment objectForKey:@"width"] integerValue];
+                        NSInteger height =
+                            [[attachment objectForKey:@"height"] integerValue];
+                        CGFloat aspectRatio = (CGFloat)width / (CGFloat)height;
+
+                        if (height > 1024) {
+                            height = 1024;
+                            width  = height * aspectRatio;
+                            if (width > 1024) {
+                                width  = 1024;
+                                height = width / aspectRatio;
+                            }
+                        } else if (width > 1024) {
+                            width  = 1024;
+                            height = width / aspectRatio;
+                            if (height > 1024) {
+                                height = 1024;
+                                width  = height * aspectRatio;
+                            }
+                        }
+
+
+                        NSURL *urlString = [NSURL
+                            URLWithString:[NSString
+                                              stringWithFormat:@"%@format=png&width=%d&height=%d",
+                                                               baseURL, width, height]];
+                        if ([urlString query].length == 0) {
+                            urlString = [NSURL URLWithString:[NSString stringWithFormat:
+                                                                           @"%@?format=png&width=%d&height=%d",
+                                                                           baseURL, width, height]];
+                        }
+
+                        NSUInteger idx = [newMessage.attachments count];
+                        [newMessage.attachments addObject:@[ @(width), @(height) ]];
+
+                        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+                        [manager downloadImageWithURL:urlString
+                                              options:0
+                                             progress:nil
+                                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                if (!retrievedImage || !finished
+                                                    || !video || !video.thumbnail
+                                                    || ![video.thumbnail isKindOfClass:[UIImageView class]]) {
+                                                    NSLog(@"Failed to load video thumbnail with URL %@: %@", imageURL, error);
+                                                    return;
+                                                }
+                                                dispatch_async(
+                                                    dispatch_get_main_queue(),
+                                                    ^{
+                                                        [video.thumbnail
+                                                            setImage:retrievedImage];
+                                                        [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
+                                                        [NSNotificationCenter.defaultCenter
+                                                            postNotificationName:@"RELOAD MESSAGE DATA"
+                                                                          object:newMessage];
+                                                    }
+                                                );
+                                            }];
+
+                        video.layer.cornerRadius     = 6;
+                        video.layer.masksToBounds    = YES;
+                        video.userInteractionEnabled = YES;
+                    });
+                } else {
+                    // NSLog(@"unknown attachment type %@", fileType);
+                    newMessage.content =
+                        [NSString stringWithFormat:@"%@\n%@", newMessage.content,
+                                                   [attachment objectForKey:@"url"]];
+                    continue;
+                }
             }
         }
-    }
-    //});
+        //});
 
-    // Parse in-text mentions into readable @<username>
-    NSArray *mentions     = [jsonMessage objectForKey:@"mentions"];
-    NSArray *mentionRoles = [jsonMessage objectForKey:@"mention_roles"];
+        // Parse in-text mentions into readable @<username>
+        NSArray *mentions     = [jsonMessage objectForKey:@"mentions"];
+        NSArray *mentionRoles = [jsonMessage objectForKey:@"mention_roles"];
 
-    if ([[jsonMessage objectForKey:@"mention_everyone"] boolValue]) {
-        newMessage.pingingUser = true;
-    }
-
-    if (mentions.count || mentionRoles.count) {
-        for (NSDictionary *mention in mentions) {
-            if ([[mention objectForKey:@"id"] isEqualToString:
-                                                  DCServerCommunicator.sharedInstance.snowflake]) {
-                newMessage.pingingUser = true;
-            }
-            if (![DCServerCommunicator.sharedInstance.loadedUsers
-                    objectForKey:[mention objectForKey:@"id"]]) {
-                (void)[DCTools convertJsonUser:mention cache:true];
-            }
+        if ([[jsonMessage objectForKey:@"mention_everyone"] boolValue]) {
+            newMessage.pingingUser = true;
         }
 
-        static dispatch_once_t onceToken;
-        static NSRegularExpression *regex;
-        dispatch_once(&onceToken, ^{
-            regex = [NSRegularExpression
-                regularExpressionWithPattern:@"\\<@(.*?)\\>"
-                                 options:NSRegularExpressionCaseInsensitive
-                                   error:NULL];
-        });
-
-        NSTextCheckingResult *embeddedMention = [regex
-            firstMatchInString:newMessage.content
-                       options:0
-                         range:NSMakeRange(0, newMessage.content.length)];
-
-        while (embeddedMention) {
-            NSCharacterSet *charactersToRemove =
-                [NSCharacterSet.alphanumericCharacterSet invertedSet];
-            NSString *mentionSnowflake =
-                [[[newMessage.content substringWithRange:embeddedMention.range]
-                    componentsSeparatedByCharactersInSet:charactersToRemove]
-                    componentsJoinedByString:@""];
-
-            DCUser *user = [DCServerCommunicator.sharedInstance.loadedUsers
-                objectForKey:mentionSnowflake];
-
-            DCRole *role = [DCServerCommunicator.sharedInstance.loadedRoles
-                objectForKey:mentionSnowflake];
-
-            for (DCGuild *guild in DCServerCommunicator.sharedInstance.guilds) {
-                if ([guild.userRoles containsObject:mentionSnowflake]) {
+        if (mentions.count || mentionRoles.count) {
+            for (NSDictionary *mention in mentions) {
+                if ([[mention objectForKey:@"id"] isEqualToString:
+                                                      DCServerCommunicator.sharedInstance.snowflake]) {
                     newMessage.pingingUser = true;
                 }
-            }
-
-            if ([mentionSnowflake
-                    isEqualToString:DCServerCommunicator.sharedInstance
-                                        .snowflake]) {
-                newMessage.pingingUser = true;
-            } else if ([DCServerCommunicator.sharedInstance.selectedGuild
-                               .userRoles containsObject:mentionSnowflake]) {
-                newMessage.pingingUser = true;
-            }
-
-            NSString *mentionName = @"@MENTION";
-
-            if (user) {
-                mentionName = [NSString stringWithFormat:@"@%@", user.username];
-            } else if (role) {
-                mentionName = [NSString stringWithFormat:@"@%@", role.name];
-            }
-
-            newMessage.content = [newMessage.content
-                stringByReplacingCharactersInRange:embeddedMention.range
-                                        withString:mentionName];
-
-            embeddedMention = [regex
-                firstMatchInString:newMessage.content
-                           options:0
-                             range:NSMakeRange(0, newMessage.content.length)];
-        }
-    }
-
-    {
-        // channels
-        static dispatch_once_t onceToken;
-        static NSRegularExpression *regex;
-        dispatch_once(&onceToken, ^{
-            regex = [NSRegularExpression
-                regularExpressionWithPattern:@"\\<#(.*?)\\>"
-                                 options:NSRegularExpressionCaseInsensitive
-                                   error:NULL];
-        });
-
-        NSTextCheckingResult *embeddedMention = [regex
-            firstMatchInString:newMessage.content
-                       options:0
-                         range:NSMakeRange(0, newMessage.content.length)];
-        while (embeddedMention) {
-            NSCharacterSet *charactersToRemove =
-                [NSCharacterSet.alphanumericCharacterSet invertedSet];
-            NSString *channelSnowflake =
-                [[[newMessage.content substringWithRange:embeddedMention.range]
-                    componentsSeparatedByCharactersInSet:charactersToRemove]
-                    componentsJoinedByString:@""];
-
-            NSString *mentionName = @"#CHANNEL";
-            DCChannel *channel    = [DCServerCommunicator.sharedInstance.channels objectForKey:channelSnowflake];
-            if (channel) {
-                mentionName = [NSString stringWithFormat:@"#%@", channel.name];
-            }
-
-            newMessage.content = [newMessage.content
-                stringByReplacingCharactersInRange:embeddedMention.range
-                                        withString:mentionName];
-
-            embeddedMention = [regex
-                firstMatchInString:newMessage.content
-                           options:0
-                             range:NSMakeRange(0, newMessage.content.length)];
-        }
-    }
-
-    {
-        // <t:timestamp:format>
-        static dispatch_once_t onceToken;
-        static NSRegularExpression *regex;
-        dispatch_once(&onceToken, ^{
-            regex = [NSRegularExpression
-                regularExpressionWithPattern:@"\\<t:(\\d+)(?::(\\w+))?\\>"
-                                 options:NSRegularExpressionCaseInsensitive
-                                   error:NULL];
-        });
-        NSTextCheckingResult *embeddedMention = [regex
-            firstMatchInString:newMessage.content
-                       options:0
-                         range:NSMakeRange(0, newMessage.content.length)];
-        while (embeddedMention) {
-            NSString *timestamp   = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:1]];
-            NSString *format      = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:2]];
-            NSDate *date          = [NSDate dateWithTimeIntervalSince1970:[timestamp longLongValue]];
-            NSString *replacement = @"TIME";
-            if (date) {
-                prettyDateFormatter.doesRelativeDateFormatting = NO;
-                if (!format || [format isEqualToString:@"f"]) {
-                    prettyDateFormatter.dateStyle = NSDateFormatterShortStyle;
-                    prettyDateFormatter.timeStyle = NSDateFormatterFullStyle;
-                } else if (format && [format isEqualToString:@"F"]) {
-                    prettyDateFormatter.dateStyle = NSDateFormatterFullStyle;
-                    prettyDateFormatter.timeStyle = NSDateFormatterFullStyle;
-                } else if (format && [format isEqualToString:@"R"]) {
-                    prettyDateFormatter.dateStyle                  = NSDateFormatterShortStyle;
-                    prettyDateFormatter.timeStyle                  = NSDateFormatterShortStyle;
-                    prettyDateFormatter.doesRelativeDateFormatting = YES;
-                } else if (format && [format isEqualToString:@"D"]) {
-                    prettyDateFormatter.dateStyle = NSDateFormatterMediumStyle;
-                    prettyDateFormatter.timeStyle = NSDateFormatterNoStyle;
-                } else if (format && [format isEqualToString:@"d"]) {
-                    prettyDateFormatter.dateStyle = NSDateFormatterShortStyle;
-                    prettyDateFormatter.timeStyle = NSDateFormatterNoStyle;
-                } else if (format && [format isEqualToString:@"t"]) {
-                    prettyDateFormatter.dateStyle = NSDateFormatterNoStyle;
-                    prettyDateFormatter.timeStyle = NSDateFormatterShortStyle;
-                } else if (format && [format isEqualToString:@"T"]) {
-                    prettyDateFormatter.dateStyle = NSDateFormatterNoStyle;
-                    prettyDateFormatter.timeStyle = NSDateFormatterMediumStyle;
+                if (![DCServerCommunicator.sharedInstance.loadedUsers
+                        objectForKey:[mention objectForKey:@"id"]]) {
+                    (void)[DCTools convertJsonUser:mention cache:true];
                 }
-                replacement = [prettyDateFormatter stringFromDate:date];
             }
-            newMessage.content = [newMessage.content stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
-            embeddedMention    = [regex firstMatchInString:newMessage.content options:0 range:NSMakeRange(0, newMessage.content.length)];
+
+            static dispatch_once_t onceToken;
+            static NSRegularExpression *regex;
+            dispatch_once(&onceToken, ^{
+                regex = [NSRegularExpression
+                    regularExpressionWithPattern:@"\\<@(.*?)\\>"
+                                     options:NSRegularExpressionCaseInsensitive
+                                       error:NULL];
+            });
+
+            NSTextCheckingResult *embeddedMention = [regex
+                firstMatchInString:newMessage.content
+                           options:0
+                             range:NSMakeRange(0, newMessage.content.length)];
+
+            while (embeddedMention) {
+                NSCharacterSet *charactersToRemove =
+                    [NSCharacterSet.alphanumericCharacterSet invertedSet];
+                NSString *mentionSnowflake =
+                    [[[newMessage.content substringWithRange:embeddedMention.range]
+                        componentsSeparatedByCharactersInSet:charactersToRemove]
+                        componentsJoinedByString:@""];
+
+                DCUser *user = [DCServerCommunicator.sharedInstance.loadedUsers
+                    objectForKey:mentionSnowflake];
+
+                DCRole *role = [DCServerCommunicator.sharedInstance.loadedRoles
+                    objectForKey:mentionSnowflake];
+
+                for (DCGuild *guild in DCServerCommunicator.sharedInstance.guilds) {
+                    if ([guild.userRoles containsObject:mentionSnowflake]) {
+                        newMessage.pingingUser = true;
+                    }
+                }
+
+                if ([mentionSnowflake
+                        isEqualToString:DCServerCommunicator.sharedInstance
+                                            .snowflake]) {
+                    newMessage.pingingUser = true;
+                } else if ([DCServerCommunicator.sharedInstance.selectedGuild
+                                   .userRoles containsObject:mentionSnowflake]) {
+                    newMessage.pingingUser = true;
+                }
+
+                NSString *mentionName = @"@MENTION";
+
+                if (user) {
+                    mentionName = [NSString stringWithFormat:@"@%@", user.username];
+                } else if (role) {
+                    mentionName = [NSString stringWithFormat:@"@%@", role.name];
+                }
+
+                newMessage.content = [newMessage.content
+                    stringByReplacingCharactersInRange:embeddedMention.range
+                                            withString:mentionName];
+
+                embeddedMention = [regex
+                    firstMatchInString:newMessage.content
+                               options:0
+                                 range:NSMakeRange(0, newMessage.content.length)];
+            }
         }
-    }
 
-    // {
-    //     // emotes
-    //     NSRegularExpression *regex = [NSRegularExpression
-    //         regularExpressionWithPattern:@"\\<a?:(.*?):(\\d+)\\>"
-    //                              options:NSRegularExpressionCaseInsensitive
-    //                                error:NULL];
-    //     NSTextCheckingResult *embeddedMention = [regex
-    //         firstMatchInString:newMessage.content
-    //                    options:0
-    //                      range:NSMakeRange(0, newMessage.content.length)];
-    //     while (embeddedMention) {
-    //         BOOL isAnimated = [newMessage.content
-    //             characterAtIndex:embeddedMention.range.location] == 'a';
-    //         NSString *emoteName = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:1]];
-    //         NSString *emoteID   = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:2]];
-    //         //https://cdn.discordapp.com/emojis/%@.png
-    //         //newMessage.content = [newMessage.content stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
+        {
+            // channels
+            static dispatch_once_t onceToken;
+            static NSRegularExpression *regex;
+            dispatch_once(&onceToken, ^{
+                regex = [NSRegularExpression
+                    regularExpressionWithPattern:@"\\<#(.*?)\\>"
+                                     options:NSRegularExpressionCaseInsensitive
+                                       error:NULL];
+            });
 
+            NSTextCheckingResult *embeddedMention = [regex
+                firstMatchInString:newMessage.content
+                           options:0
+                             range:NSMakeRange(0, newMessage.content.length)];
+            while (embeddedMention) {
+                NSCharacterSet *charactersToRemove =
+                    [NSCharacterSet.alphanumericCharacterSet invertedSet];
+                NSString *channelSnowflake =
+                    [[[newMessage.content substringWithRange:embeddedMention.range]
+                        componentsSeparatedByCharactersInSet:charactersToRemove]
+                        componentsJoinedByString:@""];
 
-    //         embeddedMention    = [regex firstMatchInString:newMessage.content options:0 range:NSMakeRange(0, newMessage.content.length)];
-    //     }
-    // }
+                NSString *mentionName = @"#CHANNEL";
+                DCChannel *channel    = [DCServerCommunicator.sharedInstance.channels objectForKey:channelSnowflake];
+                if (channel) {
+                    mentionName = [NSString stringWithFormat:@"#%@", channel.name];
+                }
 
-    NSString *content = [newMessage.content emojizedString];
+                newMessage.content = [newMessage.content
+                    stringByReplacingCharactersInRange:embeddedMention.range
+                                            withString:mentionName];
 
-    content = [content stringByReplacingOccurrencesOfString:@"\u2122\uFE0F"
-                                                 withString:@"™"];
-    content = [content stringByReplacingOccurrencesOfString:@"\u00AE\uFE0F"
-                                                 withString:@"®"];
-
-    if (newMessage.editedTimestamp != nil) {
-        content = [content stringByAppendingString:@" (edited)"];
-    }
-
-    newMessage.content = content;
-
-    // Calculate height of content to be used when showing messages in a
-    // tableview contentHeight does NOT include height of the embeded images or
-    // account for height of a grouped message
-
-    CGSize authorNameSize = [newMessage.author.globalName
-             sizeWithFont:[UIFont boldSystemFontOfSize:15]
-        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-            lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
-    CGSize contentSize    = [newMessage.content
-             sizeWithFont:[UIFont systemFontOfSize:14]
-        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-            lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
-
-    newMessage.attributedContent = nil;
-    if (VERSION_MIN(@"6.0") && [newMessage.content length] > 0) {
-        static dispatch_once_t onceToken;
-        static TSMarkdownParser *parser;
-        dispatch_once(&onceToken, ^{
-            parser = [TSMarkdownParser standardParser];
-        });
-        NSAttributedString *attributedText =
-            [parser attributedStringFromMarkdown:newMessage.content];
-        if (attributedText && ![attributedText.string isEqualToString:newMessage.content]) {
-            contentSize = [attributedText boundingRectWithSize:CGSizeMake(contentWidth, CGFLOAT_MAX)
-                                                       options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
-                                                       context:nil]
-                              .size;
-            newMessage.attributedContent = attributedText;
+                embeddedMention = [regex
+                    firstMatchInString:newMessage.content
+                               options:0
+                                 range:NSMakeRange(0, newMessage.content.length)];
+            }
         }
-    }
 
-    newMessage.contentHeight = authorNameSize.height
-        + (newMessage.attachmentCount ? contentSize.height : MAX(contentSize.height, 18))
-        + 10
-        + (newMessage.referencedMessage != nil ? 16 : 0);
-    newMessage.authorNameWidth = 60 + authorNameSize.width;
+        {
+            // <t:timestamp:format>
+            static dispatch_once_t onceToken;
+            static NSRegularExpression *regex;
+            dispatch_once(&onceToken, ^{
+                regex = [NSRegularExpression
+                    regularExpressionWithPattern:@"\\<t:(\\d+)(?::(\\w+))?\\>"
+                                     options:NSRegularExpressionCaseInsensitive
+                                       error:NULL];
+            });
+            NSTextCheckingResult *embeddedMention = [regex
+                firstMatchInString:newMessage.content
+                           options:0
+                             range:NSMakeRange(0, newMessage.content.length)];
+            while (embeddedMention) {
+                NSString *timestamp   = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:1]];
+                NSString *format      = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:2]];
+                NSDate *date          = [NSDate dateWithTimeIntervalSince1970:[timestamp longLongValue]];
+                NSString *replacement = @"TIME";
+                if (date) {
+                    prettyDateFormatter.doesRelativeDateFormatting = NO;
+                    if (!format || [format isEqualToString:@"f"]) {
+                        prettyDateFormatter.dateStyle = NSDateFormatterShortStyle;
+                        prettyDateFormatter.timeStyle = NSDateFormatterFullStyle;
+                    } else if (format && [format isEqualToString:@"F"]) {
+                        prettyDateFormatter.dateStyle = NSDateFormatterFullStyle;
+                        prettyDateFormatter.timeStyle = NSDateFormatterFullStyle;
+                    } else if (format && [format isEqualToString:@"R"]) {
+                        prettyDateFormatter.dateStyle                  = NSDateFormatterShortStyle;
+                        prettyDateFormatter.timeStyle                  = NSDateFormatterShortStyle;
+                        prettyDateFormatter.doesRelativeDateFormatting = YES;
+                    } else if (format && [format isEqualToString:@"D"]) {
+                        prettyDateFormatter.dateStyle = NSDateFormatterMediumStyle;
+                        prettyDateFormatter.timeStyle = NSDateFormatterNoStyle;
+                    } else if (format && [format isEqualToString:@"d"]) {
+                        prettyDateFormatter.dateStyle = NSDateFormatterShortStyle;
+                        prettyDateFormatter.timeStyle = NSDateFormatterNoStyle;
+                    } else if (format && [format isEqualToString:@"t"]) {
+                        prettyDateFormatter.dateStyle = NSDateFormatterNoStyle;
+                        prettyDateFormatter.timeStyle = NSDateFormatterShortStyle;
+                    } else if (format && [format isEqualToString:@"T"]) {
+                        prettyDateFormatter.dateStyle = NSDateFormatterNoStyle;
+                        prettyDateFormatter.timeStyle = NSDateFormatterMediumStyle;
+                    }
+                    replacement = [prettyDateFormatter stringFromDate:date];
+                }
+                newMessage.content = [newMessage.content stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
+                embeddedMention    = [regex firstMatchInString:newMessage.content options:0 range:NSMakeRange(0, newMessage.content.length)];
+            }
+        }
+
+        // {
+        //     // emotes
+        //     NSRegularExpression *regex = [NSRegularExpression
+        //         regularExpressionWithPattern:@"\\<a?:(.*?):(\\d+)\\>"
+        //                              options:NSRegularExpressionCaseInsensitive
+        //                                error:NULL];
+        //     NSTextCheckingResult *embeddedMention = [regex
+        //         firstMatchInString:newMessage.content
+        //                    options:0
+        //                      range:NSMakeRange(0, newMessage.content.length)];
+        //     while (embeddedMention) {
+        //         BOOL isAnimated = [newMessage.content
+        //             characterAtIndex:embeddedMention.range.location] == 'a';
+        //         NSString *emoteName = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:1]];
+        //         NSString *emoteID   = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:2]];
+        //         //https://cdn.discordapp.com/emojis/%@.png
+        //         //newMessage.content = [newMessage.content stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
+
+
+        //         embeddedMention    = [regex firstMatchInString:newMessage.content options:0 range:NSMakeRange(0, newMessage.content.length)];
+        //     }
+        // }
+
+        NSString *content = [newMessage.content emojizedString];
+
+        content = [content stringByReplacingOccurrencesOfString:@"\u2122\uFE0F"
+                                                     withString:@"™"];
+        content = [content stringByReplacingOccurrencesOfString:@"\u00AE\uFE0F"
+                                                     withString:@"®"];
+
+        if (newMessage.editedTimestamp != nil) {
+            content = [content stringByAppendingString:@" (edited)"];
+        }
+
+        newMessage.content = content;
+
+        // Calculate height of content to be used when showing messages in a
+        // tableview contentHeight does NOT include height of the embeded images or
+        // account for height of a grouped message
+
+        CGSize authorNameSize = [newMessage.author.globalName
+                 sizeWithFont:[UIFont boldSystemFontOfSize:15]
+            constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
+        CGSize contentSize    = [newMessage.content
+                 sizeWithFont:[UIFont systemFontOfSize:14]
+            constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
+
+        newMessage.attributedContent = nil;
+        if (VERSION_MIN(@"6.0") && [newMessage.content length] > 0) {
+            static dispatch_once_t onceToken;
+            static TSMarkdownParser *parser;
+            dispatch_once(&onceToken, ^{
+                parser = [TSMarkdownParser standardParser];
+            });
+            NSAttributedString *attributedText =
+                [parser attributedStringFromMarkdown:newMessage.content];
+            if (attributedText && ![attributedText.string isEqualToString:newMessage.content]) {
+                contentSize = [attributedText boundingRectWithSize:CGSizeMake(contentWidth, CGFLOAT_MAX)
+                                                           options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                                           context:nil]
+                                  .size;
+                newMessage.attributedContent = attributedText;
+            }
+        }
+
+        newMessage.contentHeight = authorNameSize.height
+            + (newMessage.attachmentCount ? contentSize.height : MAX(contentSize.height, 18))
+            + 10
+            + (newMessage.referencedMessage != nil ? 16 : 0);
+        newMessage.authorNameWidth = 60 + authorNameSize.width;
+    }
 
     return newMessage;
 }

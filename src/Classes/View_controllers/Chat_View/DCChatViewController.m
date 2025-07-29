@@ -7,6 +7,7 @@
 //
 
 #import "DCChatViewController.h"
+#include <dispatch/dispatch.h>
 #include <objc/runtime.h>
 
 #include <Foundation/Foundation.h>
@@ -324,14 +325,17 @@ static dispatch_queue_t chat_messages_queue;
     dispatch_async(dispatch_get_main_queue(), ^{
         // NSLog(@"async reload!");
         //  about contact CoreControl
-
-        [self.chatTableView reloadData];
+        @autoreleasepool {
+            [self.chatTableView reloadData];
+        }
     });
 }
 
 - (void)handleReady {
     if (DCServerCommunicator.sharedInstance.selectedChannel) {
-        self.messages                       = NSMutableArray.new;
+        @autoreleasepool {
+            [self.messages removeAllObjects];
+        }
         self.inputFieldPlaceholder.text     = DCServerCommunicator.sharedInstance.selectedChannel.writeable
                 ? [NSString stringWithFormat:@"Message%@%@",
                                          ![DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.name isEqualToString:@"Direct Messages"]
@@ -760,107 +764,113 @@ static dispatch_queue_t chat_messages_queue;
                   getMessages:numberOfMessages
                 beforeMessage:message];
 
-        if (newMessages) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSRange range        = NSMakeRange(0, [newMessages count]);
-                NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+        if (!newMessages) {
+            return;
+        }
 
-                NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
-                if (rowCount != self.messages.count) {
-                    NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
-                    [self.messages insertObjects:newMessages atIndexes:indexSet];
-                    [self handleAsyncReload];
-                } else {
-                    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
-                    [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
-                        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
-                        [indexPaths addObject:indexPath];
-                    }];
-                    [self.chatTableView beginUpdates];
-                    [self.messages insertObjects:newMessages atIndexes:indexSet];
-                    [self.chatTableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-                    [self.chatTableView endUpdates];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSRange range        = NSMakeRange(0, [newMessages count]);
+            NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+
+            NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
+            if (rowCount != self.messages.count) {
+                NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
+                [self.messages insertObjects:newMessages atIndexes:indexSet];
+                [self handleAsyncReload];
+            } else {
+                NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+                [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+                    [indexPaths addObject:indexPath];
+                }];
+                [self.chatTableView beginUpdates];
+                [self.messages insertObjects:newMessages atIndexes:indexSet];
+                [self.chatTableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.chatTableView endUpdates];
+            }
+        });
+
+        int scrollOffset = -self.chatTableView.height;
+        for (DCMessage *newMessage in newMessages) {
+            @autoreleasepool {
+                if (!newMessage.author.profileImage) {
+                    [DCTools getUserAvatar:newMessage.author];
                 }
 
-                int scrollOffset = -self.chatTableView.height;
-                for (DCMessage *newMessage in newMessages) {
-                    if (!newMessage.author.profileImage) {
-                        [DCTools getUserAvatar:newMessage.author];
-                    }
-
-                    int attachmentHeight = 0;
-                    for (id attachment in newMessage.attachments) {
-                        if ([attachment isKindOfClass:[UIImage class]]) {
-                            UIImage *image      = attachment;
-                            CGFloat aspectRatio = image.size.width
-                                / image.size.height;
-                            int newWidth  = 200 * aspectRatio;
-                            int newHeight = 200;
+                int attachmentHeight = 0;
+                for (id attachment in newMessage.attachments) {
+                    if ([attachment isKindOfClass:[UIImage class]]) {
+                        UIImage *image      = attachment;
+                        CGFloat aspectRatio = image.size.width
+                            / image.size.height;
+                        int newWidth  = 200 * aspectRatio;
+                        int newHeight = 200;
+                        if (newWidth > self.chatTableView.width - 66) {
+                            newWidth  = self.chatTableView.width - 66;
+                            newHeight = newWidth / aspectRatio;
+                        }
+                        attachmentHeight += newHeight;
+                    } else if ([attachment isKindOfClass:[DCChatVideoAttachment class]]) {
+                        DCChatVideoAttachment *video = attachment;
+                        CGFloat aspectRatio          = video.thumbnail.image.size.width
+                            / video.thumbnail.image.size.height;
+                        int newWidth  = 200 * aspectRatio;
+                        int newHeight = 200;
+                        if (newWidth > self.chatTableView.width - 66) {
+                            newWidth  = self.chatTableView.width - 66;
+                            newHeight = newWidth / aspectRatio;
+                        }
+                        attachmentHeight += newHeight;
+                    } else if ([attachment isKindOfClass:[NSArray class]]) {
+                        NSArray *dimensions = attachment;
+                        if (dimensions.count == 2) {
+                            int width  = [dimensions[0] intValue];
+                            int height = [dimensions[1] intValue];
+                            if (width <= 0 || height <= 0) {
+                                continue;
+                            }
+                            CGFloat aspectRatio = (CGFloat)width / height;
+                            int newWidth        = 200 * aspectRatio;
+                            int newHeight       = 200;
                             if (newWidth > self.chatTableView.width - 66) {
                                 newWidth  = self.chatTableView.width - 66;
                                 newHeight = newWidth / aspectRatio;
                             }
                             attachmentHeight += newHeight;
-                        } else if ([attachment isKindOfClass:[DCChatVideoAttachment class]]) {
-                            DCChatVideoAttachment *video = attachment;
-                            CGFloat aspectRatio          = video.thumbnail.image.size.width
-                                / video.thumbnail.image.size.height;
-                            int newWidth  = 200 * aspectRatio;
-                            int newHeight = 200;
-                            if (newWidth > self.chatTableView.width - 66) {
-                                newWidth  = self.chatTableView.width - 66;
-                                newHeight = newWidth / aspectRatio;
-                            }
-                            attachmentHeight += newHeight;
-                        } else if ([attachment isKindOfClass:[NSArray class]]) {
-                            NSArray *dimensions = attachment;
-                            if (dimensions.count == 2) {
-                                int width  = [dimensions[0] intValue];
-                                int height = [dimensions[1] intValue];
-                                if (width <= 0 || height <= 0) {
-                                    continue;
-                                }
-                                CGFloat aspectRatio = (CGFloat)width / height;
-                                int newWidth        = 200 * aspectRatio;
-                                int newHeight       = 200;
-                                if (newWidth > self.chatTableView.width - 66) {
-                                    newWidth  = self.chatTableView.width - 66;
-                                    newHeight = newWidth / aspectRatio;
-                                }
-                                attachmentHeight += newHeight;
-                            }
                         }
                     }
-                    scrollOffset += newMessage.contentHeight
-                        + attachmentHeight
-                        + (attachmentHeight ? 11 : 0);
                 }
-
-                [self.chatTableView
-                    setContentOffset:CGPointMake(0, scrollOffset)
-                            animated:NO];
-
-                if ([newMessages count] > 0 && !self.refreshControl) {
-                    self.refreshControl = UIRefreshControl.new;
-                    self.refreshControl.attributedTitle =
-                        [[NSAttributedString alloc]
-                            initWithString:@"Earlier messages"];
-
-                    [self.chatTableView addSubview:self.refreshControl];
-
-                    [self.refreshControl addTarget:self
-                                            action:@selector(get50MoreMessages:)
-                                  forControlEvents:UIControlEventValueChanged];
-
-                    self.refreshControl.autoresizingMask =
-                        UIViewAutoresizingFlexibleLeftMargin
-                        | UIViewAutoresizingFlexibleRightMargin;
-                }
-                if (self.refreshControl) {
-                    [self.refreshControl endRefreshing];
-                }
-            });
+                scrollOffset += newMessage.contentHeight
+                    + attachmentHeight
+                    + (attachmentHeight ? 11 : 0);
+            }
         }
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.chatTableView
+                setContentOffset:CGPointMake(0, scrollOffset)
+                        animated:NO];
+
+            if ([newMessages count] > 0 && !self.refreshControl) {
+                self.refreshControl = UIRefreshControl.new;
+                self.refreshControl.attributedTitle =
+                    [[NSAttributedString alloc]
+                        initWithString:@"Earlier messages"];
+
+                [self.chatTableView addSubview:self.refreshControl];
+
+                [self.refreshControl addTarget:self
+                                        action:@selector(get50MoreMessages:)
+                              forControlEvents:UIControlEventValueChanged];
+
+                self.refreshControl.autoresizingMask =
+                    UIViewAutoresizingFlexibleLeftMargin
+                    | UIViewAutoresizingFlexibleRightMargin;
+            }
+            if (self.refreshControl) {
+                [self.refreshControl endRefreshing];
+            }
+        });
     });
 }
 

@@ -52,13 +52,7 @@ static dispatch_queue_t channel_send_queue;
 
 - (void)checkIfRead {
     DCChannel *parentChannel = [DCServerCommunicator.sharedInstance.channels objectForKey:self.parentID];
-    self.unread = (
-        !self.muted
-        && (!parentChannel || ![parentChannel muted])
-        && self.lastMessageId && self.lastMessageId != (id)NSNull.null
-        && [self.lastMessageId isKindOfClass:[NSString class]]
-        && ![self.lastMessageId isEqualToString:self.lastReadMessageId]
-    );
+    self.unread              = (!self.muted && (!parentChannel || ![parentChannel muted]) && self.lastMessageId && self.lastMessageId != (id)NSNull.null && [self.lastMessageId isKindOfClass:[NSString class]] && ![self.lastMessageId isEqualToString:self.lastReadMessageId]);
     [self.parentGuild checkIfRead];
 }
 
@@ -417,6 +411,7 @@ static dispatch_queue_t channel_send_queue;
 - (NSArray *)getMessages:(int)numberOfMessages
            beforeMessage:(DCMessage *)message {
     NSMutableArray *messages = NSMutableArray.new;
+    NSData *response = nil;
     // Generate URL from args
     NSMutableString *getChannelAddress = [NSMutableString
         stringWithFormat:@"https://discordapp.com/api/v9/channels/%@/messages?",
@@ -456,7 +451,7 @@ static dispatch_queue_t channel_send_queue;
         [NSURLConnection sendSynchronousRequest:urlRequest
                               returningResponse:&responseCode
                                           error:&error];
-    NSData *response = [DCTools checkData:uncheckedResponse withError:error];
+    response = [DCTools checkData:uncheckedResponse withError:error];
     dispatch_sync(dispatch_get_main_queue(), ^{
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     });
@@ -485,117 +480,119 @@ static dispatch_queue_t channel_send_queue;
             return;
         }
         for (NSDictionary *jsonMessage in parsedResponse) {
-            DCMessage *convertedMessage =
-                [DCTools convertJsonMessage:jsonMessage];
+            @autoreleasepool {
+                DCMessage *convertedMessage =
+                    [DCTools convertJsonMessage:jsonMessage];
 
-            NSString *messageType = [jsonMessage objectForKey:@"type"];
+                NSString *messageType = [jsonMessage objectForKey:@"type"];
 
-            if ([messageType intValue] == 1) {
-                NSArray *mentions     = [jsonMessage objectForKey:@"mentions"];
-                NSDictionary *mention = mentions.firstObject;
-                // NSString *targetName = [mentions
-                // objectForKey:@"global_name"];
-                convertedMessage.isGrouped   = NO;
-                NSString *targetUsername =
-                    [mention objectForKey:@"global_name"];
-                if ([targetUsername isKindOfClass:[NSNull class]]) {
-                    targetUsername = @"Deleted User";
+                if ([messageType intValue] == 1) {
+                    NSArray *mentions     = [jsonMessage objectForKey:@"mentions"];
+                    NSDictionary *mention = mentions.firstObject;
+                    // NSString *targetName = [mentions
+                    // objectForKey:@"global_name"];
+                    convertedMessage.isGrouped = NO;
+                    NSString *targetUsername =
+                        [mention objectForKey:@"global_name"];
+                    if ([targetUsername isKindOfClass:[NSNull class]]) {
+                        targetUsername = @"Deleted User";
+                    }
+                    convertedMessage.content       = [NSString
+                        stringWithFormat:@"%@ added %@ to the group conversation.",
+                                         convertedMessage.author.globalName,
+                                         targetUsername];
+                    float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
+                    CGSize textSize                = [convertedMessage.content
+                             sizeWithFont:[UIFont systemFontOfSize:15]
+                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                            lineBreakMode:NSLineBreakByWordWrapping];
+                    convertedMessage.contentHeight = textSize.height + 40;
+
+                } else if ([messageType intValue] == 2) {
+                    convertedMessage.isGrouped     = NO;
+                    convertedMessage.content       = [NSString
+                        stringWithFormat:@"%@ left the group conversation.",
+                                         convertedMessage.author.globalName];
+                    float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
+                    CGSize textSize                = [convertedMessage.content
+                             sizeWithFont:[UIFont systemFontOfSize:15]
+                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                            lineBreakMode:NSLineBreakByWordWrapping];
+                    convertedMessage.contentHeight = textSize.height + 40;
+
+                } else if ([messageType intValue] == 4) {
+                    convertedMessage.isGrouped     = NO;
+                    convertedMessage.content       = [NSString
+                        stringWithFormat:@"%@ changed the group name to %@.",
+                                         convertedMessage.author.globalName,
+                                         [jsonMessage objectForKey:@"content"]];
+                    float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
+                    CGSize textSize                = [convertedMessage.content
+                             sizeWithFont:[UIFont systemFontOfSize:15]
+                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                            lineBreakMode:NSLineBreakByWordWrapping];
+                    convertedMessage.contentHeight = textSize.height + 30;
+
+                } else if ([messageType intValue] == 5) {
+                    convertedMessage.isGrouped     = NO;
+                    convertedMessage.content       = [NSString
+                        stringWithFormat:@"%@ changed the group icon.",
+                                         convertedMessage.author.globalName];
+                    float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
+                    CGSize textSize                = [convertedMessage.content
+                             sizeWithFont:[UIFont systemFontOfSize:15]
+                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                            lineBreakMode:NSLineBreakByWordWrapping];
+                    convertedMessage.contentHeight = textSize.height + 15;
+                } else if ([messageType intValue] == 6) {
+                    convertedMessage.isGrouped     = NO;
+                    convertedMessage.content       = [NSString
+                        stringWithFormat:@"%@ pinned a message to this channel.",
+                                         convertedMessage.author.globalName];
+                    float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
+                    CGSize textSize                = [convertedMessage.content
+                             sizeWithFont:[UIFont systemFontOfSize:15]
+                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                            lineBreakMode:NSLineBreakByWordWrapping];
+                    convertedMessage.contentHeight = textSize.height + 40;
+                } else if ([messageType intValue] == 7) {
+                    convertedMessage.isGrouped     = NO;
+                    convertedMessage.content       = [NSString
+                        stringWithFormat:@"%@ just slid into the server. "
+                                               @"Welcome them!",
+                                         convertedMessage.author.globalName];
+                    float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
+                    CGSize textSize                = [convertedMessage.content
+                             sizeWithFont:[UIFont systemFontOfSize:15]
+                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                            lineBreakMode:NSLineBreakByWordWrapping];
+                    convertedMessage.contentHeight = textSize.height + 20;
+                } else if ([messageType intValue] == 8) {
+                    convertedMessage.isGrouped     = NO;
+                    convertedMessage.content       = [NSString
+                        stringWithFormat:@"%@ just boosted the server!",
+                                         convertedMessage.author.globalName];
+                    float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
+                    CGSize textSize                = [convertedMessage.content
+                             sizeWithFont:[UIFont systemFontOfSize:15]
+                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                            lineBreakMode:NSLineBreakByWordWrapping];
+                    convertedMessage.contentHeight = textSize.height + 20;
+                } else if ([messageType intValue] == 18) {
+                    convertedMessage.isGrouped     = NO;
+                    convertedMessage.content       = [NSString
+                        stringWithFormat:@"%@ just boosted the server!",
+                                         convertedMessage.author.globalName];
+                    float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
+                    CGSize textSize                = [convertedMessage.content
+                             sizeWithFont:[UIFont systemFontOfSize:15]
+                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                            lineBreakMode:NSLineBreakByWordWrapping];
+                    convertedMessage.contentHeight = textSize.height + 20;
                 }
-                convertedMessage.content       = [NSString
-                    stringWithFormat:@"%@ added %@ to the group conversation.",
-                                     convertedMessage.author.globalName,
-                                     targetUsername];
-                float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
-                CGSize textSize                = [convertedMessage.content
-                         sizeWithFont:[UIFont systemFontOfSize:15]
-                    constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                        lineBreakMode:NSLineBreakByWordWrapping];
-                convertedMessage.contentHeight = textSize.height + 40;
 
-            } else if ([messageType intValue] == 2) {
-                convertedMessage.isGrouped     = NO;
-                convertedMessage.content       = [NSString
-                    stringWithFormat:@"%@ left the group conversation.",
-                                     convertedMessage.author.globalName];
-                float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
-                CGSize textSize                = [convertedMessage.content
-                         sizeWithFont:[UIFont systemFontOfSize:15]
-                    constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                        lineBreakMode:NSLineBreakByWordWrapping];
-                convertedMessage.contentHeight = textSize.height + 40;
-
-            } else if ([messageType intValue] == 4) {
-                convertedMessage.isGrouped     = NO;
-                convertedMessage.content       = [NSString
-                    stringWithFormat:@"%@ changed the group name to %@.",
-                                     convertedMessage.author.globalName,
-                                     [jsonMessage objectForKey:@"content"]];
-                float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
-                CGSize textSize                = [convertedMessage.content
-                         sizeWithFont:[UIFont systemFontOfSize:15]
-                    constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                        lineBreakMode:NSLineBreakByWordWrapping];
-                convertedMessage.contentHeight = textSize.height + 30;
-
-            } else if ([messageType intValue] == 5) {
-                convertedMessage.isGrouped     = NO;
-                convertedMessage.content       = [NSString
-                    stringWithFormat:@"%@ changed the group icon.",
-                                     convertedMessage.author.globalName];
-                float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
-                CGSize textSize                = [convertedMessage.content
-                         sizeWithFont:[UIFont systemFontOfSize:15]
-                    constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                        lineBreakMode:NSLineBreakByWordWrapping];
-                convertedMessage.contentHeight = textSize.height + 15;
-            } else if ([messageType intValue] == 6) {
-                convertedMessage.isGrouped     = NO;
-                convertedMessage.content       = [NSString
-                    stringWithFormat:@"%@ pinned a message to this channel.",
-                                     convertedMessage.author.globalName];
-                float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
-                CGSize textSize                = [convertedMessage.content
-                         sizeWithFont:[UIFont systemFontOfSize:15]
-                    constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                        lineBreakMode:NSLineBreakByWordWrapping];
-                convertedMessage.contentHeight = textSize.height + 40;
-            } else if ([messageType intValue] == 7) {
-                convertedMessage.isGrouped     = NO;
-                convertedMessage.content       = [NSString
-                    stringWithFormat:@"%@ just slid into the server. "
-                                           @"Welcome them!",
-                                     convertedMessage.author.globalName];
-                float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
-                CGSize textSize                = [convertedMessage.content
-                         sizeWithFont:[UIFont systemFontOfSize:15]
-                    constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                        lineBreakMode:NSLineBreakByWordWrapping];
-                convertedMessage.contentHeight = textSize.height + 20;
-            } else if ([messageType intValue] == 8) {
-                convertedMessage.isGrouped     = NO;
-                convertedMessage.content       = [NSString
-                    stringWithFormat:@"%@ just boosted the server!",
-                                     convertedMessage.author.globalName];
-                float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
-                CGSize textSize                = [convertedMessage.content
-                         sizeWithFont:[UIFont systemFontOfSize:15]
-                    constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                        lineBreakMode:NSLineBreakByWordWrapping];
-                convertedMessage.contentHeight = textSize.height + 20;
-            } else if ([messageType intValue] == 18) {
-                convertedMessage.isGrouped     = NO;
-                convertedMessage.content       = [NSString
-                    stringWithFormat:@"%@ just boosted the server!",
-                                     convertedMessage.author.globalName];
-                float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
-                CGSize textSize                = [convertedMessage.content
-                         sizeWithFont:[UIFont systemFontOfSize:15]
-                    constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                        lineBreakMode:NSLineBreakByWordWrapping];
-                convertedMessage.contentHeight = textSize.height + 20;
+                [messages insertObject:convertedMessage atIndex:0];
             }
-
-            [messages insertObject:convertedMessage atIndex:0];
         }
 
         for (int i = 0; i < messages.count; i++) {
@@ -607,29 +604,33 @@ static dispatch_queue_t channel_send_queue;
             }
             NSDate *currentTimeStamp = currentMessage.timestamp;
 
-            if (prevMessage.author.snowflake == currentMessage.author.snowflake
-                && ([currentMessage.timestamp timeIntervalSince1970] -
+            if (prevMessage.author.snowflake != currentMessage.author.snowflake
+                || ([currentMessage.timestamp timeIntervalSince1970] -
                         [prevMessage.timestamp timeIntervalSince1970]
-                    < 420)
-                && [[NSCalendar currentCalendar] 
+                    >= 420)
+                || ![[NSCalendar currentCalendar]
                     rangeOfUnit:NSCalendarUnitDay
-                    startDate:&currentTimeStamp
-                    interval:NULL
-                    forDate:prevMessage.timestamp
-                ] && (prevMessage.messageType == DEFAULT || prevMessage.messageType == REPLY)) {
-                currentMessage.isGrouped = (currentMessage.messageType == DEFAULT || currentMessage.messageType == REPLY) && (currentMessage.referencedMessage == nil);
-
-                if (currentMessage.isGrouped) {
-                    float contentWidth =
-                        UIScreen.mainScreen.bounds.size.width - 63;
-                    CGSize authorNameSize = [currentMessage.author.globalName
-                             sizeWithFont:[UIFont boldSystemFontOfSize:15]
-                        constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                            lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
-
-                    currentMessage.contentHeight -= authorNameSize.height + 4;
-                }
+                      startDate:&currentTimeStamp
+                       interval:NULL
+                        forDate:prevMessage.timestamp]
+                || (prevMessage.messageType != DEFAULT && prevMessage.messageType != REPLY)) {
+                continue;
             }
+
+            currentMessage.isGrouped = (currentMessage.messageType == DEFAULT || currentMessage.messageType == REPLY)
+                && (currentMessage.referencedMessage == nil);
+            if (!currentMessage.isGrouped) {
+                continue;
+            }
+
+            float contentWidth =
+                UIScreen.mainScreen.bounds.size.width - 63;
+            CGSize authorNameSize = [currentMessage.author.globalName
+                     sizeWithFont:[UIFont boldSystemFontOfSize:15]
+                constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
+                    lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
+
+            currentMessage.contentHeight -= authorNameSize.height + 4;
         }
     });
 

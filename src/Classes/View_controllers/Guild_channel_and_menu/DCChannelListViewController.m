@@ -156,7 +156,6 @@
             [chatViewController.navigationItem setTitle:formattedChannelName];
 
             // Populate the message view with the last 50 messages
-
             [chatViewController getMessages:50 beforeMessage:nil];
 
             // Chat view is watching the present conversation (auto scroll with

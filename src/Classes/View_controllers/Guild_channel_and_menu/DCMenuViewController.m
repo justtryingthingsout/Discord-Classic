@@ -330,150 +330,154 @@
 
 - (void)tableView:(UITableView *)tableView
     didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (tableView == self.guildTableView) {
-        id selectedGuild = [self.displayGuilds objectAtIndex:indexPath.row];
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        if ([selectedGuild isKindOfClass:[DCGuildFolder class]]) {
-            // NSLog(@"Folder selected: %@", selectedGuild);
-            DCGuildFolder *folder           = selectedGuild;
-            folder.opened                   = !folder.opened;
-            NSDictionary *constFolderDict   = [[NSUserDefaults standardUserDefaults]
-                dictionaryForKey:[@(folder.id) stringValue]];
-            NSMutableDictionary *folderDict = constFolderDict ? [constFolderDict mutableCopy] : [NSMutableDictionary dictionary];
-            [folderDict setValue:[NSNumber numberWithBool:folder.opened] forKey:@"opened"];
-            [[NSUserDefaults standardUserDefaults] setObject:folderDict
-                                                      forKey:[@(folder.id) stringValue]];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            [self.guildTableView beginUpdates];
-            if (folder.opened) {
-                NSMutableArray *newIndexPaths = [NSMutableArray array];
-                NSUInteger curIdx             = [self.displayGuilds indexOfObject:folder] + 1;
-                for (NSString *guildId in folder.guildIds) {
-                    NSUInteger idx = [DCServerCommunicator.sharedInstance.guilds indexOfObjectPassingTest:^BOOL(DCGuild *g, NSUInteger idx, BOOL *stop) {
-                        return [g.snowflake isEqualToString:guildId];
-                    }];
-                    NSAssert(idx != NSNotFound, @"Guild ID %@ not found", guildId);
-                    DCGuild *guild = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:idx];
-                    NSAssert(guild != nil, @"Guild not found for ID %@", guildId);
-                    // NSLog(@"add index: %lu, name: %@", (unsigned long)curIdx, guild.name);
-                    [self.displayGuilds insertObject:guild atIndex:curIdx];
-                    [newIndexPaths addObject:[NSIndexPath indexPathForRow:curIdx++ inSection:0]];
-                }
-                NSAssert(newIndexPaths.count == folder.guildIds.count, @"New index paths count does not match folder guild IDs count (%@ != %@)", @(newIndexPaths.count), @(folder.guildIds.count));
-                [self.guildTableView insertRowsAtIndexPaths:newIndexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-            } else {
-                NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-                NSUInteger idx                     = [self.displayGuilds indexOfObject:folder] + 1;
-                for (NSUInteger i = 0; i < folder.guildIds.count; i++) {
-                    if (idx >= self.displayGuilds.count) {
-                        break; // Prevent out of bounds
-                    }
-                    // DCGuild *guild = [DCServerCommunicator.sharedInstance.guilds
-                    //     objectAtIndex:[DCServerCommunicator.sharedInstance.guilds indexOfObjectPassingTest:^BOOL(DCGuild *g, NSUInteger idx, BOOL *stop) {
-                    //         return [g.snowflake isEqualToString:folder.guildIds[i]];
-                    //     }]];
-                    // NSLog(@"remove index: %lu, name: %@", (unsigned long)(idx + i), guild.name);
-                    [self.displayGuilds removeObjectAtIndex:idx];
-                    [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:idx + i inSection:0]];
-                }
-                NSAssert(indexPathsToDelete.count == folder.guildIds.count, @"Index paths to delete count does not match folder guild IDs count (%@ != %@)", @(indexPathsToDelete.count), @(folder.guildIds.count));
-                [self.guildTableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
-            }
-            [self.guildTableView endUpdates];
-            return;
-        }
-        self.selectedGuild = selectedGuild;
-        if (self.selectedGuild.banner == nil) {
-            self.guildBanner.image = [UIImage imageNamed:@"No-Header"];
-        } else {
-            self.guildBanner.image = self.selectedGuild.banner;
-        }
-        [self.navigationItem setTitle:self.selectedGuild.name];
-        self.guildLabel.text = self.selectedGuild.name;
-        [self.channelTableView reloadData];
-        if (self.guildLabel &&
-            [self.guildLabel.text isEqualToString:@"Direct Messages"]) {
-            self.totalView.hidden = NO;
-            self.userName.text =
-                DCServerCommunicator.sharedInstance.currentUserInfo.globalName;
-            self.globalName.text       = [NSString
-                stringWithFormat:@"@%@",
-                                 DCServerCommunicator.sharedInstance.currentUserInfo.username];
-            self.guildTotalView.hidden = YES;
-        } else {
-            self.totalView.hidden      = YES;
-            self.guildTotalView.hidden = NO;
-        }
-    } else if (tableView == self.channelTableView) {
-        if (!self.selectedGuild || !self.selectedGuild.channels || self.selectedGuild.channels.count <= indexPath.row) {
-#ifdef DEBUG
-            NSLog(@"Selected guild or channels are not set or index out of bounds");
-#endif
-            return;
-        }
-
-        DCChannel *channelAtRowIndex =
-            [self.selectedGuild.channels objectAtIndex:indexPath.row];
-
-        // If the channel is a category, do nothing
-        if (channelAtRowIndex.type == 4) {
+    @autoreleasepool {
+        if (tableView == self.guildTableView) {
+            id selectedGuild = [self.displayGuilds objectAtIndex:indexPath.row];
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
-            return;
-        }
-
-        DCServerCommunicator.sharedInstance.selectedChannel = channelAtRowIndex;
-        self.selectedChannel                                = channelAtRowIndex;
-
-        [DCServerCommunicator.sharedInstance
-            sendGuildSubscriptionWithGuildId:self.selectedGuild.snowflake
-                                   channelId:self.selectedChannel.snowflake];
-
-        // Mark channel messages as read and refresh the channel object
-        // accordingly
-        [DCServerCommunicator.sharedInstance.selectedChannel
-            ackMessage:DCServerCommunicator.sharedInstance.selectedChannel
-                           .lastMessageId];
-        [DCServerCommunicator.sharedInstance.selectedChannel checkIfRead];
-
-        // Remove the blue indicator since the channel has been read
-        //[[self.channelTableView cellForRowAtIndexPath:indexPath]
-        // setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
-        if (self.experimentalMode) {
-            UINavigationController *navigationController =
-                (UINavigationController *)
-                    self.slideMenuController.contentViewController;
-            DCChatViewController *contentViewController =
-                navigationController.viewControllers.firstObject;
-            if ([contentViewController
-                    isKindOfClass:[DCChatViewController class]]) {
-                [NSNotificationCenter.defaultCenter
-                    postNotificationName:@"NUKE CHAT DATA"
-                                  object:nil];
-                [NSNotificationCenter.defaultCenter postNotificationName:@"GuildMemberListUpdated" object:nil];
-                NSString *formattedChannelName;
-                if (DCServerCommunicator.sharedInstance.selectedChannel.type
-                    == 0) {
-                    formattedChannelName = [@"#"
-                        stringByAppendingString:DCServerCommunicator
-                                                    .sharedInstance
-                                                    .selectedChannel.name];
+            if ([selectedGuild isKindOfClass:[DCGuildFolder class]]) {
+                // NSLog(@"Folder selected: %@", selectedGuild);
+                DCGuildFolder *folder           = selectedGuild;
+                folder.opened                   = !folder.opened;
+                NSDictionary *constFolderDict   = [[NSUserDefaults standardUserDefaults]
+                    dictionaryForKey:[@(folder.id) stringValue]];
+                NSMutableDictionary *folderDict = constFolderDict ? [constFolderDict mutableCopy] : [NSMutableDictionary dictionary];
+                [folderDict setValue:[NSNumber numberWithBool:folder.opened] forKey:@"opened"];
+                [[NSUserDefaults standardUserDefaults] setObject:folderDict
+                                                          forKey:[@(folder.id) stringValue]];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                [self.guildTableView beginUpdates];
+                if (folder.opened) {
+                    NSMutableArray *newIndexPaths = [NSMutableArray array];
+                    NSUInteger curIdx             = [self.displayGuilds indexOfObject:folder] + 1;
+                    for (NSString *guildId in folder.guildIds) { @autoreleasepool {
+                        NSUInteger idx = [DCServerCommunicator.sharedInstance.guilds indexOfObjectPassingTest:^BOOL(DCGuild *g, NSUInteger idx, BOOL *stop) {
+                            return [g.snowflake isEqualToString:guildId];
+                        }];
+                        NSAssert(idx != NSNotFound, @"Guild ID %@ not found", guildId);
+                        DCGuild *guild = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:idx];
+                        NSAssert(guild != nil, @"Guild not found for ID %@", guildId);
+                        // NSLog(@"add index: %lu, name: %@", (unsigned long)curIdx, guild.name);
+                        [self.displayGuilds insertObject:guild atIndex:curIdx];
+                        [newIndexPaths addObject:[NSIndexPath indexPathForRow:curIdx++ inSection:0]];
+                    }}
+                    NSAssert(newIndexPaths.count == folder.guildIds.count, @"New index paths count does not match folder guild IDs count (%@ != %@)", @(newIndexPaths.count), @(folder.guildIds.count));
+                    [self.guildTableView insertRowsAtIndexPaths:newIndexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
                 } else {
-                    formattedChannelName = DCServerCommunicator.sharedInstance
-                                               .selectedChannel.name;
+                    NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+                    NSUInteger idx                     = [self.displayGuilds indexOfObject:folder] + 1;
+                    for (NSUInteger i = 0; i < folder.guildIds.count; i++) { @autoreleasepool {
+                        if (idx >= self.displayGuilds.count) {
+                            break; // Prevent out of bounds
+                        }
+                        // DCGuild *guild = [DCServerCommunicator.sharedInstance.guilds
+                        //     objectAtIndex:[DCServerCommunicator.sharedInstance.guilds indexOfObjectPassingTest:^BOOL(DCGuild *g, NSUInteger idx, BOOL *stop) {
+                        //         return [g.snowflake isEqualToString:folder.guildIds[i]];
+                        //     }]];
+                        // NSLog(@"remove index: %lu, name: %@", (unsigned long)(idx + i), guild.name);
+                        [self.displayGuilds removeObjectAtIndex:idx];
+                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:idx + i inSection:0]];
+                    }}
+                    NSAssert(indexPathsToDelete.count == folder.guildIds.count, @"Index paths to delete count does not match folder guild IDs count (%@ != %@)", @(indexPathsToDelete.count), @(folder.guildIds.count));
+                    [self.guildTableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
                 }
-                [contentViewController.navigationItem
-                    setTitle:formattedChannelName];
-                [contentViewController getMessages:50 beforeMessage:nil];
-                [contentViewController setViewingPresentTime:true];
-                [self.slideMenuController hideMenu:YES];
+                [self.guildTableView endUpdates];
+                return;
             }
-        } else {
-            [self performSegueWithIdentifier:@"guilds to chat" sender:self];
+            self.selectedGuild = selectedGuild;
+            if (self.selectedGuild.banner == nil) {
+                self.guildBanner.image = [UIImage imageNamed:@"No-Header"];
+            } else {
+                self.guildBanner.image = self.selectedGuild.banner;
+            }
+            [self.navigationItem setTitle:self.selectedGuild.name];
+            self.guildLabel.text = self.selectedGuild.name;
+            @autoreleasepool {
+                [self.channelTableView reloadData];
+            }
+            if (self.guildLabel &&
+                [self.guildLabel.text isEqualToString:@"Direct Messages"]) {
+                self.totalView.hidden = NO;
+                self.userName.text =
+                    DCServerCommunicator.sharedInstance.currentUserInfo.globalName;
+                self.globalName.text       = [NSString
+                    stringWithFormat:@"@%@",
+                                     DCServerCommunicator.sharedInstance.currentUserInfo.username];
+                self.guildTotalView.hidden = YES;
+            } else {
+                self.totalView.hidden      = YES;
+                self.guildTotalView.hidden = NO;
+            }
+        } else if (tableView == self.channelTableView) {
+            if (!self.selectedGuild || !self.selectedGuild.channels || self.selectedGuild.channels.count <= indexPath.row) {
+#ifdef DEBUG
+                NSLog(@"Selected guild or channels are not set or index out of bounds");
+#endif
+                return;
+            }
+
+            DCChannel *channelAtRowIndex =
+                [self.selectedGuild.channels objectAtIndex:indexPath.row];
+
+            // If the channel is a category, do nothing
+            if (channelAtRowIndex.type == 4) {
+                [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                return;
+            }
+
+            DCServerCommunicator.sharedInstance.selectedChannel = channelAtRowIndex;
+            self.selectedChannel                                = channelAtRowIndex;
+
+            [DCServerCommunicator.sharedInstance
+                sendGuildSubscriptionWithGuildId:self.selectedGuild.snowflake
+                                       channelId:self.selectedChannel.snowflake];
+
+            // Mark channel messages as read and refresh the channel object
+            // accordingly
+            [DCServerCommunicator.sharedInstance.selectedChannel
+                ackMessage:DCServerCommunicator.sharedInstance.selectedChannel
+                               .lastMessageId];
+            [DCServerCommunicator.sharedInstance.selectedChannel checkIfRead];
+
+            // Remove the blue indicator since the channel has been read
+            //[[self.channelTableView cellForRowAtIndexPath:indexPath]
+            // setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+            if (self.experimentalMode) {
+                UINavigationController *navigationController =
+                    (UINavigationController *)
+                        self.slideMenuController.contentViewController;
+                DCChatViewController *contentViewController =
+                    navigationController.viewControllers.firstObject;
+                if ([contentViewController
+                        isKindOfClass:[DCChatViewController class]]) {
+                    [NSNotificationCenter.defaultCenter
+                        postNotificationName:@"NUKE CHAT DATA"
+                                      object:nil];
+                    [NSNotificationCenter.defaultCenter postNotificationName:@"GuildMemberListUpdated" object:nil];
+                    NSString *formattedChannelName;
+                    if (DCServerCommunicator.sharedInstance.selectedChannel.type
+                        == 0) {
+                        formattedChannelName = [@"#"
+                            stringByAppendingString:DCServerCommunicator
+                                                        .sharedInstance
+                                                        .selectedChannel.name];
+                    } else {
+                        formattedChannelName = DCServerCommunicator.sharedInstance
+                                                   .selectedChannel.name;
+                    }
+                    [contentViewController.navigationItem
+                        setTitle:formattedChannelName];
+                    [contentViewController getMessages:50 beforeMessage:nil];
+                    [contentViewController setViewingPresentTime:true];
+                    [self.slideMenuController hideMenu:YES];
+                }
+            } else {
+                [self performSegueWithIdentifier:@"guilds to chat" sender:self];
+            }
+            //[tableView cellForRowAtIndexPath:indexPath].accessoryType =
+            // UITableViewCellAccessoryDisclosureIndicator;
         }
-        //[tableView cellForRowAtIndexPath:indexPath].accessoryType =
-        // UITableViewCellAccessoryDisclosureIndicator;
     }
 }
 
