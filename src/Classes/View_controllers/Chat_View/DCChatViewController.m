@@ -724,6 +724,7 @@ static dispatch_queue_t chat_messages_queue;
                              )
                     animated:NO];
         [UIView commitAnimations];
+        [UIView setAnimationsEnabled:YES];
         return;
     }
 
@@ -764,6 +765,7 @@ static dispatch_queue_t chat_messages_queue;
                 animated:NO];
     [self.typingIndicatorView setY:self.view.height - self.keyboardHeight - self.toolbar.height - 20];
     [UIView commitAnimations];
+    [UIView setAnimationsEnabled:YES];
 }
 
 - (void)getMessages:(int)numberOfMessages beforeMessage:(DCMessage *)message {
