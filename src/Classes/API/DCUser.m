@@ -47,9 +47,8 @@
         case DCUserStatusDoNotDisturb:
             return @"dnd";
         case DCUserStatusOffline:
-            return @"offline";
         default:
-            return @"unknown";
+            return @"offline";
     }
 }
 

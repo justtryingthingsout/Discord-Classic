@@ -69,6 +69,7 @@ static dispatch_queue_t chat_messages_queue;
                 action:@selector(dismissKeyboard:)];
     [self.view addGestureRecognizer:gestureRecognizer];
     gestureRecognizer.cancelsTouchesInView = NO;
+    gestureRecognizer.delegate = self;
 
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"]) {
         [UINavigationBar.appearance
@@ -680,6 +681,11 @@ static dispatch_queue_t chat_messages_queue;
         return;
     }
 
+    if ([typingUserId isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
+        // Ignore typing events from the current user
+        return;
+    }
+
     NSTimer *existingTimer = [self.typingUsers objectForKey:typingUserId];
     if (existingTimer) {
         [existingTimer invalidate];
@@ -717,6 +723,12 @@ static dispatch_queue_t chat_messages_queue;
 #endif
         return;
     }
+
+    if ([typingUserId isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
+        // Ignore typing events from the current user
+        return;
+    }
+
     NSTimer *existingTimer = [self.typingUsers objectForKey:typingUserId];
     if (existingTimer) {
         [existingTimer invalidate];
@@ -1572,6 +1584,11 @@ static dispatch_queue_t chat_messages_queue;
     }
     [self.toolbar setY:self.view.height - self.toolbar.height];
     [UIView commitAnimations];
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+    shouldReceiveTouch:(UITouch *)touch {
+    return ![touch.view.superview isKindOfClass:[UIToolbar class]];
 }
 
 - (void)dismissKeyboard:(UITapGestureRecognizer *)sender {

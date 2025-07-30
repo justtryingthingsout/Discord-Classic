@@ -24,7 +24,8 @@
                                       UITableViewDataSource,
                                       UITableViewDelegate,
                                       UIImagePickerControllerDelegate,
-                                      UIActionSheetDelegate>
+                                      UIActionSheetDelegate,
+                                      UIGestureRecognizerDelegate>
 - (void)getMessages:(int)numberOfMessages beforeMessage:(DCMessage *)message;
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;

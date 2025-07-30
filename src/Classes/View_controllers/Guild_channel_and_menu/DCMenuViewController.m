@@ -231,7 +231,6 @@
 - (void)reloadTable {
     [self handleMessageAck];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.channelTableView reloadData];
         [self.reloadControl endRefreshing];
     });
 }
@@ -667,9 +666,11 @@
                             buddy = [DCServerCommunicator.sharedInstance.loadedUsers
                                 objectForKey:userId];
 
-                            // If not in cache, construct user manually from
-                            // dictionary
+                            // If not in cache, construct user manually from dictionary
                             if (!buddy) {
+#ifdef DEBUG
+                                NSLog(@"Buddy not found in cache, creating new DCUser for ID: %@", userId);
+#endif
                                 buddy           = [DCUser new];
                                 buddy.snowflake = userId;
                                 buddy.username  = [userDict objectForKey:@"username"];
@@ -681,11 +682,15 @@
 
                     // Update the status image based on the buddy's status
                     if (buddy) {
+                        // NSLog(@"Buddy found for DM channel %@ with status: %d", buddy.username, buddy.status);
                         NSString *statusImageName =
                             [DCMenuViewController imageNameForStatus:buddy.status];
                         cell.statusImage.image =
                             [UIImage imageNamed:statusImageName];
                     } else {
+#ifdef DEBUG
+                        NSLog(@"Buddy not found for DM channel: %@", channelAtRowIndex.name);
+#endif
                         cell.statusImage.image = [UIImage imageNamed:@"offline"];
                     }
 
@@ -786,7 +791,7 @@
         case DCUserStatusDoNotDisturb:
             return @"dnd";
         case DCUserStatusIdle:
-            return @"idle";
+            return @"absent";
         case DCUserStatusOffline:
         default:
             return @"offline";

@@ -273,7 +273,7 @@
         case DCUserStatusDoNotDisturb:
             return @"dnd";
         case DCUserStatusIdle:
-            return @"idle";
+            return @"absent";
         case DCUserStatusOffline:
         default:
             return @"offline";

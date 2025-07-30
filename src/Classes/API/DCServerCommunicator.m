@@ -300,6 +300,7 @@ UIActivityIndicatorView *spinner;
             } else {
                 if (((NSArray *)[privateChannel objectForKey:@"recipients"]).count > 0) {
                     NSDictionary *user         = [[privateChannel objectForKey:@"recipients"] objectAtIndex:0];
+
                     NSURL *avatarURL           = [NSURL URLWithString:[NSString
                                                                 stringWithFormat:@"https://cdn.discordapp.com/avatars/%@/%@.png?size=64",
                                                                                  [user objectForKey:@"id"],
@@ -317,8 +318,8 @@ UIActivityIndicatorView *spinner;
                                                     CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
                                                     [newChannel.icon drawInRect:imageRect];
                                                     newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
-                                                    [NSNotificationCenter.defaultCenter postNotificationName:@"RELOAD CHANNEL LIST" object:nil];
                                                     UIGraphicsEndImageContext();
+                                                    [NSNotificationCenter.defaultCenter postNotificationName:@"RELOAD CHANNEL LIST" object:nil];
                                                 });
                                             } else {
                                                 // NSLog(@"Failed to download user avatar with URL %@: %@", avatarURL, error);
@@ -338,22 +339,8 @@ UIActivityIndicatorView *spinner;
                                                     [newChannel.icon drawInRect:imageRect];
                                                     newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
                                                     UIGraphicsEndImageContext();
+                                                    [NSNotificationCenter.defaultCenter postNotificationName:@"RELOAD CHANNEL LIST" object:nil];
                                                 });
-                                            }
-                                            // Process user presences from READY payload
-                                            NSArray *presences = [d objectForKey:@"presences"];
-                                            for (NSDictionary *presence in presences) {
-                                                NSString *userId = [presence valueForKeyPath:@"user.id"];
-                                                NSString *status = [presence objectForKey:@"status"];
-                                                if (userId && status) {
-                                                    DCUser *user = [self.loadedUsers objectForKey:userId];
-                                                    if (user) {
-                                                        user.status = [DCUser statusFromString:status];
-                                                        // NSLog(@"[READY] Updated user %@ (ID: %@) to status: %@", user.username, userId, user.status);
-                                                    } else {
-                                                        // NSLog(@"[READY] Presence received for unknown user ID: %@", userId);
-                                                    }
-                                                }
                                             }
                                         }}];
                 }
@@ -383,6 +370,26 @@ UIActivityIndicatorView *spinner;
         }
         [privateGuild.channels addObject:newChannel];
     }}
+
+    // Process user presences from READY payload
+    NSArray *presences = [d objectForKey:@"presences"];
+    for (NSDictionary *presence in presences) {
+        NSString *userId = [presence valueForKeyPath:@"user.id"];
+        NSString *status = [presence objectForKey:@"status"];
+        if (!userId || !status) {
+            continue;
+        }
+        DCUser *user = [self.loadedUsers objectForKey:userId];
+        if (!user) {
+            user = [DCTools convertJsonUser:[presence objectForKey:@"user"] cache:YES];
+        }
+        user.status = [DCUser statusFromString:status];
+        // NSLog(@"[READY] User %@ (ID: %@) has status: %@ (%d)", user.username, userId, status, user.status);
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NSNotificationCenter.defaultCenter postNotificationName:@"RELOAD CHANNEL LIST" object:nil];
+    });
+    
     // Sort the DMs list by most recent...
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor
         sortDescriptorWithKey:@"lastMessageId"
@@ -420,7 +427,9 @@ UIActivityIndicatorView *spinner;
                                     return [guild.snowflake isEqualToString:guildId];
                                 }]
                     == NSNotFound) {
+#ifdef DEBUG
                     NSLog(@"[READY] Guild ID %@ not found in guilds array!", guildId);
+#endif
                     [guildIds removeObjectAtIndex:i];
                 }
             }

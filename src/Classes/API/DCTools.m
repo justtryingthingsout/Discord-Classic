@@ -70,6 +70,11 @@
 // Converts an NSDictionary created from json representing a user into a DCUser
 // object Also keeps the user in DCServerCommunicator.loadedUsers if cache:YES
 + (DCUser *)convertJsonUser:(NSDictionary *)jsonUser cache:(BOOL)cache {
+    if (cache && [DCServerCommunicator.sharedInstance.loadedUsers objectForKey:[jsonUser objectForKey:@"id"]]) {
+        // return pre-cached
+        return [DCServerCommunicator.sharedInstance.loadedUsers objectForKey:[jsonUser objectForKey:@"id"]];
+    }
+
     // NSLog(@"%@", jsonUser);
     DCUser *newUser    = DCUser.new;
     newUser.username   = [jsonUser objectForKey:@"username"];
@@ -82,6 +87,7 @@
     newUser.avatarID           = [jsonUser objectForKey:@"avatar"];
     newUser.avatarDecorationID = [jsonUser valueForKeyPath:@"avatar_decoration_data.asset"];
     newUser.discriminator      = [[jsonUser objectForKey:@"discriminator"] integerValue];
+    newUser.status             = DCUserStatusOffline;
 
     // Save to DCServerCommunicator.loadedUsers
     if (cache) {
@@ -107,28 +113,30 @@
         [manager downloadImageWithURL:avatarURL
                               options:0
                              progress:nil
-                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
-                                if (retrievedImage && finished) {
-                                    user.profileImage = retrievedImage;
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                        [NSNotificationCenter.defaultCenter
-                                            postNotificationName:
-                                                @"RELOAD USER DATA"
-                                                          object:user];
-                                    });
-                                } else {
-                                    // NSLog(@"Failed to download user profile image with URL %@: %@", avatarURL, error);
-                                    int selector = 0;
-
-                                    if (user.discriminator == 0) {
-                                        NSNumber *longId = @([user.snowflake longLongValue]);
-                                        selector         = ([longId longLongValue] >> 22) % 6;
+                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                @autoreleasepool {
+                                    if (retrievedImage && finished) {
+                                        user.profileImage = retrievedImage;
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            [NSNotificationCenter.defaultCenter
+                                                postNotificationName:
+                                                    @"RELOAD USER DATA"
+                                                              object:user];
+                                        });
                                     } else {
-                                        selector = user.discriminator % 5;
+                                        // NSLog(@"Failed to download user profile image with URL %@: %@", avatarURL, error);
+                                        int selector = 0;
+
+                                        if (user.discriminator == 0) {
+                                            NSNumber *longId = @([user.snowflake longLongValue]);
+                                            selector         = ([longId longLongValue] >> 22) % 6;
+                                        } else {
+                                            selector = user.discriminator % 5;
+                                        }
+                                        user.profileImage = [DCUser defaultAvatars][selector];
                                     }
-                                    user.profileImage = [DCUser defaultAvatars][selector];
                                 }
-                            }}];
+                            }];
 
         if (!user.avatarDecorationID || (NSNull *)user.avatarDecorationID == [NSNull null]) {
             return;
@@ -196,23 +204,25 @@
         [manager downloadImageWithURL:iconURL
                               options:0
                              progress:nil
-                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
-                                if (!retrievedImage || !finished) {
-                                    NSLog(@"Failed to download role icon with URL %@: %@", iconURL, error);
-                                    return;
-                                }
-                                role.icon = retrievedImage;
-                                dispatch_async(
-                                    dispatch_get_main_queue(),
-                                    ^{
-                                        [NSNotificationCenter
-                                                .defaultCenter
-                                            postNotificationName:
-                                                @"RELOAD CHAT DATA"
-                                                          object:nil];
+                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                @autoreleasepool {
+                                    if (!retrievedImage || !finished) {
+                                        NSLog(@"Failed to download role icon with URL %@: %@", iconURL, error);
+                                        return;
                                     }
-                                );
-                            }}];
+                                    role.icon = retrievedImage;
+                                    dispatch_async(
+                                        dispatch_get_main_queue(),
+                                        ^{
+                                            [NSNotificationCenter
+                                                    .defaultCenter
+                                                postNotificationName:
+                                                    @"RELOAD CHAT DATA"
+                                                              object:nil];
+                                        }
+                                    );
+                                }
+                            }];
     }
 }
 
@@ -223,18 +233,18 @@
     if (image.images.count > 1) {
         // If the image is animated, don't scale
         UILazyImage *lazyImage = [UILazyImage new];
-        lazyImage.image = image;
-        lazyImage.imageURL = url;
+        lazyImage.image        = image;
+        lazyImage.imageURL     = url;
         return lazyImage;
     }
     CGFloat aspectRatio = image.size.width / image.size.height;
-    int newWidth  = 200 * aspectRatio;
-    int newHeight = 200;
+    int newWidth        = 200 * aspectRatio;
+    int newHeight       = 200;
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(newWidth, newHeight), NO, 0.0);
     [image drawInRect:CGRectMake(0, 0, newWidth, newHeight)];
     UILazyImage *newImage = [UILazyImage new];
-    newImage.image = UIGraphicsGetImageFromCurrentImageContext();
-    newImage.imageURL = url;
+    newImage.image        = UIGraphicsGetImageFromCurrentImageContext();
+    newImage.imageURL     = url;
     UIGraphicsEndImageContext();
     return newImage;
 }
@@ -244,8 +254,8 @@
 + (DCMessage *)convertJsonMessage:(NSDictionary *)jsonMessage {
     DCMessage *newMessage = DCMessage.new;
     @autoreleasepool {
-        NSDictionary *author  = [jsonMessage objectForKey:@"author"];
-        NSString *authorId    = author ? [author objectForKey:@"id"] : nil;
+        NSDictionary *author = [jsonMessage objectForKey:@"author"];
+        NSString *authorId   = author ? [author objectForKey:@"id"] : nil;
 
         if (![DCServerCommunicator.sharedInstance.loadedUsers objectForKey:authorId]
             && authorId != nil && ![authorId isKindOfClass:[NSNull class]]) {
@@ -305,8 +315,8 @@
         static dispatch_once_t dateFormatOnceToken;
         static NSDateFormatter *dateFormatter;
         dispatch_once(&dateFormatOnceToken, ^{
-            dateFormatter = [NSDateFormatter new];
-            dateFormatter.dateFormat       = @"yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ";
+            dateFormatter            = [NSDateFormatter new];
+            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ";
             [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
         });
 
@@ -334,8 +344,8 @@
         dispatch_once(&prettyFormatOnceToken, ^{
             prettyDateFormatter = [NSDateFormatter new];
         });
-        prettyDateFormatter.dateStyle = NSDateFormatterShortStyle;
-        prettyDateFormatter.timeStyle = NSDateFormatterShortStyle;
+        prettyDateFormatter.dateStyle                  = NSDateFormatterShortStyle;
+        prettyDateFormatter.timeStyle                  = NSDateFormatterShortStyle;
         prettyDateFormatter.doesRelativeDateFormatting = YES;
 
         newMessage.prettyTimestamp =
@@ -396,19 +406,21 @@
                     [manager downloadImageWithURL:urlString
                                           options:SDWebImageCacheMemoryOnly
                                          progress:nil
-                                        completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
-                                            if (!retrievedImage || !finished) {
-                                                NSLog(@"Failed to load embed image with URL %@: %@", urlString, error);
-                                                return;
-                                            }
-                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:[DCTools scaledImageFromImage:retrievedImage withURL:urlString]];
+                                        completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                            @autoreleasepool {
+                                                if (!retrievedImage || !finished) {
+                                                    NSLog(@"Failed to load embed image with URL %@: %@", urlString, error);
+                                                    return;
+                                                }
+                                                [newMessage.attachments replaceObjectAtIndex:idx withObject:[DCTools scaledImageFromImage:retrievedImage withURL:urlString]];
 
-                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                [NSNotificationCenter.defaultCenter
-                                                    postNotificationName:@"RELOAD MESSAGE DATA"
-                                                                  object:newMessage];
-                                            });
-                                        }}];
+                                                dispatch_async(dispatch_get_main_queue(), ^{
+                                                    [NSNotificationCenter.defaultCenter
+                                                        postNotificationName:@"RELOAD MESSAGE DATA"
+                                                                      object:newMessage];
+                                                });
+                                            }
+                                        }];
                 } else if ([embedType isEqualToString:@"video"] ||
                            [embedType isEqualToString:@"gifv"]) {
                     NSURL *attachmentURL;
@@ -476,11 +488,11 @@
                         if (isDiscord) {
                             if (width != 0 || height != 0) {
                                 urlString = [NSURL URLWithString:
-                                                           [NSString stringWithFormat:
-                                                                         @"%@%cformat=png&width=%d&height=%d",
-                                                                         urlString,
-                                                                         [urlString query].length == 0 ? '?' : '&',
-                                                                         width, height]];
+                                                       [NSString stringWithFormat:
+                                                                     @"%@%cformat=png&width=%d&height=%d",
+                                                                     urlString,
+                                                                     [urlString query].length == 0 ? '?' : '&',
+                                                                     width, height]];
                             } else {
                                 urlString = [NSURL URLWithString:
                                                        [NSString stringWithFormat:
@@ -491,8 +503,8 @@
                         } else {
                             urlString = [NSURL URLWithString:
                                                    [NSString stringWithFormat:@"%@%cformat=png",
-                                                   urlString,
-                                                   [urlString query].length == 0 ? '?' : '&']];
+                                                                              urlString,
+                                                                              [urlString query].length == 0 ? '?' : '&']];
                         }
 
                         NSUInteger idx = [newMessage.attachments count];
@@ -502,22 +514,24 @@
                         [manager downloadImageWithURL:urlString
                                               options:SDWebImageCacheMemoryOnly
                                              progress:nil
-                                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
-                                                if (!retrievedImage || !finished) {
-                                                    NSLog(@"Failed to load video thumbnail with URL %@: %@", urlString, error);
-                                                    return;
-                                                }
-                                                dispatch_async(
-                                                    dispatch_get_main_queue(),
-                                                    ^{
-                                                        [video.thumbnail setImage:[DCTools scaledImageFromImage:retrievedImage withURL:nil].image];
-                                                        [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
-                                                        [NSNotificationCenter.defaultCenter
-                                                            postNotificationName:@"RELOAD CHAT DATA"
-                                                                          object:newMessage];
+                                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                @autoreleasepool {
+                                                    if (!retrievedImage || !finished) {
+                                                        NSLog(@"Failed to load video thumbnail with URL %@: %@", urlString, error);
+                                                        return;
                                                     }
-                                                );
-                                            }}];
+                                                    dispatch_async(
+                                                        dispatch_get_main_queue(),
+                                                        ^{
+                                                            [video.thumbnail setImage:[DCTools scaledImageFromImage:retrievedImage withURL:nil].image];
+                                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
+                                                            [NSNotificationCenter.defaultCenter
+                                                                postNotificationName:@"RELOAD CHAT DATA"
+                                                                              object:newMessage];
+                                                        }
+                                                    );
+                                                }
+                                            }];
 
                         video.layer.cornerRadius     = 6;
                         video.layer.masksToBounds    = YES;
@@ -583,21 +597,23 @@
                     [manager downloadImageWithURL:urlString
                                           options:SDWebImageCacheMemoryOnly
                                          progress:nil
-                                        completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
-                                            if (!retrievedImage || !finished) {
-                                                NSLog(@"Failed to load image with URL %@: %@", urlString, error);
-                                                return;
-                                            }
-                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:[DCTools scaledImageFromImage:retrievedImage withURL:urlString]];
-                                            dispatch_async(
-                                                dispatch_get_main_queue(),
-                                                ^{
-                                                    [NSNotificationCenter.defaultCenter
-                                                        postNotificationName:@"RELOAD MESSAGE DATA"
-                                                                      object:newMessage];
+                                        completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                            @autoreleasepool {
+                                                if (!retrievedImage || !finished) {
+                                                    NSLog(@"Failed to load image with URL %@: %@", urlString, error);
+                                                    return;
                                                 }
-                                            );
-                                        }}];
+                                                [newMessage.attachments replaceObjectAtIndex:idx withObject:[DCTools scaledImageFromImage:retrievedImage withURL:urlString]];
+                                                dispatch_async(
+                                                    dispatch_get_main_queue(),
+                                                    ^{
+                                                        [NSNotificationCenter.defaultCenter
+                                                            postNotificationName:@"RELOAD MESSAGE DATA"
+                                                                          object:newMessage];
+                                                    }
+                                                );
+                                            }
+                                        }];
                 } else if ([fileType rangeOfString:@"video/quicktime"].location != NSNotFound ||
                            [fileType rangeOfString:@"video/mp4"].location != NSNotFound ||
                            [fileType rangeOfString:@"video/mpv"].location != NSNotFound ||
@@ -612,9 +628,10 @@
                         // addObject:[[MPMoviePlayerViewController alloc]
                         // initWithContentURL:attachmentURL]];
                         DCChatVideoAttachment *video = [[NSBundle mainBundle]
-                            loadNibNamed:@"DCChatVideoAttachment"
-                                   owner:self
-                                 options:nil].firstObject;
+                                                           loadNibNamed:@"DCChatVideoAttachment"
+                                                                  owner:self
+                                                                options:nil]
+                                                           .firstObject;
 
                         video.videoURL = attachmentURL;
 
@@ -660,25 +677,27 @@
                         [manager downloadImageWithURL:urlString
                                               options:SDWebImageCacheMemoryOnly
                                              progress:nil
-                                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
-                                                if (!retrievedImage || !finished
-                                                    || !video || !video.thumbnail
-                                                    || ![video.thumbnail isKindOfClass:[UIImageView class]]) {
-                                                    NSLog(@"Failed to load video thumbnail with URL %@: %@", imageURL, error);
-                                                    return;
-                                                }
-                                                dispatch_async(
-                                                    dispatch_get_main_queue(),
-                                                    ^{
-                                                        [video.thumbnail
-                                                            setImage:[DCTools scaledImageFromImage:retrievedImage withURL:nil].image];
-                                                        [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
-                                                        [NSNotificationCenter.defaultCenter
-                                                            postNotificationName:@"RELOAD MESSAGE DATA"
-                                                                          object:newMessage];
+                                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                @autoreleasepool {
+                                                    if (!retrievedImage || !finished
+                                                        || !video || !video.thumbnail
+                                                        || ![video.thumbnail isKindOfClass:[UIImageView class]]) {
+                                                        NSLog(@"Failed to load video thumbnail with URL %@: %@", imageURL, error);
+                                                        return;
                                                     }
-                                                );
-                                            }}];
+                                                    dispatch_async(
+                                                        dispatch_get_main_queue(),
+                                                        ^{
+                                                            [video.thumbnail
+                                                                setImage:[DCTools scaledImageFromImage:retrievedImage withURL:nil].image];
+                                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
+                                                            [NSNotificationCenter.defaultCenter
+                                                                postNotificationName:@"RELOAD MESSAGE DATA"
+                                                                              object:newMessage];
+                                                        }
+                                                    );
+                                                }
+                                            }];
 
                         video.layer.cornerRadius     = 6;
                         video.layer.masksToBounds    = YES;
@@ -720,8 +739,8 @@
             dispatch_once(&onceToken, ^{
                 regex = [NSRegularExpression
                     regularExpressionWithPattern:@"\\<@(.*?)\\>"
-                                     options:NSRegularExpressionCaseInsensitive
-                                       error:NULL];
+                                         options:NSRegularExpressionCaseInsensitive
+                                           error:NULL];
             });
 
             NSTextCheckingResult *embeddedMention = [regex
@@ -784,8 +803,8 @@
             dispatch_once(&onceToken, ^{
                 regex = [NSRegularExpression
                     regularExpressionWithPattern:@"\\<#(.*?)\\>"
-                                     options:NSRegularExpressionCaseInsensitive
-                                       error:NULL];
+                                         options:NSRegularExpressionCaseInsensitive
+                                           error:NULL];
             });
 
             NSTextCheckingResult *embeddedMention = [regex
@@ -824,8 +843,8 @@
             dispatch_once(&onceToken, ^{
                 regex = [NSRegularExpression
                     regularExpressionWithPattern:@"\\<t:(\\d+)(?::(\\w+))?\\>"
-                                     options:NSRegularExpressionCaseInsensitive
-                                       error:NULL];
+                                         options:NSRegularExpressionCaseInsensitive
+                                           error:NULL];
             });
             NSTextCheckingResult *embeddedMention = [regex
                 firstMatchInString:newMessage.content
@@ -1001,48 +1020,52 @@
         [manager downloadImageWithURL:iconURL
                               options:0
                              progress:nil
-                            completed:^(UIImage *icon, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
-                                if (!icon || !finished) {
-                                    NSLog(@"Failed to load guild icon with URL %@: %@", iconURL, error);
-                                    return;
+                            completed:^(UIImage *icon, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                @autoreleasepool {
+                                    if (!icon || !finished) {
+                                        NSLog(@"Failed to load guild icon with URL %@: %@", iconURL, error);
+                                        return;
+                                    }
+                                    newGuild.icon   = icon;
+                                    CGSize itemSize = CGSizeMake(40, 40);
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        UIGraphicsBeginImageContextWithOptions(
+                                            itemSize, NO, UIScreen.mainScreen.scale
+                                        );
+                                        CGRect imageRect = CGRectMake(
+                                            0.0, 0.0, itemSize.width,
+                                            itemSize.height
+                                        );
+                                        [newGuild.icon drawInRect:imageRect];
+                                        newGuild.icon = UIGraphicsGetImageFromCurrentImageContext();
+                                        UIGraphicsEndImageContext();
+                                        [NSNotificationCenter.defaultCenter
+                                            postNotificationName:@"RELOAD GUILD"
+                                                          object:newGuild];
+                                    });
                                 }
-                                newGuild.icon   = icon;
-                                CGSize itemSize = CGSizeMake(40, 40);
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    UIGraphicsBeginImageContextWithOptions(
-                                        itemSize, NO, UIScreen.mainScreen.scale
-                                    );
-                                    CGRect imageRect = CGRectMake(
-                                        0.0, 0.0, itemSize.width,
-                                        itemSize.height
-                                    );
-                                    [newGuild.icon drawInRect:imageRect];
-                                    newGuild.icon = UIGraphicsGetImageFromCurrentImageContext();
-                                    UIGraphicsEndImageContext();
-                                    [NSNotificationCenter.defaultCenter
-                                        postNotificationName:@"RELOAD GUILD"
-                                                      object:newGuild];
-                                });
-                            }}];
+                            }];
     }
 
-    if ([jsonGuild objectForKey:@"banner"] && [jsonGuild objectForKey:@"banner"] != [NSNull null]) { 
+    if ([jsonGuild objectForKey:@"banner"] && [jsonGuild objectForKey:@"banner"] != [NSNull null]) {
         NSURL *bannerURL = [NSURL URLWithString:[NSString
                                                     stringWithFormat:@"https://cdn.discordapp.com/banners/%@/%@.png?size=320",
                                                                      newGuild.snowflake, [jsonGuild objectForKey:@"banner"]]];
         [manager downloadImageWithURL:bannerURL
                               options:0
                              progress:nil
-                            completed:^(UIImage *banner, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
-                                if (!banner || !finished) {
-                                    NSLog(@"Failed to load guild banner with URL %@: %@", bannerURL, error);
-                                    return;
+                            completed:^(UIImage *banner, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                @autoreleasepool {
+                                    if (!banner || !finished) {
+                                        NSLog(@"Failed to load guild banner with URL %@: %@", bannerURL, error);
+                                        return;
+                                    }
+                                    newGuild.banner = banner;
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        UIGraphicsEndImageContext();
+                                    });
                                 }
-                                newGuild.banner = banner;
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    UIGraphicsEndImageContext();
-                                });
-                            }}];
+                            }];
     }
 
     NSMutableArray *categories = NSMutableArray.new;
