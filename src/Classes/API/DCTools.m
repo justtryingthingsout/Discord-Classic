@@ -21,6 +21,7 @@
 #import "SDWebImageManager.h"
 #include "TSMarkdownParser.h"
 #import "UIImage+animatedGIF.h"
+#import "UILazyImage.h"
 
 // https://discord.gg/X4NSsMC
 
@@ -215,16 +216,25 @@
     }
 }
 
-+ (UIImage *)scaledImageFromImage:(UIImage *)image {
++ (UILazyImage *)scaledImageFromImage:(UIImage *)image withURL:(NSURL *)url {
     if (!image) {
         return nil;
+    }
+    if (image.images.count > 1) {
+        // If the image is animated, don't scale
+        UILazyImage *lazyImage = [UILazyImage new];
+        lazyImage.image = image;
+        lazyImage.imageURL = url;
+        return lazyImage;
     }
     CGFloat aspectRatio = image.size.width / image.size.height;
     int newWidth  = 200 * aspectRatio;
     int newHeight = 200;
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(newWidth, newHeight), NO, 0.0);
     [image drawInRect:CGRectMake(0, 0, newWidth, newHeight)];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UILazyImage *newImage = [UILazyImage new];
+    newImage.image = UIGraphicsGetImageFromCurrentImageContext();
+    newImage.imageURL = url;
     UIGraphicsEndImageContext();
     return newImage;
 }
@@ -391,7 +401,7 @@
                                                 NSLog(@"Failed to load embed image with URL %@: %@", urlString, error);
                                                 return;
                                             }
-                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:[DCTools scaledImageFromImage:retrievedImage]];
+                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:[DCTools scaledImageFromImage:retrievedImage withURL:urlString]];
 
                                             dispatch_async(dispatch_get_main_queue(), ^{
                                                 [NSNotificationCenter.defaultCenter
@@ -500,7 +510,7 @@
                                                 dispatch_async(
                                                     dispatch_get_main_queue(),
                                                     ^{
-                                                        [video.thumbnail setImage:[DCTools scaledImageFromImage:retrievedImage]];
+                                                        [video.thumbnail setImage:[DCTools scaledImageFromImage:retrievedImage withURL:nil].image];
                                                         [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
                                                         [NSNotificationCenter.defaultCenter
                                                             postNotificationName:@"RELOAD CHAT DATA"
@@ -578,7 +588,7 @@
                                                 NSLog(@"Failed to load image with URL %@: %@", urlString, error);
                                                 return;
                                             }
-                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:[DCTools scaledImageFromImage:retrievedImage]];
+                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:[DCTools scaledImageFromImage:retrievedImage withURL:urlString]];
                                             dispatch_async(
                                                 dispatch_get_main_queue(),
                                                 ^{
@@ -661,7 +671,7 @@
                                                     dispatch_get_main_queue(),
                                                     ^{
                                                         [video.thumbnail
-                                                            setImage:[DCTools scaledImageFromImage:retrievedImage]];
+                                                            setImage:[DCTools scaledImageFromImage:retrievedImage withURL:nil].image];
                                                         [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
                                                         [NSNotificationCenter.defaultCenter
                                                             postNotificationName:@"RELOAD MESSAGE DATA"

@@ -9,6 +9,7 @@
 #import "DCChatViewController.h"
 #include <dispatch/dispatch.h>
 #include <objc/runtime.h>
+#include "SDWebImageManager.h"
 
 #include <Foundation/Foundation.h>
 #include <Foundation/NSObjCRuntime.h>
@@ -26,6 +27,8 @@
 #import "DCUser.h"
 #import "QuickLook/QuickLook.h"
 #import "TRMalleableFrameView.h"
+#import "UILazyImageView.h"
+#import "UILazyImage.h"
 
 @interface DCChatViewController ()
 @property (nonatomic, strong) NSMutableArray *messages;
@@ -304,9 +307,9 @@ static dispatch_queue_t chat_messages_queue;
                                      DCServerCommunicator.sharedInstance.selectedChannel.name]
             : @"No Permission";
     self.toolbar.userInteractionEnabled = DCServerCommunicator.sharedInstance.selectedChannel.writeable;
-    self.typingIndicatorView.hidden = YES;
+    self.typingIndicatorView.hidden     = YES;
     [self.chatTableView
-            setHeight:self.view.height - self.keyboardHeight - self.toolbar.height];
+        setHeight:self.view.height - self.keyboardHeight - self.toolbar.height];
     [self.typingIndicatorView setY:self.view.height - self.keyboardHeight - self.toolbar.height - 20];
     [self.chatTableView
         setContentOffset:CGPointMake(
@@ -388,8 +391,8 @@ static dispatch_queue_t chat_messages_queue;
     NSMutableArray *indexPaths = NSMutableArray.new;
     for (int i = 0; i < self.messages.count; i++) {
         DCMessage *message = [self.messages objectAtIndex:i];
-        if ([message.author.snowflake isEqualToString:user.snowflake] 
-         || [message.referencedMessage.author.snowflake isEqualToString:user.snowflake]) {
+        if ([message.author.snowflake isEqualToString:user.snowflake]
+            || [message.referencedMessage.author.snowflake isEqualToString:user.snowflake]) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
             [indexPaths addObject:indexPath];
         }
@@ -469,7 +472,7 @@ static dispatch_queue_t chat_messages_queue;
         }
     }
 
-    NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
+    NSInteger rowCount        = [self.chatTableView numberOfRowsInSection:0];
     NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
     if (rowCount != self.messages.count) {
         NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
@@ -489,11 +492,11 @@ static dispatch_queue_t chat_messages_queue;
     [NSNotificationCenter.defaultCenter
         postNotificationName:@"TYPING STOP"
                       object:newMessage.author.snowflake];
-    
+
     [NSNotificationCenter.defaultCenter
         postNotificationName:@"MESSAGE DELETE"
                       object:nil
-                      userInfo:@{@"id": ((DCMessage *)self.messages.firstObject).snowflake}];
+                    userInfo:@{@"id" : ((DCMessage *)self.messages.firstObject).snowflake}];
 }
 
 - (void)handleMessageEdit:(NSNotification *)notification {
@@ -727,14 +730,9 @@ static dispatch_queue_t chat_messages_queue;
     assertMainThread();
     if (self.typingUsers.count == 0) {
         [UIView setAnimationsEnabled:NO];
-        BOOL wasVisible = !self.typingIndicatorView.hidden;
         self.typingIndicatorView.hidden = YES;
         [self.chatTableView
             setHeight:self.view.height - self.keyboardHeight - self.toolbar.height];
-        self.chatTableView.contentOffset = CGPointMake(
-            0,
-            self.chatTableView.contentOffset.y - (wasVisible ? 20 : 0)
-        );
         [UIView setAnimationsEnabled:YES];
         return;
     }
@@ -760,7 +758,7 @@ static dispatch_queue_t chat_messages_queue;
 
     [UIView setAnimationsEnabled:NO];
     self.typingLabel.text           = typingText;
-    BOOL wasHidden = self.typingIndicatorView.hidden;
+    BOOL wasHidden                  = self.typingIndicatorView.hidden;
     self.typingIndicatorView.hidden = NO;
     [self.typingIndicatorView setNeedsDisplay];
     self.chatTableView.contentOffset = CGPointMake(
@@ -815,8 +813,8 @@ static dispatch_queue_t chat_messages_queue;
 
                 int attachmentHeight = 0;
                 for (id attachment in newMessage.attachments) {
-                    if ([attachment isKindOfClass:[UIImage class]]) {
-                        UIImage *image      = attachment;
+                    if ([attachment isKindOfClass:[UILazyImage class]]) {
+                        UIImage *image      = ((UILazyImage *)attachment).image;
                         CGFloat aspectRatio = image.size.width
                             / image.size.height;
                         int newWidth  = 200 * aspectRatio;
@@ -969,121 +967,127 @@ static dispatch_queue_t chat_messages_queue;
                                   : [UIColor clearColor]];
 
             // NSLog(@"%@", cell.subviews);
-            for (UIView *subView in cell.subviews) { @autoreleasepool {
-                if ([subView isKindOfClass:[UIImageView class]]) {
-                    [subView removeFromSuperview];
-                } else if ([subView isKindOfClass:[DCChatVideoAttachment class]]) {
-                    [subView removeFromSuperview];
-                } else if ([subView isKindOfClass:[QLPreviewController class]]) {
-                    [subView removeFromSuperview];
+            for (UIView *subView in cell.subviews) {
+                @autoreleasepool {
+                    if ([subView isKindOfClass:[UIImageView class]]) {
+                        [subView removeFromSuperview];
+                    } else if ([subView isKindOfClass:[DCChatVideoAttachment class]]) {
+                        [subView removeFromSuperview];
+                    } else if ([subView isKindOfClass:[QLPreviewController class]]) {
+                        [subView removeFromSuperview];
+                    }
                 }
-            }}
+            }
             // dispatch_async(dispatch_get_main_queue(), ^{
             int imageViewOffset = cell.contentTextView.height + 37;
 
-            for (id attachment in messageAtRowIndex.attachments) { @autoreleasepool {
-                if ([attachment isKindOfClass:[UIImage class]]) {
-                    UIImageView *imageView = UIImageView.new;
-                    [imageView setFrame:CGRectMake(
-                                            11, imageViewOffset,
-                                            self.chatTableView.width - 22, 200
-                                        )];
-                    [imageView setImage:attachment];
-                    [imageView setContentMode:UIViewContentModeScaleAspectFit];
+            for (id attachment in messageAtRowIndex.attachments) {
+                @autoreleasepool {
+                    if ([attachment isKindOfClass:[UILazyImage class]]) {
+                        UILazyImage *lazyImage = attachment;
+                        UILazyImageView *imageView = UILazyImageView.new;
+                        imageView.frame            = CGRectMake(
+                            11, imageViewOffset,
+                            self.chatTableView.width - 22, 200
+                        );
+                        imageView.image       = lazyImage.image;
+                        imageView.contentMode = UIViewContentModeScaleAspectFit;
+                        imageView.imageURL    = lazyImage.imageURL;
 
-                    imageViewOffset += imageView.height + 11;
+                        imageViewOffset += imageView.height + 11;
 
-                    UITapGestureRecognizer *singleTap =
-                        [[UITapGestureRecognizer alloc]
-                            initWithTarget:self
-                                    action:@selector(tappedImage:)];
-                    singleTap.numberOfTapsRequired   = 1;
-                    imageView.userInteractionEnabled = YES;
-                    [imageView addGestureRecognizer:singleTap];
+                        UITapGestureRecognizer *singleTap =
+                            [[UITapGestureRecognizer alloc]
+                                initWithTarget:self
+                                        action:@selector(tappedImage:)];
+                        singleTap.numberOfTapsRequired   = 1;
+                        imageView.userInteractionEnabled = YES;
+                        [imageView addGestureRecognizer:singleTap];
 
-                    [cell addSubview:imageView];
-                } else if ([attachment
-                               isKindOfClass:[DCChatVideoAttachment class]]) {
-                    ////NSLog(@"add video!");
-                    DCChatVideoAttachment *video = attachment;
+                        [cell addSubview:imageView];
+                    } else if ([attachment
+                                   isKindOfClass:[DCChatVideoAttachment class]]) {
+                        ////NSLog(@"add video!");
+                        DCChatVideoAttachment *video = attachment;
 
-                    UITapGestureRecognizer *singleTap =
-                        [[UITapGestureRecognizer alloc]
-                            initWithTarget:self
-                                    action:@selector(tappedVideo:)];
-                    singleTap.numberOfTapsRequired = 1;
-                    [video.playButton addGestureRecognizer:singleTap];
-                    video.playButton.userInteractionEnabled = YES;
+                        UITapGestureRecognizer *singleTap =
+                            [[UITapGestureRecognizer alloc]
+                                initWithTarget:self
+                                        action:@selector(tappedVideo:)];
+                        singleTap.numberOfTapsRequired = 1;
+                        [video.playButton addGestureRecognizer:singleTap];
+                        video.playButton.userInteractionEnabled = YES;
 
-                    CGFloat aspectRatio = video.thumbnail.image.size.width
-                        / video.thumbnail.image.size.height;
-                    int newWidth  = 200 * aspectRatio;
-                    int newHeight = 200;
-                    if (newWidth > self.chatTableView.width - 66) {
-                        newWidth  = self.chatTableView.width - 66;
-                        newHeight = newWidth / aspectRatio;
-                    }
-                    [video setFrame:CGRectMake(
-                                        55, imageViewOffset, newWidth, newHeight
-                                    )];
-
-                    imageViewOffset += newHeight;
-
-                    [cell addSubview:video];
-                } else if ([attachment isKindOfClass:[QLPreviewController class]]) {
-                    ////NSLog(@"Add QuickLook!");
-                    QLPreviewController *preview = attachment;
-
-                    /*UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer
-                     alloc] initWithTarget:self action:@selector(tappedVideo:)];
-                     singleTap.numberOfTapsRequired = 1;
-                     [video.playButton addGestureRecognizer:singleTap];
-                     video.playButton.userInteractionEnabled = YES;
-
-                     CGFloat aspectRatio = video.thumbnail.image.size.width /
-                     video.thumbnail.image.size.height; int newWidth = 200 *
-                     aspectRatio; int newHeight = 200; if (newWidth >
-                     self.chatTableView.width - 66) { newWidth =
-                     self.chatTableView.width - 66; newHeight = newWidth /
-                     aspectRatio;
-                     }
-                     [video setFrame:CGRectMake(55, imageViewOffset, newWidth,
-                     newHeight)];*/
-
-                    imageViewOffset += 210;
-
-                    [cell addSubview:preview.view];
-                } else if ([attachment isKindOfClass:[NSArray class]]) {
-                    NSArray *dimensions = attachment;
-                    if (dimensions.count == 2) {
-                        int width  = [dimensions[0] intValue];
-                        int height = [dimensions[1] intValue];
-                        if (width <= 0 || height <= 0) {
-                            continue;
-                        }
-                        CGFloat aspectRatio = (CGFloat)width / height;
-                        int newWidth        = 200 * aspectRatio;
-                        int newHeight       = 200;
+                        CGFloat aspectRatio = video.thumbnail.image.size.width
+                            / video.thumbnail.image.size.height;
+                        int newWidth  = 200 * aspectRatio;
+                        int newHeight = 200;
                         if (newWidth > self.chatTableView.width - 66) {
                             newWidth  = self.chatTableView.width - 66;
                             newHeight = newWidth / aspectRatio;
                         }
-                        UIActivityIndicatorView *activityIndicator =
-                            [[UIActivityIndicatorView alloc]
-                                initWithActivityIndicatorStyle:
-                                    UIActivityIndicatorViewStyleWhite];
-                        [activityIndicator setFrame:CGRectMake(
-                                                        11, imageViewOffset, newWidth,
-                                                        newHeight
-                                                    )];
-                        [activityIndicator setContentMode:UIViewContentModeScaleAspectFit];
-                        imageViewOffset += newHeight + 11;
+                        [video setFrame:CGRectMake(
+                                            55, imageViewOffset, newWidth, newHeight
+                                        )];
 
-                        [cell addSubview:activityIndicator];
-                        [activityIndicator startAnimating];
+                        imageViewOffset += newHeight;
+
+                        [cell addSubview:video];
+                    } else if ([attachment isKindOfClass:[QLPreviewController class]]) {
+                        ////NSLog(@"Add QuickLook!");
+                        QLPreviewController *preview = attachment;
+
+                        /*UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer
+                         alloc] initWithTarget:self action:@selector(tappedVideo:)];
+                         singleTap.numberOfTapsRequired = 1;
+                         [video.playButton addGestureRecognizer:singleTap];
+                         video.playButton.userInteractionEnabled = YES;
+
+                         CGFloat aspectRatio = video.thumbnail.image.size.width /
+                         video.thumbnail.image.size.height; int newWidth = 200 *
+                         aspectRatio; int newHeight = 200; if (newWidth >
+                         self.chatTableView.width - 66) { newWidth =
+                         self.chatTableView.width - 66; newHeight = newWidth /
+                         aspectRatio;
+                         }
+                         [video setFrame:CGRectMake(55, imageViewOffset, newWidth,
+                         newHeight)];*/
+
+                        imageViewOffset += 210;
+
+                        [cell addSubview:preview.view];
+                    } else if ([attachment isKindOfClass:[NSArray class]]) {
+                        NSArray *dimensions = attachment;
+                        if (dimensions.count == 2) {
+                            int width  = [dimensions[0] intValue];
+                            int height = [dimensions[1] intValue];
+                            if (width <= 0 || height <= 0) {
+                                continue;
+                            }
+                            CGFloat aspectRatio = (CGFloat)width / height;
+                            int newWidth        = 200 * aspectRatio;
+                            int newHeight       = 200;
+                            if (newWidth > self.chatTableView.width - 66) {
+                                newWidth  = self.chatTableView.width - 66;
+                                newHeight = newWidth / aspectRatio;
+                            }
+                            UIActivityIndicatorView *activityIndicator =
+                                [[UIActivityIndicatorView alloc]
+                                    initWithActivityIndicatorStyle:
+                                        UIActivityIndicatorViewStyleWhite];
+                            [activityIndicator setFrame:CGRectMake(
+                                                            11, imageViewOffset, newWidth,
+                                                            newHeight
+                                                        )];
+                            [activityIndicator setContentMode:UIViewContentModeScaleAspectFit];
+                            imageViewOffset += newHeight + 11;
+
+                            [cell addSubview:activityIndicator];
+                            [activityIndicator startAnimating];
+                        }
                     }
                 }
-            }}
+            }
         } else {
             static NSSet *specialMessageTypes = nil;
             static dispatch_once_t onceToken;
@@ -1100,6 +1104,7 @@ static dispatch_queue_t chat_messages_queue;
             } else if (messageAtRowIndex.referencedMessage != nil) {
                 cell = [tableView
                     dequeueReusableCellWithIdentifier:@"Reply Message Cell"];
+                [cell.contentTextView setTextColor:[UIColor whiteColor]]; // green otherwise??
             } else if ([specialMessageTypes
                            containsObject:@(messageAtRowIndex.messageType)]) {
                 cell = [tableView dequeueReusableCellWithIdentifier:
@@ -1198,17 +1203,19 @@ static dispatch_queue_t chat_messages_queue;
             cell.contentView.layer.cornerRadius  = 0;
             cell.contentView.layer.masksToBounds = YES;
 
-            for (UIView *subView in cell.subviews) { @autoreleasepool {
-                if ([subView isKindOfClass:[UIImageView class]]) {
-                    [subView removeFromSuperview];
+            for (UIView *subView in cell.subviews) {
+                @autoreleasepool {
+                    if ([subView isKindOfClass:[UIImageView class]]) {
+                        [subView removeFromSuperview];
+                    }
+                    if ([subView isKindOfClass:[DCChatVideoAttachment class]]) {
+                        [subView removeFromSuperview];
+                    }
+                    if ([subView isKindOfClass:[QLPreviewController class]]) {
+                        [subView removeFromSuperview];
+                    }
                 }
-                if ([subView isKindOfClass:[DCChatVideoAttachment class]]) {
-                    [subView removeFromSuperview];
-                }
-                if ([subView isKindOfClass:[QLPreviewController class]]) {
-                    [subView removeFromSuperview];
-                }
-            }}
+            }
 
             float contentWidth    = UIScreen.mainScreen.bounds.size.width - 63;
             CGSize authorNameSize = [messageAtRowIndex.author.globalName
@@ -1229,120 +1236,123 @@ static dispatch_queue_t chat_messages_queue;
                                               : (!messageAtRowIndex.isGrouped ? 10 : 0) // ???
                 );
 
-            for (id attachment in messageAtRowIndex.attachments) { @autoreleasepool {
-                if ([attachment isKindOfClass:[UIImage class]]) {
-                    UIImageView *imageView = UIImageView.new;
-                    UIImage *image         = attachment;
-                    CGFloat aspectRatio    = image.size.width / image.size.height;
-                    int newWidth           = 200 * aspectRatio;
-                    int newHeight          = 200;
-                    if (newWidth > self.chatTableView.width - 66) {
-                        newWidth  = self.chatTableView.width - 66;
-                        newHeight = newWidth / aspectRatio;
-                    }
-                    [imageView setFrame:CGRectMake(
-                                            55, imageViewOffset, newWidth, newHeight
-                                        )];
-                    [imageView setImage:attachment];
-                    imageViewOffset += newHeight;
-
-                    [imageView setContentMode:UIViewContentModeScaleAspectFit];
-
-                    UITapGestureRecognizer *singleTap =
-                        [[UITapGestureRecognizer alloc]
-                            initWithTarget:self
-                                    action:@selector(tappedImage:)];
-                    singleTap.numberOfTapsRequired   = 1;
-                    imageView.userInteractionEnabled = YES;
-
-                    [imageView addGestureRecognizer:singleTap];
-
-                    imageView.layer.cornerRadius  = 6;
-                    imageView.layer.masksToBounds = YES;
-
-                    [cell addSubview:imageView];
-                } else if ([attachment
-                               isKindOfClass:[DCChatVideoAttachment class]]) {
-                    ////NSLog(@"add video!");
-                    DCChatVideoAttachment *video = attachment;
-
-                    UITapGestureRecognizer *singleTap =
-                        [[UITapGestureRecognizer alloc]
-                            initWithTarget:self
-                                    action:@selector(tappedVideo:)];
-                    singleTap.numberOfTapsRequired = 1;
-                    [video.playButton addGestureRecognizer:singleTap];
-                    video.playButton.userInteractionEnabled = YES;
-
-                    CGFloat aspectRatio = video.thumbnail.image.size.width
-                        / video.thumbnail.image.size.height;
-                    int newWidth  = 200 * aspectRatio;
-                    int newHeight = 200;
-                    if (newWidth > self.chatTableView.width - 66) {
-                        newWidth  = self.chatTableView.width - 66;
-                        newHeight = newWidth / aspectRatio;
-                    }
-                    [video setFrame:CGRectMake(
-                                        55, imageViewOffset, newWidth, newHeight
-                                    )];
-
-                    imageViewOffset += newHeight;
-
-                    [cell addSubview:video];
-                } else if ([attachment isKindOfClass:[QLPreviewController class]]) {
-                    ////NSLog(@"Add QuickLook!");
-                    QLPreviewController *preview = attachment;
-
-                    /*UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer
-                     alloc] initWithTarget:self action:@selector(tappedVideo:)];
-                     singleTap.numberOfTapsRequired = 1;
-                     [video.playButton addGestureRecognizer:singleTap];
-                     video.playButton.userInteractionEnabled = YES;
-
-                     CGFloat aspectRatio = video.thumbnail.image.size.width /
-                     video.thumbnail.image.size.height; int newWidth = 200 *
-                     aspectRatio; int newHeight = 200; if (newWidth >
-                     self.chatTableView.width - 66) { newWidth =
-                     self.chatTableView.width - 66; newHeight = newWidth /
-                     aspectRatio;
-                     }
-                     [video setFrame:CGRectMake(55, imageViewOffset, newWidth,
-                     newHeight)];*/
-
-                    imageViewOffset += 210;
-
-                    [cell addSubview:preview.view];
-                } else if ([attachment isKindOfClass:[NSArray class]]) {
-                    NSArray *dimensions = attachment;
-                    if (dimensions.count == 2) {
-                        int width  = [dimensions[0] intValue];
-                        int height = [dimensions[1] intValue];
-                        if (width <= 0 || height <= 0) {
-                            continue;
-                        }
-                        CGFloat aspectRatio = (CGFloat)width / height;
-                        int newWidth        = 200 * aspectRatio;
-                        int newHeight       = 200;
+            for (id attachment in messageAtRowIndex.attachments) {
+                @autoreleasepool {
+                    if ([attachment isKindOfClass:[UILazyImage class]]) {
+                        UILazyImageView *imageView = [UILazyImageView new];
+                        UILazyImage *lazyImage         = attachment;
+                        CGFloat aspectRatio    = lazyImage.image.size.width / lazyImage.image.size.height;
+                        int newWidth           = 200 * aspectRatio;
+                        int newHeight          = 200;
                         if (newWidth > self.chatTableView.width - 66) {
                             newWidth  = self.chatTableView.width - 66;
                             newHeight = newWidth / aspectRatio;
                         }
-                        UIActivityIndicatorView *activityIndicator =
-                            [[UIActivityIndicatorView alloc]
-                                initWithActivityIndicatorStyle:
-                                    UIActivityIndicatorViewStyleWhite];
-                        [activityIndicator setFrame:CGRectMake(
-                                                        55, imageViewOffset, newWidth,
-                                                        newHeight
-                                                    )];
-                        [activityIndicator setContentMode:UIViewContentModeScaleAspectFit];
-                        imageViewOffset += newHeight + 11;
+                        imageView.frame = CGRectMake(
+                                                55, imageViewOffset, newWidth, newHeight
+                                            );
+                        imageView.image = lazyImage.image;
+                        imageView.imageURL = lazyImage.imageURL;
+                        imageViewOffset += newHeight;
 
-                        [cell addSubview:activityIndicator];
-                        [activityIndicator startAnimating];
+                        imageView.contentMode = UIViewContentModeScaleAspectFit;
+
+                        UITapGestureRecognizer *singleTap =
+                            [[UITapGestureRecognizer alloc]
+                                initWithTarget:self
+                                        action:@selector(tappedImage:)];
+                        singleTap.numberOfTapsRequired   = 1;
+                        imageView.userInteractionEnabled = YES;
+
+                        [imageView addGestureRecognizer:singleTap];
+
+                        imageView.layer.cornerRadius  = 6;
+                        imageView.layer.masksToBounds = YES;
+
+                        [cell addSubview:imageView];
+                    } else if ([attachment
+                                   isKindOfClass:[DCChatVideoAttachment class]]) {
+                        ////NSLog(@"add video!");
+                        DCChatVideoAttachment *video = attachment;
+
+                        UITapGestureRecognizer *singleTap =
+                            [[UITapGestureRecognizer alloc]
+                                initWithTarget:self
+                                        action:@selector(tappedVideo:)];
+                        singleTap.numberOfTapsRequired = 1;
+                        [video.playButton addGestureRecognizer:singleTap];
+                        video.playButton.userInteractionEnabled = YES;
+
+                        CGFloat aspectRatio = video.thumbnail.image.size.width
+                            / video.thumbnail.image.size.height;
+                        int newWidth  = 200 * aspectRatio;
+                        int newHeight = 200;
+                        if (newWidth > self.chatTableView.width - 66) {
+                            newWidth  = self.chatTableView.width - 66;
+                            newHeight = newWidth / aspectRatio;
+                        }
+                        [video setFrame:CGRectMake(
+                                            55, imageViewOffset, newWidth, newHeight
+                                        )];
+
+                        imageViewOffset += newHeight;
+
+                        [cell addSubview:video];
+                    } else if ([attachment isKindOfClass:[QLPreviewController class]]) {
+                        ////NSLog(@"Add QuickLook!");
+                        QLPreviewController *preview = attachment;
+
+                        /*UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer
+                         alloc] initWithTarget:self action:@selector(tappedVideo:)];
+                         singleTap.numberOfTapsRequired = 1;
+                         [video.playButton addGestureRecognizer:singleTap];
+                         video.playButton.userInteractionEnabled = YES;
+
+                         CGFloat aspectRatio = video.thumbnail.image.size.width /
+                         video.thumbnail.image.size.height; int newWidth = 200 *
+                         aspectRatio; int newHeight = 200; if (newWidth >
+                         self.chatTableView.width - 66) { newWidth =
+                         self.chatTableView.width - 66; newHeight = newWidth /
+                         aspectRatio;
+                         }
+                         [video setFrame:CGRectMake(55, imageViewOffset, newWidth,
+                         newHeight)];*/
+
+                        imageViewOffset += 210;
+
+                        [cell addSubview:preview.view];
+                    } else if ([attachment isKindOfClass:[NSArray class]]) {
+                        NSArray *dimensions = attachment;
+                        if (dimensions.count == 2) {
+                            int width  = [dimensions[0] intValue];
+                            int height = [dimensions[1] intValue];
+                            if (width <= 0 || height <= 0) {
+                                continue;
+                            }
+                            CGFloat aspectRatio = (CGFloat)width / height;
+                            int newWidth        = 200 * aspectRatio;
+                            int newHeight       = 200;
+                            if (newWidth > self.chatTableView.width - 66) {
+                                newWidth  = self.chatTableView.width - 66;
+                                newHeight = newWidth / aspectRatio;
+                            }
+                            UIActivityIndicatorView *activityIndicator =
+                                [[UIActivityIndicatorView alloc]
+                                    initWithActivityIndicatorStyle:
+                                        UIActivityIndicatorViewStyleWhite];
+                            [activityIndicator setFrame:CGRectMake(
+                                                            55, imageViewOffset, newWidth,
+                                                            newHeight
+                                                        )];
+                            [activityIndicator setContentMode:UIViewContentModeScaleAspectFit];
+                            imageViewOffset += newHeight + 11;
+
+                            [cell addSubview:activityIndicator];
+                            [activityIndicator startAnimating];
+                        }
                     }
                 }
-            }}
+            }
         }
     }
     return cell;
@@ -1355,8 +1365,8 @@ static dispatch_queue_t chat_messages_queue;
 
     int attachmentHeight = 0;
     for (id attachment in messageAtRowIndex.attachments) {
-        if ([attachment isKindOfClass:[UIImage class]]) {
-            UIImage *image      = attachment;
+        if ([attachment isKindOfClass:[UILazyImage class]]) {
+            UIImage *image      = ((UILazyImage *)attachment).image;
             CGFloat aspectRatio = image.size.width / image.size.height;
             int newWidth        = 200 * aspectRatio;
             int newHeight       = 200;
@@ -1514,7 +1524,8 @@ static dispatch_queue_t chat_messages_queue;
     // http://pyl.io/2015/08/17/animating-in-sync-with-ios-keyboard/
     self.keyboardHeight =
         [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey]
-            CGRectValue].size.height;
+            CGRectValue]
+            .size.height;
     float keyboardAnimationDuration = [[notification.userInfo
         objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
     int keyboardAnimationCurve      = [[notification.userInfo
@@ -1545,7 +1556,7 @@ static dispatch_queue_t chat_messages_queue;
 
 
 - (void)keyboardWillHide:(NSNotification *)notification {
-    self.keyboardHeight = 0;
+    self.keyboardHeight             = 0;
     float keyboardAnimationDuration = [[notification.userInfo
         objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
     int keyboardAnimationCurve      = [[notification.userInfo
@@ -1604,8 +1615,22 @@ static dispatch_queue_t chat_messages_queue;
 - (void)tappedImage:(UITapGestureRecognizer *)sender {
     assertMainThread();
     [self.inputField resignFirstResponder];
-    self.selectedImage = ((UIImageView *)sender.view).image;
-    [self performSegueWithIdentifier:@"Chat to Gallery" sender:self];
+    SDWebImageManager *manager = [SDWebImageManager sharedManager];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIApplication.sharedApplication setNetworkActivityIndicatorVisible:YES];
+    });
+    [manager downloadImageWithURL:((UILazyImageView *)sender.view).imageURL
+                          options:0
+                          progress:nil
+                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [UIApplication.sharedApplication setNetworkActivityIndicatorVisible:NO];
+                            });
+                            if (image) {
+                                self.selectedImage = image;
+                                [self performSegueWithIdentifier:@"Chat to Gallery" sender:self];
+                            }
+                        }];
 }
 
 - (void)tappedVideo:(UITapGestureRecognizer *)sender {
