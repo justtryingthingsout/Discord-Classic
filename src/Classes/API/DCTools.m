@@ -394,7 +394,7 @@
 
                     SDWebImageManager *manager = [SDWebImageManager sharedManager];
                     [manager downloadImageWithURL:urlString
-                                          options:0
+                                          options:SDWebImageCacheMemoryOnly
                                          progress:nil
                                         completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                             if (!retrievedImage || !finished) {
@@ -500,7 +500,7 @@
 
                         SDWebImageManager *manager = [SDWebImageManager sharedManager];
                         [manager downloadImageWithURL:urlString
-                                              options:0
+                                              options:SDWebImageCacheMemoryOnly
                                              progress:nil
                                             completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                                 if (!retrievedImage || !finished) {
@@ -581,7 +581,7 @@
 
                     SDWebImageManager *manager = [SDWebImageManager sharedManager];
                     [manager downloadImageWithURL:urlString
-                                          options:0
+                                          options:SDWebImageCacheMemoryOnly
                                          progress:nil
                                         completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                             if (!retrievedImage || !finished) {
@@ -658,7 +658,7 @@
 
                         SDWebImageManager *manager = [SDWebImageManager sharedManager];
                         [manager downloadImageWithURL:urlString
-                                              options:0
+                                              options:SDWebImageCacheMemoryOnly
                                              progress:nil
                                             completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) { @autoreleasepool {
                                                 if (!retrievedImage || !finished
