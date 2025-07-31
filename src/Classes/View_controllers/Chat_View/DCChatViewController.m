@@ -40,7 +40,8 @@
 @property (nonatomic, strong) UILabel *typingLabel;
 @property (nonatomic, strong) NSMutableDictionary *typingUsers;
 @property (assign, nonatomic) CGFloat keyboardHeight;
-@property (assign, nonatomic) DCMessage *replyingToMessage;
+@property (strong, nonatomic) DCMessage *replyingToMessage;
+@property (strong, nonatomic) DCMessage *editingMessage;
 @end
 
 @implementation DCChatViewController
@@ -1430,12 +1431,17 @@ static dispatch_queue_t chat_messages_queue;
 
     if ([self.selectedMessage.author.snowflake
             isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
+        NSString *editButton = self.editingMessage
+            && [self.editingMessage.snowflake isEqualToString:self.selectedMessage.snowflake]
+            ? @"Cancel Edit"
+            : @"Edit";
         UIActionSheet *messageActionSheet =
             [[UIActionSheet alloc] initWithTitle:self.selectedMessage.content
                                         delegate:self
                                cancelButtonTitle:@"Cancel"
                           destructiveButtonTitle:@"Delete"
-                               otherButtonTitles:@"Copy Message ID",
+                               otherButtonTitles:editButton,
+                                                 @"Copy Message ID",
                                                  @"View Profile",
                                                  nil];
         [messageActionSheet setTag:1];
@@ -1468,9 +1474,21 @@ static dispatch_queue_t chat_messages_queue;
         if (buttonIndex == 0) {
             [self.selectedMessage deleteMessage];
         } else if (buttonIndex == 1) {
+            if (self.editingMessage
+                && [self.editingMessage.snowflake
+                    isEqualToString:self.selectedMessage.snowflake]) {
+                self.editingMessage = nil;
+                self.inputField.text = @"";
+                self.inputFieldPlaceholder.hidden = NO;
+            } else {
+                self.editingMessage = self.selectedMessage;
+                self.inputField.text = self.selectedMessage.content;
+                self.inputFieldPlaceholder.hidden = YES;
+            }
+        } else if (buttonIndex == 2) {
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
             [pasteboard setString:self.selectedMessage.snowflake];
-        } else if (buttonIndex == 2) {
+        } else if (buttonIndex == 3) {
             [self performSegueWithIdentifier:@"chat to contact" sender:self];
         }
     } else if ([popup tag] == 2) { // Image Source selection
@@ -1614,10 +1632,17 @@ static dispatch_queue_t chat_messages_queue;
 - (IBAction)sendMessage:(id)sender {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![self.inputField.text isEqual:@""]) {
-            [DCServerCommunicator.sharedInstance.selectedChannel
-                sendMessage:self.inputField.text
-                referencingMessage:self.replyingToMessage ? self.replyingToMessage : nil];
+            if (self.editingMessage) {
+                [DCServerCommunicator.sharedInstance.selectedChannel
+                    editMessage:self.editingMessage
+                    withContent:self.inputField.text];
+            } else {
+                [DCServerCommunicator.sharedInstance.selectedChannel
+                    sendMessage:self.inputField.text
+                    referencingMessage:self.replyingToMessage ? self.replyingToMessage : nil];
+            }
             self.replyingToMessage = nil;
+            self.editingMessage = nil;
             [self.inputField setText:@""];
             self.inputFieldPlaceholder.hidden = NO;
             lastTimeInterval                  = 0;

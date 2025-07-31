@@ -7,8 +7,8 @@
 //
 
 #import "DCChannel.h"
-#include "DCChatViewController.h"
 #include <Foundation/Foundation.h>
+#include "DCChatViewController.h"
 #include "DCMessage.h"
 #import "DCServerCommunicator.h"
 #import "DCTools.h"
@@ -78,10 +78,10 @@ static dispatch_queue_t channel_send_queue;
                 @"content" : escapedMessage,
                 @"type" : @19,
                 @"message_reference" : @{
-                    @"type": @0,
+                    @"type" : @0,
                     @"message_id" : referencedMessage.snowflake,
                     @"channel_id" : DCServerCommunicator.sharedInstance.selectedChannel.snowflake,
-                    @"fail_if_not_exists": @YES
+                    @"fail_if_not_exists" : @YES
                 }
             };
         } else {
@@ -90,8 +90,8 @@ static dispatch_queue_t channel_send_queue;
                 @"type" : @0,
             };
         }
-        NSError *writeError             = nil;
-        NSData *jsonData                = [NSJSONSerialization dataWithJSONObject:dictionary options:NSJSONWritingPrettyPrinted error:&writeError];
+        NSError *writeError = nil;
+        NSData *jsonData    = [NSJSONSerialization dataWithJSONObject:dictionary options:NSJSONWritingPrettyPrinted error:&writeError];
         if (writeError) {
 #ifdef DEBUG
             NSLog(@"Error serializing message to JSON: %@", writeError);
@@ -122,6 +122,58 @@ static dispatch_queue_t channel_send_queue;
         dispatch_sync(dispatch_get_main_queue(), ^{
             [UIApplication sharedApplication].networkActivityIndicatorVisible =
                 NO;
+        });
+    });
+}
+
+- (void)editMessage:(DCMessage *)message withContent:(NSString *)content {
+    dispatch_async([self get_channel_send_queue], ^{
+        NSURL *channelURL = [NSURL
+            URLWithString:[NSString
+                              stringWithFormat:@"https://discordapp.com/api/v9/channels/%@/messages/%@",
+                                               self.snowflake, message.snowflake]];
+
+        NSMutableURLRequest *urlRequest = [NSMutableURLRequest
+             requestWithURL:channelURL
+                cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+            timeoutInterval:10];
+        [urlRequest setValue:@"no-store" forHTTPHeaderField:@"Cache-Control"];
+
+        NSString *escapedMessage = [content emojizedString];
+
+        NSDictionary *dictionary = @{@"content" : escapedMessage};
+        NSError *writeError      = nil;
+        NSData *jsonData         = [NSJSONSerialization dataWithJSONObject:dictionary
+                                                           options:NSJSONWritingPrettyPrinted
+                                                             error:&writeError];
+        if (writeError) {
+#ifdef DEBUG
+            NSLog(@"Error serializing message to JSON: %@", writeError);
+#endif
+            return;
+        }
+        NSString *messageString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+
+        [urlRequest setHTTPMethod:@"PATCH"];
+
+        [urlRequest setHTTPBody:[NSData dataWithBytes:[messageString UTF8String]
+                                               length:[messageString length]]];
+        [urlRequest addValue:DCServerCommunicator.sharedInstance.token
+            forHTTPHeaderField:@"Authorization"];
+        [urlRequest addValue:@"application/json"
+            forHTTPHeaderField:@"Content-Type"];
+
+        NSError *error                  = nil;
+        NSHTTPURLResponse *responseCode = nil;
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        });
+        [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest
+                                                 returningResponse:&responseCode
+                                                             error:&error]
+                 withError:error];
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         });
     });
 }
