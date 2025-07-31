@@ -1,5 +1,5 @@
-#include <Foundation/Foundation.h>
-#include <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface UILazyImage: NSObject
 @property (strong, nonatomic) UIImage *image;

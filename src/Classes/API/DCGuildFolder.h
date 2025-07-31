@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#include <objc/NSObjCRuntime.h>
-#include <UIKit/UIKit.h>
+#import <objc/NSObjCRuntime.h>
+#import <UIKit/UIKit.h>
 
 @interface DCGuildFolder : NSObject 
 

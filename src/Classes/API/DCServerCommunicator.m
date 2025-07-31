@@ -220,7 +220,7 @@ UIActivityIndicatorView *spinner;
         newChannel.snowflake     = [privateChannel objectForKey:@"id"];
         newChannel.lastMessageId = [privateChannel objectForKey:@"last_message_id"];
         newChannel.parentGuild   = privateGuild;
-        newChannel.type          = 1;
+        newChannel.type          = DCChannelTypeDM; // Direct Message channel
         newChannel.users         = users;
         newChannel.writeable     = YES; // DMs are always writeable
         if ([privateChannel objectForKey:@"icon"] != nil || [privateChannel objectForKey:@"recipients"] != nil) {

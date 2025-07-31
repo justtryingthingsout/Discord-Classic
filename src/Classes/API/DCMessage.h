@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#include <UIKit/UIKit.h>
+#import <UIKit/UIKit.h>
+#import "DCTools.h"
 #import "DCUser.h"
 
 typedef NS_ENUM(NSInteger, message_types) {
@@ -51,7 +52,7 @@ typedef NS_ENUM(NSInteger, message_types) {
 };
 
 @interface DCMessage : NSObject
-@property(strong, nonatomic) NSString* snowflake;
+@property(strong, nonatomic) DCSnowflake* snowflake;
 @property(strong, nonatomic) DCUser* author;
 @property(strong, nonatomic) NSString* content;
 @property(strong, nonatomic) NSAttributedString* attributedContent;

@@ -6,8 +6,8 @@
 //  Copyright (c) 2018 bag.xml. All rights reserved.
 //
 
-#include "DCUserInfo.h"
 #import <Foundation/Foundation.h>
+#import "DCUserInfo.h"
 #import "DCChannelListViewController.h"
 #import "DCChatViewController.h"
 #import "DCGuildListViewController.h"
@@ -217,7 +217,7 @@
 @property (strong, nonatomic) NSString* gatewayURL;
 @property (strong, nonatomic) NSMutableDictionary* userChannelSettings;
 
-@property (strong, nonatomic) NSString* snowflake;
+@property (strong, nonatomic) DCSnowflake* snowflake;
 
 @property (strong, nonatomic) NSMutableArray* guilds;
 @property (assign, nonatomic) BOOL guildsIsSorted;

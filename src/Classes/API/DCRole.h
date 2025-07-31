@@ -1,14 +1,15 @@
+#import "DCTools.h"
 #import <Foundation/Foundation.h>
-#include <UIKit/UIKit.h>
+#import <UIKit/UIKit.h>
 
 @interface DCRole : NSObject
 
-@property (strong, nonnull) NSString* snowflake;
+@property (strong, nonnull) DCSnowflake* snowflake;
 @property (strong, nonnull) NSString* name;
 @property (assign, nonatomic) NSInteger color;
 // colors
 @property (assign, nonatomic) BOOL hoist;
-@property (strong, nullable, nonatomic) NSString* iconID;
+@property (strong, nullable, nonatomic) DCSnowflake* iconID;
 @property (strong, nullable, nonatomic) UIImage* icon;
 @property (strong, nullable, nonatomic) NSString* unicodeEmoji;
 @property (assign, nonatomic) NSInteger position;

@@ -1,4 +1,4 @@
-#include "DCServerCommunicator.h"
+#import "DCServerCommunicator.h"
 
 @interface DCServerCommunicator ()
 @property (strong, nonatomic) UIView *notificationView;

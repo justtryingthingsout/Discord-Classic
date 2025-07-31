@@ -11,15 +11,16 @@
  built in functions*/
 
 #import <Foundation/Foundation.h>
-#include <UIKit/UIKit.h>
+#import <UIKit/UIKit.h>
+#import "DCTools.h"
 
 @interface DCGuild : NSObject
 // ID/snowflake
-@property (strong, nonatomic) NSString* snowflake;
+@property (strong, nonatomic) DCSnowflake* snowflake;
 // Name
 @property (strong, nonatomic) NSString* name;
 // The ID of the guild's owner
-@property (strong, nonatomic) NSString* ownerID;
+@property (strong, nonatomic) DCSnowflake* ownerID;
 // The number of members in the guild
 @property (assign, nonatomic) NSInteger memberCount;
 // The number of currently online members in the guild

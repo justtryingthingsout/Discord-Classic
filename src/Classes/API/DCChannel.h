@@ -10,23 +10,40 @@
  Its easier to work with than raw JSON data and has some handy
  built in functions*/
 
+#import "DCTools.h"
 #import <Foundation/Foundation.h>
 #import "DCGuild.h"
 #import "DCMessage.h"
 
+typedef NS_ENUM(NSInteger, DCChannelType) {
+    DCChannelTypeGuildText          = 0,  // A text channel within a server
+    DCChannelTypeDM                 = 1,  // A direct message between users
+    DCChannelTypeGuildVoice         = 2,  // A voice channel within a server
+    DCChannelTypeGroupDM            = 3,  // A direct message between multiple users
+    DCChannelTypeGuildCategory      = 4,  // An organizational category that contains up to 50 channels
+    DCChannelTypeGuildAnnouncement  = 5,  // A channel that users can follow and crosspost into their own server (formerly news channels)
+    DCChannelTypeAnnouncementThread = 10, // A temporary sub-channel within a GUILD_ANNOUNCEMENT channel
+    DCChannelTypePublicThread       = 11, // A temporary sub-channel within a GUILD_TEXT or GUILD_FORUM channel
+    DCChannelTypePrivateThread      = 12, // A temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission
+    DCChannelTypeGuildStageVoice    = 13, // A voice channel for hosting events with an audience
+    DCChannelTypeGuildDirectory     = 14, // The channel in a hub containing the listed servers
+    DCChannelTypeGuildForum         = 15, // Channel that can only contain threads
+    DCChannelTypeGuildMedia         = 16, // Channel that can only contain threads, similar to GUILD_FORUM channels
+};
+
 @interface DCChannel : NSObject<NSURLConnectionDelegate>
-@property (strong, nonatomic) NSString* snowflake;
+@property (strong, nonatomic) DCSnowflake* snowflake;
 // parent category (for channels) or id of text channel (for threads)
-@property (strong, nonatomic) NSString* parentID; 
+@property (strong, nonatomic) DCSnowflake* parentID;
 @property (strong, nonatomic) NSString* name;
-@property (strong, nonatomic) NSString* lastMessageId;
-@property (strong, nonatomic) NSString* lastReadMessageId;
+@property (strong, nonatomic) DCSnowflake* lastMessageId;
+@property (strong, nonatomic) DCSnowflake* lastReadMessageId;
 // Icon for a DM
-@property (strong, nonatomic) UIImage* icon; 
+@property (strong, nonatomic) UIImage* icon;
 @property (assign, nonatomic) BOOL unread;
 @property (assign, nonatomic) BOOL muted;
 @property (assign, nonatomic) BOOL writeable;
-@property (assign, nonatomic) NSInteger type;
+@property (assign, nonatomic) enum DCChannelType type;
 @property (assign, nonatomic) NSInteger position;
 // Holds NSDictionary* of Users
 @property (strong, nonatomic) NSMutableArray* recipients;

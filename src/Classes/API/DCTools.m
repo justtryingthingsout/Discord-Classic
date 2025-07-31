@@ -1095,9 +1095,9 @@
 
         // Make sure jsonChannel is a text channel or a category
         // we dont want to include voice channels in the text channel list
-        if ([[jsonChannel objectForKey:@"type"] isEqual:@0] || // text channel
-            [[jsonChannel objectForKey:@"type"] isEqual:@5] || // announcements
-            [[jsonChannel objectForKey:@"type"] isEqual:@4]) { // category
+        if ([[jsonChannel objectForKey:@"type"] isEqual:@(DCChannelTypeGuildText)] || // text channel
+            [[jsonChannel objectForKey:@"type"] isEqual:@(DCChannelTypeGuildAnnouncement)] || // announcements
+            [[jsonChannel objectForKey:@"type"] isEqual:@(DCChannelTypeGuildCategory)]) { // category
             // Allow code is used to determine if the user should see the
             // channel in question.
             /*
@@ -1136,32 +1136,32 @@
 
                 if (type == 0) { // Role overwrite
                     if ([newGuild.userRoles containsObject:idValue]) {
-                        if ((deny & SEND_MESSAGES) == SEND_MESSAGES) {
+                        if ((deny & DCPermissionSendMessages) == DCPermissionSendMessages) {
                             canWrite = false;
                         }
-                        if ((deny & VIEW_CHANNEL) == VIEW_CHANNEL) {
+                        if ((deny & DCPermissionViewChannel) == DCPermissionViewChannel) {
                             allowCode = 1;
                         }
-                        if ((allow & SEND_MESSAGES) == SEND_MESSAGES) {
+                        if ((allow & DCPermissionSendMessages) == DCPermissionSendMessages) {
                             canWrite = true;
                         }
-                        if ((allow & VIEW_CHANNEL) == VIEW_CHANNEL) {
+                        if ((allow & DCPermissionViewChannel) == DCPermissionViewChannel) {
                             allowCode = 2;
                         }
                     }
                 } else if (type == 1) { // Member overwrite, break on these
                     if ([idValue isEqualToString:
                                      DCServerCommunicator.sharedInstance.snowflake]) {
-                        if ((deny & SEND_MESSAGES) == SEND_MESSAGES) {
+                        if ((deny & DCPermissionSendMessages) == DCPermissionSendMessages) {
                             canWrite = false;
                         }
-                        if ((deny & VIEW_CHANNEL) == VIEW_CHANNEL) {
+                        if ((deny & DCPermissionViewChannel) == DCPermissionViewChannel) {
                             allowCode = 3;
                         }
-                        if ((allow & SEND_MESSAGES) == SEND_MESSAGES) {
+                        if ((allow & DCPermissionSendMessages) == DCPermissionSendMessages) {
                             canWrite = true;
                         }
-                        if ((allow & VIEW_CHANNEL) == VIEW_CHANNEL) {
+                        if ((allow & DCPermissionViewChannel) == DCPermissionViewChannel) {
                             allowCode = 4;
                         }
                         break;
@@ -1171,7 +1171,7 @@
 
             newChannel.writeable = canWrite || [[jsonGuild objectForKey:@"owner_id"] isEqualToString:DCServerCommunicator.sharedInstance.snowflake];
             // ignore perms for guild categories
-            if (newChannel.type == 4) { // category
+            if (newChannel.type == DCChannelTypeGuildCategory) { // category
                 [categories addObject:newChannel];
             } else if (allowCode == 0 || allowCode == 2 || allowCode == 4 ||
                        [[jsonGuild objectForKey:@"owner_id"] isEqualToString:
@@ -1227,7 +1227,7 @@
     for (DCChannel *category in categories) {
         int i = 0;
         for (DCChannel *channel in newGuild.channels) {
-            if (channel.type == 4
+            if (channel.type == DCChannelTypeGuildCategory
                 || channel.parentID == nil
                 || (NSNull *)channel.parentID == [NSNull null]) {
                 // If the channel is a category or has no parent, skip it

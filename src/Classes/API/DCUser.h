@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#include <objc/NSObjCRuntime.h>
-#include <UIKit/UIKit.h>
+#import <objc/NSObjCRuntime.h>
+#import <UIKit/UIKit.h>
+#import "DCTools.h"
 
 typedef NS_ENUM(NSInteger, DCUserStatus) {
     DCUserStatusOnline,
@@ -18,14 +19,14 @@ typedef NS_ENUM(NSInteger, DCUserStatus) {
 };
 
 @interface DCUser : NSObject
-@property (strong, nonatomic) NSString* snowflake;
+@property (strong, nonatomic) DCSnowflake* snowflake;
 @property (strong, nonatomic) NSString* username;
 @property (strong, nonatomic) NSString* globalName;
 @property (strong, nonatomic) NSString* biography;
 @property (strong, nonatomic) NSString* customStatus;
 @property (assign, nonatomic) DCUserStatus status;
-@property (strong, nonatomic) NSString* avatarID;
-@property (strong, nonatomic) NSString* avatarDecorationID;
+@property (strong, nonatomic) DCSnowflake* avatarID;
+@property (strong, nonatomic) DCSnowflake* avatarDecorationID;
 @property (strong, nonatomic) UIImage* profileImage;
 @property (strong, nonatomic) UIImage* profileBanner;
 @property (assign, nonatomic) NSInteger discriminator;
