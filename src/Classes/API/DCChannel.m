@@ -7,6 +7,7 @@
 //
 
 #import "DCChannel.h"
+#include "DCChatViewController.h"
 #include <Foundation/Foundation.h>
 #include "DCMessage.h"
 #import "DCServerCommunicator.h"
@@ -56,12 +57,11 @@ static dispatch_queue_t channel_send_queue;
     [self.parentGuild checkIfRead];
 }
 
-- (void)sendMessage:(NSString *)message {
+- (void)sendMessage:(NSString *)message referencingMessage:(DCMessage *)referencedMessage {
     dispatch_async([self get_channel_send_queue], ^{
         NSURL *channelURL = [NSURL
             URLWithString:[NSString
-                              stringWithFormat:@"https://discordapp.com/api/"
-                                               @"v9/channels/%@/messages",
+                              stringWithFormat:@"https://discordapp.com/api/v9/channels/%@/messages",
                                                self.snowflake]];
 
         NSMutableURLRequest *urlRequest = [NSMutableURLRequest
@@ -72,13 +72,33 @@ static dispatch_queue_t channel_send_queue;
 
         NSString *escapedMessage = [message emojizedString];
 
-        CFStringRef transform = CFSTR("Any-Hex/Java");
-        CFStringTransform(
-            (__bridge CFMutableStringRef)escapedMessage, NULL, transform, NO
-        );
-
-        NSString *messageString =
-            [NSString stringWithFormat:@"{\"content\":\"%@\"}", escapedMessage];
+        NSDictionary *dictionary;
+        if (referencedMessage) {
+            dictionary = @{
+                @"content" : escapedMessage,
+                @"type" : @19,
+                @"message_reference" : @{
+                    @"type": @0,
+                    @"message_id" : referencedMessage.snowflake,
+                    @"channel_id" : DCServerCommunicator.sharedInstance.selectedChannel.snowflake,
+                    @"fail_if_not_exists": @YES
+                }
+            };
+        } else {
+            dictionary = @{
+                @"content" : escapedMessage,
+                @"type" : @0,
+            };
+        }
+        NSError *writeError             = nil;
+        NSData *jsonData                = [NSJSONSerialization dataWithJSONObject:dictionary options:NSJSONWritingPrettyPrinted error:&writeError];
+        if (writeError) {
+#ifdef DEBUG
+            NSLog(@"Error serializing message to JSON: %@", writeError);
+#endif
+            return;
+        }
+        NSString *messageString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 
         [urlRequest setHTTPMethod:@"POST"];
 
@@ -411,7 +431,7 @@ static dispatch_queue_t channel_send_queue;
 - (NSArray *)getMessages:(int)numberOfMessages
            beforeMessage:(DCMessage *)message {
     NSMutableArray *messages = NSMutableArray.new;
-    NSData *response = nil;
+    NSData *response         = nil;
     // Generate URL from args
     NSMutableString *getChannelAddress = [NSMutableString
         stringWithFormat:@"https://discordapp.com/api/v9/channels/%@/messages?",

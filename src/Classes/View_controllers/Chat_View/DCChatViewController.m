@@ -40,6 +40,7 @@
 @property (nonatomic, strong) UILabel *typingLabel;
 @property (nonatomic, strong) NSMutableDictionary *typingUsers;
 @property (assign, nonatomic) CGFloat keyboardHeight;
+@property (assign, nonatomic) DCMessage *replyingToMessage;
 @end
 
 @implementation DCChatViewController
@@ -1441,12 +1442,16 @@ static dispatch_queue_t chat_messages_queue;
         [messageActionSheet setDelegate:self];
         [messageActionSheet showFromToolbar:self.toolbar];
     } else {
+        NSString *replyButton = self.replyingToMessage
+            && [self.replyingToMessage.snowflake isEqualToString:self.selectedMessage.snowflake]
+            ? @"Cancel Reply"
+            : @"Reply";
         UIActionSheet *messageActionSheet = [[UIActionSheet alloc]
                      initWithTitle:self.selectedMessage.content
                           delegate:self
                  cancelButtonTitle:@"Cancel"
             destructiveButtonTitle:nil
-                 otherButtonTitles:@"Reply",
+                 otherButtonTitles:replyButton, 
                                    @"Mention",
                                    @"Copy Message ID",
                                    @"View Profile",
@@ -1496,12 +1501,11 @@ static dispatch_queue_t chat_messages_queue;
         [self presentViewController:picker animated:YES completion:nil];
         [picker viewWillAppear:YES];
     } else if ([popup tag] == 3) {
-        if (buttonIndex == 0) {
-            // REPLY
-            // NSLog(@"penis");
-            self.inputField.text = [NSString
-                stringWithFormat:@"> %@\n<@%@> ", self.selectedMessage.content,
-                                 self.selectedMessage.author.snowflake];
+        if (buttonIndex == 0) { // (cancel) reply
+            self.replyingToMessage = !self.replyingToMessage 
+                    || ![self.replyingToMessage.snowflake isEqualToString:self.selectedMessage.snowflake] 
+                    ? self.selectedMessage 
+                    : nil;
         } else if (buttonIndex == 1) {
             self.inputField.text = [NSString
                 stringWithFormat:@"%@<@%@> ", self.inputField.text,
@@ -1611,7 +1615,9 @@ static dispatch_queue_t chat_messages_queue;
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![self.inputField.text isEqual:@""]) {
             [DCServerCommunicator.sharedInstance.selectedChannel
-                sendMessage:self.inputField.text];
+                sendMessage:self.inputField.text
+                referencingMessage:self.replyingToMessage ? self.replyingToMessage : nil];
+            self.replyingToMessage = nil;
             [self.inputField setText:@""];
             self.inputFieldPlaceholder.hidden = NO;
             lastTimeInterval                  = 0;
