@@ -938,11 +938,12 @@
 
         newMessage.attributedContent = nil;
         if (VERSION_MIN(@"6.0") && [newMessage.content length] > 0) {
-            static dispatch_once_t onceToken;
-            static TSMarkdownParser *parser;
-            dispatch_once(&onceToken, ^{
-                parser = [TSMarkdownParser standardParser];
-            });
+            // static dispatch_once_t onceToken;
+            // static TSMarkdownParser *parser;
+            // dispatch_once(&onceToken, ^{
+            //     parser = [TSMarkdownParser standardParser];
+            // });
+            TSMarkdownParser *parser = [TSMarkdownParser standardParser];
             NSAttributedString *attributedText =
                 [parser attributedStringFromMarkdown:newMessage.content];
             if (attributedText && ![attributedText.string isEqualToString:newMessage.content]) {
