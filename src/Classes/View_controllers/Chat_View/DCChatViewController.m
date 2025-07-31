@@ -41,6 +41,7 @@
 @property (nonatomic, strong) NSMutableDictionary *typingUsers;
 @property (assign, nonatomic) CGFloat keyboardHeight;
 @property (strong, nonatomic) DCMessage *replyingToMessage;
+@property (assign, nonatomic) BOOL disablePing;
 @property (strong, nonatomic) DCMessage *editingMessage;
 @end
 
@@ -1455,13 +1456,19 @@ static dispatch_queue_t chat_messages_queue;
         UIActionSheet *messageActionSheet = [[UIActionSheet alloc]
                      initWithTitle:self.selectedMessage.content
                           delegate:self
-                 cancelButtonTitle:@"Cancel"
+                 cancelButtonTitle:nil
             destructiveButtonTitle:nil
-                 otherButtonTitles:replyButton, 
-                                   @"Mention",
-                                   @"Copy Message ID",
-                                   @"View Profile",
-                                   nil];
+                 otherButtonTitles:nil];
+        [messageActionSheet addButtonWithTitle:replyButton];
+        if (self.replyingToMessage
+            && [self.replyingToMessage.snowflake
+                isEqualToString:self.selectedMessage.snowflake]) {
+            [messageActionSheet addButtonWithTitle:self.disablePing ? @"Enable Ping" : @"Disable Ping"];
+        }
+        [messageActionSheet addButtonWithTitle:@"Mention"];
+        [messageActionSheet addButtonWithTitle:@"Copy Message ID"];
+        [messageActionSheet addButtonWithTitle:@"View Profile"];
+        messageActionSheet.cancelButtonIndex = [messageActionSheet addButtonWithTitle:@"Cancel"];
         [messageActionSheet setTag:3];
         [messageActionSheet setDelegate:self];
         [messageActionSheet showFromToolbar:self.toolbar];
@@ -1519,19 +1526,24 @@ static dispatch_queue_t chat_messages_queue;
         [self presentViewController:picker animated:YES completion:nil];
         [picker viewWillAppear:YES];
     } else if ([popup tag] == 3) {
+        int addbut = self.replyingToMessage
+            && [self.replyingToMessage.snowflake isEqualToString:self.selectedMessage.snowflake] 
+            ? 1 : 0;
         if (buttonIndex == 0) { // (cancel) reply
             self.replyingToMessage = !self.replyingToMessage 
                     || ![self.replyingToMessage.snowflake isEqualToString:self.selectedMessage.snowflake] 
                     ? self.selectedMessage 
                     : nil;
-        } else if (buttonIndex == 1) {
+        } else if (buttonIndex == addbut) { // will never match when 0
+            self.disablePing = !self.disablePing;
+        } else if (buttonIndex == 1 + addbut) {
             self.inputField.text = [NSString
                 stringWithFormat:@"%@<@%@> ", self.inputField.text,
                                  self.selectedMessage.author.snowflake];
-        } else if (buttonIndex == 2) {
+        } else if (buttonIndex == 2 + addbut) {
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
             [pasteboard setString:self.selectedMessage.snowflake];
-        } else if (buttonIndex == 3) {
+        } else if (buttonIndex == 3 + addbut) {
             [self performSegueWithIdentifier:@"chat to contact" sender:self];
         }
     }
@@ -1639,10 +1651,12 @@ static dispatch_queue_t chat_messages_queue;
             } else {
                 [DCServerCommunicator.sharedInstance.selectedChannel
                     sendMessage:self.inputField.text
-                    referencingMessage:self.replyingToMessage ? self.replyingToMessage : nil];
+                    referencingMessage:self.replyingToMessage ? self.replyingToMessage : nil
+                    disablePing:self.disablePing];
             }
             self.replyingToMessage = nil;
             self.editingMessage = nil;
+            self.disablePing = NO;
             [self.inputField setText:@""];
             self.inputFieldPlaceholder.hidden = NO;
             lastTimeInterval                  = 0;

@@ -53,7 +53,7 @@ typedef NS_ENUM(NSInteger, DCChannelType) {
 
 - (void)checkIfRead;
 - (void)sendTypingIndicator;
-- (void)sendMessage:(NSString*)message referencingMessage:(DCMessage*)referencedMessage;
+- (void)sendMessage:(NSString*)message referencingMessage:(DCMessage*)referencedMessage disablePing:(BOOL)disablePing;
 - (void)editMessage:(DCMessage*)message withContent:(NSString*)content;
 - (void)ackMessage:(NSString*)message;
 - (void)sendImage:(UIImage*)image mimeType:(NSString*)type;

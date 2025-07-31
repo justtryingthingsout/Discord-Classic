@@ -57,7 +57,7 @@ static dispatch_queue_t channel_send_queue;
     [self.parentGuild checkIfRead];
 }
 
-- (void)sendMessage:(NSString *)message referencingMessage:(DCMessage *)referencedMessage {
+- (void)sendMessage:(NSString *)message referencingMessage:(DCMessage *)referencedMessage disablePing:(BOOL)disablePing {
     dispatch_async([self get_channel_send_queue], ^{
         NSURL *channelURL = [NSURL
             URLWithString:[NSString
@@ -72,10 +72,11 @@ static dispatch_queue_t channel_send_queue;
 
         NSString *escapedMessage = [message emojizedString];
 
-        NSDictionary *dictionary;
+        NSMutableDictionary *dictionary = [@{
+            @"content" : escapedMessage
+        } mutableCopy];
         if (referencedMessage) {
-            dictionary = @{
-                @"content" : escapedMessage,
+            [dictionary addEntriesFromDictionary:@{
                 @"type" : @19,
                 @"message_reference" : @{
                     @"type" : @0,
@@ -83,12 +84,19 @@ static dispatch_queue_t channel_send_queue;
                     @"channel_id" : DCServerCommunicator.sharedInstance.selectedChannel.snowflake,
                     @"fail_if_not_exists" : @YES
                 }
-            };
+            }];
+            if (disablePing) {
+                [dictionary addEntriesFromDictionary:@{
+                    @"allowed_mentions" : @{
+                        @"parse" : @[@"users", @"roles", @"everyone"],
+                        @"replied_user" : @NO
+                    }
+                }];
+            }
         } else {
-            dictionary = @{
-                @"content" : escapedMessage,
-                @"type" : @0,
-            };
+            [dictionary addEntriesFromDictionary:@{
+                @"type" : @0
+            }];
         }
         NSError *writeError = nil;
         NSData *jsonData    = [NSJSONSerialization dataWithJSONObject:dictionary options:NSJSONWritingPrettyPrinted error:&writeError];
