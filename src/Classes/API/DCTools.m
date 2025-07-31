@@ -938,20 +938,17 @@
 
         newMessage.attributedContent = nil;
         if (VERSION_MIN(@"6.0") && [newMessage.content length] > 0) {
-            // static dispatch_once_t onceToken;
-            // static TSMarkdownParser *parser;
-            // dispatch_once(&onceToken, ^{
-            //     parser = [TSMarkdownParser standardParser];
-            // });
-            TSMarkdownParser *parser = [TSMarkdownParser standardParser];
-            NSAttributedString *attributedText =
-                [parser attributedStringFromMarkdown:newMessage.content];
-            if (attributedText && ![attributedText.string isEqualToString:newMessage.content]) {
-                contentSize = [attributedText boundingRectWithSize:CGSizeMake(contentWidth, CGFLOAT_MAX)
-                                                           options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
-                                                           context:nil]
-                                  .size;
-                newMessage.attributedContent = attributedText;
+            @autoreleasepool {
+                TSMarkdownParser *parser = [TSMarkdownParser standardParser];
+                NSAttributedString *attributedText =
+                    [parser attributedStringFromMarkdown:newMessage.content];
+                if (attributedText && ![attributedText.string isEqualToString:newMessage.content]) {
+                    contentSize = [attributedText boundingRectWithSize:CGSizeMake(contentWidth, CGFLOAT_MAX)
+                                                               options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                                               context:nil]
+                                      .size;
+                    newMessage.attributedContent = attributedText;
+                }
             }
         }
 
@@ -1096,9 +1093,9 @@
 
         // Make sure jsonChannel is a text channel or a category
         // we dont want to include voice channels in the text channel list
-        if ([[jsonChannel objectForKey:@"type"] isEqual:@(DCChannelTypeGuildText)] || // text channel
+        if ([[jsonChannel objectForKey:@"type"] isEqual:@(DCChannelTypeGuildText)] ||         // text channel
             [[jsonChannel objectForKey:@"type"] isEqual:@(DCChannelTypeGuildAnnouncement)] || // announcements
-            [[jsonChannel objectForKey:@"type"] isEqual:@(DCChannelTypeGuildCategory)]) { // category
+            [[jsonChannel objectForKey:@"type"] isEqual:@(DCChannelTypeGuildCategory)]) {     // category
             // Allow code is used to determine if the user should see the
             // channel in question.
             /*

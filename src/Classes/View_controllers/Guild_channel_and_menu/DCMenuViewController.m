@@ -836,10 +836,23 @@
                     [sortedGuilds addObject:folder];
                 }
                 if (folder.opened) {
-                    [sortedGuilds addObjectsFromArray:[DCServerCommunicator.sharedInstance.guilds 
+                    NSArray *folderGuilds = [[DCServerCommunicator.sharedInstance.guilds 
                         filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCGuild *guild, NSDictionary *bindings) {
                             return [folder.guildIds containsObject:guild.snowflake];
-                        }]]];
+                        }]]
+                        sortedArrayUsingComparator:^NSComparisonResult(DCGuild *a, DCGuild *b) {
+                            NSUInteger index1 = [folder.guildIds indexOfObject:a.snowflake];
+                            NSUInteger index2 = [folder.guildIds indexOfObject:b.snowflake];
+                            if (index1 < index2) {
+                                return NSOrderedAscending;
+                            } else if (index1 > index2) {
+                                return NSOrderedDescending;
+                            } else {
+                                return NSOrderedSame;
+                            }
+                        }];
+
+                    [sortedGuilds addObjectsFromArray:folderGuilds];
                 }
                 [handledGuildIds addObjectsFromArray:folder.guildIds];
             }
