@@ -459,8 +459,8 @@ static dispatch_queue_t chat_messages_queue;
                       startDate:&currentTimeStamp
                        interval:NULL
                         forDate:prevMessage.timestamp]
-                && (prevMessage.messageType == DEFAULT || prevMessage.messageType == REPLY)) {
-                newMessage.isGrouped = (newMessage.messageType == DEFAULT || newMessage.messageType == REPLY) && (newMessage.referencedMessage == nil);
+                && (prevMessage.messageType == DCMessageTypeDefault || prevMessage.messageType == DCMessageTypeReply)) {
+                newMessage.isGrouped = (newMessage.messageType == DCMessageTypeDefault || newMessage.messageType == DCMessageTypeReply) && (newMessage.referencedMessage == nil);
 
                 if (newMessage.isGrouped) {
                     float contentWidth =
@@ -557,8 +557,8 @@ static dispatch_queue_t chat_messages_queue;
                       startDate:&currentTimeStamp
                        interval:NULL
                         forDate:prevMessage.timestamp]
-                && (prevMessage.messageType == DEFAULT || prevMessage.messageType == REPLY)) {
-                newMessage.isGrouped = (newMessage.messageType == DEFAULT || newMessage.messageType == REPLY) && (newMessage.referencedMessage == nil);
+                && (prevMessage.messageType == DCMessageTypeDefault || prevMessage.messageType == DCMessageTypeReply)) {
+                newMessage.isGrouped = (newMessage.messageType == DCMessageTypeDefault || newMessage.messageType == DCMessageTypeReply) && (newMessage.referencedMessage == nil);
 
                 if (newMessage.isGrouped) {
                     float contentWidth =
@@ -639,9 +639,9 @@ static dispatch_queue_t chat_messages_queue;
               startDate:&currentTimeStamp
                interval:NULL
                 forDate:prevMessage.timestamp]
-        && (prevMessage.messageType == DEFAULT || prevMessage.messageType == REPLY)) {
+        && (prevMessage.messageType == DCMessageTypeDefault || prevMessage.messageType == DCMessageTypeReply)) {
         Boolean oldGroupedFlag = newMessage.isGrouped;
-        newMessage.isGrouped   = (newMessage.messageType == DEFAULT || newMessage.messageType == REPLY) && (newMessage.referencedMessage == nil);
+        newMessage.isGrouped   = (newMessage.messageType == DCMessageTypeDefault || newMessage.messageType == DCMessageTypeReply) && (newMessage.referencedMessage == nil);
 
         if (newMessage.isGrouped
             && (newMessage.isGrouped != oldGroupedFlag)) {

@@ -77,9 +77,9 @@ static dispatch_queue_t channel_send_queue;
         } mutableCopy];
         if (referencedMessage) {
             [dictionary addEntriesFromDictionary:@{
-                @"type" : @19,
+                @"type" : @(DCMessageTypeReply),
                 @"message_reference" : @{
-                    @"type" : @0,
+                    @"type" : @(DCMessageReferenceTypeDefault),
                     @"message_id" : referencedMessage.snowflake,
                     @"channel_id" : DCServerCommunicator.sharedInstance.selectedChannel.snowflake,
                     @"fail_if_not_exists" : @YES
@@ -88,14 +88,14 @@ static dispatch_queue_t channel_send_queue;
             if (disablePing) {
                 [dictionary addEntriesFromDictionary:@{
                     @"allowed_mentions" : @{
-                        @"parse" : @[@"users", @"roles", @"everyone"],
+                        @"parse" : @[ @"users", @"roles", @"everyone" ],
                         @"replied_user" : @NO
                     }
                 }];
             }
         } else {
             [dictionary addEntriesFromDictionary:@{
-                @"type" : @0
+                @"type" : @(DCMessageTypeDefault)
             }];
         }
         NSError *writeError = nil;
@@ -192,8 +192,7 @@ static dispatch_queue_t channel_send_queue;
     });
     NSURL *channelURL = [NSURL
         URLWithString:[NSString
-                          stringWithFormat:@"https://discordapp.com/api/v9/"
-                                           @"channels/%@/messages",
+                          stringWithFormat:@"https://discordapp.com/api/v9/channels/%@/messages",
                                            self.snowflake]];
 
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest
@@ -219,8 +218,7 @@ static dispatch_queue_t channel_send_queue;
     NSString *extension = [type substringFromIndex:6];
     [postbody
         appendData:[[NSString stringWithFormat:
-                                  @"Content-Disposition: form-data; "
-                                  @"name=\"file\"; filename=\"upload.%@\"\r\n",
+                                  @"Content-Disposition: form-data; name=\"file\"; filename=\"upload.%@\"\r\n",
                                   extension]
                        dataUsingEncoding:NSUTF8StringEncoding]];
     if ([type isEqualToString:@"image/jpeg"]) {
@@ -266,8 +264,7 @@ static dispatch_queue_t channel_send_queue;
     });
     NSURL *channelURL = [NSURL
         URLWithString:[NSString
-                          stringWithFormat:@"https://discordapp.com/api/v9/"
-                                           @"channels/%@/messages",
+                          stringWithFormat:@"https://discordapp.com/api/v9/channels/%@/messages",
                                            self.snowflake]];
 
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest
@@ -334,8 +331,7 @@ static dispatch_queue_t channel_send_queue;
     });
     NSURL *channelURL = [NSURL
         URLWithString:[NSString
-                          stringWithFormat:@"https://discordapp.com/api/v9/"
-                                           @"channels/%@/messages",
+                          stringWithFormat:@"https://discordapp.com/api/v9/channels/%@/messages",
                                            self.snowflake]];
 
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest
@@ -394,7 +390,9 @@ static dispatch_queue_t channel_send_queue;
                                               error:&error];
 
         if (error) {
-            // NSLog(@"Error sending video: %@", error.localizedDescription);
+#ifdef DEBUG
+            NSLog(@"Error sending video: %@", error.localizedDescription);
+#endif
         } else {
             NSLog(
                 @"Response: %@",
@@ -414,8 +412,7 @@ static dispatch_queue_t channel_send_queue;
     dispatch_async([self get_channel_event_queue], ^{
         NSURL *channelURL = [NSURL
             URLWithString:[NSString
-                              stringWithFormat:@"https://discordapp.com/api/"
-                                               @"v9/channels/%@/typing",
+                              stringWithFormat:@"https://discordapp.com/api/v9/channels/%@/typing",
                                                self.snowflake]];
 
         NSMutableURLRequest *urlRequest = [NSMutableURLRequest
@@ -450,8 +447,7 @@ static dispatch_queue_t channel_send_queue;
     dispatch_async([self get_channel_event_queue], ^{
         NSURL *channelURL = [NSURL
             URLWithString:[NSString
-                              stringWithFormat:@"https://discordapp.com/api/v9/"
-                                               @"channels/%@/messages/%@/ack",
+                              stringWithFormat:@"https://discordapp.com/api/v9/channels/%@/messages/%@/ack",
                                                self.snowflake, messageId]];
 
         NSMutableURLRequest *urlRequest = [NSMutableURLRequest
@@ -693,11 +689,11 @@ static dispatch_queue_t channel_send_queue;
                       startDate:&currentTimeStamp
                        interval:NULL
                         forDate:prevMessage.timestamp]
-                || (prevMessage.messageType != DEFAULT && prevMessage.messageType != REPLY)) {
+                || (prevMessage.messageType != DCMessageTypeDefault && prevMessage.messageType != DCMessageTypeReply)) {
                 continue;
             }
 
-            currentMessage.isGrouped = (currentMessage.messageType == DEFAULT || currentMessage.messageType == REPLY)
+            currentMessage.isGrouped = (currentMessage.messageType == DCMessageTypeDefault || currentMessage.messageType == DCMessageTypeReply)
                 && (currentMessage.referencedMessage == nil);
             if (!currentMessage.isGrouped) {
                 continue;
