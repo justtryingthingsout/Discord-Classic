@@ -1128,39 +1128,34 @@ static dispatch_queue_t chat_messages_queue;
             // TOCK(init);
 
             if (messageAtRowIndex.referencedMessage != nil) {
-                [cell.referencedAuthorLabel
-                    setText:messageAtRowIndex.referencedMessage.author.globalName];
-                [cell.referencedMessage
-                    setText:messageAtRowIndex.referencedMessage.content];
-                [cell.referencedMessage
-                    setFrame:CGRectMake(
+                cell.referencedAuthorLabel.text = messageAtRowIndex.referencedMessage.author.globalName;
+                cell.referencedMessage.text = messageAtRowIndex.referencedMessage.content;
+                cell.referencedMessage.frame = CGRectMake(
                                  messageAtRowIndex.referencedMessage
                                      .authorNameWidth,
                                  cell.referencedMessage.y,
                                  self.chatTableView.width
                                      - messageAtRowIndex.authorNameWidth,
                                  cell.referencedMessage.height
-                             )];
+                             );
 
-                [cell.referencedProfileImage
-                    setImage:messageAtRowIndex.referencedMessage.author
-                                 .profileImage];
+                cell.referencedProfileImage.image = messageAtRowIndex.referencedMessage.author
+                                 .profileImage;
                 cell.referencedProfileImage.layer.cornerRadius =
                     cell.referencedProfileImage.frame.size.height / 2;
                 cell.referencedProfileImage.layer.masksToBounds = YES;
             }
 
             if (!messageAtRowIndex.isGrouped) {
-                [cell.authorLabel setText:messageAtRowIndex.author.globalName];
-                [cell.timestampLabel setText:messageAtRowIndex.prettyTimestamp];
-                [cell.timestampLabel
-                    setFrame:CGRectMake(
+                cell.authorLabel.text = messageAtRowIndex.author.globalName;
+                cell.timestampLabel.text = messageAtRowIndex.prettyTimestamp;
+                cell.timestampLabel.frame = CGRectMake(
                                  messageAtRowIndex.authorNameWidth,
                                  cell.timestampLabel.y,
                                  self.chatTableView.width
                                      - messageAtRowIndex.authorNameWidth,
                                  cell.timestampLabel.height
-                             )];
+                             );
             }
 
             if (messageAtRowIndex.messageType == 1 || messageAtRowIndex.messageType == 7) {
@@ -1175,6 +1170,13 @@ static dispatch_queue_t chat_messages_queue;
                 cell.universalImageView.image = [UIImage imageNamed:@"U-Boost"];
             }
 
+            cell.contentTextView.attributedText = nil;
+            cell.contentTextView.text = @"";
+            cell.contentTextView.textColor = [UIColor whiteColor];
+            cell.contentTextView.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
+            cell.contentTextView.backgroundColor = [UIColor clearColor];
+            cell.contentTextView.textAlignment = NSTextAlignmentLeft;
+
             // TICK(content);
             if (VERSION_MIN(@"6.0") && messageAtRowIndex.attributedContent) {
                 cell.contentTextView.attributedText = messageAtRowIndex.attributedContent;
@@ -1187,7 +1189,7 @@ static dispatch_queue_t chat_messages_queue;
             double height = [cell.contentTextView
                                 sizeThatFits:CGSizeMake(cell.contentTextView.width, MAXFLOAT)]
                                 .height;
-            [cell.contentTextView setHeight:height];
+            cell.contentTextView.height = height;
 
             if (!messageAtRowIndex.isGrouped) {
                 if (messageAtRowIndex.author.avatarDecoration &&

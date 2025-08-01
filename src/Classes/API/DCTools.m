@@ -938,17 +938,19 @@
 
         newMessage.attributedContent = nil;
         if (VERSION_MIN(@"6.0") && [newMessage.content length] > 0) {
-            @autoreleasepool {
-                TSMarkdownParser *parser = [TSMarkdownParser standardParser];
-                NSAttributedString *attributedText =
-                    [parser attributedStringFromMarkdown:newMessage.content];
-                if (attributedText && ![attributedText.string isEqualToString:newMessage.content]) {
-                    contentSize = [attributedText boundingRectWithSize:CGSizeMake(contentWidth, CGFLOAT_MAX)
-                                                               options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
-                                                               context:nil]
-                                      .size;
-                    newMessage.attributedContent = attributedText;
-                }
+            static dispatch_once_t onceToken;
+            static TSMarkdownParser *parser;
+            dispatch_once(&onceToken, ^{
+                parser = [TSMarkdownParser standardParser];
+            });
+            NSAttributedString *attributedText =
+                [parser attributedStringFromMarkdown:newMessage.content];
+            if (attributedText && ![attributedText.string isEqualToString:newMessage.content]) {
+                contentSize = [attributedText boundingRectWithSize:CGSizeMake(contentWidth, CGFLOAT_MAX)
+                                                           options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                                           context:nil]
+                                  .size;
+                newMessage.attributedContent = attributedText;
             }
         }
 
