@@ -27,8 +27,8 @@
 #import "DCUser.h"
 #import "QuickLook/QuickLook.h"
 #import "TRMalleableFrameView.h"
-#import "UILazyImageView.h"
 #import "UILazyImage.h"
+#import "UILazyImageView.h"
 
 @interface DCChatViewController ()
 @property (nonatomic, strong) NSMutableArray *messages;
@@ -72,7 +72,7 @@ static dispatch_queue_t chat_messages_queue;
                 action:@selector(dismissKeyboard:)];
     [self.view addGestureRecognizer:gestureRecognizer];
     gestureRecognizer.cancelsTouchesInView = NO;
-    gestureRecognizer.delegate = self;
+    gestureRecognizer.delegate             = self;
 
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"experimentalMode"]) {
         [UINavigationBar.appearance
@@ -566,8 +566,7 @@ static dispatch_queue_t chat_messages_queue;
                     CGSize authorNameSize = [newMessage.author.globalName
                              sizeWithFont:[UIFont boldSystemFontOfSize:15]
                         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                            lineBreakMode:(NSLineBreakMode
-                                          )UILineBreakModeWordWrap];
+                            lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
 
                     newMessage.contentHeight -= authorNameSize.height + 4;
                 }
@@ -650,8 +649,7 @@ static dispatch_queue_t chat_messages_queue;
             CGSize authorNameSize = [newMessage.author.globalName
                      sizeWithFont:[UIFont boldSystemFontOfSize:15]
                 constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                    lineBreakMode:(NSLineBreakMode
-                                  )UILineBreakModeWordWrap];
+                    lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
 
             newMessage.contentHeight -= authorNameSize.height + 4;
         }
@@ -662,8 +660,7 @@ static dispatch_queue_t chat_messages_queue;
         CGSize authorNameSize = [newMessage.author.globalName
                  sizeWithFont:[UIFont boldSystemFontOfSize:15]
             constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                lineBreakMode:(NSLineBreakMode
-                              )UILineBreakModeWordWrap];
+                lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
         newMessage.contentHeight += authorNameSize.height + 4;
     }
 }
@@ -999,7 +996,7 @@ static dispatch_queue_t chat_messages_queue;
             for (id attachment in messageAtRowIndex.attachments) {
                 @autoreleasepool {
                     if ([attachment isKindOfClass:[UILazyImage class]]) {
-                        UILazyImage *lazyImage = attachment;
+                        UILazyImage *lazyImage     = attachment;
                         UILazyImageView *imageView = UILazyImageView.new;
                         imageView.frame            = CGRectMake(
                             11, imageViewOffset,
@@ -1208,12 +1205,26 @@ static dispatch_queue_t chat_messages_queue;
                 cell.profileImage.layer.masksToBounds = YES;
             }
 
-            [cell.contentView setBackgroundColor:messageAtRowIndex.pingingUser
-                                  ? [UIColor colorWithRed:0.18f
-                                                    green:0.176f
-                                                     blue:0.157f
-                                                    alpha:1.00f]
-                                  : [UIColor clearColor]];
+            if ((self.replyingToMessage
+                        && [self.replyingToMessage.snowflake
+                            isEqualToString:messageAtRowIndex.snowflake])
+                       || (self.editingMessage
+                           && [self.editingMessage.snowflake
+                               isEqualToString:messageAtRowIndex.snowflake])) {
+                cell.contentView.backgroundColor =
+                    [UIColor colorWithRed:55/255.0f
+                                    green:59/255.0f
+                                     blue:64/255.0f
+                                    alpha:1.00f];
+            } else if (messageAtRowIndex.pingingUser) {
+                cell.contentView.backgroundColor =
+                    [UIColor colorWithRed:46/255.0f
+                                    green:45/255.0f
+                                     blue:40/255.0f
+                                    alpha:1.00f];
+            } else {
+                cell.contentView.backgroundColor = [UIColor clearColor];
+            }
 
             cell.contentView.layer.cornerRadius  = 0;
             cell.contentView.layer.masksToBounds = YES;
@@ -1236,15 +1247,13 @@ static dispatch_queue_t chat_messages_queue;
             CGSize authorNameSize = [messageAtRowIndex.author.globalName
                      sizeWithFont:[UIFont boldSystemFontOfSize:15]
                 constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
-                    lineBreakMode:(NSLineBreakMode
-                                  )UILineBreakModeWordWrap];
+                    lineBreakMode:(NSLineBreakMode)UILineBreakModeWordWrap];
 
             // dispatch_async(dispatch_get_main_queue(), ^{
             CGFloat imageViewOffset = (!messageAtRowIndex.isGrouped
                                            ? authorNameSize.height
                                                + (messageAtRowIndex.referencedMessage != nil ? 16 : 0)
-                                           : 0
-                                      )
+                                           : 0)
                 + (
                                           [messageAtRowIndex.content length] != 0
                                               ? height
@@ -1255,18 +1264,18 @@ static dispatch_queue_t chat_messages_queue;
                 @autoreleasepool {
                     if ([attachment isKindOfClass:[UILazyImage class]]) {
                         UILazyImageView *imageView = [UILazyImageView new];
-                        UILazyImage *lazyImage         = attachment;
-                        CGFloat aspectRatio    = lazyImage.image.size.width / lazyImage.image.size.height;
-                        int newWidth           = 200 * aspectRatio;
-                        int newHeight          = 200;
+                        UILazyImage *lazyImage     = attachment;
+                        CGFloat aspectRatio        = lazyImage.image.size.width / lazyImage.image.size.height;
+                        int newWidth               = 200 * aspectRatio;
+                        int newHeight              = 200;
                         if (newWidth > self.chatTableView.width - 66) {
                             newWidth  = self.chatTableView.width - 66;
                             newHeight = newWidth / aspectRatio;
                         }
                         imageView.frame = CGRectMake(
-                                                55, imageViewOffset, newWidth, newHeight
-                                            );
-                        imageView.image = lazyImage.image;
+                            55, imageViewOffset, newWidth, newHeight
+                        );
+                        imageView.image    = lazyImage.image;
                         imageView.imageURL = lazyImage.imageURL;
                         imageViewOffset += newHeight;
 
@@ -1433,7 +1442,7 @@ static dispatch_queue_t chat_messages_queue;
     if ([self.selectedMessage.author.snowflake
             isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
         NSString *editButton = self.editingMessage
-            && [self.editingMessage.snowflake isEqualToString:self.selectedMessage.snowflake]
+                && [self.editingMessage.snowflake isEqualToString:self.selectedMessage.snowflake]
             ? @"Cancel Edit"
             : @"Edit";
         UIActionSheet *messageActionSheet =
@@ -1449,10 +1458,10 @@ static dispatch_queue_t chat_messages_queue;
         [messageActionSheet setDelegate:self];
         [messageActionSheet showFromToolbar:self.toolbar];
     } else {
-        NSString *replyButton = self.replyingToMessage
-            && [self.replyingToMessage.snowflake isEqualToString:self.selectedMessage.snowflake]
-            ? @"Cancel Reply"
-            : @"Reply";
+        NSString *replyButton             = self.replyingToMessage
+                && [self.replyingToMessage.snowflake isEqualToString:self.selectedMessage.snowflake]
+                        ? @"Cancel Reply"
+                        : @"Reply";
         UIActionSheet *messageActionSheet = [[UIActionSheet alloc]
                      initWithTitle:self.selectedMessage.content
                           delegate:self
@@ -1484,14 +1493,19 @@ static dispatch_queue_t chat_messages_queue;
             if (self.editingMessage
                 && [self.editingMessage.snowflake
                     isEqualToString:self.selectedMessage.snowflake]) {
-                self.editingMessage = nil;
-                self.inputField.text = @"";
+                self.editingMessage               = nil;
+                self.inputField.text              = @"";
                 self.inputFieldPlaceholder.hidden = NO;
             } else {
-                self.editingMessage = self.selectedMessage;
-                self.inputField.text = self.selectedMessage.content;
+                self.editingMessage               = self.selectedMessage;
+                self.inputField.text              = self.selectedMessage.content;
                 self.inputFieldPlaceholder.hidden = YES;
             }
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.messages indexOfObject:self.selectedMessage]
+                                                        inSection:0];
+            [self.chatTableView beginUpdates];
+            [self.chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            [self.chatTableView endUpdates];
         } else if (buttonIndex == 2) {
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
             [pasteboard setString:self.selectedMessage.snowflake];
@@ -1527,13 +1541,19 @@ static dispatch_queue_t chat_messages_queue;
         [picker viewWillAppear:YES];
     } else if ([popup tag] == 3) {
         int addbut = self.replyingToMessage
-            && [self.replyingToMessage.snowflake isEqualToString:self.selectedMessage.snowflake] 
-            ? 1 : 0;
+                && [self.replyingToMessage.snowflake isEqualToString:self.selectedMessage.snowflake]
+            ? 1
+            : 0;
         if (buttonIndex == 0) { // (cancel) reply
-            self.replyingToMessage = !self.replyingToMessage 
-                    || ![self.replyingToMessage.snowflake isEqualToString:self.selectedMessage.snowflake] 
-                    ? self.selectedMessage 
-                    : nil;
+            self.replyingToMessage = !self.replyingToMessage
+                    || ![self.replyingToMessage.snowflake isEqualToString:self.selectedMessage.snowflake]
+                ? self.selectedMessage
+                : nil;
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.messages indexOfObject:self.selectedMessage]
+                                                        inSection:0];
+            [self.chatTableView beginUpdates];
+            [self.chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            [self.chatTableView endUpdates];
         } else if (buttonIndex == addbut) { // will never match when 0
             self.disablePing = !self.disablePing;
         } else if (buttonIndex == 1 + addbut) {
@@ -1621,7 +1641,7 @@ static dispatch_queue_t chat_messages_queue;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
-    shouldReceiveTouch:(UITouch *)touch {
+       shouldReceiveTouch:(UITouch *)touch {
     return ![touch.view.superview isKindOfClass:[UIToolbar class]];
 }
 
@@ -1650,13 +1670,23 @@ static dispatch_queue_t chat_messages_queue;
                     withContent:self.inputField.text];
             } else {
                 [DCServerCommunicator.sharedInstance.selectedChannel
-                    sendMessage:self.inputField.text
+                           sendMessage:self.inputField.text
                     referencingMessage:self.replyingToMessage ? self.replyingToMessage : nil
-                    disablePing:self.disablePing];
+                           disablePing:self.disablePing];
+            }
+            if (self.replyingToMessage || self.editingMessage) {
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.messages 
+                                                                            indexOfObject:self.replyingToMessage 
+                                                                            ? self.replyingToMessage 
+                                                                            : self.editingMessage]
+                                                            inSection:0];
+                [self.chatTableView beginUpdates];
+                [self.chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                [self.chatTableView endUpdates];
             }
             self.replyingToMessage = nil;
-            self.editingMessage = nil;
-            self.disablePing = NO;
+            self.editingMessage    = nil;
+            self.disablePing       = NO;
             [self.inputField setText:@""];
             self.inputFieldPlaceholder.hidden = NO;
             lastTimeInterval                  = 0;
@@ -1683,7 +1713,7 @@ static dispatch_queue_t chat_messages_queue;
     });
     [manager downloadImageWithURL:((UILazyImageView *)sender.view).imageURL
                           options:0
-                          progress:nil
+                         progress:nil
                         completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 [UIApplication.sharedApplication setNetworkActivityIndicatorVisible:NO];
@@ -1754,12 +1784,10 @@ static dispatch_queue_t chat_messages_queue;
 
     if ([segue.destinationViewController class] ==
         [DCContactViewController class]) {
-        [((DCContactViewController *)segue.destinationViewController
-        ) setSelectedUser:self.selectedMessage.author];
+        [((DCContactViewController *)segue.destinationViewController) setSelectedUser:self.selectedMessage.author];
     } else if ([segue.destinationViewController class] ==
                [ODCContactViewController class]) {
-        [((ODCContactViewController *)segue.destinationViewController
-        ) setSelectedUser:self.selectedMessage.author];
+        [((ODCContactViewController *)segue.destinationViewController) setSelectedUser:self.selectedMessage.author];
     }
 }
 
