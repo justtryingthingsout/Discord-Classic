@@ -12,6 +12,7 @@
 #include <dispatch/dispatch.h>
 #include <objc/NSObjCRuntime.h>
 #import "DCChatVideoAttachment.h"
+#import "DCEmote.h"
 #import "DCMessage.h"
 #import "DCRole.h"
 #import "DCServerCommunicator.h"
@@ -887,28 +888,53 @@
             }
         }
 
-        // {
-        //     // emotes
-        //     NSRegularExpression *regex = [NSRegularExpression
-        //         regularExpressionWithPattern:@"\\<a?:(.*?):(\\d+)\\>"
-        //                              options:NSRegularExpressionCaseInsensitive
-        //                                error:NULL];
-        //     NSTextCheckingResult *embeddedMention = [regex
-        //         firstMatchInString:newMessage.content
-        //                    options:0
-        //                      range:NSMakeRange(0, newMessage.content.length)];
-        //     while (embeddedMention) {
-        //         BOOL isAnimated = [newMessage.content
-        //             characterAtIndex:embeddedMention.range.location] == 'a';
-        //         NSString *emoteName = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:1]];
-        //         NSString *emoteID   = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:2]];
-        //         //https://cdn.discordapp.com/emojis/%@.png
-        //         //newMessage.content = [newMessage.content stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
-
-
-        //         embeddedMention    = [regex firstMatchInString:newMessage.content options:0 range:NSMakeRange(0, newMessage.content.length)];
-        //     }
-        // }
+        {
+            newMessage.emotes = NSMutableArray.new;
+            // emotes
+            NSRegularExpression *regex            = [NSRegularExpression
+                regularExpressionWithPattern:@"\\<(a?):(.*?):(\\d+)\\>"
+                                     options:NSRegularExpressionCaseInsensitive
+                                       error:NULL];
+            NSTextCheckingResult *embeddedMention = [regex
+                firstMatchInString:newMessage.content
+                           options:0
+                             range:NSMakeRange(0, newMessage.content.length)];
+            while (embeddedMention) {
+                BOOL isAnimated     = [[newMessage.content substringWithRange:[embeddedMention rangeAtIndex:1]] isEqualToString:@"a"];
+                NSString *emoteName = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:2]];
+                NSString *emoteID   = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:3]];
+                // https://cdn.discordapp.com/emojis/%@.png
+                newMessage.content = [newMessage.content
+                    stringByReplacingCharactersInRange:embeddedMention.range
+                                            withString:@"\uFFFD"]; // Replacement Character
+                DCEmote *emote = [DCServerCommunicator.sharedInstance.loadedEmotes objectForKey:emoteID];
+                if (!emote) {
+                    emote     = [DCEmote new];
+                    emote.name         = emoteName;
+                    emote.snowflake    = emoteID;
+                    emote.isAnimated   = isAnimated;
+                    emote.image        = nil;
+                    NSURL *emoteURL            = [NSURL URLWithString:[NSString
+                                                               stringWithFormat:@"https://cdn.discordapp.com/emojis/%@.%@?size=64",
+                                                                                emote.snowflake,
+                                                                                emote.isAnimated ? @"gif" : @"png"]];
+                    SDWebImageManager *manager = [SDWebImageManager sharedManager];
+                    [manager downloadImageWithURL:emoteURL
+                                          options:0
+                                         progress:nil
+                                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                            if (!image || !finished) {
+                                                NSLog(@"Failed to load emote image with URL %@: %@", emoteURL, error);
+                                                return;
+                                            }
+                                            NSLog(@"Loaded emote %@", emote.name);
+                                            emote.image = image;
+                                        }];
+                }
+                [newMessage.emotes addObject:emote];
+                embeddedMention = [regex firstMatchInString:newMessage.content options:0 range:NSMakeRange(0, newMessage.content.length)];
+            }
+        }
 
         NSString *content = [newMessage.content emojizedString];
 
@@ -955,7 +981,8 @@
         }
 
         newMessage.contentHeight = ((newMessage.messageType == DCMessageTypeDefault || newMessage.messageType == DCMessageTypeReply)
-                ? authorNameSize.height : 0)
+                                        ? authorNameSize.height
+                                        : 0)
             + (newMessage.attachmentCount ? contentSize.height : MAX(contentSize.height, 18))
             + 10
             + (newMessage.referencedMessage != nil ? 16 : 0);

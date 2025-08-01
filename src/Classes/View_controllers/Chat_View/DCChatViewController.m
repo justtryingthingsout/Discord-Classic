@@ -7,6 +7,7 @@
 //
 
 #import "DCChatViewController.h"
+#include "DCEmote.h"
 #include <dispatch/dispatch.h>
 #include <objc/runtime.h>
 #include "SDWebImageManager.h"
@@ -1177,6 +1178,26 @@ static dispatch_queue_t chat_messages_queue;
             cell.contentTextView.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
             cell.contentTextView.backgroundColor = [UIColor clearColor];
             cell.contentTextView.textAlignment = NSTextAlignmentLeft;
+            for (UIView *subView in cell.subviews) {
+                @autoreleasepool {
+                    if ([subView isKindOfClass:[UIImageView class]]) {
+                        [subView removeFromSuperview];
+                    }
+                    if ([subView isKindOfClass:[DCChatVideoAttachment class]]) {
+                        [subView removeFromSuperview];
+                    }
+                    if ([subView isKindOfClass:[QLPreviewController class]]) {
+                        [subView removeFromSuperview];
+                    }
+                }
+            }
+            for (UIView *subView in cell.contentTextView.subviews) {
+                @autoreleasepool {
+                    if ([subView isKindOfClass:[UIImageView class]]) {
+                        [subView removeFromSuperview];
+                    }
+                }
+            }
 
             // TICK(content);
             if (VERSION_MIN(@"6.0") && messageAtRowIndex.attributedContent) {
@@ -1184,6 +1205,28 @@ static dispatch_queue_t chat_messages_queue;
                 [cell adjustTextViewSize];
             } else {
                 cell.contentTextView.text = messageAtRowIndex.content;
+            }
+
+            // Emote handling
+            for (DCEmote *emote in messageAtRowIndex.emotes) {
+                NSRange range = [cell.contentTextView.text rangeOfString:@"\uFFFD"];
+                // cell.contentTextView.text = [cell.contentTextView.text
+                //     stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@":%@:", emote.name]];
+                cell.contentTextView.text = [cell.contentTextView.text
+                     stringByReplacingCharactersInRange:range withString:@"    "];
+                UITextPosition *startPosition = [cell.contentTextView 
+                    positionFromPosition:cell.contentTextView.beginningOfDocument 
+                    offset:range.location];
+                UITextPosition *endPosition = [cell.contentTextView
+                    positionFromPosition:startPosition 
+                    offset:range.length+3];
+                UITextRange *txtRange = [cell.contentTextView textRangeFromPosition:startPosition toPosition:endPosition];
+                CGRect rect = [cell.contentTextView firstRectForRange:txtRange];
+                rect.origin.y += 1; // padding
+                rect.size.height = rect.size.width;
+                UIImageView *emoteImageView = [[UIImageView alloc] initWithFrame:rect];
+                emoteImageView.image = emote.image;
+                [cell.contentTextView addSubview:emoteImageView];
             }
             // TOCK(content);
 
@@ -1231,20 +1274,6 @@ static dispatch_queue_t chat_messages_queue;
 
             cell.contentView.layer.cornerRadius  = 0;
             cell.contentView.layer.masksToBounds = YES;
-
-            for (UIView *subView in cell.subviews) {
-                @autoreleasepool {
-                    if ([subView isKindOfClass:[UIImageView class]]) {
-                        [subView removeFromSuperview];
-                    }
-                    if ([subView isKindOfClass:[DCChatVideoAttachment class]]) {
-                        [subView removeFromSuperview];
-                    }
-                    if ([subView isKindOfClass:[QLPreviewController class]]) {
-                        [subView removeFromSuperview];
-                    }
-                }
-            }
 
             float contentWidth    = UIScreen.mainScreen.bounds.size.width - 63;
             CGSize authorNameSize = [messageAtRowIndex.author.globalName

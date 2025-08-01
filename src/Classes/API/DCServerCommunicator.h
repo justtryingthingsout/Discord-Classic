@@ -224,6 +224,7 @@
 @property (strong, nonatomic) NSMutableDictionary* channels;
 @property (strong, nonatomic) NSMutableDictionary* loadedUsers;
 @property (strong, nonatomic) NSMutableDictionary* loadedRoles;
+@property (strong, nonatomic) NSMutableDictionary* loadedEmotes;
 
 @property (strong, nonatomic) DCGuild* selectedGuild;
 @property (strong, nonatomic) DCChannel* selectedChannel;
