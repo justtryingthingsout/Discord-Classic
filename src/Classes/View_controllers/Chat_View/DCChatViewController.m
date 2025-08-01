@@ -1441,6 +1441,10 @@ static dispatch_queue_t chat_messages_queue;
     didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.selectedMessage = self.messages[indexPath.row];
 
+    NSString *replyButton             = self.replyingToMessage
+                && [self.replyingToMessage.snowflake isEqualToString:self.selectedMessage.snowflake]
+                        ? @"Cancel Reply"
+                        : @"Reply";
     if ([self.selectedMessage.author.snowflake
             isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
         NSString *editButton = self.editingMessage
@@ -1453,6 +1457,7 @@ static dispatch_queue_t chat_messages_queue;
                                cancelButtonTitle:@"Cancel"
                           destructiveButtonTitle:@"Delete"
                                otherButtonTitles:editButton,
+                                                 replyButton,
                                                  @"Copy Message ID",
                                                  @"View Profile",
                                                  nil];
@@ -1460,10 +1465,6 @@ static dispatch_queue_t chat_messages_queue;
         [messageActionSheet setDelegate:self];
         [messageActionSheet showFromToolbar:self.toolbar];
     } else {
-        NSString *replyButton             = self.replyingToMessage
-                && [self.replyingToMessage.snowflake isEqualToString:self.selectedMessage.snowflake]
-                        ? @"Cancel Reply"
-                        : @"Reply";
         UIActionSheet *messageActionSheet = [[UIActionSheet alloc]
                      initWithTitle:self.selectedMessage.content
                           delegate:self
@@ -1509,9 +1510,19 @@ static dispatch_queue_t chat_messages_queue;
             [self.chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
             [self.chatTableView endUpdates];
         } else if (buttonIndex == 2) {
+            self.replyingToMessage = !self.replyingToMessage
+                    || ![self.replyingToMessage.snowflake isEqualToString:self.selectedMessage.snowflake]
+                ? self.selectedMessage
+                : nil;
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.messages indexOfObject:self.selectedMessage]
+                                                        inSection:0];
+            [self.chatTableView beginUpdates];
+            [self.chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            [self.chatTableView endUpdates];
+        } else if (buttonIndex == 3) {
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
             [pasteboard setString:self.selectedMessage.snowflake];
-        } else if (buttonIndex == 3) {
+        } else if (buttonIndex == 4) {
             [self performSegueWithIdentifier:@"chat to contact" sender:self];
         }
     } else if ([popup tag] == 2) { // Image Source selection
@@ -1682,12 +1693,12 @@ static dispatch_queue_t chat_messages_queue;
                                                                             ? self.replyingToMessage 
                                                                             : self.editingMessage]
                                                             inSection:0];
+                self.replyingToMessage = nil;
+                self.editingMessage    = nil;
                 [self.chatTableView beginUpdates];
                 [self.chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
                 [self.chatTableView endUpdates];
             }
-            self.replyingToMessage = nil;
-            self.editingMessage    = nil;
             self.disablePing       = NO;
             [self.inputField setText:@""];
             self.inputFieldPlaceholder.hidden = NO;
