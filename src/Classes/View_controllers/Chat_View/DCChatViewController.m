@@ -486,7 +486,7 @@ static dispatch_queue_t chat_messages_queue;
         [UIView setAnimationsEnabled:NO];
         [self.chatTableView beginUpdates];
         [self.messages addObject:newMessage];
-        [self.chatTableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.chatTableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationNone];
         [self.chatTableView endUpdates];
         [UIView setAnimationsEnabled:YES];
     }

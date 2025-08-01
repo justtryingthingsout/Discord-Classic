@@ -954,7 +954,8 @@
             }
         }
 
-        newMessage.contentHeight = authorNameSize.height
+        newMessage.contentHeight = ((newMessage.messageType == DCMessageTypeDefault || newMessage.messageType == DCMessageTypeReply)
+                ? authorNameSize.height : 0)
             + (newMessage.attachmentCount ? contentSize.height : MAX(contentSize.height, 18))
             + 10
             + (newMessage.referencedMessage != nil ? 16 : 0);
