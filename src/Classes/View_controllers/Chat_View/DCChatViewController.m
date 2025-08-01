@@ -1169,7 +1169,9 @@ static dispatch_queue_t chat_messages_queue;
                 cell.universalImageView.image = [UIImage imageNamed:@"U-Boost"];
             }
 
-            cell.contentTextView.attributedText = nil;
+            if (VERSION_MIN(@"6.0")) {
+                cell.contentTextView.attributedText = nil;
+            }
             cell.contentTextView.text = @"";
             cell.contentTextView.textColor = [UIColor whiteColor];
             cell.contentTextView.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
