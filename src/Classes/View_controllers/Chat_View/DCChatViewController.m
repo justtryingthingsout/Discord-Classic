@@ -477,15 +477,14 @@ static dispatch_queue_t chat_messages_queue;
     }
 
     NSInteger rowCount        = [self.chatTableView numberOfRowsInSection:0];
-    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:MAX(self.messages.count - 1, 0) inSection:0];
+    [self.messages addObject:newMessage];
+    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
     if (rowCount != self.messages.count) {
         NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
-        [self.messages addObject:newMessage];
         [self handleAsyncReload];
     } else {
         [UIView setAnimationsEnabled:NO];
         [self.chatTableView beginUpdates];
-        [self.messages addObject:newMessage];
         [self.chatTableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationNone];
         [self.chatTableView endUpdates];
         [UIView setAnimationsEnabled:YES];
