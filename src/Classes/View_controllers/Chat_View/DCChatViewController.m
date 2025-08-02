@@ -1208,21 +1208,21 @@ static dispatch_queue_t chat_messages_queue;
             }
 
             // Emote handling
-            for (DCEmote *emote in messageAtRowIndex.emotes) {
-                NSRange range = [cell.contentTextView.text rangeOfString:@"\uFFFD"];
+            for (NSArray *emoteInfo in messageAtRowIndex.emotes) {
                 // cell.contentTextView.text = [cell.contentTextView.text
                 //     stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@":%@:", emote.name]];
-                cell.contentTextView.text = [cell.contentTextView.text
-                     stringByReplacingCharactersInRange:range withString:@"    "];
-                UITextPosition *startPosition = [cell.contentTextView 
-                    positionFromPosition:cell.contentTextView.beginningOfDocument 
-                    offset:range.location];
-                UITextPosition *endPosition = [cell.contentTextView
-                    positionFromPosition:startPosition 
-                    offset:range.length+3];
-                UITextRange *txtRange = [cell.contentTextView textRangeFromPosition:startPosition toPosition:endPosition];
+                DCEmote *emote = emoteInfo[0];
+                NSNumber *location = emoteInfo[1];
+                UITextPosition *start = [cell.contentTextView
+                    positionFromPosition:cell.contentTextView.beginningOfDocument
+                    offset:location.unsignedIntegerValue];
+                UITextPosition *end = [cell.contentTextView
+                    positionFromPosition:start 
+                    offset:4];
+                UITextRange *txtRange = [cell.contentTextView textRangeFromPosition:start toPosition:end];
                 CGRect rect = [cell.contentTextView firstRectForRange:txtRange];
                 rect.origin.y += 1; // padding
+                rect.size.width = MAX(rect.size.width, 16);
                 rect.size.height = rect.size.width;
                 UIImageView *emoteImageView = [[UIImageView alloc] initWithFrame:rect];
                 emoteImageView.image = emote.image;

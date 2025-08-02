@@ -888,6 +888,17 @@
             }
         }
 
+        NSString *content = [newMessage.content emojizedString];
+
+        content = [content stringByReplacingOccurrencesOfString:@"\u2122\uFE0F"
+                                                     withString:@"™"];
+        content = [content stringByReplacingOccurrencesOfString:@"\u00AE\uFE0F"
+                                                     withString:@"®"];
+
+        if (newMessage.editedTimestamp != nil) {
+            content = [content stringByAppendingString:@" (edited)"];
+        }
+
         {
             newMessage.emotes = NSMutableArray.new;
             // emotes
@@ -896,17 +907,17 @@
                                      options:NSRegularExpressionCaseInsensitive
                                        error:NULL];
             NSTextCheckingResult *embeddedMention = [regex
-                firstMatchInString:newMessage.content
+                firstMatchInString:content
                            options:0
-                             range:NSMakeRange(0, newMessage.content.length)];
+                             range:NSMakeRange(0, content.length)];
             while (embeddedMention) {
-                BOOL isAnimated     = [[newMessage.content substringWithRange:[embeddedMention rangeAtIndex:1]] isEqualToString:@"a"];
-                NSString *emoteName = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:2]];
-                NSString *emoteID   = [newMessage.content substringWithRange:[embeddedMention rangeAtIndex:3]];
+                BOOL isAnimated     = [[content substringWithRange:[embeddedMention rangeAtIndex:1]] isEqualToString:@"a"];
+                NSString *emoteName = [content substringWithRange:[embeddedMention rangeAtIndex:2]];
+                NSString *emoteID   = [content substringWithRange:[embeddedMention rangeAtIndex:3]];
                 // https://cdn.discordapp.com/emojis/%@.png
-                newMessage.content = [newMessage.content
+                content = [content
                     stringByReplacingCharactersInRange:embeddedMention.range
-                                            withString:@"\uFFFD"]; // Replacement Character
+                                            withString:@"\u00A0\u00A0\u00A0\u00A0\u200B"];
                 DCEmote *emote = [DCServerCommunicator.sharedInstance.loadedEmotes objectForKey:emoteID];
                 if (!emote) {
                     emote     = [DCEmote new];
@@ -927,24 +938,13 @@
                                                 NSLog(@"Failed to load emote image with URL %@: %@", emoteURL, error);
                                                 return;
                                             }
-                                            NSLog(@"Loaded emote %@", emote.name);
+                                            // NSLog(@"Loaded emote %@", emote.name);
                                             emote.image = image;
                                         }];
                 }
-                [newMessage.emotes addObject:emote];
-                embeddedMention = [regex firstMatchInString:newMessage.content options:0 range:NSMakeRange(0, newMessage.content.length)];
+                [newMessage.emotes addObject:@[emote, @(embeddedMention.range.location)]];
+                embeddedMention = [regex firstMatchInString:content options:0 range:NSMakeRange(0, content.length)];
             }
-        }
-
-        NSString *content = [newMessage.content emojizedString];
-
-        content = [content stringByReplacingOccurrencesOfString:@"\u2122\uFE0F"
-                                                     withString:@"™"];
-        content = [content stringByReplacingOccurrencesOfString:@"\u00AE\uFE0F"
-                                                     withString:@"®"];
-
-        if (newMessage.editedTimestamp != nil) {
-            content = [content stringByAppendingString:@" (edited)"];
         }
 
         newMessage.content = content;
