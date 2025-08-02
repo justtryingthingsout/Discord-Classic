@@ -7,6 +7,7 @@
 //
 
 #import "DCChannel.h"
+#include <CoreFoundation/CFBase.h>
 #include <Foundation/Foundation.h>
 #include "DCChatViewController.h"
 #include "DCMessage.h"
@@ -57,7 +58,48 @@ static dispatch_queue_t channel_send_queue;
     [self.parentGuild checkIfRead];
 }
 
-- (void)sendMessage:(NSString *)message referencingMessage:(DCMessage *)referencedMessage disablePing:(BOOL)disablePing {
+// copied straight from https://stackoverflow.com/a/7935625, thanks!
++ (NSString*)escapeUnicodeString:(NSString*)string {
+    // lastly escaped quotes and back slash
+    // note that the backslash has to be escaped before the quote
+    // otherwise it will end up with an extra backslash
+    NSString* escapedString = [string stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+    escapedString = [escapedString stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+
+    // convert to encoded unicode
+    // do this by getting the data for the string
+    // in UTF16 little endian (for network byte order)
+    NSData* data = [escapedString dataUsingEncoding:NSUTF16LittleEndianStringEncoding allowLossyConversion:YES];
+    size_t bytesRead = 0;
+    const char* bytes = data.bytes;
+    NSMutableString* encodedString = [NSMutableString string];
+
+    // loop through the byte array
+    // read two bytes at a time, if the bytes
+    // are above a certain value they are unicode
+    // otherwise the bytes are ASCII characters
+    // the %C format will write the character value of bytes
+    while (bytesRead < data.length)
+    {
+        uint16_t code = *((uint16_t*) &bytes[bytesRead]);
+        if (code > 0x007E)
+        {
+            [encodedString appendFormat:@"\\u%04X", code];
+        }
+        else
+        {
+            [encodedString appendFormat:@"%C", code];
+        }
+        bytesRead += sizeof(uint16_t);
+    }
+
+    // done
+    return encodedString;
+}
+
+- (void)sendMessage:(NSString *)message
+    referencingMessage:(DCMessage *)referencedMessage
+           disablePing:(BOOL)disablePing {
     dispatch_async([self get_channel_send_queue], ^{
         NSURL *channelURL = [NSURL
             URLWithString:[NSString
@@ -71,10 +113,13 @@ static dispatch_queue_t channel_send_queue;
         [urlRequest setValue:@"no-store" forHTTPHeaderField:@"Cache-Control"];
 
         NSString *escapedMessage = [message emojizedString];
+        CFStringRef transform = CFSTR("Any-Hex/Java");
+        CFStringTransform((__bridge CFMutableStringRef)escapedMessage, NULL, transform, NO);
 
         NSMutableDictionary *dictionary = [@{
             @"content" : escapedMessage
         } mutableCopy];
+
         if (referencedMessage) {
             [dictionary addEntriesFromDictionary:@{
                 @"type" : @(DCMessageTypeReply),
@@ -106,7 +151,8 @@ static dispatch_queue_t channel_send_queue;
 #endif
             return;
         }
-        NSString *messageString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        NSString *messageString = [[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"\\\\u" withString:@"\\u"];
+        NSLog(@"[DCChannel] Sending message: %@", messageString);
 
         [urlRequest setHTTPMethod:@"POST"];
 
@@ -127,6 +173,11 @@ static dispatch_queue_t channel_send_queue;
                                                  returningResponse:&responseCode
                                                              error:&error]
                  withError:error];
+        if (responseCode.statusCode != 200) {
+#ifdef DEBUG
+            NSLog(@"Status code: %ld", (long)responseCode.statusCode);
+#endif
+        }
         dispatch_sync(dispatch_get_main_queue(), ^{
             [UIApplication sharedApplication].networkActivityIndicatorVisible =
                 NO;
