@@ -926,7 +926,7 @@
                     emote.isAnimated   = isAnimated;
                     emote.image        = nil;
                     NSURL *emoteURL            = [NSURL URLWithString:[NSString
-                                                               stringWithFormat:@"https://cdn.discordapp.com/emojis/%@.%@?size=64",
+                                                               stringWithFormat:@"https://cdn.discordapp.com/emojis/%@.%@?size=32",
                                                                                 emote.snowflake,
                                                                                 emote.isAnimated ? @"gif" : @"png"]];
                     SDWebImageManager *manager = [SDWebImageManager sharedManager];
