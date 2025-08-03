@@ -15,6 +15,12 @@
 @class DCGuild;
 @class DCUser;
 
+#ifdef DEBUG
+#define DBGLOG(...) NSLog(__VA_ARGS__)
+#else
+#define DBGLOG(...) do { } while (0)
+#endif
+
 #define TICK(var)   NSDate *tick_##var = [NSDate date]
 #define TOCK(var)   NSTimeInterval tick_end_##var = -[tick_##var timeIntervalSinceNow] * 1000.0; if (tick_end_##var > 16.6666666667) NSLog(@"%s @ %s: Time: %f ms (%f frames)", __PRETTY_FUNCTION__, #var, tick_end_##var, tick_end_##var / 16.6666666667)
 

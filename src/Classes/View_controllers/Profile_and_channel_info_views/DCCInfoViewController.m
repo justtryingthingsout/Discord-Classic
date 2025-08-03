@@ -37,14 +37,10 @@
         // If a guild is selected, get the members from the guild
         self.title = [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild name];
         self.navigationItem.title = self.title;
-#ifdef DEBUG
-        NSLog(@"Selected channel: #%@ in guild: %@", [DCServerCommunicator.sharedInstance.selectedChannel name], [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild name]);
-#endif
+        DBGLOG(@"Selected channel: #%@ in guild: %@", [DCServerCommunicator.sharedInstance.selectedChannel name], [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild name]);
         self.recipients = DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.members;
     } else if (DCServerCommunicator.sharedInstance.selectedChannel) {
-#ifdef DEBUG
-        NSLog(@"Selected channel: %@", DCServerCommunicator.sharedInstance.selectedChannel.name);
-#endif
+        DBGLOG(@"Selected channel: %@", DCServerCommunicator.sharedInstance.selectedChannel.name);
         self.recipients = [NSMutableArray array];
         NSArray *recipientDictionaries = [DCServerCommunicator.sharedInstance.selectedChannel recipients];
         for (NSDictionary *recipient in recipientDictionaries) {
@@ -53,9 +49,7 @@
             [self.recipients addObject:dcUser];
         }
     } else {
-#ifdef DEBUG
-        NSLog(@"No channel or guild selected!");
-#endif
+        DBGLOG(@"No channel or guild selected!");
     }
 }
 
@@ -94,9 +88,7 @@
     if (DCServerCommunicator.sharedInstance.selectedChannel) {
         return [self.recipients count];
     } else {
-#ifdef DEBUG
-        NSLog(@"No rows for nothing...");
-#endif
+        DBGLOG(@"No rows for nothing...");
         return 0;
     }
 }
@@ -153,9 +145,7 @@
             [cell.textLabel setText:role.name];
             return cell;
         } else {
-#ifdef DEBUG
-            NSLog(@"Unknown item type in recipients: %@", [item class]);
-#endif
+            DBGLOG(@"Unknown item type in recipients: %@", [item class]);
             cell.textLabel.text = @"Unknown";
             cell.imageView.image = nil;
             cell.detailTextLabel.text = nil;

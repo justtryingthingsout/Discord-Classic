@@ -298,9 +298,7 @@ static dispatch_queue_t chat_messages_queue;
 
 - (void)handleChatReset {
     assertMainThread();
-#ifdef DEBUG
-    NSLog(@"%s: Resetting chat data", __PRETTY_FUNCTION__);
-#endif
+    DBGLOG(@"%s: Resetting chat data", __PRETTY_FUNCTION__);
     @autoreleasepool {
         [self.messages removeAllObjects];
     }
@@ -667,17 +665,13 @@ static dispatch_queue_t chat_messages_queue;
 
 - (void)handleTyping:(NSNotification *)notification {
     if (!self.typingIndicatorView) {
-#ifdef DEBUG
-        NSLog(@"%s: Typing indicator view is not initialized", __PRETTY_FUNCTION__);
-#endif
+        DBGLOG(@"%s: Typing indicator view is not initialized", __PRETTY_FUNCTION__);
         return;
     }
 
     NSString *typingUserId = notification.object;
     if (!typingUserId) {
-#ifdef DEBUG
-        NSLog(@"%s: No typing user provided", __PRETTY_FUNCTION__);
-#endif
+        DBGLOG(@"%s: No typing user provided", __PRETTY_FUNCTION__);
         return;
     }
 
@@ -710,17 +704,13 @@ static dispatch_queue_t chat_messages_queue;
 
 - (void)handleStopTyping:(NSNotification *)notification {
     if (!self.typingIndicatorView) {
-#ifdef DEBUG
-        NSLog(@"%s: Typing indicator view is not initialized", __PRETTY_FUNCTION__);
-#endif
+        DBGLOG(@"%s: Typing indicator view is not initialized", __PRETTY_FUNCTION__);
         return;
     }
 
     NSString *typingUserId = notification.object;
     if (!typingUserId) {
-#ifdef DEBUG
-        NSLog(@"%s: No typing user provided", __PRETTY_FUNCTION__);
-#endif
+        DBGLOG(@"%s: No typing user provided", __PRETTY_FUNCTION__);
         return;
     }
 
@@ -1771,9 +1761,7 @@ static dispatch_queue_t chat_messages_queue;
 - (void)tappedVideo:(UITapGestureRecognizer *)sender {
     assertMainThread();
     [self.inputField resignFirstResponder];
-#ifdef DEBUG
-    NSLog(@"Tapped video!");
-#endif
+    DBGLOG(@"Tapped video!");
     dispatch_async(dispatch_get_main_queue(), ^{
         NSURL *url                          = ((DCChatVideoAttachment *)sender.view.superview).videoURL;
         MPMoviePlayerViewController *player = [[MPMoviePlayerViewController alloc] initWithContentURL:url];
@@ -1797,13 +1785,11 @@ static dispatch_queue_t chat_messages_queue;
         NSError *error = notification.userInfo[@"error"];
         NSLog(@"Playback error occurred: %@", error);
     }
-#ifdef DEBUG
     else if ([reason intValue] == MPMovieFinishReasonUserExited) {
-        NSLog(@"User exited playback");
+        DBGLOG(@"User exited playback");
     } else if ([reason intValue] == MPMovieFinishReasonPlaybackEnded) {
-        NSLog(@"Playback ended normally");
+        DBGLOG(@"Playback ended normally");
     }
-#endif
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

@@ -146,13 +146,11 @@ static dispatch_queue_t channel_send_queue;
         NSError *writeError = nil;
         NSData *jsonData    = [NSJSONSerialization dataWithJSONObject:dictionary options:NSJSONWritingPrettyPrinted error:&writeError];
         if (writeError) {
-#ifdef DEBUG
-            NSLog(@"Error serializing message to JSON: %@", writeError);
-#endif
+            DBGLOG(@"Error serializing message to JSON: %@", writeError);
             return;
         }
         NSString *messageString = [[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"\\\\u" withString:@"\\u"];
-        NSLog(@"[DCChannel] Sending message: %@", messageString);
+        DBGLOG(@"[DCChannel] Sending message: %@", messageString);
 
         [urlRequest setHTTPMethod:@"POST"];
 
@@ -166,21 +164,17 @@ static dispatch_queue_t channel_send_queue;
         NSError *error                  = nil;
         NSHTTPURLResponse *responseCode = nil;
         dispatch_sync(dispatch_get_main_queue(), ^{
-            [UIApplication sharedApplication].networkActivityIndicatorVisible =
-                YES;
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
         });
         [DCTools checkData:[NSURLConnection sendSynchronousRequest:urlRequest
                                                  returningResponse:&responseCode
                                                              error:&error]
                  withError:error];
         if (responseCode.statusCode != 200) {
-#ifdef DEBUG
-            NSLog(@"Status code: %ld", (long)responseCode.statusCode);
-#endif
+            DBGLOG(@"Status code: %ld", (long)responseCode.statusCode);
         }
         dispatch_sync(dispatch_get_main_queue(), ^{
-            [UIApplication sharedApplication].networkActivityIndicatorVisible =
-                NO;
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         });
     });
 }
@@ -206,9 +200,7 @@ static dispatch_queue_t channel_send_queue;
                                                            options:NSJSONWritingPrettyPrinted
                                                              error:&writeError];
         if (writeError) {
-#ifdef DEBUG
-            NSLog(@"Error serializing message to JSON: %@", writeError);
-#endif
+            DBGLOG(@"Error serializing message to JSON: %@", writeError);
             return;
         }
         NSString *messageString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
@@ -441,11 +433,9 @@ static dispatch_queue_t channel_send_queue;
                                               error:&error];
 
         if (error) {
-#ifdef DEBUG
-            NSLog(@"Error sending video: %@", error.localizedDescription);
-#endif
+            DBGLOG(@"Error sending video: %@", error.localizedDescription);
         } else {
-            NSLog(
+            DBGLOG(
                 @"Response: %@",
                 [[NSString alloc] initWithData:responseData
                                       encoding:NSUTF8StringEncoding]

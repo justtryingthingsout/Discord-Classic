@@ -410,9 +410,7 @@
             }
         } else if (tableView == self.channelTableView) {
             if (!self.selectedGuild || !self.selectedGuild.channels || self.selectedGuild.channels.count <= indexPath.row) {
-#ifdef DEBUG
-                NSLog(@"Selected guild or channels are not set or index out of bounds");
-#endif
+                DBGLOG(@"Selected guild or channels are not set or index out of bounds");
                 return;
             }
 
@@ -668,9 +666,7 @@
 
                             // If not in cache, construct user manually from dictionary
                             if (!buddy) {
-#ifdef DEBUG
-                                NSLog(@"Buddy not found in cache, creating new DCUser for ID: %@", userId);
-#endif
+                                DBGLOG(@"Buddy not found in cache, creating new DCUser for ID: %@", userId);
                                 buddy           = [DCUser new];
                                 buddy.snowflake = userId;
                                 buddy.username  = [userDict objectForKey:@"username"];
@@ -688,9 +684,7 @@
                         cell.statusImage.image =
                             [UIImage imageNamed:statusImageName];
                     } else {
-#ifdef DEBUG
-                        NSLog(@"Buddy not found for DM channel: %@", channelAtRowIndex.name);
-#endif
+                        DBGLOG(@"Buddy not found for DM channel: %@", channelAtRowIndex.name);
                         cell.statusImage.image = [UIImage imageNamed:@"offline"];
                     }
 

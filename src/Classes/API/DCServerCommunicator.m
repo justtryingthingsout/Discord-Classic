@@ -32,9 +32,7 @@ UIActivityIndicatorView *spinner;
     static dispatch_once_t onceToken;
 
     dispatch_once(&onceToken, ^{
-#ifdef DEBUG
-        NSLog(@"[DCServerCommunicator] Creating shared instance");
-#endif
+        DBGLOG(@"[DCServerCommunicator] Creating shared instance");
         sharedInstance = [[self alloc] init];
 
         // Initialize if a sharedInstance does not yet exist
@@ -169,9 +167,7 @@ UIActivityIndicatorView *spinner;
 
 - (void)handleReadyWithData:(NSDictionary *)d {
     self.didAuthenticate = true;
-#ifdef DEBUG
-    NSLog(@"Did authenticate!");
-#endif
+    DBGLOG(@"Did authenticate!");
     // Grab session id (used for RESUME) and user id
     self.sessionId = [NSString stringWithFormat:@"%@", [d valueForKeyPath:@"session_id"]];
     // THIS IS US, hey hey hey this is MEEEEE BITCCCH MORTY DID YOU HEAR, THIS IS ME, AND MY USER ID, YES MORT(BUÜÜÜRPP)Y, THIS IS ME. BITCCHHHH. 100 YEARS OF DISCORD CLASSIC MORTYY YOU AND MEEEE
@@ -427,9 +423,7 @@ UIActivityIndicatorView *spinner;
                                     return [guild.snowflake isEqualToString:guildId];
                                 }]
                     == NSNotFound) {
-#ifdef DEBUG
-                    NSLog(@"[READY] Guild ID %@ not found in guilds array!", guildId);
-#endif
+                    DBGLOG(@"[READY] Guild ID %@ not found in guilds array!", guildId);
                     [guildIds removeObjectAtIndex:i];
                 }
             }
@@ -625,9 +619,7 @@ UIActivityIndicatorView *spinner;
             if ([[op objectForKey:@"op"] isEqualToString:SYNC]) {
                 if (![[op objectForKey:@"items"] isKindOfClass:[NSArray class]]
                     || [((NSArray *)[op objectForKey:@"items"]) count] == 0) {
-#ifdef DEBUG
-                    NSLog(@"Guild member list update SYNC op without items: %@", op);
-#endif
+                    DBGLOG(@"Guild member list update SYNC op without items: %@", op);
                     continue;
                 }
                 guild.members = NSMutableArray.new;
@@ -642,9 +634,7 @@ UIActivityIndicatorView *spinner;
                 for (NSDictionary *item in [op objectForKey:@"items"]) {
                     id member = [self handleGuildMemberItemWithItem:item];
                     if (!member) {
-#ifdef DEBUG
-                        NSLog(@"Guild member list update SYNC op with invalid item: %@", item);
-#endif
+                        DBGLOG(@"Guild member list update SYNC op with invalid item: %@", item);
                         continue;
                     }
                     [guild.members addObject:member];
@@ -653,9 +643,7 @@ UIActivityIndicatorView *spinner;
                 NSDictionary *item = [op objectForKey:@"item"];
                 id member          = [self handleGuildMemberItemWithItem:item];
                 if (!member) {
-#ifdef DEBUG
-                    NSLog(@"Guild member list update UPDATE op with invalid item: %@", item);
-#endif
+                    DBGLOG(@"Guild member list update UPDATE op with invalid item: %@", item);
                     continue;
                 }
                 NSUInteger index = [[op objectForKey:@"index"] intValue];
@@ -689,9 +677,7 @@ UIActivityIndicatorView *spinner;
                 NSDictionary *item = [op objectForKey:@"item"];
                 id member          = [self handleGuildMemberItemWithItem:item];
                 if (!member) {
-#ifdef DEBUG
-                    NSLog(@"Guild member list update INSERT op with invalid item: %@", item);
-#endif
+                    DBGLOG(@"Guild member list update INSERT op with invalid item: %@", item);
                     continue;
                 }
                 // #ifdef DEBUG
@@ -699,9 +685,7 @@ UIActivityIndicatorView *spinner;
                 // #endif
                 [guild.members insertObject:member atIndex:index];
             } else {
-#ifdef DEBUG
-                NSLog(@"Unhandled guild member list update op: %@", op);
-#endif
+                DBGLOG(@"Unhandled guild member list update op: %@", op);
             }
         }
         if ([guild.members count] > 100) {
@@ -723,9 +707,7 @@ UIActivityIndicatorView *spinner;
 
 - (void)handleHelloWithData:(NSDictionary *)d {
     if (self.shouldResume) {
-#ifdef DEBUG
-        NSLog(@"Sending Resume with sequence number %i, session ID %@", self.sequenceNumber, self.sessionId);
-#endif
+        DBGLOG(@"Sending Resume with sequence number %i, session ID %@", self.sequenceNumber, self.sessionId);
         // RESUME
         if (!self.token || !self.sessionId) {
             [DCTools
@@ -851,15 +833,11 @@ UIActivityIndicatorView *spinner;
     } else if ([t isEqualToString:TYPING_START]) {
         if (![d[@"channel_id"] isEqualToString:self.selectedChannel.snowflake]
             || ![d[@"guild_id"] isEqualToString:self.selectedChannel.parentGuild.snowflake]) {
-#ifdef DEBUG
-            NSLog(@"Ignoring typing start event for channel %@ in guild %@, not currently selected channel/guild",
+            DBGLOG(@"Ignoring typing start event for channel %@ in guild %@, not currently selected channel/guild",
                   d[@"channel_id"], d[@"guild_id"]);
-#endif
             return;
         }
-#ifdef DEBUG
-        NSLog(@"Got typing start event for channel %@ in guild %@", d[@"channel_id"], d[@"guild_id"]);
-#endif
+        DBGLOG(@"Got typing start event for channel %@ in guild %@", d[@"channel_id"], d[@"guild_id"]);
         if (![DCServerCommunicator.sharedInstance.loadedUsers objectForKey:d[@"user_id"]] 
           || [DCServerCommunicator.sharedInstance.loadedUsers objectForKey:d[@"user_id"]] == [NSNull null]) {
             [DCTools convertJsonUser:[d valueForKeyPath:@"member.user"] cache:YES];
@@ -873,9 +851,7 @@ UIActivityIndicatorView *spinner;
         dispatch_async(dispatch_get_main_queue(), ^{
             for (DCGuild *g in self.guilds) {
                 if ([g.snowflake isEqualToString:[d objectForKey:@"id"]]) {
-#ifdef DEBUG
-                    NSLog(@"Guild with ID %@ ready for member list!", [d objectForKey:@"id"]);
-#endif
+                    DBGLOG(@"Guild with ID %@ ready for member list!", [d objectForKey:@"id"]);
                     return;
                 }
             }
@@ -906,9 +882,7 @@ UIActivityIndicatorView *spinner;
         [self handleGuildMemberListUpdateWithData:d];
         return;
     } else {
-#ifdef DEBUG
-        NSLog(@"Unhandled event type: %@, content: %@", t, d);
-#endif
+        DBGLOG(@"Unhandled event type: %@, content: %@", t, d);
         return;
     }
 }
@@ -916,9 +890,7 @@ UIActivityIndicatorView *spinner;
 #pragma mark - WebSocket Handlers
 
 - (void)startCommunicator {
-#ifdef DEBUG
-    NSLog(@"Starting communicator!");
-#endif
+    DBGLOG(@"Starting communicator!");
 
     [self.alertView show];
     self.didAuthenticate = false;
@@ -927,15 +899,11 @@ UIActivityIndicatorView *spinner;
     [DCTools checkForAppUpdate];
     // Devend
     if (self.token == nil) {
-#ifdef DEBUG
-        NSLog(@"No token set, cannot start communicator");
-#endif
+        DBGLOG(@"No token set, cannot start communicator");
         return;
     }
 
-#ifdef DEBUG
-    NSLog(@"Start websocket");
-#endif
+    DBGLOG(@"Start websocket");
 
     // Establish websocket connection with Discord
     NSURL *websocketUrl = [NSURL URLWithString:self.gatewayURL];
@@ -989,9 +957,7 @@ UIActivityIndicatorView *spinner;
                     break;
                 }
                 default: {
-#ifdef DEBUG
-                    NSLog(@"Unhandled op code: %i, content: %@", op, d);
-#endif
+                    DBGLOG(@"Unhandled op code: %i, content: %@", op, d);
                     break;
                 }
             }
@@ -1014,9 +980,7 @@ UIActivityIndicatorView *spinner;
 
 
 - (void)reconnect {
-#ifdef DEBUG
-    NSLog(@"Identify cooldown %s", self.canIdentify ? "true" : "false");
-#endif
+    DBGLOG(@"Identify cooldown %s", self.canIdentify ? "true" : "false");
 
     // Begin new session
     [self.websocket close];
@@ -1029,16 +993,12 @@ UIActivityIndicatorView *spinner;
     // If an identify cooldown is in effect, wait for the time needed until sending another IDENTIFY
     // if not, send immediately
     if (self.canIdentify) {
-#ifdef DEBUG
-        NSLog(@"No cooldown in effect. Authenticating...");
-#endif
+        DBGLOG(@"No cooldown in effect. Authenticating...");
         [self.alertView setTitle:@"Authenticating..."];
         [self startCommunicator];
     } else {
         NSTimeInterval timeRemaining = [self.cooldownTimer.fireDate timeIntervalSinceNow];
-#ifdef DEBUG
-        NSLog(@"Cooldown in effect. Time left %lf", timeRemaining);
-#endif
+        DBGLOG(@"Cooldown in effect. Time left %lf", timeRemaining);
         [self.alertView setTitle:@"Waiting for auth cooldown..."];
         if (self.oldMode == NO) {
             [self showNonIntrusiveNotificationWithTitle:@"Awaiting cooldown..."];
@@ -1055,32 +1015,24 @@ UIActivityIndicatorView *spinner;
     if (self.gotHeartbeat) {
         [NSTimer scheduledTimerWithTimeInterval:8 target:self selector:@selector(checkForRecievedHeartbeat:) userInfo:nil repeats:NO];
         [self sendJSON:@{@"op" : @1, @"d" : @(self.sequenceNumber)}];
-#ifdef DEBUG
-        NSLog(@"Sent heartbeat");
-#endif
+        DBGLOG(@"Sent heartbeat");
         self.gotHeartbeat = false;
         self.didTryResume = false;
     } else if (self.didTryResume) {
-#ifdef DEBUG
-        NSLog(@"Did not get resume, trying reconnect instead with sequence %i %@", self.sequenceNumber, self.sessionId);
-#endif
+        DBGLOG(@"Did not get resume, trying reconnect instead with sequence %i %@", self.sequenceNumber, self.sessionId);
         [self reconnect];
         self.didTryResume = false;
     } else {
         // If we didnt get a response in between heartbeats, we've disconnected from the websocket
         // send a RESUME to reconnect
-#ifdef DEBUG
-        NSLog(@"Did not get heartbeat response, sending RESUME with sequence %i %@ (sendHeartbeat)", self.sequenceNumber, self.sessionId);
-#endif
+        DBGLOG(@"Did not get heartbeat response, sending RESUME with sequence %i %@ (sendHeartbeat)", self.sequenceNumber, self.sessionId);
         [self sendResume];
     }
 }
 
 - (void)checkForRecievedHeartbeat:(NSTimer *)timer {
     if (!self.gotHeartbeat) {
-#ifdef DEBUG
-        NSLog(@"Did not get heartbeat response, sending RESUME with sequence %i %@ (checkForRecievedHeartbeat)", self.sequenceNumber, self.sessionId);
-#endif
+        DBGLOG(@"Did not get heartbeat response, sending RESUME with sequence %i %@ (checkForRecievedHeartbeat)", self.sequenceNumber, self.sessionId);
         [self sendResume];
     }
 }
@@ -1088,9 +1040,7 @@ UIActivityIndicatorView *spinner;
 // Once the 5 second identify cooldown is over
 - (void)refreshcanIdentify:(NSTimer *)timer {
     self.canIdentify = true;
-#ifdef DEBUG
-    NSLog(@"Authentication cooldown ended");
-#endif
+    DBGLOG(@"Authentication cooldown ended");
 }
 
 - (void)sendJSON:(NSDictionary *)dictionary {
