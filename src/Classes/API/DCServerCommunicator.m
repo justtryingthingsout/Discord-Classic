@@ -707,7 +707,7 @@ UIActivityIndicatorView *spinner;
 
 - (void)handleHelloWithData:(NSDictionary *)d {
     if (self.shouldResume) {
-        DBGLOG(@"Sending Resume with sequence number %i, session ID %@", self.sequenceNumber, self.sessionId);
+        DBGLOG(@"Sending Resume with sequence number %li, session ID %@", (long)self.sequenceNumber, self.sessionId);
         // RESUME
         if (!self.token || !self.sessionId) {
             [DCTools
@@ -1019,20 +1019,20 @@ UIActivityIndicatorView *spinner;
         self.gotHeartbeat = false;
         self.didTryResume = false;
     } else if (self.didTryResume) {
-        DBGLOG(@"Did not get resume, trying reconnect instead with sequence %i %@", self.sequenceNumber, self.sessionId);
+        DBGLOG(@"Did not get resume, trying reconnect instead with sequence %li %@", (long)self.sequenceNumber, self.sessionId);
         [self reconnect];
         self.didTryResume = false;
     } else {
         // If we didnt get a response in between heartbeats, we've disconnected from the websocket
         // send a RESUME to reconnect
-        DBGLOG(@"Did not get heartbeat response, sending RESUME with sequence %i %@ (sendHeartbeat)", self.sequenceNumber, self.sessionId);
+        DBGLOG(@"Did not get heartbeat response, sending RESUME with sequence %li %@ (sendHeartbeat)", (long)self.sequenceNumber, self.sessionId);
         [self sendResume];
     }
 }
 
-- (void)checkForRecievedHeartbeat:(NSTimer *)timer {
+- (void)checkForReceivedHeartbeat:(NSTimer *)timer {
     if (!self.gotHeartbeat) {
-        DBGLOG(@"Did not get heartbeat response, sending RESUME with sequence %i %@ (checkForRecievedHeartbeat)", self.sequenceNumber, self.sessionId);
+        DBGLOG(@"Did not get heartbeat response, sending RESUME with sequence %li %@ (checkForReceivedHeartbeat)", (long)self.sequenceNumber, self.sessionId);
         [self sendResume];
     }
 }

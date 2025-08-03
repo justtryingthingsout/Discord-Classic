@@ -809,7 +809,7 @@
                 [sortedGuilds addObject:nullObject];
             }
             for (DCGuild *guild in DCServerCommunicator.sharedInstance.guilds) {
-                int index = [DCServerCommunicator.sharedInstance.currentUserInfo.guildPositions indexOfObject:guild.snowflake];
+                NSUInteger index = [DCServerCommunicator.sharedInstance.currentUserInfo.guildPositions indexOfObject:guild.snowflake];
                 if (index != NSNotFound) {
                     [sortedGuilds insertObject:guild atIndex:index + 1];
                 } else if ([[sortedGuilds objectAtIndex:0] isEqual:nullObject]) {

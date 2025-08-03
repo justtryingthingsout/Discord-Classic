@@ -48,8 +48,8 @@ static dispatch_queue_t channel_send_queue;
 - (NSString *)description {
     return
         [NSString stringWithFormat:
-                      @"[Channel] Snowflake: %@, Type: %i, Read: %d, Name: %@",
-                      self.snowflake, self.type, self.unread, self.name];
+                      @"[Channel] Snowflake: %@, Type: %li, Read: %d, Name: %@",
+                      self.snowflake, (long)self.type, self.unread, self.name];
 }
 
 - (void)checkIfRead {

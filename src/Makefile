@@ -1,4 +1,4 @@
-ARCHS = armv7 armv7s
+ARCHS = armv7 armv7s arm64
 TARGET := iphone:clang:7.1:5.0
 PREFIX = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/
 SYSROOT = $(THEOS)/sdks/iPhoneOS7.1.sdk

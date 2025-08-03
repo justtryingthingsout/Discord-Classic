@@ -486,6 +486,11 @@ static void CKRefreshControl_UITableViewController_SetView(UITableViewController
               "movt %0, :upper16:(L_OBJC_CLASS_UIRefreshControl-(LPC0+4))\n"
               "LPC0: add %0, pc" : "=r"(UIRefreshControlClassRef)
               );
+#elif TARGET_CPU_ARM64
+        __asm(
+              "adrp %0, L_OBJC_CLASS_UIRefreshControl@PAGE\n"
+              "add  %0, %0, L_OBJC_CLASS_UIRefreshControl@PAGEOFF\n"
+              : "=r"(UIRefreshControlClassRef));
 #elif TARGET_CPU_X86_64
         __asm("leaq L_OBJC_CLASS_UIRefreshControl(%%rip), %0" : "=r"(UIRefreshControlClassRef));
 #elif TARGET_CPU_X86

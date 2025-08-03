@@ -394,10 +394,10 @@
 
                     if (width != 0 || height != 0) {
                         urlString = [NSURL URLWithString:[NSString
-                                                             stringWithFormat:@"%@%cwidth=%d&height=%d",
+                                                             stringWithFormat:@"%@%cwidth=%ld&height=%ld",
                                                                               urlString,
                                                                               [urlString query].length == 0 ? '?' : '&',
-                                                                              width, height]];
+                                                                              (long)width, (long)height]];
                     }
 
                     NSUInteger idx = [newMessage.attachments count];
@@ -490,10 +490,10 @@
                             if (width != 0 || height != 0) {
                                 urlString = [NSURL URLWithString:
                                                        [NSString stringWithFormat:
-                                                                     @"%@%cformat=png&width=%d&height=%d",
+                                                                     @"%@%cformat=png&width=%ld&height=%ld",
                                                                      urlString,
                                                                      [urlString query].length == 0 ? '?' : '&',
-                                                                     width, height]];
+                                                                     (long)width, (long)height]];
                             } else {
                                 urlString = [NSURL URLWithString:
                                                        [NSString stringWithFormat:
@@ -663,12 +663,12 @@
 
                         NSURL *urlString = [NSURL
                             URLWithString:[NSString
-                                              stringWithFormat:@"%@format=png&width=%d&height=%d",
-                                                               baseURL, width, height]];
+                                              stringWithFormat:@"%@format=png&width=%ld&height=%ld",
+                                                               baseURL, (long)width, (long)height]];
                         if ([urlString query].length == 0) {
                             urlString = [NSURL URLWithString:[NSString stringWithFormat:
-                                                                           @"%@?format=png&width=%d&height=%d",
-                                                                           baseURL, width, height]];
+                                                                           @"%@?format=png&width=%ld&height=%ld",
+                                                                           baseURL, (long)width, (long)height]];
                         }
 
                         NSUInteger idx = [newMessage.attachments count];
@@ -1221,10 +1221,9 @@
         } else if ([channel1.parentID isKindOfClass:[NSString class]] && [channel2.parentID isKindOfClass:[NSString class]] && ![channel1.parentID isEqualToString:channel2.parentID]) {
             NSUInteger idx1 = [categories indexOfObjectPassingTest:^BOOL(DCChannel *category, NSUInteger idx, BOOL *stop) {
                 return [category.snowflake isEqualToString:channel1.parentID];
-            }],
-                       idx2 = [categories indexOfObjectPassingTest:^BOOL(DCChannel *category, NSUInteger idx, BOOL *stop) {
-                           return [category.snowflake isEqualToString:channel2.parentID];
-                       }];
+            }], idx2 = [categories indexOfObjectPassingTest:^BOOL(DCChannel *category, NSUInteger idx, BOOL *stop) {
+                return [category.snowflake isEqualToString:channel2.parentID];
+            }];
             if (idx1 != NSNotFound && idx2 != NSNotFound) {
                 DCChannel *parent1 = [categories objectAtIndex:idx1];
                 DCChannel *parent2 = [categories objectAtIndex:idx2];
