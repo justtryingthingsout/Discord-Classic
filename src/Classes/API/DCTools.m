@@ -256,7 +256,7 @@
         return [DCServerCommunicator.sharedInstance.loadedEmojis objectForKey:[jsonEmoji objectForKey:@"id"]];
     }
 
-    DCEmoji *newEmoji = DCEmoji.new;
+    DCEmoji *newEmoji  = DCEmoji.new;
     newEmoji.snowflake = [jsonEmoji objectForKey:@"id"];
     newEmoji.name      = [jsonEmoji objectForKey:@"name"];
     newEmoji.animated  = [[jsonEmoji objectForKey:@"animated"] boolValue];
@@ -944,8 +944,13 @@
                     emoji                      = [DCEmoji new];
                     emoji.name                 = emojiName;
                     emoji.snowflake            = emojiID;
-                    emoji.animated           = isAnimated;
-                    emoji.image                = nil;
+                    emoji.animated             = isAnimated;
+                    [DCServerCommunicator.sharedInstance.loadedEmojis
+                        setObject:emoji
+                           forKey:emoji.snowflake];
+                }
+                if (emoji && !emoji.image) {
+                    emoji.image                = [UIImage new];
                     NSURL *emojiURL            = [NSURL URLWithString:[NSString
                                                                stringWithFormat:@"https://cdn.discordapp.com/emojis/%@.%@?size=32",
                                                                                 emoji.snowflake,
@@ -962,9 +967,6 @@
                                             // NSLog(@"Loaded emoji %@", emoji.name);
                                             emoji.image = image;
                                         }];
-                    [DCServerCommunicator.sharedInstance.loadedEmojis
-                        setObject:emoji
-                           forKey:emoji.snowflake];
                 }
                 [newMessage.emojis addObject:@[ emoji, @(embeddedMention.range.location) ]];
                 embeddedMention = [regex firstMatchInString:content options:0 range:NSMakeRange(0, content.length)];
@@ -1026,7 +1028,7 @@
     // Get emojis
     for (NSDictionary *emoji in [jsonGuild objectForKey:@"emojis"]) {
         [newGuild.emojis setObject:[DCTools convertJsonEmoji:emoji cache:true]
-                             forKey:[emoji objectForKey:@"id"]];
+                            forKey:[emoji objectForKey:@"id"]];
     }
 
     // Get @everyone role
@@ -1323,15 +1325,27 @@
 
         while (embeddedMention) {
             NSString *emojiName = [messageString substringWithRange:[embeddedMention rangeAtIndex:1]];
-            DCEmoji *emoji      = [DCServerCommunicator.sharedInstance.loadedEmojis.allValues
+            DCEmoji *emoji = nil;
+            if (guild) {
+                emoji = [guild.emojis.allValues
                                  filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCEmoji *obj, NSDictionary *bindings) {
                                      return [obj.name isEqualToString:emojiName];
                                  }]]
                                  .firstObject;
+            }
+            if (!emoji) {
+                emoji = [DCServerCommunicator.sharedInstance.loadedEmojis.allValues
+                            filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCEmoji *obj, NSDictionary *bindings) {
+                                return [obj.name isEqualToString:emojiName];
+                            }]]
+                            .firstObject;
+            }
             if (emoji) {
                 NSString *replacement = [NSString stringWithFormat:@"<%@:%@:%@>",
                                                                    emoji.animated ? @"a" : @"", emojiName, emoji.snowflake];
-                messageString         = [messageString stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
+                messageString = [messageString stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
+            } else {
+                DBGLOG(@"Missing emoji: %@", emojiName);
             }
             embeddedMention = [regex firstMatchInString:messageString
                                                 options:0
@@ -1364,14 +1378,14 @@
             {
                 id obj = [DCServerCommunicator.sharedInstance.loadedUsers.allValues
                              filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCUser *obj, NSDictionary *bindings) {
-                                 return [obj.username isEqualToString:mentionName];
+                                 return [obj.username isEqualToString:mentionName] || [obj.globalName isEqualToString:mentionName];
                              }]]
                              .firstObject;
                 if (!obj && guild) {
                     isUser = NO;
                     obj    = [guild.roles.allValues
-                              filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCUser *obj, NSDictionary *bindings) {
-                                  return [obj.globalName isEqualToString:mentionName];
+                              filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCRole *obj, NSDictionary *bindings) {
+                                  return [obj.name isEqualToString:mentionName];
                               }]]
                               .firstObject;
                 }
@@ -1385,8 +1399,10 @@
             }
             if (snowflake) {
                 NSString *replacement = [NSString stringWithFormat:@"<@%c%@>", isUser ? '!' : '&', snowflake];
-                messageString         = [messageString stringByReplacingCharactersInRange:embeddedMention.range
+                messageString = [messageString stringByReplacingCharactersInRange:embeddedMention.range
                                                                        withString:replacement];
+            } else {
+                DBGLOG(@"Missing mention: %@", mentionName);
             }
             embeddedMention = [regex firstMatchInString:messageString
                                                 options:0
@@ -1415,12 +1431,15 @@
         while (embeddedMention) {
             NSString *channelName = [messageString substringWithRange:[embeddedMention rangeAtIndex:1]];
             DCChannel *channel    = [guild.channels
-                                        filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCChannel *obj, NSDictionary *bindings) {
-                                            return [obj.name isEqualToString:channelName];
-                                        }]].firstObject;
+                                     filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCChannel *obj, NSDictionary *bindings) {
+                                         return [obj.name isEqualToString:channelName];
+                                     }]]
+                                     .firstObject;
             if (channel) {
                 NSString *replacement = [NSString stringWithFormat:@"<#%@>", channel.snowflake];
-                messageString         = [messageString stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
+                messageString = [messageString stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
+            } else {
+                DBGLOG(@"Missing channel: %@", channelName);
             }
             embeddedMention = [regex firstMatchInString:messageString
                                                 options:0
