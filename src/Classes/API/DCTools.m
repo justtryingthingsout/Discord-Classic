@@ -12,7 +12,7 @@
 #include <dispatch/dispatch.h>
 #include <objc/NSObjCRuntime.h>
 #import "DCChatVideoAttachment.h"
-#import "DCEmote.h"
+#import "DCEmoji.h"
 #import "DCMessage.h"
 #import "DCRole.h"
 #import "DCServerCommunicator.h"
@@ -248,6 +248,27 @@
     newImage.imageURL     = url;
     UIGraphicsEndImageContext();
     return newImage;
+}
+
++ (DCEmoji *)convertJsonEmoji:(NSDictionary *)jsonEmoji cache:(BOOL)cache {
+    if (cache && [DCServerCommunicator.sharedInstance.loadedEmojis objectForKey:[jsonEmoji objectForKey:@"id"]]) {
+        // return pre-cached
+        return [DCServerCommunicator.sharedInstance.loadedEmojis objectForKey:[jsonEmoji objectForKey:@"id"]];
+    }
+
+    DCEmoji *newEmoji = DCEmoji.new;
+    newEmoji.snowflake = [jsonEmoji objectForKey:@"id"];
+    newEmoji.name      = [jsonEmoji objectForKey:@"name"];
+    newEmoji.animated  = [[jsonEmoji objectForKey:@"animated"] boolValue];
+
+    // Save to DCServerCommunicator.loadedEmojis
+    if (cache) {
+        [DCServerCommunicator.sharedInstance.loadedEmojis
+            setValue:newEmoji
+              forKey:newEmoji.snowflake];
+    }
+
+    return newEmoji;
 }
 
 // Converts an NSDictionary created from json representing a message into a
@@ -900,8 +921,8 @@
         }
 
         {
-            newMessage.emotes = NSMutableArray.new;
-            // emotes
+            newMessage.emojis = NSMutableArray.new;
+            // emojis
             NSRegularExpression *regex            = [NSRegularExpression
                 regularExpressionWithPattern:@"\\<(a?):(.*?):(\\d+)\\>"
                                      options:NSRegularExpressionCaseInsensitive
@@ -912,37 +933,40 @@
                              range:NSMakeRange(0, content.length)];
             while (embeddedMention) {
                 BOOL isAnimated     = [[content substringWithRange:[embeddedMention rangeAtIndex:1]] isEqualToString:@"a"];
-                NSString *emoteName = [content substringWithRange:[embeddedMention rangeAtIndex:2]];
-                NSString *emoteID   = [content substringWithRange:[embeddedMention rangeAtIndex:3]];
+                NSString *emojiName = [content substringWithRange:[embeddedMention rangeAtIndex:2]];
+                NSString *emojiID   = [content substringWithRange:[embeddedMention rangeAtIndex:3]];
                 // https://cdn.discordapp.com/emojis/%@.png
-                content = [content
+                content        = [content
                     stringByReplacingCharactersInRange:embeddedMention.range
                                             withString:@"\u00A0\u00A0\u00A0\u00A0\u200B"];
-                DCEmote *emote = [DCServerCommunicator.sharedInstance.loadedEmotes objectForKey:emoteID];
-                if (!emote) {
-                    emote     = [DCEmote new];
-                    emote.name         = emoteName;
-                    emote.snowflake    = emoteID;
-                    emote.isAnimated   = isAnimated;
-                    emote.image        = nil;
-                    NSURL *emoteURL            = [NSURL URLWithString:[NSString
+                DCEmoji *emoji = [DCServerCommunicator.sharedInstance.loadedEmojis objectForKey:emojiID];
+                if (!emoji) {
+                    emoji                      = [DCEmoji new];
+                    emoji.name                 = emojiName;
+                    emoji.snowflake            = emojiID;
+                    emoji.animated           = isAnimated;
+                    emoji.image                = nil;
+                    NSURL *emojiURL            = [NSURL URLWithString:[NSString
                                                                stringWithFormat:@"https://cdn.discordapp.com/emojis/%@.%@?size=32",
-                                                                                emote.snowflake,
-                                                                                emote.isAnimated ? @"gif" : @"png"]];
+                                                                                emoji.snowflake,
+                                                                                emoji.animated ? @"gif" : @"png"]];
                     SDWebImageManager *manager = [SDWebImageManager sharedManager];
-                    [manager downloadImageWithURL:emoteURL
+                    [manager downloadImageWithURL:emojiURL
                                           options:0
                                          progress:nil
                                         completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                             if (!image || !finished) {
-                                                NSLog(@"Failed to load emote image with URL %@: %@", emoteURL, error);
+                                                NSLog(@"Failed to load emoji image with URL %@: %@", emojiURL, error);
                                                 return;
                                             }
-                                            // NSLog(@"Loaded emote %@", emote.name);
-                                            emote.image = image;
+                                            // NSLog(@"Loaded emoji %@", emoji.name);
+                                            emoji.image = image;
                                         }];
+                    [DCServerCommunicator.sharedInstance.loadedEmojis
+                        setObject:emoji
+                           forKey:emoji.snowflake];
                 }
-                [newMessage.emotes addObject:@[emote, @(embeddedMention.range.location)]];
+                [newMessage.emojis addObject:@[ emoji, @(embeddedMention.range.location) ]];
                 embeddedMention = [regex firstMatchInString:content options:0 range:NSMakeRange(0, content.length)];
             }
         }
@@ -992,12 +1016,18 @@
     return newMessage;
 }
 
-
 + (DCGuild *)convertJsonGuild:(NSDictionary *)jsonGuild {
     DCGuild *newGuild  = DCGuild.new;
     newGuild.userRoles = NSMutableArray.new;
     newGuild.roles     = NSMutableDictionary.new;
     newGuild.members   = NSMutableArray.new;
+    newGuild.emojis    = NSMutableDictionary.new;
+
+    // Get emojis
+    for (NSDictionary *emoji in [jsonGuild objectForKey:@"emojis"]) {
+        [newGuild.emojis setObject:[DCTools convertJsonEmoji:emoji cache:true]
+                             forKey:[emoji objectForKey:@"id"]];
+    }
 
     // Get @everyone role
     for (NSDictionary *guildRole in [jsonGuild objectForKey:@"roles"]) {
@@ -1221,9 +1251,10 @@
         } else if ([channel1.parentID isKindOfClass:[NSString class]] && [channel2.parentID isKindOfClass:[NSString class]] && ![channel1.parentID isEqualToString:channel2.parentID]) {
             NSUInteger idx1 = [categories indexOfObjectPassingTest:^BOOL(DCChannel *category, NSUInteger idx, BOOL *stop) {
                 return [category.snowflake isEqualToString:channel1.parentID];
-            }], idx2 = [categories indexOfObjectPassingTest:^BOOL(DCChannel *category, NSUInteger idx, BOOL *stop) {
-                return [category.snowflake isEqualToString:channel2.parentID];
-            }];
+            }],
+                       idx2 = [categories indexOfObjectPassingTest:^BOOL(DCChannel *category, NSUInteger idx, BOOL *stop) {
+                           return [category.snowflake isEqualToString:channel2.parentID];
+                       }];
             if (idx1 != NSNotFound && idx2 != NSNotFound) {
                 DCChannel *parent1 = [categories objectAtIndex:idx1];
                 DCChannel *parent2 = [categories objectAtIndex:idx2];
@@ -1274,6 +1305,133 @@
     return newGuild;
 }
 
++ (NSString *)parseMessage:(NSString *)messageString withGuild:(DCGuild *)guild {
+    // convert :emoji: to <a:emoji:snowflake> or <emoji:snowflake>
+    {
+        static dispatch_once_t onceToken;
+        static NSRegularExpression *regex;
+        dispatch_once(&onceToken, ^{
+            regex = [NSRegularExpression
+                regularExpressionWithPattern:@":(\\w+):"
+                                     options:NSRegularExpressionCaseInsensitive
+                                       error:NULL];
+        });
+        NSTextCheckingResult *embeddedMention = [regex
+            firstMatchInString:messageString
+                       options:0
+                         range:NSMakeRange(0, messageString.length)];
+
+        while (embeddedMention) {
+            NSString *emojiName = [messageString substringWithRange:[embeddedMention rangeAtIndex:1]];
+            DCEmoji *emoji      = [DCServerCommunicator.sharedInstance.loadedEmojis.allValues
+                                 filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCEmoji *obj, NSDictionary *bindings) {
+                                     return [obj.name isEqualToString:emojiName];
+                                 }]]
+                                 .firstObject;
+            if (emoji) {
+                NSString *replacement = [NSString stringWithFormat:@"<%@:%@:%@>",
+                                                                   emoji.animated ? @"a" : @"", emojiName, emoji.snowflake];
+                messageString         = [messageString stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
+            }
+            embeddedMention = [regex firstMatchInString:messageString
+                                                options:0
+                                                  range:NSMakeRange(
+                                                            embeddedMention.range.location + embeddedMention.range.length,
+                                                            messageString.length - (embeddedMention.range.location + embeddedMention.range.length)
+                                                        )];
+        }
+    }
+
+    // convert @username/@role to <@{!,&}snowflake>
+    {
+        static dispatch_once_t onceToken;
+        static NSRegularExpression *regex;
+        dispatch_once(&onceToken, ^{
+            regex = [NSRegularExpression
+                regularExpressionWithPattern:@"@(\\w+)"
+                                     options:NSRegularExpressionCaseInsensitive
+                                       error:NULL];
+        });
+        NSTextCheckingResult *embeddedMention = [regex
+            firstMatchInString:messageString
+                       options:0
+                         range:NSMakeRange(0, messageString.length)];
+
+        while (embeddedMention) {
+            NSString *mentionName  = [messageString substringWithRange:[embeddedMention rangeAtIndex:1]];
+            DCSnowflake *snowflake = nil;
+            BOOL isUser            = YES;
+            {
+                id obj = [DCServerCommunicator.sharedInstance.loadedUsers.allValues
+                             filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCUser *obj, NSDictionary *bindings) {
+                                 return [obj.username isEqualToString:mentionName];
+                             }]]
+                             .firstObject;
+                if (!obj && guild) {
+                    isUser = NO;
+                    obj    = [guild.roles.allValues
+                              filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCUser *obj, NSDictionary *bindings) {
+                                  return [obj.globalName isEqualToString:mentionName];
+                              }]]
+                              .firstObject;
+                }
+                if (obj) {
+                    if (isUser) {
+                        snowflake = ((DCUser *)obj).snowflake;
+                    } else {
+                        snowflake = ((DCRole *)obj).snowflake;
+                    }
+                }
+            }
+            if (snowflake) {
+                NSString *replacement = [NSString stringWithFormat:@"<@%c%@>", isUser ? '!' : '&', snowflake];
+                messageString         = [messageString stringByReplacingCharactersInRange:embeddedMention.range
+                                                                       withString:replacement];
+            }
+            embeddedMention = [regex firstMatchInString:messageString
+                                                options:0
+                                                  range:NSMakeRange(
+                                                            embeddedMention.range.location + embeddedMention.range.length,
+                                                            messageString.length - (embeddedMention.range.location + embeddedMention.range.length)
+                                                        )];
+        }
+    }
+
+    // convert #channel to <#snowflake>
+    if (guild) {
+        static dispatch_once_t onceToken;
+        static NSRegularExpression *regex;
+        dispatch_once(&onceToken, ^{
+            regex = [NSRegularExpression
+                regularExpressionWithPattern:@"#(\\w+)"
+                                     options:NSRegularExpressionCaseInsensitive
+                                       error:NULL];
+        });
+        NSTextCheckingResult *embeddedMention = [regex
+            firstMatchInString:messageString
+                       options:0
+                         range:NSMakeRange(0, messageString.length)];
+
+        while (embeddedMention) {
+            NSString *channelName = [messageString substringWithRange:[embeddedMention rangeAtIndex:1]];
+            DCChannel *channel    = [guild.channels
+                                        filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCChannel *obj, NSDictionary *bindings) {
+                                            return [obj.name isEqualToString:channelName];
+                                        }]].firstObject;
+            if (channel) {
+                NSString *replacement = [NSString stringWithFormat:@"<#%@>", channel.snowflake];
+                messageString         = [messageString stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
+            }
+            embeddedMention = [regex firstMatchInString:messageString
+                                                options:0
+                                                  range:NSMakeRange(
+                                                            embeddedMention.range.location + embeddedMention.range.length,
+                                                            messageString.length - (embeddedMention.range.location + embeddedMention.range.length)
+                                                        )];
+        }
+    }
+    return messageString;
+}
 
 + (void)joinGuild:(NSString *)inviteCode {
     // dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0),

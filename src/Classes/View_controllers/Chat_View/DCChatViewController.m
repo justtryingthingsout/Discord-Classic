@@ -7,7 +7,7 @@
 //
 
 #import "DCChatViewController.h"
-#include "DCEmote.h"
+#include "DCEmoji.h"
 #include <dispatch/dispatch.h>
 #include <objc/runtime.h>
 #include "SDWebImageManager.h"
@@ -1197,12 +1197,12 @@ static dispatch_queue_t chat_messages_queue;
                 cell.contentTextView.text = messageAtRowIndex.content;
             }
 
-            // Emote handling
-            for (NSArray *emoteInfo in messageAtRowIndex.emotes) {
+            // Emoji handling
+            for (NSArray *emojiInfo in messageAtRowIndex.emojis) {
                 // cell.contentTextView.text = [cell.contentTextView.text
-                //     stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@":%@:", emote.name]];
-                DCEmote *emote = emoteInfo[0];
-                NSNumber *location = emoteInfo[1];
+                //     stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@":%@:", emoji.name]];
+                DCEmoji *emoji = emojiInfo[0];
+                NSNumber *location = emojiInfo[1];
                 UITextPosition *start = [cell.contentTextView
                     positionFromPosition:cell.contentTextView.beginningOfDocument
                     offset:location.unsignedIntegerValue];
@@ -1214,9 +1214,9 @@ static dispatch_queue_t chat_messages_queue;
                 rect.origin.y += 1; // padding
                 rect.size.width = MAX(rect.size.width, 16);
                 rect.size.height = rect.size.width;
-                UIImageView *emoteImageView = [[UIImageView alloc] initWithFrame:rect];
-                emoteImageView.image = emote.image;
-                [cell.contentTextView addSubview:emoteImageView];
+                UIImageView *emojiImageView = [[UIImageView alloc] initWithFrame:rect];
+                emojiImageView.image = emoji.image;
+                [cell.contentTextView addSubview:emojiImageView];
             }
             // TOCK(content);
 
@@ -1697,13 +1697,15 @@ static dispatch_queue_t chat_messages_queue;
 - (IBAction)sendMessage:(id)sender {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![self.inputField.text isEqual:@""]) {
+            NSString *msg = [DCTools parseMessage:self.inputField.text 
+                                     withGuild:DCServerCommunicator.sharedInstance.selectedChannel.parentGuild];
             if (self.editingMessage) {
                 [DCServerCommunicator.sharedInstance.selectedChannel
                     editMessage:self.editingMessage
-                    withContent:self.inputField.text];
+                    withContent:msg];
             } else {
                 [DCServerCommunicator.sharedInstance.selectedChannel
-                           sendMessage:self.inputField.text
+                           sendMessage:msg
                     referencingMessage:self.replyingToMessage ? self.replyingToMessage : nil
                            disablePing:self.disablePing];
             }

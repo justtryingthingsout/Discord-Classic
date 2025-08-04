@@ -2,11 +2,11 @@
 #include <UIKit/UIKit.h>
 #import "DCTools.h"
 
-@interface DCEmote : NSObject
+@interface DCEmoji : NSObject
 
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) DCSnowflake *snowflake;
-@property (assign, nonatomic) BOOL isAnimated;
+@property (assign, nonatomic) BOOL animated;
 @property (strong, nonatomic) UIImage *image;
 
 @end

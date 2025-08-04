@@ -74,7 +74,7 @@ typedef NS_ENUM(NSInteger, DCMessageReferenceType) {
 @property (strong, nonatomic) NSString* preDefinedContent;
 @property (assign, nonatomic) NSInteger messageType;
 @property (strong, nonatomic) DCMessage* referencedMessage;
-@property (strong, nonatomic) NSMutableArray* emotes;
+@property (strong, nonatomic) NSMutableArray* emojis;
 
 // embed
 //@property NSString *

@@ -14,6 +14,7 @@
 @class DCMessage;
 @class DCGuild;
 @class DCUser;
+@class DCEmoji;
 
 #ifdef DEBUG
 #define DBGLOG(...) NSLog(__VA_ARGS__)
@@ -100,6 +101,8 @@ typedef NSString DCSnowflake;
 + (DCMessage *)convertJsonMessage:(NSDictionary *)jsonMessage;
 + (DCGuild *)convertJsonGuild:(NSDictionary *)jsonGuild;
 + (DCUser *)convertJsonUser:(NSDictionary *)jsonUser cache:(BOOL)cache;
++ (DCEmoji *)convertJsonEmoji:(NSDictionary *)jsonEmoji cache:(BOOL)cache;
++ (NSString *)parseMessage:(NSString *)messageString withGuild:(DCGuild *)guild;
 + (void)getUserAvatar:(DCUser *)user;
 
 + (void)joinGuild:(NSString *)inviteCode;

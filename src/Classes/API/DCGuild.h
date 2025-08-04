@@ -43,6 +43,8 @@
 @property (strong, nonatomic) NSMutableDictionary* roles;
 // Array of the current user's roles in the guild
 @property (strong, nonatomic) NSMutableArray* userRoles;
+// Emojis in the guild
+@property (strong, nonatomic) NSMutableDictionary* emojis;
 
 - (void)checkIfRead;
 @end
