@@ -427,7 +427,7 @@ static dispatch_queue_t channel_send_queue;
         NSError *error                  = nil;
         NSHTTPURLResponse *responseCode = nil;
 
-        NSData *responseData =
+        NSData __unused *responseData =
             [NSURLConnection sendSynchronousRequest:urlRequest
                                   returningResponse:&responseCode
                                               error:&error];
