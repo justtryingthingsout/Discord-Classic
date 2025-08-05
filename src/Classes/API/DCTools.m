@@ -380,12 +380,24 @@
         if (embeds) {
             for (NSDictionary *embed in embeds) {
                 NSString *embedType = [embed objectForKey:@"type"];
-                if ([embedType isEqualToString:@"image"]) {
+                if ([embedType isEqualToString:@"image"]
+                 || (
+                    [embedType isEqualToString:@"gifv"] 
+                    && [[embed valueForKeyPath:@"provider.name"] isEqualToString:@"Tenor"]
+                )) {
                     newMessage.attachmentCount++;
 
                     NSString *attachmentURL;
-
-                    if ([embed valueForKeyPath:@"thumbnail.proxy_url"] != [NSNull null]) {
+                    
+                    if ([[embed valueForKeyPath:@"provider.name"] isEqualToString:@"Tenor"]) {
+                        NSURL *tenorURL = [NSURL URLWithString:[embed valueForKeyPath:@"thumbnail.url"]];
+                        NSString *gifId = tenorURL.pathComponents[1];
+                        attachmentURL = [NSString stringWithFormat:@"%@://%@/%@/%@", 
+                            tenorURL.scheme,
+                            tenorURL.host,
+                            [gifId stringByReplacingCharactersInRange:NSMakeRange(gifId.length - 1, 1) withString:@"C"], // -AAAAC = HD GIF
+                            [tenorURL.pathComponents[2] stringByReplacingOccurrencesOfString:@".png" withString:@".gif"]];
+                    } else if ([embed valueForKeyPath:@"thumbnail.proxy_url"] != [NSNull null]) {
                         attachmentURL = [embed valueForKeyPath:@"thumbnail.proxy_url"];
                     } else if ([embed valueForKeyPath:@"thumbnail.url"] != [NSNull null]) {
                         attachmentURL = [embed valueForKeyPath:@"thumbnail.url"];
