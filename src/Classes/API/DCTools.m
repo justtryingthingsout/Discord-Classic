@@ -381,24 +381,27 @@
             for (NSDictionary *embed in embeds) {
                 NSString *embedType = [embed objectForKey:@"type"];
                 if ([embedType isEqualToString:@"image"]
-                 || (
-                    [embedType isEqualToString:@"gifv"] 
-                    && ([[embed valueForKeyPath:@"provider.name"] isEqualToString:@"Tenor"]
-                     || [[embed valueForKeyPath:@"provider.name"] isEqualToString:@"Giphy"])
-                )) {
+                    || (
+                        [embedType isEqualToString:@"gifv"]
+                        && ([[embed valueForKeyPath:@"provider.name"] isEqualToString:@"Tenor"]
+                         || [[embed valueForKeyPath:@"provider.name"] isEqualToString:@"Giphy"])
+                    )) {
                     newMessage.attachmentCount++;
+                    newMessage.content = [newMessage.content stringByReplacingOccurrencesOfString:[embed objectForKey:@"url"] withString:@""];
 
                     NSString *attachmentURL;
-                    
-                    if ([embedType isEqualToString:@"gifv"]) {  
+
+                    if ([embedType isEqualToString:@"gifv"]) {
                         if ([[embed valueForKeyPath:@"provider.name"] isEqualToString:@"Tenor"]) {
                             NSURL *tenorURL = [NSURL URLWithString:[embed valueForKeyPath:@"thumbnail.url"]];
                             NSString *gifId = tenorURL.pathComponents[1];
-                            attachmentURL = [NSString stringWithFormat:@"%@://%@/%@/%@", 
-                                tenorURL.scheme,
-                                tenorURL.host,
-                                [gifId stringByReplacingCharactersInRange:NSMakeRange(gifId.length - 1, 1) withString:@"C"], // -AAAAC (0x00000002) = HD GIF
-                                [tenorURL.pathComponents[2] stringByReplacingOccurrencesOfString:@".png" withString:@".gif"]];
+                            attachmentURL   = [NSString stringWithFormat:@"%@://%@/%@/%@",
+                                                                       tenorURL.scheme,
+                                                                       tenorURL.host,
+                                                                       [gifId stringByReplacingCharactersInRange:NSMakeRange(gifId.length - 1, 1)
+                                                                                                      withString:@"C"], // -AAAAC (0x00000002) = HD GIF
+                                                                       [tenorURL.pathComponents[2] stringByReplacingOccurrencesOfString:@".png"
+                                                                                                                             withString:@".gif"]];
                         } else if ([[embed valueForKeyPath:@"provider.name"] isEqualToString:@"Giphy"]) {
                             attachmentURL = [[embed valueForKeyPath:@"video.url"] stringByReplacingOccurrencesOfString:@".mp4" withString:@".gif"];
                         }
@@ -472,6 +475,8 @@
                 } else if ([embedType isEqualToString:@"video"] ||
                            [embedType isEqualToString:@"gifv"]) {
                     NSURL *attachmentURL;
+
+                    newMessage.content = [newMessage.content stringByReplacingOccurrencesOfString:[embed objectForKey:@"url"] withString:@""];
 
                     if ([embed valueForKeyPath:@"video.proxy_url"] != nil &&
                         [[embed valueForKeyPath:@"video.proxy_url"]
@@ -1053,7 +1058,9 @@
             }
         }
 
-        newMessage.contentHeight = ((newMessage.messageType == DCMessageTypeDefault || newMessage.messageType == DCMessageTypeReply)
+        newMessage.contentHeight = ((newMessage.messageType == DCMessageTypeDefault 
+                                  || newMessage.messageType == DCMessageTypeReply 
+                                  || newMessage.messageType == DCMessageTypeChatInputCommand)
                                         ? authorNameSize.height
                                         : 0)
             + (newMessage.attachmentCount ? contentSize.height : MAX(contentSize.height, 18))

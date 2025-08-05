@@ -624,7 +624,6 @@ static dispatch_queue_t channel_send_queue;
                         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
                             lineBreakMode:NSLineBreakByWordWrapping];
                     convertedMessage.contentHeight = textSize.height + 40;
-
                 } else if ([messageType intValue] == 2) {
                     convertedMessage.isGrouped     = NO;
                     convertedMessage.content       = [NSString
@@ -636,7 +635,6 @@ static dispatch_queue_t channel_send_queue;
                         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
                             lineBreakMode:NSLineBreakByWordWrapping];
                     convertedMessage.contentHeight = textSize.height + 40;
-
                 } else if ([messageType intValue] == 4) {
                     convertedMessage.isGrouped     = NO;
                     convertedMessage.content       = [NSString
@@ -649,7 +647,6 @@ static dispatch_queue_t channel_send_queue;
                         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
                             lineBreakMode:NSLineBreakByWordWrapping];
                     convertedMessage.contentHeight = textSize.height + 30;
-
                 } else if ([messageType intValue] == 5) {
                     convertedMessage.isGrouped     = NO;
                     convertedMessage.content       = [NSString
