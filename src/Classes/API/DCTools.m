@@ -383,20 +383,25 @@
                 if ([embedType isEqualToString:@"image"]
                  || (
                     [embedType isEqualToString:@"gifv"] 
-                    && [[embed valueForKeyPath:@"provider.name"] isEqualToString:@"Tenor"]
+                    && ([[embed valueForKeyPath:@"provider.name"] isEqualToString:@"Tenor"]
+                     || [[embed valueForKeyPath:@"provider.name"] isEqualToString:@"Giphy"])
                 )) {
                     newMessage.attachmentCount++;
 
                     NSString *attachmentURL;
                     
-                    if ([[embed valueForKeyPath:@"provider.name"] isEqualToString:@"Tenor"]) {
-                        NSURL *tenorURL = [NSURL URLWithString:[embed valueForKeyPath:@"thumbnail.url"]];
-                        NSString *gifId = tenorURL.pathComponents[1];
-                        attachmentURL = [NSString stringWithFormat:@"%@://%@/%@/%@", 
-                            tenorURL.scheme,
-                            tenorURL.host,
-                            [gifId stringByReplacingCharactersInRange:NSMakeRange(gifId.length - 1, 1) withString:@"C"], // -AAAAC = HD GIF
-                            [tenorURL.pathComponents[2] stringByReplacingOccurrencesOfString:@".png" withString:@".gif"]];
+                    if ([embedType isEqualToString:@"gifv"]) {  
+                        if ([[embed valueForKeyPath:@"provider.name"] isEqualToString:@"Tenor"]) {
+                            NSURL *tenorURL = [NSURL URLWithString:[embed valueForKeyPath:@"thumbnail.url"]];
+                            NSString *gifId = tenorURL.pathComponents[1];
+                            attachmentURL = [NSString stringWithFormat:@"%@://%@/%@/%@", 
+                                tenorURL.scheme,
+                                tenorURL.host,
+                                [gifId stringByReplacingCharactersInRange:NSMakeRange(gifId.length - 1, 1) withString:@"C"], // -AAAAC (0x00000002) = HD GIF
+                                [tenorURL.pathComponents[2] stringByReplacingOccurrencesOfString:@".png" withString:@".gif"]];
+                        } else if ([[embed valueForKeyPath:@"provider.name"] isEqualToString:@"Giphy"]) {
+                            attachmentURL = [[embed valueForKeyPath:@"video.url"] stringByReplacingOccurrencesOfString:@".mp4" withString:@".gif"];
+                        }
                     } else if ([embed valueForKeyPath:@"thumbnail.proxy_url"] != [NSNull null]) {
                         attachmentURL = [embed valueForKeyPath:@"thumbnail.proxy_url"];
                     } else if ([embed valueForKeyPath:@"thumbnail.url"] != [NSNull null]) {
