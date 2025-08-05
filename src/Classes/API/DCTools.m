@@ -339,10 +339,10 @@
         static dispatch_once_t dateFormatOnceToken;
         static NSDateFormatter *dateFormatter;
         dispatch_once(&dateFormatOnceToken, ^{
-            dateFormatter            = [NSDateFormatter new];
-            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ";
-            dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+            dateFormatter = [NSDateFormatter new];
         });
+        dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ";
+        dateFormatter.locale     = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
 
         newMessage.timestamp =
             [dateFormatter dateFromString:[jsonMessage objectForKey:@"timestamp"]];
@@ -425,7 +425,7 @@
 
                     NSUInteger idx = [newMessage.attachments count];
                     if ([[embed valueForKeyPath:@"thumbnail.placeholder_version"] integerValue] == 1) {
-                        UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[embed valueForKeyPath:@"thumbnail.placeholder"]]);
+                        UIImage *img = thumbHashToImage([NSData dataWithBase64EncodedString:[embed valueForKeyPath:@"thumbnail.placeholder"]]);
                         [newMessage.attachments addObject:[DCTools scaledImageFromImage:img withURL:urlString]];
                     } else {
                         [newMessage.attachments addObject:@[ @(width), @(height) ]];
@@ -539,7 +539,7 @@
 
                     NSUInteger idx = [newMessage.attachments count];
                     if ([[embed valueForKeyPath:@"thumbnail.placeholder_version"] integerValue] == 1) {
-                        UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[embed valueForKeyPath:@"thumbnail.placeholder"]]);
+                        UIImage *img          = thumbHashToImage([NSData dataWithBase64EncodedString:[embed valueForKeyPath:@"thumbnail.placeholder"]]);
                         video.thumbnail.image = [DCTools scaledImageFromImage:img withURL:urlString].image;
                         [newMessage.attachments addObject:video];
                     } else {
@@ -627,7 +627,7 @@
 
                     NSUInteger idx = [newMessage.attachments count];
                     if ([[attachment objectForKey:@"placeholder_version"] integerValue] == 1) {
-                        UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[attachment objectForKey:@"placeholder"]]);
+                        UIImage *img = thumbHashToImage([NSData dataWithBase64EncodedString:[attachment objectForKey:@"placeholder"]]);
                         [newMessage.attachments addObject:[DCTools scaledImageFromImage:img withURL:urlString]];
                     } else {
                         [newMessage.attachments addObject:@[ @(width), @(height) ]];
@@ -714,7 +714,7 @@
 
                         NSUInteger idx = [newMessage.attachments count];
                         if ([[attachment objectForKey:@"placeholder_version"] integerValue] == 1) {
-                            UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[attachment objectForKey:@"placeholder"]]);
+                            UIImage *img          = thumbHashToImage([NSData dataWithBase64EncodedString:[attachment objectForKey:@"placeholder"]]);
                             video.thumbnail.image = [DCTools scaledImageFromImage:img withURL:urlString].image;
                             [newMessage.attachments addObject:video];
                         } else {
@@ -737,8 +737,10 @@
                                                         dispatch_async(
                                                             dispatch_get_main_queue(),
                                                             ^{
-                                                                video.thumbnail.image = 
-                                                                    [DCTools scaledImageFromImage:retrievedImage withURL:nil].image;
+                                                                video.thumbnail.image =
+                                                                    [DCTools scaledImageFromImage:retrievedImage
+                                                                                          withURL:nil]
+                                                                        .image;
                                                                 [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
                                                                 [NSNotificationCenter.defaultCenter
                                                                     postNotificationName:@"RELOAD MESSAGE DATA"
@@ -1545,8 +1547,8 @@
             NSError *error;
 
             NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-            request.URL = randomEndpoint;
-            request.HTTPMethod = @"GET";
+            request.URL                  = randomEndpoint;
+            request.HTTPMethod           = @"GET";
             [request setValue:@"application/json"
                 forHTTPHeaderField:@"Content-Type"];
             request.timeoutInterval = 10;
