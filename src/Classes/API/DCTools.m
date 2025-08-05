@@ -1055,6 +1055,27 @@
                                                            context:nil]
                                   .size;
                 newMessage.attributedContent = attributedText;
+                newMessage.content = attributedText.string;
+                // recalc emoji positions
+                NSRange range = NSMakeRange(0, newMessage.content.length);
+                for (NSUInteger idx = 0; idx < newMessage.emojis.count; idx++) {
+                    NSArray *emojiInfo = newMessage.emojis[idx];
+                    DCEmoji *emoji = emojiInfo[0];
+                    NSNumber *location = emojiInfo[1];
+                    NSRange found = [newMessage.content rangeOfString:@"\u00A0\u00A0\u00A0\u00A0\u200B"
+                                              options:NSLiteralSearch
+                                                range:range];
+                    if (found.location == NSNotFound) {
+                        DBGLOG(@"Failed to find emoji %@ in content %@", emoji.name, newMessage.content);
+                        break;
+                    }
+                    if (found.location != [location unsignedIntValue]) {
+                        // fix position
+                        [newMessage.emojis replaceObjectAtIndex:idx withObject:@[ emoji, @(found.location) ]];
+                    }
+                    range.location = found.location + found.length;
+                    range.length = newMessage.content.length - range.location;
+                }
             }
         }
 

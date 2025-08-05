@@ -1199,8 +1199,6 @@ static dispatch_queue_t chat_messages_queue;
 
             // Emoji handling
             for (NSArray *emojiInfo in messageAtRowIndex.emojis) {
-                // cell.contentTextView.text = [cell.contentTextView.text
-                //     stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@":%@:", emoji.name]];
                 DCEmoji *emoji = emojiInfo[0];
                 NSNumber *location = emojiInfo[1];
                 UITextPosition *start = [cell.contentTextView
@@ -1216,6 +1214,12 @@ static dispatch_queue_t chat_messages_queue;
                 rect.size.height = rect.size.width;
                 UIImageView *emojiImageView = [[UIImageView alloc] initWithFrame:rect];
                 emojiImageView.image = emoji.image;
+                emojiImageView.frame = CGRectMake(
+                    emojiImageView.frame.origin.x,
+                    emojiImageView.frame.origin.y,
+                    32 / [UIScreen mainScreen].scale,
+                    32 / [UIScreen mainScreen].scale
+                );
                 [cell.contentTextView addSubview:emojiImageView];
             }
             // TOCK(content);
