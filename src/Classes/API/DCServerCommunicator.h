@@ -213,6 +213,7 @@
 
 @property (strong, nonatomic) WSWebSocket* websocket;
 @property (strong, nonatomic) NSString* token;
+@property (assign, nonatomic) BOOL dataSaver;
 @property (strong, nonatomic) DCUserInfo* currentUserInfo;
 @property (strong, nonatomic) NSString* gatewayURL;
 @property (strong, nonatomic) NSMutableDictionary* userChannelSettings;

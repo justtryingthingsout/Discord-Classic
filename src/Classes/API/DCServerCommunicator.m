@@ -39,6 +39,7 @@ UIActivityIndicatorView *spinner;
 
         sharedInstance.gatewayURL      = @"wss://gateway.discord.gg/?encoding=json&v=9";
         sharedInstance.oldMode         = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
+        sharedInstance.dataSaver       = [[NSUserDefaults standardUserDefaults] boolForKey:@"dataSaver"];
         sharedInstance.token           = [[NSUserDefaults standardUserDefaults] stringForKey:@"token"];
         sharedInstance.currentUserInfo = nil;
 

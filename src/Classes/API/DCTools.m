@@ -11,6 +11,7 @@
 #include <Foundation/NSObjCRuntime.h>
 #include <dispatch/dispatch.h>
 #include <objc/NSObjCRuntime.h>
+#import "Base64.h"
 #import "DCChatVideoAttachment.h"
 #import "DCEmoji.h"
 #import "DCMessage.h"
@@ -21,6 +22,7 @@
 #import "QuickLook/QuickLook.h"
 #import "SDWebImageManager.h"
 #include "TSMarkdownParser.h"
+#import "ThumbHash.h"
 #import "UIImage+animatedGIF.h"
 #import "UILazyImage.h"
 
@@ -424,25 +426,36 @@
                     NSUInteger idx = [newMessage.attachments count];
                     [newMessage.attachments addObject:@[ @(width), @(height) ]];
 
-                    SDWebImageManager *manager = [SDWebImageManager sharedManager];
-                    [manager downloadImageWithURL:urlString
-                                          options:SDWebImageCacheMemoryOnly
-                                         progress:nil
-                                        completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                            @autoreleasepool {
-                                                if (!retrievedImage || !finished) {
-                                                    NSLog(@"Failed to load embed image with URL %@: %@", urlString, error);
-                                                    return;
-                                                }
-                                                [newMessage.attachments replaceObjectAtIndex:idx withObject:[DCTools scaledImageFromImage:retrievedImage withURL:urlString]];
+                    if (!DCServerCommunicator.sharedInstance.dataSaver) {
+                        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+                        [manager downloadImageWithURL:urlString
+                                              options:SDWebImageCacheMemoryOnly
+                                             progress:nil
+                                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                @autoreleasepool {
+                                                    if (!retrievedImage || !finished) {
+                                                        NSLog(@"Failed to load embed image with URL %@: %@", urlString, error);
+                                                        return;
+                                                    }
+                                                    [newMessage.attachments replaceObjectAtIndex:idx withObject:[DCTools scaledImageFromImage:retrievedImage withURL:urlString]];
 
-                                                dispatch_async(dispatch_get_main_queue(), ^{
-                                                    [NSNotificationCenter.defaultCenter
-                                                        postNotificationName:@"RELOAD MESSAGE DATA"
-                                                                      object:newMessage];
-                                                });
-                                            }
-                                        }];
+                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                        [NSNotificationCenter.defaultCenter
+                                                            postNotificationName:@"RELOAD MESSAGE DATA"
+                                                                          object:newMessage];
+                                                    });
+                                                }
+                                            }];
+                    } else {
+                        if ([[embed valueForKeyPath:@"thumbnail.placeholder_version"] integerValue] != 1) {
+                            DBGLOG(@"Bad embed placeholder version: %@", embed);
+                            continue;
+                        }
+                        UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[embed valueForKeyPath:@"thumbnail.placeholder"]]);
+                        UILazyImage *lazyImage = [DCTools scaledImageFromImage:img withURL:urlString];
+                        [newMessage.attachments replaceObjectAtIndex:idx
+                                                          withObject:lazyImage];
+                    }
                 } else if ([embedType isEqualToString:@"video"] ||
                            [embedType isEqualToString:@"gifv"]) {
                     NSURL *attachmentURL;
@@ -458,80 +471,80 @@
                         attachmentURL = [NSURL URLWithString:[embed objectForKey:@"url"]];
                     }
 
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        //[newMessage.attachments
-                        // addObject:[[MPMoviePlayerViewController alloc]
-                        // initWithContentURL:attachmentURL]];
-                        DCChatVideoAttachment *video = [[[NSBundle mainBundle]
-                            loadNibNamed:@"DCChatVideoAttachment"
-                                   owner:self
-                                 options:nil] objectAtIndex:0];
+                    //[newMessage.attachments
+                    // addObject:[[MPMoviePlayerViewController alloc]
+                    // initWithContentURL:attachmentURL]];
+                    DCChatVideoAttachment *video = [[[NSBundle mainBundle]
+                        loadNibNamed:@"DCChatVideoAttachment"
+                               owner:self
+                             options:nil] objectAtIndex:0];
 
-                        video.videoURL = attachmentURL;
+                    video.videoURL = attachmentURL;
 
-                        NSString *baseURL = [embed objectForKey:@"url"];
+                    NSString *baseURL = [embed objectForKey:@"url"];
 
-                        if ([embed valueForKeyPath:@"thumbnail.proxy_url"] != nil &&
-                            [[embed valueForKeyPath:@"thumbnail.proxy_url"]
-                                isKindOfClass:[NSString class]]) {
-                            baseURL = [embed valueForKeyPath:@"thumbnail.proxy_url"];
-                        } else if ([embed valueForKeyPath:@"thumbnail.url"] != nil &&
-                                   [[embed valueForKeyPath:@"thumbnail.url"]
-                                       isKindOfClass:[NSString class]]) {
-                            baseURL = [embed valueForKeyPath:@"thumbnail.url"];
+                    if ([embed valueForKeyPath:@"thumbnail.proxy_url"] != nil &&
+                        [[embed valueForKeyPath:@"thumbnail.proxy_url"]
+                            isKindOfClass:[NSString class]]) {
+                        baseURL = [embed valueForKeyPath:@"thumbnail.proxy_url"];
+                    } else if ([embed valueForKeyPath:@"thumbnail.url"] != nil &&
+                               [[embed valueForKeyPath:@"thumbnail.url"]
+                                   isKindOfClass:[NSString class]]) {
+                        baseURL = [embed valueForKeyPath:@"thumbnail.url"];
+                    }
+
+                    NSInteger width =
+                        [[embed valueForKeyPath:@"video.width"] integerValue];
+                    NSInteger height =
+                        [[embed valueForKeyPath:@"video.height"] integerValue];
+                    CGFloat aspectRatio = (CGFloat)width / (CGFloat)height;
+
+                    if (height > 1024) {
+                        height = 1024;
+                        width  = height * aspectRatio;
+                        if (width > 1024) {
+                            width  = 1024;
+                            height = width / aspectRatio;
                         }
-
-                        NSInteger width =
-                            [[embed valueForKeyPath:@"video.width"] integerValue];
-                        NSInteger height =
-                            [[embed valueForKeyPath:@"video.height"] integerValue];
-                        CGFloat aspectRatio = (CGFloat)width / (CGFloat)height;
-
+                    } else if (width > 1024) {
+                        width  = 1024;
+                        height = width / aspectRatio;
                         if (height > 1024) {
                             height = 1024;
                             width  = height * aspectRatio;
-                            if (width > 1024) {
-                                width  = 1024;
-                                height = width / aspectRatio;
-                            }
-                        } else if (width > 1024) {
-                            width  = 1024;
-                            height = width / aspectRatio;
-                            if (height > 1024) {
-                                height = 1024;
-                                width  = height * aspectRatio;
-                            }
                         }
+                    }
 
-                        NSURL *urlString = [NSURL URLWithString:baseURL];
-                        BOOL isDiscord   = [baseURL
-                            hasPrefix:@"https://media.discordapp.net/"];
+                    NSURL *urlString = [NSURL URLWithString:baseURL];
+                    BOOL isDiscord   = [baseURL
+                        hasPrefix:@"https://media.discordapp.net/"];
 
-                        if (isDiscord) {
-                            if (width != 0 || height != 0) {
-                                urlString = [NSURL URLWithString:
-                                                       [NSString stringWithFormat:
-                                                                     @"%@%cformat=png&width=%ld&height=%ld",
-                                                                     urlString,
-                                                                     [urlString query].length == 0 ? '?' : '&',
-                                                                     (long)width, (long)height]];
-                            } else {
-                                urlString = [NSURL URLWithString:
-                                                       [NSString stringWithFormat:
-                                                                     @"%@%cformat=png",
-                                                                     urlString,
-                                                                     [urlString query].length == 0 ? '?' : '&']];
-                            }
+                    if (isDiscord) {
+                        if (width != 0 || height != 0) {
+                            urlString = [NSURL URLWithString:
+                                                   [NSString stringWithFormat:
+                                                                 @"%@%cformat=png&width=%ld&height=%ld",
+                                                                 urlString,
+                                                                 [urlString query].length == 0 ? '?' : '&',
+                                                                 (long)width, (long)height]];
                         } else {
                             urlString = [NSURL URLWithString:
-                                                   [NSString stringWithFormat:@"%@%cformat=png",
-                                                                              urlString,
-                                                                              [urlString query].length == 0 ? '?' : '&']];
+                                                   [NSString stringWithFormat:
+                                                                 @"%@%cformat=png",
+                                                                 urlString,
+                                                                 [urlString query].length == 0 ? '?' : '&']];
                         }
+                    } else {
+                        urlString = [NSURL URLWithString:
+                                               [NSString stringWithFormat:@"%@%cformat=png",
+                                                                          urlString,
+                                                                          [urlString query].length == 0 ? '?' : '&']];
+                    }
 
-                        NSUInteger idx = [newMessage.attachments count];
-                        [newMessage.attachments addObject:@[ @(width), @(height) ]];
+                    NSUInteger idx = [newMessage.attachments count];
+                    [newMessage.attachments addObject:@[ @(width), @(height) ]];
 
+                    if (!DCServerCommunicator.sharedInstance.dataSaver) {
                         SDWebImageManager *manager = [SDWebImageManager sharedManager];
                         [manager downloadImageWithURL:urlString
                                               options:SDWebImageCacheMemoryOnly
@@ -554,12 +567,21 @@
                                                     );
                                                 }
                                             }];
+                    } else {
+                        if ([[embed valueForKeyPath:@"thumbnail.placeholder_version"] integerValue] != 1) {
+                            DBGLOG(@"Bad embed placeholder version: %@", embed);
+                            continue;
+                        }
+                        UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[embed valueForKeyPath:@"thumbnail.placeholder"]]);
+                        UILazyImage *lazyImage = [DCTools scaledImageFromImage:img withURL:urlString];
+                        [video.thumbnail setImage:lazyImage.image];
+                        [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
+                    }
 
-                        video.layer.cornerRadius     = 6;
-                        video.layer.masksToBounds    = YES;
-                        video.userInteractionEnabled = YES;
-                        newMessage.attachmentCount++;
-                    });
+                    video.layer.cornerRadius     = 6;
+                    video.layer.masksToBounds    = YES;
+                    video.userInteractionEnabled = YES;
+                    newMessage.attachmentCount++;
                 } else {
                     // NSLog(@"unknown embed type %@", embedType);
                     continue;
@@ -575,10 +597,8 @@
                     newMessage.attachmentCount++;
 
                     NSString *attachmentURL;
-                    if ([attachment valueForKeyPath:@"image.proxy_url"] != nil) {
-                        attachmentURL = [attachment valueForKeyPath:@"image.proxy_url"];
-                    } else if ([attachment valueForKeyPath:@"image.url"] != nil) {
-                        attachmentURL = [attachment valueForKeyPath:@"image.url"];
+                    if ([attachment objectForKey:@"proxy_url"]) {
+                        attachmentURL = [attachment objectForKey:@"proxy_url"];
                     } else {
                         attachmentURL = [attachment objectForKey:@"url"];
                     }
@@ -615,27 +635,37 @@
                     NSUInteger idx = [newMessage.attachments count];
                     [newMessage.attachments addObject:@[ @(width), @(height) ]];
 
-                    SDWebImageManager *manager = [SDWebImageManager sharedManager];
-                    [manager downloadImageWithURL:urlString
-                                          options:SDWebImageCacheMemoryOnly
-                                         progress:nil
-                                        completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                            @autoreleasepool {
-                                                if (!retrievedImage || !finished) {
-                                                    NSLog(@"Failed to load image with URL %@: %@", urlString, error);
-                                                    return;
-                                                }
-                                                [newMessage.attachments replaceObjectAtIndex:idx withObject:[DCTools scaledImageFromImage:retrievedImage withURL:urlString]];
-                                                dispatch_async(
-                                                    dispatch_get_main_queue(),
-                                                    ^{
-                                                        [NSNotificationCenter.defaultCenter
-                                                            postNotificationName:@"RELOAD MESSAGE DATA"
-                                                                          object:newMessage];
+                    if (!DCServerCommunicator.sharedInstance.dataSaver) {
+                        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+                        [manager downloadImageWithURL:urlString
+                                              options:SDWebImageCacheMemoryOnly
+                                             progress:nil
+                                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                @autoreleasepool {
+                                                    if (!retrievedImage || !finished) {
+                                                        NSLog(@"Failed to load image with URL %@: %@", urlString, error);
+                                                        return;
                                                     }
-                                                );
-                                            }
-                                        }];
+                                                    [newMessage.attachments replaceObjectAtIndex:idx withObject:[DCTools scaledImageFromImage:retrievedImage withURL:urlString]];
+                                                    dispatch_async(
+                                                        dispatch_get_main_queue(),
+                                                        ^{
+                                                            [NSNotificationCenter.defaultCenter
+                                                                postNotificationName:@"RELOAD MESSAGE DATA"
+                                                                              object:newMessage];
+                                                        }
+                                                    );
+                                                }
+                                            }];
+                    } else {
+                        if ([[attachment objectForKey:@"placeholder_version"] integerValue] != 1) {
+                            DBGLOG(@"Bad attachment placeholder version: %@", attachment);
+                            continue;
+                        }
+                        UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[attachment objectForKey:@"placeholder"]]);
+                        UILazyImage *lazyImage = [DCTools scaledImageFromImage:img withURL:urlString];
+                        [newMessage.attachments replaceObjectAtIndex:idx withObject:lazyImage];
+                    }
                 } else if ([fileType rangeOfString:@"video/quicktime"].location != NSNotFound ||
                            [fileType rangeOfString:@"video/mp4"].location != NSNotFound ||
                            [fileType rangeOfString:@"video/mpv"].location != NSNotFound ||
@@ -695,31 +725,42 @@
                         NSUInteger idx = [newMessage.attachments count];
                         [newMessage.attachments addObject:@[ @(width), @(height) ]];
 
-                        SDWebImageManager *manager = [SDWebImageManager sharedManager];
-                        [manager downloadImageWithURL:urlString
-                                              options:SDWebImageCacheMemoryOnly
-                                             progress:nil
-                                            completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                                @autoreleasepool {
-                                                    if (!retrievedImage || !finished
-                                                        || !video || !video.thumbnail
-                                                        || ![video.thumbnail isKindOfClass:[UIImageView class]]) {
-                                                        NSLog(@"Failed to load video thumbnail with URL %@: %@", imageURL, error);
-                                                        return;
-                                                    }
-                                                    dispatch_async(
-                                                        dispatch_get_main_queue(),
-                                                        ^{
-                                                            [video.thumbnail
-                                                                setImage:[DCTools scaledImageFromImage:retrievedImage withURL:nil].image];
-                                                            [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
-                                                            [NSNotificationCenter.defaultCenter
-                                                                postNotificationName:@"RELOAD MESSAGE DATA"
-                                                                              object:newMessage];
+                        if (!DCServerCommunicator.sharedInstance.dataSaver) {
+                            SDWebImageManager *manager = [SDWebImageManager sharedManager];
+                            [manager downloadImageWithURL:urlString
+                                                  options:SDWebImageCacheMemoryOnly
+                                                 progress:nil
+                                                completed:^(UIImage *retrievedImage, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                    @autoreleasepool {
+                                                        if (!retrievedImage || !finished
+                                                            || !video || !video.thumbnail
+                                                            || ![video.thumbnail isKindOfClass:[UIImageView class]]) {
+                                                            NSLog(@"Failed to load video thumbnail with URL %@: %@", imageURL, error);
+                                                            return;
                                                         }
-                                                    );
-                                                }
-                                            }];
+                                                        dispatch_async(
+                                                            dispatch_get_main_queue(),
+                                                            ^{
+                                                                [video.thumbnail
+                                                                    setImage:[DCTools scaledImageFromImage:retrievedImage withURL:nil].image];
+                                                                [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
+                                                                [NSNotificationCenter.defaultCenter
+                                                                    postNotificationName:@"RELOAD MESSAGE DATA"
+                                                                                  object:newMessage];
+                                                            }
+                                                        );
+                                                    }
+                                                }];
+                        } else {
+                            if ([[attachment objectForKey:@"placeholder_version"] integerValue] != 1) {
+                                DBGLOG(@"Bad attachment placeholder version: %@", attachment);
+                                return;
+                            }
+                            UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[attachment objectForKey:@"placeholder"]]);
+                            UILazyImage *lazyImage = [DCTools scaledImageFromImage:img withURL:urlString];
+                            [video.thumbnail setImage:lazyImage.image];
+                            [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
+                        }
 
                         video.layer.cornerRadius     = 6;
                         video.layer.masksToBounds    = YES;
@@ -941,10 +982,10 @@
                                             withString:@"\u00A0\u00A0\u00A0\u00A0\u200B"];
                 DCEmoji *emoji = [DCServerCommunicator.sharedInstance.loadedEmojis objectForKey:emojiID];
                 if (!emoji) {
-                    emoji                      = [DCEmoji new];
-                    emoji.name                 = emojiName;
-                    emoji.snowflake            = emojiID;
-                    emoji.animated             = isAnimated;
+                    emoji           = [DCEmoji new];
+                    emoji.name      = emojiName;
+                    emoji.snowflake = emojiID;
+                    emoji.animated  = isAnimated;
                     [DCServerCommunicator.sharedInstance.loadedEmojis
                         setObject:emoji
                            forKey:emoji.snowflake];
@@ -1325,13 +1366,13 @@
 
         while (embeddedMention) {
             NSString *emojiName = [messageString substringWithRange:[embeddedMention rangeAtIndex:1]];
-            DCEmoji *emoji = nil;
+            DCEmoji *emoji      = nil;
             if (guild) {
                 emoji = [guild.emojis.allValues
-                                 filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCEmoji *obj, NSDictionary *bindings) {
-                                     return [obj.name isEqualToString:emojiName];
-                                 }]]
-                                 .firstObject;
+                            filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(DCEmoji *obj, NSDictionary *bindings) {
+                                return [obj.name isEqualToString:emojiName];
+                            }]]
+                            .firstObject;
             }
             if (!emoji) {
                 emoji = [DCServerCommunicator.sharedInstance.loadedEmojis.allValues
@@ -1343,7 +1384,7 @@
             if (emoji) {
                 NSString *replacement = [NSString stringWithFormat:@"<%@:%@:%@>",
                                                                    emoji.animated ? @"a" : @"", emojiName, emoji.snowflake];
-                messageString = [messageString stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
+                messageString         = [messageString stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
             } else {
                 DBGLOG(@"Missing emoji: %@", emojiName);
             }
@@ -1399,7 +1440,7 @@
             }
             if (snowflake) {
                 NSString *replacement = [NSString stringWithFormat:@"<@%c%@>", isUser ? '!' : '&', snowflake];
-                messageString = [messageString stringByReplacingCharactersInRange:embeddedMention.range
+                messageString         = [messageString stringByReplacingCharactersInRange:embeddedMention.range
                                                                        withString:replacement];
             } else {
                 DBGLOG(@"Missing mention: %@", mentionName);
@@ -1437,7 +1478,7 @@
                                      .firstObject;
             if (channel) {
                 NSString *replacement = [NSString stringWithFormat:@"<#%@>", channel.snowflake];
-                messageString = [messageString stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
+                messageString         = [messageString stringByReplacingCharactersInRange:embeddedMention.range withString:replacement];
             } else {
                 DBGLOG(@"Missing channel: %@", channelName);
             }

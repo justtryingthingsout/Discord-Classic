@@ -66,6 +66,25 @@
 				<key>DefaultValue</key>
 				<false />
 			</dict>
+			<dict>
+				<key>FooterText</key>
+				<string>Using mobile data or a slow internet connection? This option allows you
+					to reduce the amount of data used by the app.</string>
+				<key>Type</key>
+				<string>PSGroupSpecifier</string>
+				<key>Title</key>
+				<string></string>
+			</dict>
+			<dict>
+				<key>Type</key>
+				<string>PSToggleSwitchSpecifier</string>
+				<key>Title</key>
+				<string>Data Saver</string>
+				<key>Key</key>
+				<string>dataSaver</string>
+				<key>DefaultValue</key>
+				<false />
+			</dict>
 		</array>
 		<key>StringsTable</key>
 		<string>Root</string>

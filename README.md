@@ -30,6 +30,7 @@ Additionally to that, you can join the bag.xml community discord on https://disc
 
 ### Libraries used
 - [APLSlideMenu](https://github.com/apploft/APLSlideMenu)
+- [Base64](https://github.com/nicklockwood/Base64)
 - [BButton](https://github.com/mattlawer/BButton)
 - [CKRefreshControl](https://github.com/instructure/CKRefreshControl)
 - [NSString+Emojize](https://github.com/diy/nsstringemojize)
