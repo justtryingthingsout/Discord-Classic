@@ -7,6 +7,7 @@
 //
 
 #import "DCChannel.h"
+#include <objc/NSObjCRuntime.h>
 #include <CoreFoundation/CFBase.h>
 #include <Foundation/Foundation.h>
 #include "DCChatViewController.h"
@@ -596,6 +597,27 @@ static dispatch_queue_t channel_send_queue;
         if (parsedResponse.count <= 0) {
             return;
         }
+
+        static NSArray *joinMessages;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            joinMessages = @[
+                @"%@ joined the party.",
+                @"%@ is here.",
+                @"Welcome, %@. We hope you brought pizza.",
+                @"A wild %@ appeared.",
+                @"%@ just landed.",
+                @"%@ just slid into the server.",
+                @"%@ just showed up!",
+                @"Welcome %@. Say hi!",
+                @"%@ hopped into the server.",
+                @"Everyone welcome %@!",
+                @"Glad you're here, %@.",
+                @"Good to see you, %@.",
+                @"Yay you made it, %@!",
+            ];
+        });
+
         for (NSDictionary *jsonMessage in parsedResponse) {
             @autoreleasepool {
                 DCMessage *convertedMessage =
@@ -603,7 +625,7 @@ static dispatch_queue_t channel_send_queue;
 
                 NSString *messageType = [jsonMessage objectForKey:@"type"];
 
-                if ([messageType intValue] == 1) {
+                if ([messageType intValue] == DCMessageTypeRecipientAdd) {
                     NSArray *mentions     = [jsonMessage objectForKey:@"mentions"];
                     NSDictionary *mention = mentions.firstObject;
                     // NSString *targetName = [mentions
@@ -624,7 +646,7 @@ static dispatch_queue_t channel_send_queue;
                         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
                             lineBreakMode:NSLineBreakByWordWrapping];
                     convertedMessage.contentHeight = textSize.height + 40;
-                } else if ([messageType intValue] == 2) {
+                } else if ([messageType intValue] == DCMessageTypeRecipientRemove) {
                     convertedMessage.isGrouped     = NO;
                     convertedMessage.content       = [NSString
                         stringWithFormat:@"%@ left the group conversation.",
@@ -635,7 +657,7 @@ static dispatch_queue_t channel_send_queue;
                         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
                             lineBreakMode:NSLineBreakByWordWrapping];
                     convertedMessage.contentHeight = textSize.height + 40;
-                } else if ([messageType intValue] == 4) {
+                } else if ([messageType intValue] == DCMessageTypeChannelNameChange) {
                     convertedMessage.isGrouped     = NO;
                     convertedMessage.content       = [NSString
                         stringWithFormat:@"%@ changed the group name to %@.",
@@ -647,7 +669,7 @@ static dispatch_queue_t channel_send_queue;
                         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
                             lineBreakMode:NSLineBreakByWordWrapping];
                     convertedMessage.contentHeight = textSize.height + 30;
-                } else if ([messageType intValue] == 5) {
+                } else if ([messageType intValue] == DCMessageTypeChannelIconChange) {
                     convertedMessage.isGrouped     = NO;
                     convertedMessage.content       = [NSString
                         stringWithFormat:@"%@ changed the group icon.",
@@ -658,7 +680,7 @@ static dispatch_queue_t channel_send_queue;
                         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
                             lineBreakMode:NSLineBreakByWordWrapping];
                     convertedMessage.contentHeight = textSize.height + 15;
-                } else if ([messageType intValue] == 6) {
+                } else if ([messageType intValue] == DCMessageTypeChannelPinnedMessage) {
                     convertedMessage.isGrouped     = NO;
                     convertedMessage.content       = [NSString
                         stringWithFormat:@"%@ pinned a message to this channel.",
@@ -669,11 +691,20 @@ static dispatch_queue_t channel_send_queue;
                         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
                             lineBreakMode:NSLineBreakByWordWrapping];
                     convertedMessage.contentHeight = textSize.height + 40;
-                } else if ([messageType intValue] == 7) {
+                } else if ([messageType intValue] == DCMessageTypeUserJoin) {
                     convertedMessage.isGrouped     = NO;
+                    static dispatch_once_t dateFormatOnceToken;
+                    static NSDateFormatter *dateFormatter;
+                    dispatch_once(&dateFormatOnceToken, ^{
+                        dateFormatter = [NSDateFormatter new];
+                        dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSSSS+00':'00";
+                        dateFormatter.timeZone     = [NSTimeZone timeZoneWithName:@"GMT"];
+                        dateFormatter.locale     = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+                    });
+                    NSDate *timestamp = [dateFormatter dateFromString:[jsonMessage objectForKey:@"timestamp"]];
+                    uint64_t time = [timestamp timeIntervalSince1970] * 1000; // ms
                     convertedMessage.content       = [NSString
-                        stringWithFormat:@"%@ just slid into the server. "
-                                               @"Welcome them!",
+                        stringWithFormat:joinMessages[time % joinMessages.count],
                                          convertedMessage.author.globalName];
                     float contentWidth             = UIScreen.mainScreen.bounds.size.width - 63;
                     CGSize textSize                = [convertedMessage.content
@@ -681,7 +712,7 @@ static dispatch_queue_t channel_send_queue;
                         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
                             lineBreakMode:NSLineBreakByWordWrapping];
                     convertedMessage.contentHeight = textSize.height + 20;
-                } else if ([messageType intValue] == 8) {
+                } else if ([messageType intValue] == DCMessageTypeGuildBoost) {
                     convertedMessage.isGrouped     = NO;
                     convertedMessage.content       = [NSString
                         stringWithFormat:@"%@ just boosted the server!",
@@ -692,7 +723,7 @@ static dispatch_queue_t channel_send_queue;
                         constrainedToSize:CGSizeMake(contentWidth, MAXFLOAT)
                             lineBreakMode:NSLineBreakByWordWrapping];
                     convertedMessage.contentHeight = textSize.height + 20;
-                } else if ([messageType intValue] == 18) {
+                } else if ([messageType intValue] == DCMessageTypeThreadCreated) {
                     convertedMessage.isGrouped     = NO;
                     convertedMessage.content       = [NSString
                         stringWithFormat:@"%@ just boosted the server!",

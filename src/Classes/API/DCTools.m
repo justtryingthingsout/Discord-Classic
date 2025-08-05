@@ -1079,11 +1079,17 @@
             }
         }
 
-        newMessage.contentHeight = ((newMessage.messageType == DCMessageTypeDefault 
-                                  || newMessage.messageType == DCMessageTypeReply 
-                                  || newMessage.messageType == DCMessageTypeChatInputCommand)
-                                        ? authorNameSize.height
-                                        : 0)
+        // types of messages we display specially
+        BOOL cond = (
+            newMessage.messageType == 6 
+            || (newMessage.messageType != 18 
+                && (
+                    newMessage.messageType < 1 
+                    || newMessage.messageType > 8
+                )
+            )
+        );
+        newMessage.contentHeight = (cond ? authorNameSize.height : 0)
             + (newMessage.attachmentCount ? contentSize.height : MAX(contentSize.height, 18))
             + 10
             + (newMessage.referencedMessage != nil ? 16 : 0);
