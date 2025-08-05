@@ -35,6 +35,7 @@ Additionally to that, you can join the bag.xml community discord on https://disc
 - [CKRefreshControl](https://github.com/instructure/CKRefreshControl)
 - [NSString+Emojize](https://github.com/diy/nsstringemojize)
 - [SDWebImage](https://github.com/SDWebImage/SDWebImage)
+  - [libwebp](https://github.com/webmproject/libwebp)
 - [TSMarkdownParser](https://github.com/laptobbe/TSMarkdownParser)
 - [UIColor+Hex](https://github.com/bag-xml/UIColor-Hex)
 - [UIImage+animatedGIF](https://github.com/mayoff/uiimage-from-animated-gif)

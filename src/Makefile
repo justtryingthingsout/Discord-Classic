@@ -10,10 +10,10 @@ include $(THEOS)/makefiles/common.mk
 APPLICATION_NAME = Discord
 
 INCLUDE_FLAGS = $(shell find . -type d -not -path "*/.*" -exec gprintf '-iquote %s ' {} \;) 
-Discord_FILES = $(shell find . -name "*.m" -not -path "./Libraries/SDWebImage/MKAnnotationView+WebCache.*")
+Discord_FILES = $(shell find . ! -path "./Libraries/SDWebImage/MKAnnotationView+WebCache.*" -name "*.m" -o -name "*.c")
 Discord_FRAMEWORKS = AssetsLibrary QuickLook ImageIO MediaPlayer AVFoundation Security CFNetwork UIKit Foundation CoreGraphics QuartzCore
 Discord_BUNDLE_RESOURCES = Theos/
-Discord_CFLAGS = -ObjC -fobjc-arc -Wno-unused-const-variable -Wno-gnu-folding-constant -Wno-error=\#warnings -include Discord_Classic/Discord_Classic-Prefix.pch $(INCLUDE_FLAGS)
+Discord_CFLAGS = -ObjC -fobjc-arc -DCOCOAPODS -DSD_WEBP=1 -D_THREAD_SAFE -Wno-unused-const-variable -Wno-gnu-folding-constant -Wno-error=\#warnings -include Discord_Classic/Discord_Classic-Prefix.pch $(INCLUDE_FLAGS)
 
 after-Discord-all::
 	$(ECHO_BEGIN)codesign --force --deep --sign - $(THEOS_OBJ_DIR)/Discord.app$(ECHO_END)

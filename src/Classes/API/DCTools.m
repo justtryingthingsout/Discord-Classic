@@ -341,7 +341,7 @@
         dispatch_once(&dateFormatOnceToken, ^{
             dateFormatter            = [NSDateFormatter new];
             dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ";
-            [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+            dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
         });
 
         newMessage.timestamp =
@@ -424,7 +424,12 @@
                     }
 
                     NSUInteger idx = [newMessage.attachments count];
-                    [newMessage.attachments addObject:@[ @(width), @(height) ]];
+                    if ([[embed valueForKeyPath:@"thumbnail.placeholder_version"] integerValue] == 1) {
+                        UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[embed valueForKeyPath:@"thumbnail.placeholder"]]);
+                        [newMessage.attachments addObject:[DCTools scaledImageFromImage:img withURL:urlString]];
+                    } else {
+                        [newMessage.attachments addObject:@[ @(width), @(height) ]];
+                    }
 
                     if (!DCServerCommunicator.sharedInstance.dataSaver) {
                         SDWebImageManager *manager = [SDWebImageManager sharedManager];
@@ -446,15 +451,6 @@
                                                     });
                                                 }
                                             }];
-                    } else {
-                        if ([[embed valueForKeyPath:@"thumbnail.placeholder_version"] integerValue] != 1) {
-                            DBGLOG(@"Bad embed placeholder version: %@", embed);
-                            continue;
-                        }
-                        UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[embed valueForKeyPath:@"thumbnail.placeholder"]]);
-                        UILazyImage *lazyImage = [DCTools scaledImageFromImage:img withURL:urlString];
-                        [newMessage.attachments replaceObjectAtIndex:idx
-                                                          withObject:lazyImage];
                     }
                 } else if ([embedType isEqualToString:@"video"] ||
                            [embedType isEqualToString:@"gifv"]) {
@@ -542,7 +538,13 @@
                     }
 
                     NSUInteger idx = [newMessage.attachments count];
-                    [newMessage.attachments addObject:@[ @(width), @(height) ]];
+                    if ([[embed valueForKeyPath:@"thumbnail.placeholder_version"] integerValue] == 1) {
+                        UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[embed valueForKeyPath:@"thumbnail.placeholder"]]);
+                        video.thumbnail.image = [DCTools scaledImageFromImage:img withURL:urlString].image;
+                        [newMessage.attachments addObject:video];
+                    } else {
+                        [newMessage.attachments addObject:@[ @(width), @(height) ]];
+                    }
 
                     if (!DCServerCommunicator.sharedInstance.dataSaver) {
                         SDWebImageManager *manager = [SDWebImageManager sharedManager];
@@ -558,7 +560,7 @@
                                                     dispatch_async(
                                                         dispatch_get_main_queue(),
                                                         ^{
-                                                            [video.thumbnail setImage:[DCTools scaledImageFromImage:retrievedImage withURL:nil].image];
+                                                            video.thumbnail.image = [DCTools scaledImageFromImage:retrievedImage withURL:nil].image;
                                                             [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
                                                             [NSNotificationCenter.defaultCenter
                                                                 postNotificationName:@"RELOAD CHAT DATA"
@@ -567,15 +569,6 @@
                                                     );
                                                 }
                                             }];
-                    } else {
-                        if ([[embed valueForKeyPath:@"thumbnail.placeholder_version"] integerValue] != 1) {
-                            DBGLOG(@"Bad embed placeholder version: %@", embed);
-                            continue;
-                        }
-                        UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[embed valueForKeyPath:@"thumbnail.placeholder"]]);
-                        UILazyImage *lazyImage = [DCTools scaledImageFromImage:img withURL:urlString];
-                        [video.thumbnail setImage:lazyImage.image];
-                        [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
                     }
 
                     video.layer.cornerRadius     = 6;
@@ -633,7 +626,12 @@
                                                            (long)width, (long)height]];
 
                     NSUInteger idx = [newMessage.attachments count];
-                    [newMessage.attachments addObject:@[ @(width), @(height) ]];
+                    if ([[attachment objectForKey:@"placeholder_version"] integerValue] == 1) {
+                        UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[attachment objectForKey:@"placeholder"]]);
+                        [newMessage.attachments addObject:[DCTools scaledImageFromImage:img withURL:urlString]];
+                    } else {
+                        [newMessage.attachments addObject:@[ @(width), @(height) ]];
+                    }
 
                     if (!DCServerCommunicator.sharedInstance.dataSaver) {
                         SDWebImageManager *manager = [SDWebImageManager sharedManager];
@@ -657,14 +655,6 @@
                                                     );
                                                 }
                                             }];
-                    } else {
-                        if ([[attachment objectForKey:@"placeholder_version"] integerValue] != 1) {
-                            DBGLOG(@"Bad attachment placeholder version: %@", attachment);
-                            continue;
-                        }
-                        UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[attachment objectForKey:@"placeholder"]]);
-                        UILazyImage *lazyImage = [DCTools scaledImageFromImage:img withURL:urlString];
-                        [newMessage.attachments replaceObjectAtIndex:idx withObject:lazyImage];
                     }
                 } else if ([fileType rangeOfString:@"video/quicktime"].location != NSNotFound ||
                            [fileType rangeOfString:@"video/mp4"].location != NSNotFound ||
@@ -723,7 +713,13 @@
                         }
 
                         NSUInteger idx = [newMessage.attachments count];
-                        [newMessage.attachments addObject:@[ @(width), @(height) ]];
+                        if ([[attachment objectForKey:@"placeholder_version"] integerValue] == 1) {
+                            UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[attachment objectForKey:@"placeholder"]]);
+                            video.thumbnail.image = [DCTools scaledImageFromImage:img withURL:urlString].image;
+                            [newMessage.attachments addObject:video];
+                        } else {
+                            [newMessage.attachments addObject:@[ @(width), @(height) ]];
+                        }
 
                         if (!DCServerCommunicator.sharedInstance.dataSaver) {
                             SDWebImageManager *manager = [SDWebImageManager sharedManager];
@@ -741,8 +737,8 @@
                                                         dispatch_async(
                                                             dispatch_get_main_queue(),
                                                             ^{
-                                                                [video.thumbnail
-                                                                    setImage:[DCTools scaledImageFromImage:retrievedImage withURL:nil].image];
+                                                                video.thumbnail.image = 
+                                                                    [DCTools scaledImageFromImage:retrievedImage withURL:nil].image;
                                                                 [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
                                                                 [NSNotificationCenter.defaultCenter
                                                                     postNotificationName:@"RELOAD MESSAGE DATA"
@@ -751,15 +747,6 @@
                                                         );
                                                     }
                                                 }];
-                        } else {
-                            if ([[attachment objectForKey:@"placeholder_version"] integerValue] != 1) {
-                                DBGLOG(@"Bad attachment placeholder version: %@", attachment);
-                                return;
-                            }
-                            UIImage *img           = thumbHashToImage([NSData dataWithBase64EncodedString:[attachment objectForKey:@"placeholder"]]);
-                            UILazyImage *lazyImage = [DCTools scaledImageFromImage:img withURL:urlString];
-                            [video.thumbnail setImage:lazyImage.image];
-                            [newMessage.attachments replaceObjectAtIndex:idx withObject:video];
                         }
 
                         video.layer.cornerRadius     = 6;
@@ -1507,7 +1494,7 @@
         timeoutInterval:15];
     [urlRequest setValue:@"no-store" forHTTPHeaderField:@"Cache-Control"];
 
-    [urlRequest setHTTPMethod:@"POST"];
+    urlRequest.HTTPMethod = @"POST";
 
     //[urlRequest setHTTPBody:[NSData dataWithBytes:[messageString UTF8String]
     // length:[messageString length]]];
@@ -1558,11 +1545,11 @@
             NSError *error;
 
             NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-            [request setURL:randomEndpoint];
-            [request setHTTPMethod:@"GET"];
+            request.URL = randomEndpoint;
+            request.HTTPMethod = @"GET";
             [request setValue:@"application/json"
                 forHTTPHeaderField:@"Content-Type"];
-            [request setTimeoutInterval:10];
+            request.timeoutInterval = 10;
 
             NSData *data = [NSURLConnection sendSynchronousRequest:request
                                                  returningResponse:&response
