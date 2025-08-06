@@ -166,9 +166,9 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // NSLog(@"Did become active");
     [[NSUserDefaults standardUserDefaults] synchronize];
-    if (self.shouldReload) {
-        [DCServerCommunicator.sharedInstance sendResume];
-    }
+    // if (self.shouldReload) {
+    //     [DCServerCommunicator.sharedInstance sendResume];
+    // }
 }
 
 

@@ -235,7 +235,6 @@
 + (DCServerCommunicator*)sharedInstance;
 - (void)description;
 - (void)startCommunicator;
-- (void)sendResume;
 - (void)reconnect;
 - (void)sendHeartbeat:(NSTimer*)timer;
 - (void)sendJSON:(NSDictionary*)dictionary;

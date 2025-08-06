@@ -26,6 +26,7 @@
 @implementation DCServerCommunicator
 UIActivityIndicatorView *spinner;
 NSTimer *heartbeatTimer = nil;
+NSTimer *ackTimer = nil;
 
 + (DCServerCommunicator *)sharedInstance {
     static DCServerCommunicator *sharedInstance = nil;
@@ -170,6 +171,9 @@ NSTimer *heartbeatTimer = nil;
 - (void)handleReadyWithData:(NSDictionary *)d {
     self.didAuthenticate = true;
     DBGLOG(@"Did authenticate!");
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.alertView setTitle:@"Getting Ready..."];
+    });
     // Grab session id (used for RESUME) and user id
     self.sessionId = [NSString stringWithFormat:@"%@", [d valueForKeyPath:@"session_id"]];
     // THIS IS US, hey hey hey this is MEEEEE BITCCCH MORTY DID YOU HEAR, THIS IS ME, AND MY USER ID, YES MORT(BUÜÜÜRPP)Y, THIS IS ME. BITCCHHHH. 100 YEARS OF DISCORD CLASSIC MORTYY YOU AND MEEEE
@@ -731,7 +735,6 @@ NSTimer *heartbeatTimer = nil;
         float heartbeatSeconds = (float)heartbeatInterval / 1000;
         float jitterHeartbeat  = heartbeatSeconds * (arc4random_uniform(1000) / 1000.0f);
         self.gotHeartbeat = false;
-        self.didTryResume = false;
         DBGLOG(@"Heartbeat is %f seconds, jitter is %f seconds", heartbeatSeconds, jitterHeartbeat);
         dispatch_async(dispatch_get_main_queue(), ^{
             heartbeatTimer = [NSTimer scheduledTimerWithTimeInterval:jitterHeartbeat
@@ -741,15 +744,9 @@ NSTimer *heartbeatTimer = nil;
                                                             repeats:NO];
         });
     };
-    if (self.shouldResume) {
+    if (self.sequenceNumber && self.sessionId) {
         DBGLOG(@"Sending Resume with sequence number %li, session ID %@", (long)self.sequenceNumber, self.sessionId);
         // RESUME
-        if (!self.token || !self.sessionId) {
-            [DCTools
-                      alert:@"Warning"
-                withMessage:@"Something is wrong with your Discord token or your connection. Please re-check everything and retry."];
-            return;
-        }
         [self sendJSON:@{
             @"op" : @RESUME,
             @"d" : @{
@@ -758,7 +755,6 @@ NSTimer *heartbeatTimer = nil;
                 @"seq" : @(self.sequenceNumber),
             }
         }];
-        self.shouldResume = false;
     } else {
         DBGLOG(@"Sending Identify");
         [self sendJSON:@{
@@ -952,7 +948,23 @@ NSTimer *heartbeatTimer = nil;
     self.websocket               = [[WSWebSocket alloc] initWithURL:websocketUrl protocols:nil];
     self.websocket.closeCallback = ^(NSUInteger statusCode, NSString *message) {
         DBGLOG(@"Websocket closed with status code %lu and message: %@", (unsigned long)statusCode, message);
-        [weakSelf reconnect];
+        if (statusCode == 1000) {
+            // we closed it, do nothing
+            return;
+        } else if (statusCode == 2) {
+            // kCFErrorDomainCFNetwork error 2 => DNS failure, likely not connected to the internet
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.alertView setTitle:@"Waiting for connection..."];
+                [NSTimer scheduledTimerWithTimeInterval:5
+                                                 target:weakSelf
+                                               selector:@selector(reconnect)
+                                               userInfo:nil
+                                                repeats:NO];
+            });
+        } else {
+            // some other error, try to reconnect
+            [weakSelf reconnect];
+        }
     };
     // self.websocket.dataCallback = ^(NSData *data) {
     //     #ifdef DEBUG
@@ -1017,19 +1029,29 @@ NSTimer *heartbeatTimer = nil;
                     weakSelf.gotHeartbeat = true;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
+
                     });
                     break;
                 }
                 case RECONNECT: {
                     DBGLOG(@"Got RECONNECT, reconnecting...");
-                    weakSelf.shouldResume = self.sequenceNumber > 0 && self.sessionId != nil;
-                    weakSelf.didTryResume = false;
                     [weakSelf reconnect];
                     break;
                 }
                 case INVALID_SESSION: {
-                    DBGLOG(@"Got INVALID_SESSION, we probably already authenticated though...");
-                    // [weakSelf reconnect];
+                    DBGLOG(@"Got INVALID_SESSION, reconnecting...");
+                    // if ([(NSNumber *)d boolValue]) {
+                    //     DBGLOG(@"Session is invalid, re-identifying...");
+                        // If the session is invalid, we need to reconnect
+                        // and start a new session
+                        weakSelf.sequenceNumber = 0;
+                        weakSelf.sessionId      = nil;
+                    // } else {
+                    //     // If the session is valid, we can resume
+                    //     DBGLOG(@"Session is valid, resuming...");
+                    // }
+                    [weakSelf reconnect];
                     return;
                 }
                 default: {
@@ -1043,30 +1065,20 @@ NSTimer *heartbeatTimer = nil;
     [self.websocket open];
 }
 
-
-- (void)sendResume {
-    if (self.oldMode == NO) {
-        [self showNonIntrusiveNotificationWithTitle:@"Resuming..."];
-    }
-    [self.alertView setTitle:@"Resuming..."];
-    self.didTryResume = true;
-    self.shouldResume = true;
-    [self startCommunicator];
-}
-
-
 - (void)reconnect {
     DBGLOG(@"Identify cooldown %s", self.canIdentify ? "true" : "false");
 
     dispatch_async(dispatch_get_main_queue(), ^{
         [heartbeatTimer invalidate]; // Invalidate because we're disconnected
         heartbeatTimer = nil;
+        [ackTimer invalidate];
+        ackTimer = nil;
     });
     // Begin new session
     [self.websocket close];
     self.websocket = nil;
     if (self.oldMode == NO) {
-        [self showNonIntrusiveNotificationWithTitle:@"Re-Authenticating..."];
+        [self showNonIntrusiveNotificationWithTitle:@"Reconnecting..."];
     } else {
         [self.alertView show];
     }
@@ -1084,7 +1096,7 @@ NSTimer *heartbeatTimer = nil;
         if (self.oldMode == NO) {
             [self showNonIntrusiveNotificationWithTitle:@"Awaiting cooldown..."];
         }
-        [self performSelector:@selector(startCommunicator) withObject:nil afterDelay:timeRemaining + 1];
+        [self performSelector:@selector(reconnect) withObject:nil afterDelay:timeRemaining + 1];
     }
 
     self.canIdentify = false;
@@ -1112,7 +1124,7 @@ NSTimer *heartbeatTimer = nil;
     // Check that we've recieved a response since the last heartbeat
     if (self.gotHeartbeat) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [NSTimer scheduledTimerWithTimeInterval:8
+            ackTimer = [NSTimer scheduledTimerWithTimeInterval:8
                                              target:self
                                            selector:@selector(checkForReceivedHeartbeat:)
                                            userInfo:nil
@@ -1124,11 +1136,6 @@ NSTimer *heartbeatTimer = nil;
         }];
         DBGLOG(@"Sent heartbeat");
         self.gotHeartbeat = false;
-        self.didTryResume = false;
-    } else if (self.didTryResume) {
-        DBGLOG(@"Did not get resume, trying reconnect instead with sequence %li %@", (long)self.sequenceNumber, self.sessionId);
-        [self reconnect];
-        self.didTryResume = false;
     } else {
         // If we didnt get a response in between heartbeats, we've disconnected from the websocket
         // send a RESUME to reconnect
@@ -1136,15 +1143,23 @@ NSTimer *heartbeatTimer = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             [heartbeatTimer invalidate]; // Invalidate because we're disconnected
             heartbeatTimer = nil;
+            [ackTimer invalidate];
+            ackTimer = nil;
         });
-        [self sendResume];
+        [self reconnect];
     }
 }
 
 - (void)checkForReceivedHeartbeat:(NSTimer *)timer {
     if (!self.gotHeartbeat) {
         DBGLOG(@"Did not get heartbeat response, sending RESUME with sequence %li %@ (checkForReceivedHeartbeat)", (long)self.sequenceNumber, self.sessionId);
-        [self sendResume];
+        [self reconnect];
+    } else {
+        // just in case
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.alertView dismissWithClickedButtonIndex:0 animated:YES];
+            [self dismissNotification];
+        });
     }
 }
 

@@ -3,8 +3,6 @@
 @interface DCServerCommunicator ()
 @property (strong, nonatomic) UIView *notificationView;
 @property (assign, nonatomic) BOOL gotHeartbeat;
-@property (assign, nonatomic) BOOL didTryResume;
-@property (assign, nonatomic) BOOL shouldResume;
 @property (assign, nonatomic) BOOL heartbeatDefined;
 
 @property (assign, nonatomic) BOOL canIdentify;
