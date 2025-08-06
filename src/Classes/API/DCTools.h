@@ -99,7 +99,7 @@ typedef NSString DCSnowflake;
 + (NSData *)checkData:(NSData *)response withError:(NSError *)error;
 
 + (DCMessage *)convertJsonMessage:(NSDictionary *)jsonMessage;
-+ (DCGuild *)convertJsonGuild:(NSDictionary *)jsonGuild;
++ (DCGuild *)convertJsonGuild:(NSDictionary *)jsonGuild withMembers:(NSArray *)members;
 + (DCUser *)convertJsonUser:(NSDictionary *)jsonUser cache:(BOOL)cache;
 + (DCEmoji *)convertJsonEmoji:(NSDictionary *)jsonEmoji cache:(BOOL)cache;
 + (NSString *)parseMessage:(NSString *)messageString withGuild:(DCGuild *)guild;

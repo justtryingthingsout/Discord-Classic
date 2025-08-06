@@ -26,7 +26,7 @@
 @implementation DCServerCommunicator
 UIActivityIndicatorView *spinner;
 NSTimer *heartbeatTimer = nil;
-NSTimer *ackTimer = nil;
+NSTimer *ackTimer       = nil;
 
 + (DCServerCommunicator *)sharedInstance {
     static DCServerCommunicator *sharedInstance = nil;
@@ -202,6 +202,22 @@ NSTimer *ackTimer = nil;
             [self.userChannelSettings setValue:@((bool)[channelSetting objectForKey:@"muted"]) forKey:[channelSetting objectForKey:@"channel_id"]];
         }
     }
+    // Get users from READY payload (DEDUPE_USER_OBJECTS)
+    [self.loadedUsers setObject:[DCTools convertJsonUser:[d objectForKey:@"user"] 
+                                                   cache:YES] 
+                         forKey:[d valueForKeyPath:@"user.id"]];
+    for (NSDictionary *user in [d objectForKey:@"users"]) {
+        @autoreleasepool {
+            DCUser *dcUser = [DCTools convertJsonUser:user cache:YES];
+            if (dcUser) {
+                [self.loadedUsers setObject:dcUser forKey:dcUser.snowflake];
+                // NSLog(@"[READY] Cached user: %@ (ID: %@)", dcUser.username, dcUser.snowflake);
+            } else {
+                DBGLOG(@"[READY] Failed to convert user: %@", user);
+            }
+        }
+    }
+
     // Get user DMs and DM groups
     // The user's DMs are treated like a guild, where the channels are different DM/groups
     DCGuild *privateGuild = DCGuild.new;
@@ -214,145 +230,112 @@ NSTimer *ackTimer = nil;
     for (NSDictionary *privateChannel in [d objectForKey:@"private_channels"]) {
         @autoreleasepool {
             // this may actually suck
-            //  Initialize users array for the member list
-            NSMutableArray *users = NSMutableArray.new;
             // NSLog(@"%@", privateChannel);
-            NSMutableDictionary *usersDict;
             DCChannel *newChannel    = DCChannel.new;
             newChannel.parentID      = [privateChannel objectForKey:@"parent_id"];
             newChannel.snowflake     = [privateChannel objectForKey:@"id"];
             newChannel.lastMessageId = [privateChannel objectForKey:@"last_message_id"];
             newChannel.parentGuild   = privateGuild;
             newChannel.type          = DCChannelTypeDM; // Direct Message channel
-            newChannel.users         = users;
             newChannel.writeable     = YES; // DMs are always writeable
-            if ([privateChannel objectForKey:@"icon"] != nil || [privateChannel objectForKey:@"recipients"] != nil) {
-                if (((NSArray *)[privateChannel objectForKey:@"recipients"]).count > 0) {
-                    NSDictionary *user    = [[privateChannel objectForKey:@"recipients"] objectAtIndex:0];
-                    newChannel.recipients = [privateChannel objectForKey:@"recipients"];
-                    for (NSDictionary *user in [privateChannel objectForKey:@"recipients"]) {
-                        @autoreleasepool {
-                            usersDict = NSMutableDictionary.new;
-                            [usersDict setObject:[user objectForKey:@"global_name"] forKey:@"username"];
-                            [usersDict setObject:[user objectForKey:@"username"] forKey:@"handle"];
-                            [usersDict setObject:[user objectForKey:@"avatar"] forKey:@"avatar"];
-                            [usersDict setObject:[user objectForKey:@"id"] forKey:@"snowflake"];
-                            [users addObject:usersDict];
-                            // Ensure user is added to loadedUsers
-                            NSString *userId = [user objectForKey:@"id"];
-                            if (userId && ![self.loadedUsers objectForKey:userId]) {
-                                DCUser *dcUser = [DCTools convertJsonUser:user cache:YES]; // Add to loadedUsers
-                                [self.loadedUsers setObject:dcUser forKey:userId];
-                                // NSLog(@"[READY] Cached user: %@ (ID: %@)", dcUser.username, dcUser.snowflake);
-                            }
-                        }
+            newChannel.recipients    = NSMutableArray.new;
+            { // default icon
+                NSNumber *longId = @([newChannel.snowflake longLongValue]);
+                int selector     = (int)(([longId longLongValue] >> 22) % 6);
+                newChannel.icon  = [[DCUser defaultAvatars] objectAtIndex:selector];
+                CGSize itemSize  = CGSizeMake(32, 32);
+                UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
+                CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+                [newChannel.icon drawInRect:imageRect];
+                newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
+                UIGraphicsEndImageContext();
+            }
+            NSArray *recipientIds = [privateChannel objectForKey:@"recipient_ids"];
+            if (recipientIds && recipientIds.count > 0) {
+                for (NSString *userId in recipientIds) {
+                    DCUser *recipient = [self.loadedUsers objectForKey:userId];
+                    if (!recipient) {
+                        DBGLOG(@"[READY] User ID %@ not found in loadedUsers", userId);
+                        continue;
                     }
-                    // Add self to users list
-                    usersDict = NSMutableDictionary.new;
-                    [usersDict setObject:[NSString stringWithFormat:@"You"] forKey:@"username"];
-                    [usersDict setObject:[user objectForKey:@"avatar"] forKey:@"avatar"];
-                    [usersDict setObject:[user objectForKey:@"id"] forKey:@"snowflake"];
-                    [users addObject:usersDict];
-                    // end
-                    /*NSMutableDictionary *usersDict;
-                     for (NSDictionary* user in [privateChannel objectForKey:@"recipients"]) {
-                     usersDict = NSMutableDictionary.new;
-                     [usersDict setObject:[user objectForKey:@"username"] forKey:@"username"];
-                     [usersDict setObject:[user objectForKey:@"avatar"] forKey:@"avatar"];
-                     [users addObject:usersDict];
-                     }*/
-                    NSNumber *longId = @([[user objectForKey:@"id"] longLongValue]);
-                    int selector     = (int)(([longId longLongValue] >> 22) % 6);
-                    newChannel.icon  = [[DCUser defaultAvatars] objectAtIndex:selector];
-                    CGSize itemSize  = CGSizeMake(32, 32);
-                    UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
-                    CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
-                    [newChannel.icon drawInRect:imageRect];
-                    newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
-                    UIGraphicsEndImageContext();
+                    [newChannel.recipients addObject:recipient];
                 }
-                if ([privateChannel objectForKey:@"icon"] && [privateChannel objectForKey:@"icon"] != [NSNull null]) {
-                    NSURL *iconURL   = [NSURL URLWithString:[NSString stringWithFormat:@"https://cdn.discordapp.com/channel-icons/%@/%@.png?size=64",
-                                                                                     newChannel.snowflake, [privateChannel objectForKey:@"icon"]]];
-                    NSNumber *longId = @([newChannel.snowflake longLongValue]);
-                    int selector     = (int)(([longId longLongValue] >> 22) % 6);
-                    newChannel.icon  = [[DCUser defaultAvatars] objectAtIndex:selector];
-                    CGSize itemSize  = CGSizeMake(32, 32);
-                    UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
-                    CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
-                    [newChannel.icon drawInRect:imageRect];
-                    newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
-                    UIGraphicsEndImageContext();
+                NSMutableArray *mUsers = [newChannel.recipients mutableCopy];
+                [mUsers addObject:[self.loadedUsers objectForKey:self.snowflake]];
+                newChannel.users = mUsers;
+            }
+            if ([privateChannel objectForKey:@"icon"] && [privateChannel objectForKey:@"icon"] != [NSNull null]) {
+                NSURL *iconURL             = [NSURL URLWithString:[NSString stringWithFormat:@"https://cdn.discordapp.com/channel-icons/%@/%@.png?size=64",
+                                                                                 newChannel.snowflake, [privateChannel objectForKey:@"icon"]]];
+                SDWebImageManager *manager = [SDWebImageManager sharedManager];
+                [manager downloadImageWithURL:iconURL
+                                      options:0
+                                     progress:nil
+                                    completed:^(UIImage *icon, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                        @autoreleasepool {
+                                            if (!icon || !finished) {
+                                                NSLog(@"Failed to load channel icon with URL %@: %@", iconURL, error);
+                                                return;
+                                            }
+                                            newChannel.icon = icon;
+                                            CGSize itemSize = CGSizeMake(32, 32);
+                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
+                                                CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+                                                [newChannel.icon drawInRect:imageRect];
+                                                newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
+                                                UIGraphicsEndImageContext();
+                                            });
+                                        }
+                                    }];
+            } else {
+                if (newChannel.recipients.count > 0) {
+                    DCUser *user = [newChannel.recipients objectAtIndex:0];
+
+                    NSURL *avatarURL           = [NSURL URLWithString:[NSString
+                                                                stringWithFormat:@"https://cdn.discordapp.com/avatars/%@/%@.png?size=64",
+                                                                                 user.snowflake,
+                                                                                 user.avatarID]];
                     SDWebImageManager *manager = [SDWebImageManager sharedManager];
-                    [manager downloadImageWithURL:iconURL
+                    [manager downloadImageWithURL:avatarURL
                                           options:0
                                          progress:nil
-                                        completed:^(UIImage *icon, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                             @autoreleasepool {
-                                                if (!icon || !finished) {
-                                                    NSLog(@"Failed to load channel icon with URL %@: %@", iconURL, error);
-                                                    return;
+                                                if (image && finished) {
+                                                    newChannel.icon = image;
+                                                    CGSize itemSize = CGSizeMake(32, 32);
+                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                        UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
+                                                        CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+                                                        [newChannel.icon drawInRect:imageRect];
+                                                        newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
+                                                        UIGraphicsEndImageContext();
+                                                        [NSNotificationCenter.defaultCenter postNotificationName:@"RELOAD CHANNEL LIST" object:nil];
+                                                    });
+                                                } else {
+                                                    // NSLog(@"Failed to download user avatar with URL %@: %@", avatarURL, error);
+                                                    int selector            = 0;
+                                                    NSNumber *discriminator = @(user.discriminator);
+                                                    if ([discriminator integerValue] == 0) {
+                                                        NSNumber *longId = @([user.snowflake longLongValue]);
+                                                        selector         = (int)(([longId longLongValue] >> 22) % 6);
+                                                    } else {
+                                                        selector = (int)([discriminator integerValue] % 5);
+                                                    }
+                                                    newChannel.icon = [[DCUser defaultAvatars] objectAtIndex:selector];
+                                                    CGSize itemSize = CGSizeMake(32, 32);
+                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                        UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
+                                                        CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+                                                        [newChannel.icon drawInRect:imageRect];
+                                                        newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
+                                                        UIGraphicsEndImageContext();
+                                                        [NSNotificationCenter.defaultCenter postNotificationName:@"RELOAD CHANNEL LIST" object:nil];
+                                                    });
                                                 }
-                                                newChannel.icon = icon;
-                                                CGSize itemSize = CGSizeMake(32, 32);
-                                                dispatch_async(dispatch_get_main_queue(), ^{
-                                                    UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
-                                                    CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
-                                                    [newChannel.icon drawInRect:imageRect];
-                                                    newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
-                                                    UIGraphicsEndImageContext();
-                                                });
                                             }
                                         }];
-                } else {
-                    if (((NSArray *)[privateChannel objectForKey:@"recipients"]).count > 0) {
-                        NSDictionary *user = [[privateChannel objectForKey:@"recipients"] objectAtIndex:0];
-
-                        NSURL *avatarURL           = [NSURL URLWithString:[NSString
-                                                                    stringWithFormat:@"https://cdn.discordapp.com/avatars/%@/%@.png?size=64",
-                                                                                     [user objectForKey:@"id"],
-                                                                                     [user objectForKey:@"avatar"]]];
-                        SDWebImageManager *manager = [SDWebImageManager sharedManager];
-                        [manager downloadImageWithURL:avatarURL
-                                              options:0
-                                             progress:nil
-                                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                                @autoreleasepool {
-                                                    if (image && finished) {
-                                                        newChannel.icon = image;
-                                                        CGSize itemSize = CGSizeMake(32, 32);
-                                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                                            UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
-                                                            CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
-                                                            [newChannel.icon drawInRect:imageRect];
-                                                            newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
-                                                            UIGraphicsEndImageContext();
-                                                            [NSNotificationCenter.defaultCenter postNotificationName:@"RELOAD CHANNEL LIST" object:nil];
-                                                        });
-                                                    } else {
-                                                        // NSLog(@"Failed to download user avatar with URL %@: %@", avatarURL, error);
-                                                        int selector            = 0;
-                                                        NSNumber *discriminator = @([[user objectForKey:@"discriminator"] integerValue]);
-                                                        if ([discriminator integerValue] == 0) {
-                                                            NSNumber *longId = @([[user objectForKey:@"id"] longLongValue]);
-                                                            selector         = (int)(([longId longLongValue] >> 22) % 6);
-                                                        } else {
-                                                            selector = (int)([discriminator integerValue] % 5);
-                                                        }
-                                                        newChannel.icon = [[DCUser defaultAvatars] objectAtIndex:selector];
-                                                        CGSize itemSize = CGSizeMake(32, 32);
-                                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                                            UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
-                                                            CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
-                                                            [newChannel.icon drawInRect:imageRect];
-                                                            newChannel.icon = UIGraphicsGetImageFromCurrentImageContext();
-                                                            UIGraphicsEndImageContext();
-                                                            [NSNotificationCenter.defaultCenter postNotificationName:@"RELOAD CHANNEL LIST" object:nil];
-                                                        });
-                                                    }
-                                                }
-                                            }];
-                    }
                 }
             }
             NSString *privateChannelName = [privateChannel objectForKey:@"name"];
@@ -362,19 +345,19 @@ NSTimer *ackTimer = nil;
             } else {
                 // If no name, create a name from channel members
                 NSMutableString *fullChannelName = [@"" mutableCopy];
-                NSArray *privateChannelMembers   = [privateChannel objectForKey:@"recipients"];
-                for (NSDictionary *privateChannelMember in privateChannelMembers) {
+                for (DCUser *recipient in newChannel.recipients) {
                     @autoreleasepool {
                         // add comma between member names
-                        if ([privateChannelMembers indexOfObject:privateChannelMember] != 0) {
+                        if ([newChannel.recipients indexOfObject:recipient] != 0) {
                             [fullChannelName appendString:@", @"];
                         }
-                        NSString *memberName = [privateChannelMember objectForKey:@"username"];
-                        if ([privateChannelMember objectForKey:@"global_name"]
-                            && [[privateChannelMember objectForKey:@"global_name"] isKindOfClass:[NSString class]]) {
-                            memberName = [privateChannelMember objectForKey:@"global_name"];
+                        NSString *memberName = recipient.username;
+                        if (recipient.globalName && [recipient.globalName isKindOfClass:[NSString class]]) {
+                            memberName = recipient.globalName;
                         }
-                        [fullChannelName appendString:memberName];
+                        if (memberName) {
+                            [fullChannelName appendString:memberName];
+                        }
                         newChannel.name = fullChannelName;
                     }
                 }
@@ -383,20 +366,30 @@ NSTimer *ackTimer = nil;
         }
     }
 
-    // Process user presences from READY payload
-    NSArray *presences = [d objectForKey:@"presences"];
+    // Process user presences from READY payload (DEDUPE_USER_OBJECTS)
+    NSDictionary *merged_presences = [d objectForKey:@"merged_presences"];
+    NSMutableArray *presences = NSMutableArray.new;
+    for (NSDictionary *presence in merged_presences[@"friends"]) { @autoreleasepool {
+        [presences addObject:presence];
+    }}
+    for (NSArray *guildPresences in merged_presences[@"guilds"]) { @autoreleasepool {
+        for (NSDictionary *presence in guildPresences) { @autoreleasepool {
+            [presences addObject:presence];
+        }}
+    }}
     for (NSDictionary *presence in presences) {
-        NSString *userId = [presence valueForKeyPath:@"user.id"];
+        NSString *userId = [presence objectForKey:@"user_id"];
         NSString *status = [presence objectForKey:@"status"];
         if (!userId || !status) {
             continue;
         }
         DCUser *user = [self.loadedUsers objectForKey:userId];
         if (!user) {
-            user = [DCTools convertJsonUser:[presence objectForKey:@"user"] cache:YES];
+            DBGLOG(@"[READY] User ID %@ not found in loadedUsers", userId);
+            continue;
         }
         user.status = [DCUser statusFromString:status];
-        // NSLog(@"[READY] User %@ (ID: %@) has status: %@ (%d)", user.username, userId, status, user.status);
+        // NSLog(@"[READY] User %@ (ID: %@) has status: %@ (%ld)", user.username, userId, status, (long)user.status);
     }
     dispatch_async(dispatch_get_main_queue(), ^{
         [NSNotificationCenter.defaultCenter postNotificationName:@"RELOAD CHANNEL LIST" object:nil];
@@ -416,9 +409,12 @@ NSTimer *ackTimer = nil;
     NSMutableArray *guilds = NSMutableArray.new;
     [guilds addObject:privateGuild];
     // Get servers (guilds) the user is a member of
-    for (NSDictionary *jsonGuild in [d objectForKey:@"guilds"]) {
+    NSArray *mergedMembers = [d objectForKey:@"merged_members"];
+    NSArray *guildJsons    = [d objectForKey:@"guilds"];
+    for (NSUInteger i = 0; i < guildJsons.count; i++) {
         @autoreleasepool {
-            DCGuild *guild = [DCTools convertJsonGuild:jsonGuild];
+            DCGuild *guild = [DCTools convertJsonGuild:[guildJsons objectAtIndex:i]
+                                           withMembers:[mergedMembers objectAtIndex:i]];
             [guilds addObject:guild];
         }
     }
@@ -734,21 +730,21 @@ NSTimer *ackTimer = nil;
     if (!heartbeatTimer) {
         float heartbeatSeconds = (float)heartbeatInterval / 1000;
         float jitterHeartbeat  = heartbeatSeconds * (arc4random_uniform(1000) / 1000.0f);
-        self.gotHeartbeat = false;
+        self.gotHeartbeat      = false;
         DBGLOG(@"Heartbeat is %f seconds, jitter is %f seconds", heartbeatSeconds, jitterHeartbeat);
         dispatch_async(dispatch_get_main_queue(), ^{
             heartbeatTimer = [NSTimer scheduledTimerWithTimeInterval:jitterHeartbeat
-                                                             target:self
-                                                           selector:@selector(jitterBeat:)
-                                                           userInfo:@{@"heartbeatInterval" : @(heartbeatSeconds)}
-                                                            repeats:NO];
+                                                              target:self
+                                                            selector:@selector(jitterBeat:)
+                                                            userInfo:@{@"heartbeatInterval" : @(heartbeatSeconds)}
+                                                             repeats:NO];
         });
     };
     if (self.sequenceNumber && self.sessionId) {
         DBGLOG(@"Sending Resume with sequence number %li, session ID %@", (long)self.sequenceNumber, self.sessionId);
         // RESUME
         [self sendJSON:@{
-            @"op" : @RESUME,
+            @"op" : @(DCGatewayOpCodeResume),
             @"d" : @{
                 @"token" : self.token,
                 @"session_id" : self.sessionId,
@@ -758,14 +754,24 @@ NSTimer *ackTimer = nil;
     } else {
         DBGLOG(@"Sending Identify");
         [self sendJSON:@{
-            @"op" : @IDENTIFY,
+            @"op" : @(DCGatewayOpCodeIdentify),
             @"d" : @{
                 @"token" : self.token,
                 @"properties" : @{
                     @"os" : @"iOS",
-                    @"$browser" : @"Discord iOS",
+                    @"browser" : @"Discord iOS",
+                    // browser_version
+                    // release_channel
+                    // system_locale
+                    // is_fast_connect
+                    // version
                 },
                 @"large_threshold" : @"50",
+                @"capabilities" : @(
+                    DCGatewayCapabilitiesDebounceMessageReactions // not handling it anyways
+                    | DCGatewayCapabilitiesLazyUserNotes          // not handling it anyways
+                    | DCGatewayCapabilitiesDedupeUserObjects      // dedupe user objects in READY payload
+                ),
             }
         }];
         // Disable ability to identify until reenabled 5 seconds later.
@@ -799,7 +805,7 @@ NSTimer *ackTimer = nil;
     //     NSLog(@"Sending guild subscription for guild %@ and channel %@", guildId, channelId);
     // #endif
     [self sendJSON:@{
-        @"op" : @GUILD_SUBSCRIPTIONS,
+        @"op" : @(DCGatewayOpCodeGuildSubscriptions),
         @"d" : @{
             @"guild_id" : guildId,
             @"typing" : @YES,
@@ -884,7 +890,7 @@ NSTimer *ackTimer = nil;
                     return;
                 }
             }
-            [self.guilds addObject:[DCTools convertJsonGuild:d]];
+            [self.guilds addObject:[DCTools convertJsonGuild:d withMembers:nil]];
             self.guildsIsSorted = NO;
         });
         return;
@@ -898,13 +904,13 @@ NSTimer *ackTimer = nil;
             DCChannel *channel  = [self.channels objectForKey:channelId];
             if (channel) {
                 channel.lastMessageId = [unread objectForKey:@"last_message_id"];
-                BOOL oldUnread        = channel.unread;
+// #ifdef DEBUG
+//                 BOOL oldUnread        = channel.unread;
                 [channel checkIfRead];
-                if (oldUnread != channel.unread) {
-                    // #ifdef DEBUG
-                    //                     NSLog(@"Channel %@ (%@) unread state changed to %d", channel.name, channel.snowflake, channel.unread);
-                    // #endif
-                }
+//                 if (oldUnread != channel.unread) {
+//                     NSLog(@"Channel %@ (%@) unread state changed to %d", channel.name, channel.snowflake, channel.unread);
+//                 }
+// #endif
             }
         }
     } else if ([t isEqualToString:GUILD_MEMBER_LIST_UPDATE]) {
@@ -1008,51 +1014,49 @@ NSTimer *ackTimer = nil;
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             switch (op) {
-                case HELLO: {
+                case DCGatewayOpCodeHello: {
                     [weakSelf handleHelloWithData:d];
                     break;
                 }
-                case DISPATCH: {
+                case DCGatewayOpCodeDispatch: {
                     [weakSelf handleDispatchWithResponse:parsedJsonResponse];
                     break;
                 }
-                case HEARTBEAT: {
+                case DCGatewayOpCodeHeartbeat: {
                     // ack with our own heartbeat
                     [weakSelf sendJSON:@{
-                        @"op" : @HEARTBEAT,
+                        @"op" : @(DCGatewayOpCodeHeartbeat),
                         @"d" : @(weakSelf.sequenceNumber)
                     }];
                     // fallthrough to HEARTBEAT_ACK
                 }
-                case HEARTBEAT_ACK: {
+                case DCGatewayOpCodeHeartbeatAck: {
                     DBGLOG(@"Got heartbeat ack!");
                     weakSelf.gotHeartbeat = true;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-
-
                     });
                     break;
                 }
-                case RECONNECT: {
+                case DCGatewayOpCodeReconnect: {
                     DBGLOG(@"Got RECONNECT, reconnecting...");
                     [weakSelf reconnect];
                     break;
                 }
-                case INVALID_SESSION: {
+                case DCGatewayOpCodeInvalidSession: {
                     DBGLOG(@"Got INVALID_SESSION, reconnecting...");
-                    // if ([(NSNumber *)d boolValue]) {
-                    //     DBGLOG(@"Session is invalid, re-identifying...");
+                    if ([(NSNumber *)d boolValue]) {
+                        // If the session is valid, we can resume (rare)
+                        DBGLOG(@"Session is valid, resuming...");
+                    } else {
+                        DBGLOG(@"Session is invalid, re-identifying...");
                         // If the session is invalid, we need to reconnect
                         // and start a new session
                         weakSelf.sequenceNumber = 0;
                         weakSelf.sessionId      = nil;
-                    // } else {
-                    //     // If the session is valid, we can resume
-                    //     DBGLOG(@"Session is valid, resuming...");
-                    // }
+                    }
                     [weakSelf reconnect];
-                    return;
+                    break;
                 }
                 default: {
                     DBGLOG(@"Unhandled op code: %i, content: %@", op, d);
@@ -1104,10 +1108,17 @@ NSTimer *ackTimer = nil;
 
 - (void)jitterBeat:(NSTimer *)timer {
     [self sendJSON:@{
-        @"op" : @HEARTBEAT,
+        @"op" : @(DCGatewayOpCodeHeartbeat),
         @"d" : @(self.sequenceNumber)
     }];
     DBGLOG(@"Sending jitterbeat, starting heartbeat cycle");
+    dispatch_async(dispatch_get_main_queue(), ^{
+        ackTimer = [NSTimer scheduledTimerWithTimeInterval:8
+                                                    target:self
+                                                  selector:@selector(checkForReceivedHeartbeat:)
+                                                  userInfo:nil
+                                                   repeats:NO];
+    });
     // Begin heartbeat cycle
     float heartbeatInterval = [[timer.userInfo objectForKey:@"heartbeatInterval"] floatValue];
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1125,13 +1136,13 @@ NSTimer *ackTimer = nil;
     if (self.gotHeartbeat) {
         dispatch_async(dispatch_get_main_queue(), ^{
             ackTimer = [NSTimer scheduledTimerWithTimeInterval:8
-                                             target:self
-                                           selector:@selector(checkForReceivedHeartbeat:)
-                                           userInfo:nil
-                                            repeats:NO];
+                                                        target:self
+                                                      selector:@selector(checkForReceivedHeartbeat:)
+                                                      userInfo:nil
+                                                       repeats:NO];
         });
         [self sendJSON:@{
-            @"op" : @HEARTBEAT,
+            @"op" : @(DCGatewayOpCodeHeartbeat),
             @"d" : @(self.sequenceNumber)
         }];
         DBGLOG(@"Sent heartbeat");

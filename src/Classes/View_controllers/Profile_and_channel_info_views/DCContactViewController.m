@@ -76,8 +76,8 @@
                         [NSString
                             stringWithFormat:
                                 @"https://discordapp.com/api/v9/users/%@/"
-                                          @"profile?with_mutual_guilds=false&with_mutual_"
-                                          @"friends=true&with_mutual_friends_count=false",
+                                @"profile?with_mutual_guilds=false&with_mutual_"
+                                @"friends=true&with_mutual_friends_count=false",
                                 user.snowflake]];
                 NSMutableURLRequest *urlRequest = [NSMutableURLRequest
                      requestWithURL:userProfileURL

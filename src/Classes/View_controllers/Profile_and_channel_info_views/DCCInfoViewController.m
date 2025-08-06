@@ -37,17 +37,17 @@
         // If a guild is selected, get the members from the guild
         self.title = [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild name];
         self.navigationItem.title = self.title;
-        DBGLOG(@"Selected channel: #%@ in guild: %@", [DCServerCommunicator.sharedInstance.selectedChannel name], [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild name]);
-        self.recipients = DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.members;
+        DBGLOG(
+            @"Selected channel: #%@ in guild: %@", 
+            [DCServerCommunicator.sharedInstance.selectedChannel name], 
+            [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild name]
+        );
+        self.recipients = 
+            [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.members mutableCopy];
     } else if (DCServerCommunicator.sharedInstance.selectedChannel) {
         DBGLOG(@"Selected channel: %@", DCServerCommunicator.sharedInstance.selectedChannel.name);
-        self.recipients = [NSMutableArray array];
-        NSArray *recipientDictionaries = [DCServerCommunicator.sharedInstance.selectedChannel recipients];
-        for (NSDictionary *recipient in recipientDictionaries) {
-            DCUser *dcUser = [DCTools convertJsonUser:recipient cache:YES];
-            //NSLog(@"Adding recipient: %@", dcUser.username);
-            [self.recipients addObject:dcUser];
-        }
+        self.recipients = 
+            [DCServerCommunicator.sharedInstance.selectedChannel.recipients mutableCopy];
     } else {
         DBGLOG(@"No channel or guild selected!");
     }
@@ -64,17 +64,14 @@
         return;
     }
     if ([DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.snowflake length] <= 0) {
-        self.recipients = [NSMutableArray array];
-        NSArray *recipientDictionaries = [DCServerCommunicator.sharedInstance.selectedChannel recipients];
-        for (NSDictionary *recipient in recipientDictionaries) {
-            DCUser *dcUser = [DCTools convertJsonUser:recipient cache:YES];
-            [self.recipients addObject:dcUser];
-        }
-        [self.tableView reloadData];
+        self.recipients = [DCServerCommunicator.sharedInstance.selectedChannel.recipients mutableCopy];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
         return;
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.recipients = DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.members;
+        self.recipients = [DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.members mutableCopy];
         [self.tableView reloadData];
     });
 }

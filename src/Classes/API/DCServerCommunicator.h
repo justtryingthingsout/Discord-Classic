@@ -7,55 +7,76 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "DCUserInfo.h"
+#include <objc/NSObjCRuntime.h>
 #import "DCChannelListViewController.h"
 #import "DCChatViewController.h"
 #import "DCGuildListViewController.h"
+#import "DCUserInfo.h"
 #import "WSWebSocket.h"
 
 // following info courtesy of https://discord.neko.wtf/
-#define DISPATCH 0
-#define HEARTBEAT 1
-#define IDENTIFY 2
-#define PRESENCE_UPDATE 3
-#define VOICE_STATE_UPDATE 4
-#define VOICE_SERVER_PING 5
-#define RESUME 6
-#define RECONNECT 7
-#define REQUEST_GUILD_MEMBERS 8
-#define INVALID_SESSION 9
-#define HELLO 10
-#define HEARTBEAT_ACK 11
-#define CALL_CONNECT 13
-#define GUILD_SUBSCRIPTIONS 14
-#define LOBBY_CONNECT 15
-#define LOBBY_DISCONNECT 16
-#define LOBBY_VOICE_STATES_UPDATE 17
-#define STREAM_CREATE 18
-#define STREAM_DELETE 19
-#define STREAM_WATCH 20
-#define STREAM_PING 21
-#define STREAM_SET_PAUSED 22
-#define REQUEST_GUILD_APPLICATION_COMMANDS 24
-#define EMBEDDED_ACTIVITY_LAUNCH 25
-#define EMBEDDED_ACTIVITY_CLOSE 26
-#define EMBEDDED_ACTIVITY_UPDATE 27
-#define REQUEST_FORUM_UNREADS 28
-#define REMOTE_COMMAND 29
-#define GET_DELETED_ENTITY_IDS_NOT_MATCHING_HASH 30
-#define REQUEST_SOUNDBOARD_SOUNDS 31
-#define SPEED_TEST_CREATE 32
-#define SPEED_TEST_DELETE 33
-#define REQUEST_LAST_MESSAGES 34
-#define SEARCH_RECENT_MEMBER 35
-// these from discord itself
-#define REQUEST_CHANNEL_STATUSES 36
-#define GUILD_SUBSCRIPTIONS_BULK 37
-#define GUILD_CHANNELS_RESYNC 38
-#define REQUEST_CHANNEL_MEMBER_COUNT 39
-#define QOS_HEARTBEAT 40
-#define UPDATE_TIME_SPENT_SESSION_ID 41
+typedef NS_ENUM(NSUInteger, DCGatewayOpCode) {
+    DCGatewayOpCodeDispatch                           = 0,
+    DCGatewayOpCodeHeartbeat                          = 1,
+    DCGatewayOpCodeIdentify                           = 2,
+    DCGatewayOpCodePresenceUpdate                     = 3,
+    DCGatewayOpCodeVoiceStateUpdate                   = 4,
+    DCGatewayOpCodeVoiceServerPing                    = 5,
+    DCGatewayOpCodeResume                             = 6,
+    DCGatewayOpCodeReconnect                          = 7,
+    DCGatewayOpCodeRequestGuildMembers                = 8,
+    DCGatewayOpCodeInvalidSession                     = 9,
+    DCGatewayOpCodeHello                              = 10,
+    DCGatewayOpCodeHeartbeatAck                       = 11,
+    DCGatewayOpCodeCallConnect                        = 13,
+    DCGatewayOpCodeGuildSubscriptions                 = 14,
+    DCGatewayOpCodeLobbyConnect                       = 15,
+    DCGatewayOpCodeLobbyDisconnect                    = 16,
+    DCGatewayOpCodeLobbyVoiceStatesUpdate             = 17,
+    DCGatewayOpCodeStreamCreate                       = 18,
+    DCGatewayOpCodeStreamDelete                       = 19,
+    DCGatewayOpCodeStreamWatch                        = 20,
+    DCGatewayOpCodeStreamPing                         = 21,
+    DCGatewayOpCodeStreamSetPaused                    = 22,
+    DCGatewayOpCodeRequestGuildApplicationCommands    = 24,
+    DCGatewayOpCodeEmbeddedActivityLaunch             = 25,
+    DCGatewayOpCodeEmbeddedActivityClose              = 26,
+    DCGatewayOpCodeEmbeddedActivityUpdate             = 27,
+    DCGatewayOpCodeRequestForumUnreads                = 28,
+    DCGatewayOpCodeRemoteCommand                      = 29,
+    DCGatewayOpCodeGetDeletedEntityIdsNotMatchingHash = 30,
+    DCGatewayOpCodeRequestSoundboardSounds            = 31,
+    DCGatewayOpCodeSpeedTestCreate                    = 32,
+    DCGatewayOpCodeSpeedTestDelete                    = 33,
+    DCGatewayOpCodeRequestLastMessages                = 34,
+    DCGatewayOpCodeSearchRecentMember                 = 35,
+    // these from discord itself
+    DCGatewayOpCodeRequestChannelStatuses             = 36,
+    DCGatewayOpCodeGuildSubscriptionsBulk             = 37,
+    DCGatewayOpCodeGuildChannelsResync                = 38,
+    DCGatewayOpCodeRequestChannelMemberCount          = 39,
+    DCGatewayOpCodeQosHeartbeat                       = 40,
+    DCGatewayOpCodeUpdateTimeSpentSessionId           = 41,
+};
 
+typedef NS_ENUM(uint64_t, DCGatewayCapabilities) {
+    DCGatewayCapabilitiesLazyUserNotes                      = (uint64_t)1 << 0,
+    DCGatewayCapabilitiesNoAffineUserIds                    = (uint64_t)1 << 1,
+    DCGatewayCapabilitiesVersionedReadStates                = (uint64_t)1 << 2,
+    DCGatewayCapabilitiesVersionedUserGuildSettings         = (uint64_t)1 << 3,
+    DCGatewayCapabilitiesDedupeUserObjects                  = (uint64_t)1 << 4,
+    DCGatewayCapabilitiesPrioritizedReadyPayload            = (uint64_t)1 << 5,
+    DCGatewayCapabilitiesMultipleGuildExperimentPopulations = (uint64_t)1 << 6,
+    DCGatewayCapabilitiesNonChannelReadStates               = (uint64_t)1 << 7,
+    DCGatewayCapabilitiesAuthTokenRefresh                   = (uint64_t)1 << 8,
+    DCGatewayCapabilitiesUserSettingsProto                  = (uint64_t)1 << 9,
+    DCGatewayCapabilitiesClientStateV2                      = (uint64_t)1 << 10,
+    DCGatewayCapabilitiesPassiveGuildUpdate                 = (uint64_t)1 << 11,
+    DCGatewayCapabilitiesAutoCallConnect                    = (uint64_t)1 << 12,
+    DCGatewayCapabilitiesDebounceMessageReactions           = (uint64_t)1 << 13,
+    DCGatewayCapabilitiesPassiveGuildUpdateV2               = (uint64_t)1 << 14,
+    DCGatewayCapabilitiesAutoLobbyConnect                   = (uint64_t)1 << 16
+};
 
 #define ACTIVITY_START @"ACTIVITY_START"
 #define ACTIVITY_USER_ACTION @"ACTIVITY_USER_ACTION"
@@ -162,7 +183,7 @@
 #define PRIVATE_CHANNEL_INTEGRATION_CREATE @"PRIVATE_CHANNEL_INTEGRATION_CREATE"
 #define PRIVATE_CHANNEL_INTEGRATION_DELETE @"PRIVATE_CHANNEL_INTEGRATION_DELETE"
 #define PRIVATE_CHANNEL_INTEGRATION_UPDATE @"PRIVATE_CHANNEL_INTEGRATION_UPDATE"
-#define READY @"READY"	
+#define READY @"READY"
 #define READY_SUPPLEMENTAL @"READY_SUPPLEMENTAL"
 #define RECENT_MENTION_DELETE @"RECENT_MENTION_DELETE"
 #define RELATIONSHIP_ADD @"RELATIONSHIP_ADD"
@@ -184,7 +205,7 @@
 #define STREAM_UPDATE @"STREAM_UPDATE"
 #define THREAD_CREATE @"THREAD_CREATE"
 #define THREAD_DELETE @"THREAD_DELETE"
-#define THREAD_LIST_SYNC @"THREAD_LIST_SYNC"	
+#define THREAD_LIST_SYNC @"THREAD_LIST_SYNC"
 #define THREAD_MEMBER_LIST_UPDATE @"THREAD_MEMBER_LIST_UPDATE"
 #define THREAD_MEMBER_UPDATE @"THREAD_MEMBER_UPDATE"
 #define THREAD_MEMBERS_UPDATE @"THREAD_MEMBERS_UPDATE"
@@ -238,6 +259,6 @@
 - (void)reconnect;
 - (void)sendHeartbeat:(NSTimer*)timer;
 - (void)sendJSON:(NSDictionary*)dictionary;
-- (void)sendGuildSubscriptionWithGuildId:(NSString *)guildId channelId:(NSString *)channelId;
+- (void)sendGuildSubscriptionWithGuildId:(NSString*)guildId channelId:(NSString*)channelId;
 
 @end

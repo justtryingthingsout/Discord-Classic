@@ -1099,7 +1099,7 @@
     return newMessage;
 }
 
-+ (DCGuild *)convertJsonGuild:(NSDictionary *)jsonGuild {
++ (DCGuild *)convertJsonGuild:(NSDictionary *)jsonGuild withMembers:(NSArray *)members {
     DCGuild *newGuild  = DCGuild.new;
     newGuild.userRoles = NSMutableArray.new;
     newGuild.roles     = NSMutableDictionary.new;
@@ -1124,13 +1124,24 @@
     }
 
     // Get roles of the current user
-    for (NSDictionary *member in [jsonGuild objectForKey:@"members"]) {
-        [DCServerCommunicator.sharedInstance.loadedUsers
-            setObject:[DCTools convertJsonUser:[member objectForKey:@"user"]
-                                         cache:true]
-               forKey:[member valueForKeyPath:@"user.id"]];
-        if ([[member valueForKeyPath:@"user.id"] isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
-            [newGuild.userRoles addObjectsFromArray:[member objectForKey:@"roles"]];
+    if (members && members.count > 0 && [members[0] objectForKey:@"user_id"]) {
+        // READY merged_members
+        for (NSDictionary *member in members) {
+            // DBGLOG(@"[READY] Merged member: %@", member);
+            if ([[member objectForKey:@"user_id"] isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
+                [newGuild.userRoles addObjectsFromArray:[member objectForKey:@"roles"]];
+            }
+        }
+    } else {
+        for (NSDictionary *member in [jsonGuild objectForKey:@"members"]) {
+            // GUILD_CREATE
+            [DCServerCommunicator.sharedInstance.loadedUsers
+                setObject:[DCTools convertJsonUser:[member objectForKey:@"user"]
+                                             cache:true]
+                   forKey:[member valueForKeyPath:@"user.id"]];
+            if ([[member valueForKeyPath:@"user.id"] isEqualToString:DCServerCommunicator.sharedInstance.snowflake]) {
+                [newGuild.userRoles addObjectsFromArray:[member objectForKey:@"roles"]];
+            }
         }
     }
 

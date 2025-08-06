@@ -7,6 +7,7 @@
 //
 
 #import "DCMenuViewController.h"
+#include "DCTools.h"
 #include <Foundation/Foundation.h>
 #include <Foundation/NSObjCRuntime.h>
 #include <UIKit/UIKit.h>
@@ -211,8 +212,8 @@
         if (chan.type != 1 || chan.users.count != 2) {
             return NO;
         }
-        for (NSDictionary *userDict in chan.users) {
-            if ([userDict[@"snowflake"] isEqualToString:user.snowflake]) {
+        for (DCUser *userDict in chan.users) {
+            if ([userDict.snowflake isEqualToString:user.snowflake]) {
                 return YES;
             }
         }
@@ -650,43 +651,14 @@
                 // Presence indicator logic for DM channels (type 1, one-on-one)
                 if (channelAtRowIndex.type == 1
                     && channelAtRowIndex.users.count == 2) {
-                    DCUser *buddy = nil;
-
-                    // Iterate over users to find the DM partner
-                    for (NSDictionary *userDict in channelAtRowIndex.users) {
-                        NSString *userId = [userDict objectForKey:@"snowflake"];
-
-                        // Exclude self from buddy selection
-                        if (![userId
-                                isEqualToString:DCServerCommunicator.sharedInstance
-                                                    .snowflake]) {
-                            // Attempt to fetch from cache
-                            buddy = [DCServerCommunicator.sharedInstance.loadedUsers
-                                objectForKey:userId];
-
-                            // If not in cache, construct user manually from dictionary
-                            if (!buddy) {
-                                DBGLOG(@"Buddy not found in cache, creating new DCUser for ID: %@", userId);
-                                buddy           = [DCUser new];
-                                buddy.snowflake = userId;
-                                buddy.username  = [userDict objectForKey:@"username"];
-                                buddy.status    = [userDict objectForKey:@"status"] ? [DCUser statusFromString:[userDict objectForKey:@"status"]] : DCUserStatusOffline;
-                            }
-                            break;
-                        }
-                    }
+                    DCUser *buddy = [channelAtRowIndex.users firstObject];
 
                     // Update the status image based on the buddy's status
-                    if (buddy) {
-                        // NSLog(@"Buddy found for DM channel %@ with status: %d", buddy.username, buddy.status);
-                        NSString *statusImageName =
-                            [DCMenuViewController imageNameForStatus:buddy.status];
-                        cell.statusImage.image =
-                            [UIImage imageNamed:statusImageName];
-                    } else {
-                        DBGLOG(@"Buddy not found for DM channel: %@", channelAtRowIndex.name);
-                        cell.statusImage.image = [UIImage imageNamed:@"offline"];
-                    }
+                    DBGLOG(@"Buddy found for DM channel %@ with status: %ld", buddy.username, (long)buddy.status);
+                    NSString *statusImageName =
+                        [DCMenuViewController imageNameForStatus:buddy.status];
+                    cell.statusImage.image =
+                        [UIImage imageNamed:statusImageName];
 
                     cell.statusImage.hidden = NO;
                 } else {
