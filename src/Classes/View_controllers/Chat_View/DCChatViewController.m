@@ -385,7 +385,7 @@ static dispatch_queue_t chat_messages_queue;
 
     NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
     if (rowCount != self.messages.count) {
-        NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
+        NSLog(@"%s: Row count mismatch! Expected %ld but got %ld", __PRETTY_FUNCTION__, (long)self.messages.count, (long)rowCount);
         [self handleAsyncReload];
         return;
     }
@@ -418,7 +418,7 @@ static dispatch_queue_t chat_messages_queue;
 
     NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
     if (rowCount != self.messages.count) {
-        NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
+        NSLog(@"%s: Row count mismatch! Expected %ld but got %ld", __PRETTY_FUNCTION__, (long)self.messages.count, (long)rowCount);
         [self handleAsyncReload];
         return;
     }
@@ -478,15 +478,13 @@ static dispatch_queue_t chat_messages_queue;
     NSInteger rowCount        = [self.chatTableView numberOfRowsInSection:0];
     [self.messages addObject:newMessage];
     NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
-    if (rowCount != self.messages.count) {
-        NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
+    if (rowCount != self.messages.count - 1) {
+        NSLog(@"%s: Row count mismatch! Expected %ld but got %ld", __PRETTY_FUNCTION__, (long)self.messages.count, (long)rowCount);
         [self handleAsyncReload];
     } else {
-        [UIView setAnimationsEnabled:NO];
         [self.chatTableView beginUpdates];
         [self.chatTableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationNone];
         [self.chatTableView endUpdates];
-        [UIView setAnimationsEnabled:YES];
     }
 
     [self scrollWithIndex:newIndexPath];
@@ -495,10 +493,10 @@ static dispatch_queue_t chat_messages_queue;
         postNotificationName:@"TYPING STOP"
                       object:newMessage.author.snowflake];
 
-    // [NSNotificationCenter.defaultCenter
-    //     postNotificationName:@"MESSAGE DELETE"
-    //                   object:nil
-    //                 userInfo:@{@"id" : ((DCMessage *)self.messages.firstObject).snowflake}];
+    [NSNotificationCenter.defaultCenter
+        postNotificationName:@"MESSAGE DELETE"
+                      object:nil
+                    userInfo:@{@"id" : ((DCMessage *)self.messages.firstObject).snowflake}];
 }
 
 - (void)handleMessageEdit:(NSNotification *)notification {
@@ -575,7 +573,7 @@ static dispatch_queue_t chat_messages_queue;
     NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
     NSUInteger idx     = [self.messages indexOfObject:compareMessage];
     if (rowCount != self.messages.count) {
-        NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
+        NSLog(@"%s: Row count mismatch! Expected %ld but got %ld", __PRETTY_FUNCTION__, (long)self.messages.count, (long)rowCount);
         [self.messages replaceObjectAtIndex:idx
                                  withObject:newMessage];
         [self handleAsyncReload];
@@ -605,7 +603,7 @@ static dispatch_queue_t chat_messages_queue;
 
     NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
     if (rowCount != self.messages.count) {
-        NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
+        NSLog(@"%s: Row count mismatch! Expected %ld but got %ld", __PRETTY_FUNCTION__, (long)self.messages.count, (long)rowCount);
         [self.messages removeObjectAtIndex:index];
         [self handleAsyncReload];
     } else {
@@ -731,11 +729,9 @@ static dispatch_queue_t chat_messages_queue;
 - (void)updateTypingIndicator {
     assertMainThread();
     if (self.typingUsers.count == 0) {
-        [UIView setAnimationsEnabled:NO];
-        self.typingIndicatorView.hidden = YES;
         [self.chatTableView
             setHeight:self.view.height - self.keyboardHeight - self.toolbar.height];
-        [UIView setAnimationsEnabled:YES];
+        self.typingIndicatorView.hidden = YES;
         return;
     }
 
@@ -758,7 +754,6 @@ static dispatch_queue_t chat_messages_queue;
         typingText = @"Several users are typing...";
     }
 
-    [UIView setAnimationsEnabled:NO];
     self.typingLabel.text           = typingText;
     BOOL wasHidden                  = self.typingIndicatorView.hidden;
     self.typingIndicatorView.hidden = NO;
@@ -770,7 +765,6 @@ static dispatch_queue_t chat_messages_queue;
     [self.chatTableView
         setHeight:self.view.height - self.keyboardHeight - 20 - self.toolbar.height];
     [self.typingIndicatorView setY:self.view.height - self.keyboardHeight - self.toolbar.height - 20];
-    [UIView setAnimationsEnabled:YES];
 }
 
 - (void)getMessages:(int)numberOfMessages beforeMessage:(DCMessage *)message {
@@ -790,7 +784,7 @@ static dispatch_queue_t chat_messages_queue;
 
             NSInteger rowCount = [self.chatTableView numberOfRowsInSection:0];
             if (rowCount != self.messages.count) {
-                NSLog(@"%s: Row count mismatch!", __PRETTY_FUNCTION__);
+                NSLog(@"%s: Row count mismatch! Expected %ld but got %ld", __PRETTY_FUNCTION__, (long)self.messages.count, (long)rowCount);
                 [self.messages insertObjects:newMessages atIndexes:indexSet];
                 [self handleAsyncReload];
             } else {

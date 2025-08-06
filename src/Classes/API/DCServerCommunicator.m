@@ -900,6 +900,9 @@ NSTimer *ackTimer       = nil;
         [self handleChannelCreateWithData:d];
         return;
     } else if ([t isEqualToString:CHANNEL_UNREAD_UPDATE]) {
+        if (!self.channels) {
+            return;
+        }
         NSArray *unreads = [d objectForKey:@"channel_unread_updates"];
         for (NSDictionary *unread in unreads) {
             NSString *channelId = [unread objectForKey:@"id"];
@@ -1133,7 +1136,6 @@ NSTimer *ackTimer       = nil;
 }
 
 - (void)sendHeartbeat:(NSTimer *)timer {
-    DBGLOG(@"sendHeartbeat called");
     // Check that we've recieved a response since the last heartbeat
     if (self.gotHeartbeat) {
         dispatch_async(dispatch_get_main_queue(), ^{
