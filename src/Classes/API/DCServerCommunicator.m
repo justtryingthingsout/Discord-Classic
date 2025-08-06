@@ -171,9 +171,11 @@ NSTimer *ackTimer       = nil;
 - (void)handleReadyWithData:(NSDictionary *)d {
     self.didAuthenticate = true;
     DBGLOG(@"Did authenticate!");
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.alertView setTitle:@"Getting Ready..."];
-    });
+    if (self.oldMode == NO) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showNonIntrusiveNotificationWithTitle:@"Getting Ready..."];
+        });
+    }
     // Grab session id (used for RESUME) and user id
     self.sessionId = [NSString stringWithFormat:@"%@", [d valueForKeyPath:@"session_id"]];
     // THIS IS US, hey hey hey this is MEEEEE BITCCCH MORTY DID YOU HEAR, THIS IS ME, AND MY USER ID, YES MORT(BUÜÜÜRPP)Y, THIS IS ME. BITCCHHHH. 100 YEARS OF DISCORD CLASSIC MORTYY YOU AND MEEEE
@@ -349,7 +351,7 @@ NSTimer *ackTimer       = nil;
                     @autoreleasepool {
                         // add comma between member names
                         if ([newChannel.recipients indexOfObject:recipient] != 0) {
-                            [fullChannelName appendString:@", @"];
+                            [fullChannelName appendString:@", "];
                         }
                         NSString *memberName = recipient.username;
                         if (recipient.globalName && [recipient.globalName isKindOfClass:[NSString class]]) {
@@ -480,9 +482,9 @@ NSTimer *ackTimer       = nil;
     }
     dispatch_async(dispatch_get_main_queue(), ^{
         [NSNotificationCenter.defaultCenter postNotificationName:@"READY" object:self];
-        [self dismissNotification];
         // Dismiss the 'reconnecting' dialogue box
         [self.alertView dismissWithClickedButtonIndex:0 animated:YES];
+        [self dismissNotification];
     });
 }
 

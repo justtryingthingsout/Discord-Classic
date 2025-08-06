@@ -654,7 +654,7 @@
                     DCUser *buddy = [channelAtRowIndex.users firstObject];
 
                     // Update the status image based on the buddy's status
-                    DBGLOG(@"Buddy found for DM channel %@ with status: %ld", buddy.username, (long)buddy.status);
+                    // DBGLOG(@"Buddy found for DM channel %@ with status: %ld", buddy.username, (long)buddy.status);
                     NSString *statusImageName =
                         [DCMenuViewController imageNameForStatus:buddy.status];
                     cell.statusImage.image =
