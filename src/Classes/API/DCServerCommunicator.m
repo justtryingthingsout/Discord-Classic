@@ -25,6 +25,7 @@
 
 @implementation DCServerCommunicator
 UIActivityIndicatorView *spinner;
+NSTimer *heartbeatTimer = nil;
 
 + (DCServerCommunicator *)sharedInstance {
     static DCServerCommunicator *sharedInstance = nil;
@@ -725,6 +726,21 @@ UIActivityIndicatorView *spinner;
 #pragma mark - WebSocket Event Handlers
 
 - (void)handleHelloWithData:(NSDictionary *)d {
+    int heartbeatInterval = [[d objectForKey:@"heartbeat_interval"] intValue];
+    if (!heartbeatTimer) {
+        float heartbeatSeconds = (float)heartbeatInterval / 1000;
+        float jitterHeartbeat  = heartbeatSeconds * (arc4random_uniform(1000) / 1000.0f);
+        self.gotHeartbeat = false;
+        self.didTryResume = false;
+        DBGLOG(@"Heartbeat is %f seconds, jitter is %f seconds", heartbeatSeconds, jitterHeartbeat);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            heartbeatTimer = [NSTimer scheduledTimerWithTimeInterval:jitterHeartbeat
+                                                             target:self
+                                                           selector:@selector(jitterBeat:)
+                                                           userInfo:@{@"heartbeatInterval" : @(heartbeatSeconds)}
+                                                            repeats:NO];
+        });
+    };
     if (self.shouldResume) {
         DBGLOG(@"Sending Resume with sequence number %li, session ID %@", (long)self.sequenceNumber, self.sessionId);
         // RESUME
@@ -744,6 +760,7 @@ UIActivityIndicatorView *spinner;
         }];
         self.shouldResume = false;
     } else {
+        DBGLOG(@"Sending Identify");
         [self sendJSON:@{
             @"op" : @IDENTIFY,
             @"d" : @{
@@ -765,16 +782,13 @@ UIActivityIndicatorView *spinner;
         self.loadedEmojis                                                 = NSMutableDictionary.new;
         self.gotHeartbeat                                                 = true;
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        int heartbeatInterval                                             = [[d objectForKey:@"heartbeat_interval"] intValue];
+        // Reenable ability to identify in 5 seconds
         dispatch_async(dispatch_get_main_queue(), ^{
-            static dispatch_once_t once;
-            dispatch_once(&once, ^{
-                // NSLog(@"Heartbeat is %d seconds", heartbeatInterval/1000);
-                // Begin heartbeat cycle if not already begun
-                [NSTimer scheduledTimerWithTimeInterval:(float)heartbeatInterval / 1000 target:self selector:@selector(sendHeartbeat:) userInfo:nil repeats:YES];
-            });
-            // Reenable ability to identify in 5 seconds
-            self.cooldownTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(refreshcanIdentify:) userInfo:nil repeats:NO];
+            self.cooldownTimer = [NSTimer scheduledTimerWithTimeInterval:5
+                                                                  target:self
+                                                                selector:@selector(refreshcanIdentify:)
+                                                                userInfo:nil
+                                                                 repeats:NO];
         });
     }
 }
@@ -914,9 +928,11 @@ UIActivityIndicatorView *spinner;
     [self.alertView show];
     self.didAuthenticate = false;
     self.oldMode         = [[NSUserDefaults standardUserDefaults] boolForKey:@"hackyMode"];
+
     // Dev
     [DCTools checkForAppUpdate];
     // Devend
+
     if (self.token == nil) {
         DBGLOG(@"No token set, cannot start communicator");
         return;
@@ -924,16 +940,46 @@ UIActivityIndicatorView *spinner;
 
     DBGLOG(@"Start websocket");
 
-    // Establish websocket connection with Discord
-    NSURL *websocketUrl = [NSURL URLWithString:self.gatewayURL];
-    self.websocket      = [WSWebSocket.alloc initWithURL:websocketUrl protocols:nil];
-
     // To prevent retain cycle
     __weak typeof(self) weakSelf = self;
 
-    [self.websocket setTextCallback:^(NSString *responseString) {
+    if (self.websocket) {
+        DBGLOG(@"Websocket already open, not doing anything");
+        return;
+    }
+    // Establish websocket connection with Discord
+    NSURL *websocketUrl          = [NSURL URLWithString:self.gatewayURL];
+    self.websocket               = [[WSWebSocket alloc] initWithURL:websocketUrl protocols:nil];
+    self.websocket.closeCallback = ^(NSUInteger statusCode, NSString *message) {
+        DBGLOG(@"Websocket closed with status code %lu and message: %@", (unsigned long)statusCode, message);
+        [weakSelf reconnect];
+    };
+    // self.websocket.dataCallback = ^(NSData *data) {
+    //     #ifdef DEBUG
+    //         NSLog(@"Got data: %@", data);
+    //     #endif
+    // };
+    // self.websocket.pongCallback = ^(void) {
+    //     #ifdef DEBUG
+    //         NSLog(@"Got pong");
+    //     #endif
+    // };
+    // self.websocket.responseCallback = ^(NSHTTPURLResponse *response, NSData *data) {
+    //     #ifdef DEBUG
+    //         NSLog(@"Got response: %@", response);
+    //     #endif
+    //     // Check if the response is a 401 Unauthorized
+    //     if (response.statusCode == 401) {
+    //         DBGLOG(@"Unauthorized, closing websocket");
+    //         [weakSelf.websocket close];
+    //         weakSelf.websocket = nil;
+    //         [DCTools alert:@"Unauthorized" withMessage:@"Your Discord token is invalid. Please re-authenticate."];
+    //         return;
+    //     }
+    // };
+    self.websocket.textCallback = ^(NSString *responseString) {
         // #ifdef DEBUG
-        //         NSLog(@"Got response: %@", responseString);
+        //     NSLog(@"Got response: %@", responseString);
         // #endif
 
         // Parse JSON to a dictionary
@@ -945,7 +991,7 @@ UIActivityIndicatorView *spinner;
         NSDictionary *d = [parsedJsonResponse objectForKey:@"d"];
 
         // #ifdef DEBUG
-        //         NSLog(@"Got op code %i", op);
+        //     NSLog(@"Got op code %i", op);
         // #endif
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -958,8 +1004,16 @@ UIActivityIndicatorView *spinner;
                     [weakSelf handleDispatchWithResponse:parsedJsonResponse];
                     break;
                 }
-                case HEARTBEAT:
+                case HEARTBEAT: {
+                    // ack with our own heartbeat
+                    [weakSelf sendJSON:@{
+                        @"op" : @HEARTBEAT,
+                        @"d" : @(weakSelf.sequenceNumber)
+                    }];
+                    // fallthrough to HEARTBEAT_ACK
+                }
                 case HEARTBEAT_ACK: {
+                    DBGLOG(@"Got heartbeat ack!");
                     weakSelf.gotHeartbeat = true;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -967,13 +1021,16 @@ UIActivityIndicatorView *spinner;
                     break;
                 }
                 case RECONNECT: {
+                    DBGLOG(@"Got RECONNECT, reconnecting...");
                     weakSelf.shouldResume = self.sequenceNumber > 0 && self.sessionId != nil;
                     weakSelf.didTryResume = false;
                     [weakSelf reconnect];
+                    break;
                 }
                 case INVALID_SESSION: {
-                    [weakSelf reconnect];
-                    break;
+                    DBGLOG(@"Got INVALID_SESSION, we probably already authenticated though...");
+                    // [weakSelf reconnect];
+                    return;
                 }
                 default: {
                     DBGLOG(@"Unhandled op code: %i, content: %@", op, d);
@@ -981,9 +1038,9 @@ UIActivityIndicatorView *spinner;
                 }
             }
         });
-    }];
+    };
 
-    [weakSelf.websocket open];
+    [self.websocket open];
 }
 
 
@@ -1001,8 +1058,13 @@ UIActivityIndicatorView *spinner;
 - (void)reconnect {
     DBGLOG(@"Identify cooldown %s", self.canIdentify ? "true" : "false");
 
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [heartbeatTimer invalidate]; // Invalidate because we're disconnected
+        heartbeatTimer = nil;
+    });
     // Begin new session
     [self.websocket close];
+    self.websocket = nil;
     if (self.oldMode == NO) {
         [self showNonIntrusiveNotificationWithTitle:@"Re-Authenticating..."];
     } else {
@@ -1011,12 +1073,12 @@ UIActivityIndicatorView *spinner;
 
     // If an identify cooldown is in effect, wait for the time needed until sending another IDENTIFY
     // if not, send immediately
-    if (self.canIdentify) {
+    NSTimeInterval timeRemaining = [self.cooldownTimer.fireDate timeIntervalSinceNow];
+    if (self.canIdentify || timeRemaining <= 0) {
         DBGLOG(@"No cooldown in effect. Authenticating...");
         [self.alertView setTitle:@"Authenticating..."];
         [self startCommunicator];
     } else {
-        NSTimeInterval timeRemaining = [self.cooldownTimer.fireDate timeIntervalSinceNow];
         DBGLOG(@"Cooldown in effect. Time left %lf", timeRemaining);
         [self.alertView setTitle:@"Waiting for auth cooldown..."];
         if (self.oldMode == NO) {
@@ -1028,13 +1090,36 @@ UIActivityIndicatorView *spinner;
     self.canIdentify = false;
 }
 
+- (void)jitterBeat:(NSTimer *)timer {
+    [self sendJSON:@{
+        @"op" : @HEARTBEAT,
+        @"d" : @(self.sequenceNumber)
+    }];
+    DBGLOG(@"Sending jitterbeat, starting heartbeat cycle");
+    // Begin heartbeat cycle
+    float heartbeatInterval = [[timer.userInfo objectForKey:@"heartbeatInterval"] floatValue];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        heartbeatTimer = [NSTimer scheduledTimerWithTimeInterval:heartbeatInterval
+                                                          target:self
+                                                        selector:@selector(sendHeartbeat:)
+                                                        userInfo:nil
+                                                         repeats:YES];
+    });
+}
 
 - (void)sendHeartbeat:(NSTimer *)timer {
+    DBGLOG(@"sendHeartbeat called");
     // Check that we've recieved a response since the last heartbeat
     if (self.gotHeartbeat) {
-        [NSTimer scheduledTimerWithTimeInterval:8 target:self selector:@selector(checkForReceivedHeartbeat:) userInfo:nil repeats:NO];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [NSTimer scheduledTimerWithTimeInterval:8
+                                             target:self
+                                           selector:@selector(checkForReceivedHeartbeat:)
+                                           userInfo:nil
+                                            repeats:NO];
+        });
         [self sendJSON:@{
-            @"op" : @1,
+            @"op" : @HEARTBEAT,
             @"d" : @(self.sequenceNumber)
         }];
         DBGLOG(@"Sent heartbeat");
@@ -1048,6 +1133,10 @@ UIActivityIndicatorView *spinner;
         // If we didnt get a response in between heartbeats, we've disconnected from the websocket
         // send a RESUME to reconnect
         DBGLOG(@"Did not get heartbeat response, sending RESUME with sequence %li %@ (sendHeartbeat)", (long)self.sequenceNumber, self.sessionId);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [heartbeatTimer invalidate]; // Invalidate because we're disconnected
+            heartbeatTimer = nil;
+        });
         [self sendResume];
     }
 }

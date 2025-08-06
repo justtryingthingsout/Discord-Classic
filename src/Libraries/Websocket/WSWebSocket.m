@@ -70,7 +70,6 @@ static CFStringRef const kWSSecWebSocketVersion =
 
 static const NSUInteger WSHTTPCode101 = 101;
 
-
 typedef enum {
     WSWebSocketStateNone       = 0,
     WSWebSocketStateConnecting = 1,
@@ -78,7 +77,6 @@ typedef enum {
     WSWebSocketStateClosing    = 3,
     WSWebSocketStateClosed     = 4
 } WSWebSocketStateType;
-
 
 @implementation WSWebSocket {
     NSArray *protocols;
@@ -475,7 +473,6 @@ typedef enum {
 
 
 #pragma mark - NSStreamDelegate
-
 
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
     switch (eventCode) {

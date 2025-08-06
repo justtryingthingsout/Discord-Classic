@@ -495,10 +495,10 @@ static dispatch_queue_t chat_messages_queue;
         postNotificationName:@"TYPING STOP"
                       object:newMessage.author.snowflake];
 
-    [NSNotificationCenter.defaultCenter
-        postNotificationName:@"MESSAGE DELETE"
-                      object:nil
-                    userInfo:@{@"id" : ((DCMessage *)self.messages.firstObject).snowflake}];
+    // [NSNotificationCenter.defaultCenter
+    //     postNotificationName:@"MESSAGE DELETE"
+    //                   object:nil
+    //                 userInfo:@{@"id" : ((DCMessage *)self.messages.firstObject).snowflake}];
 }
 
 - (void)handleMessageEdit:(NSNotification *)notification {
