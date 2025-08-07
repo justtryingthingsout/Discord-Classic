@@ -230,7 +230,7 @@ typedef NS_ENUM(uint64_t, DCGatewayCapabilities) {
 #define VOICE_STATE_UPDATE_EVENT @"VOICE_STATE_UPDATE"
 #define CHANNEL_UNREAD_UPDATE @"CHANNEL_UNREAD_UPDATE"
 
-@interface DCServerCommunicator : NSObject
+@interface DCServerCommunicator : NSObject<UIAlertViewDelegate>
 
 @property (strong, nonatomic) WSWebSocket* websocket;
 @property (strong, nonatomic) NSString* token;

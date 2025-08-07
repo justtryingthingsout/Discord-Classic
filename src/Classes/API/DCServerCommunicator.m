@@ -50,7 +50,11 @@ NSTimer *ackTimer       = nil;
         }
 
         if (sharedInstance.oldMode == YES) {
-            sharedInstance.alertView = [UIAlertView.alloc initWithTitle:@"Connecting" message:@"\n" delegate:self cancelButtonTitle:nil otherButtonTitles:nil];
+            sharedInstance.alertView = [[UIAlertView alloc] initWithTitle:@"Connecting"
+                                                                message:@"\n"
+                                                               delegate:self
+                                                      cancelButtonTitle:nil
+                                                      otherButtonTitles:nil];
 
             UIActivityIndicatorView *spinner = [UIActivityIndicatorView.alloc initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
             [spinner setCenter:CGPointMake(139.5, 75.5)];
@@ -205,8 +209,8 @@ NSTimer *ackTimer       = nil;
         }
     }
     // Get users from READY payload (DEDUPE_USER_OBJECTS)
-    [self.loadedUsers setObject:[DCTools convertJsonUser:[d objectForKey:@"user"] 
-                                                   cache:YES] 
+    [self.loadedUsers setObject:[DCTools convertJsonUser:[d objectForKey:@"user"]
+                                                   cache:YES]
                          forKey:[d valueForKeyPath:@"user.id"]];
     for (NSDictionary *user in [d objectForKey:@"users"]) {
         @autoreleasepool {
@@ -239,7 +243,7 @@ NSTimer *ackTimer       = nil;
             newChannel.lastMessageId = [privateChannel objectForKey:@"last_message_id"];
             newChannel.parentGuild   = privateGuild;
             newChannel.type          = DCChannelTypeDM; // Direct Message channel
-            newChannel.writeable     = YES; // DMs are always writeable
+            newChannel.writeable     = YES;             // DMs are always writeable
             newChannel.recipients    = NSMutableArray.new;
             { // default icon
                 NSNumber *longId = @([newChannel.snowflake longLongValue]);
@@ -370,15 +374,21 @@ NSTimer *ackTimer       = nil;
 
     // Process user presences from READY payload (DEDUPE_USER_OBJECTS)
     NSDictionary *merged_presences = [d objectForKey:@"merged_presences"];
-    NSMutableArray *presences = NSMutableArray.new;
-    for (NSDictionary *presence in merged_presences[@"friends"]) { @autoreleasepool {
-        [presences addObject:presence];
-    }}
-    for (NSArray *guildPresences in merged_presences[@"guilds"]) { @autoreleasepool {
-        for (NSDictionary *presence in guildPresences) { @autoreleasepool {
+    NSMutableArray *presences      = NSMutableArray.new;
+    for (NSDictionary *presence in merged_presences[@"friends"]) {
+        @autoreleasepool {
             [presences addObject:presence];
-        }}
-    }}
+        }
+    }
+    for (NSArray *guildPresences in merged_presences[@"guilds"]) {
+        @autoreleasepool {
+            for (NSDictionary *presence in guildPresences) {
+                @autoreleasepool {
+                    [presences addObject:presence];
+                }
+            }
+        }
+    }
     for (NSDictionary *presence in presences) {
         NSString *userId = [presence objectForKey:@"user_id"];
         NSString *status = [presence objectForKey:@"status"];
@@ -909,13 +919,13 @@ NSTimer *ackTimer       = nil;
             DCChannel *channel  = [self.channels objectForKey:channelId];
             if (channel) {
                 channel.lastMessageId = [unread objectForKey:@"last_message_id"];
-// #ifdef DEBUG
-//                 BOOL oldUnread        = channel.unread;
+                // #ifdef DEBUG
+                //                 BOOL oldUnread        = channel.unread;
                 [channel checkIfRead];
-//                 if (oldUnread != channel.unread) {
-//                     NSLog(@"Channel %@ (%@) unread state changed to %d", channel.name, channel.snowflake, channel.unread);
-//                 }
-// #endif
+                //                 if (oldUnread != channel.unread) {
+                //                     NSLog(@"Channel %@ (%@) unread state changed to %d", channel.name, channel.snowflake, channel.unread);
+                //                 }
+                // #endif
             }
         }
     } else if ([t isEqualToString:GUILD_MEMBER_LIST_UPDATE]) {
@@ -971,6 +981,20 @@ NSTimer *ackTimer       = nil;
                                                selector:@selector(reconnect)
                                                userInfo:nil
                                                 repeats:NO];
+            });
+        } else if (statusCode == 4004) {
+            // invalid token, show alert and clear token
+            dispatch_async(dispatch_get_main_queue(), ^{
+                weakSelf.token = nil;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid Token"
+                                                                    message:@"Your Discord token is invalid. Please retry with a valid token."
+                                                                   delegate:weakSelf
+                                                          cancelButtonTitle:@"Exit"
+                                                          otherButtonTitles:nil];
+                    alert.tag = 999;
+                    [alert show];
+                });
             });
         } else {
             // some other error, try to reconnect
@@ -1049,14 +1073,12 @@ NSTimer *ackTimer       = nil;
                     break;
                 }
                 case DCGatewayOpCodeInvalidSession: {
-                    DBGLOG(@"Got INVALID_SESSION, reconnecting...");
                     if ([(NSNumber *)d boolValue]) {
                         // If the session is valid, we can resume (rare)
-                        DBGLOG(@"Session is valid, resuming...");
+                        DBGLOG(@"INVALID_SESSION: Session is valid, resuming...");
                     } else {
-                        DBGLOG(@"Session is invalid, re-identifying...");
-                        // If the session is invalid, we need to reconnect
-                        // and start a new session
+                        // If the session is invalid, we need to reconnect and start a new session
+                        DBGLOG(@"INVALID_SESSION: Session was invalidated, re-identifying...");
                         weakSelf.sequenceNumber = 0;
                         weakSelf.sessionId      = nil;
                     }
@@ -1072,6 +1094,22 @@ NSTimer *ackTimer       = nil;
     };
 
     [self.websocket open];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (alertView.tag == 999 && buttonIndex == 0) {
+        // following code by https://stackoverflow.com/a/17802404
+
+        //home button press programmatically
+        UIApplication *app = [UIApplication sharedApplication];
+        [app performSelector:@selector(suspend)];
+    
+        //wait 2 seconds while app is going background
+        [NSThread sleepForTimeInterval:2.0];
+    
+        //exit app when app is in background
+        exit(EXIT_SUCCESS);
+    }
 }
 
 - (void)reconnect {
