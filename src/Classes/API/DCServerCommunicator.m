@@ -26,7 +26,6 @@
 @implementation DCServerCommunicator
 UIActivityIndicatorView *spinner;
 NSTimer *heartbeatTimer = nil;
-NSTimer *ackTimer       = nil;
 
 + (DCServerCommunicator *)sharedInstance {
     static DCServerCommunicator *sharedInstance = nil;
@@ -974,6 +973,7 @@ NSTimer *ackTimer       = nil;
             return;
         } else if (statusCode == 2) {
             // kCFErrorDomainCFNetwork error 2 => DNS failure, likely not connected to the internet
+            DBGLOG(@"DNS failure, likely not connected to the internet");
             dispatch_async(dispatch_get_main_queue(), ^{
                 [weakSelf.alertView setTitle:@"Waiting for connection..."];
                 [NSTimer scheduledTimerWithTimeInterval:5
@@ -1060,7 +1060,13 @@ NSTimer *ackTimer       = nil;
                     // fallthrough to HEARTBEAT_ACK
                 }
                 case DCGatewayOpCodeHeartbeatAck: {
-                    DBGLOG(@"Got heartbeat ack!");
+#ifdef DEBUG
+                    NSDate *now = [NSDate date];
+                    NSDate *nextFireDate = heartbeatTimer.fireDate;
+                    NSTimeInterval interval = heartbeatTimer.timeInterval;
+                    NSDate *previousFireDate = [nextFireDate dateByAddingTimeInterval:-interval];
+                    DBGLOG(@"Got heartbeat ack in %f seconds!", [now timeIntervalSinceDate:previousFireDate]);
+#endif
                     weakSelf.gotHeartbeat = true;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -1118,8 +1124,6 @@ NSTimer *ackTimer       = nil;
     dispatch_async(dispatch_get_main_queue(), ^{
         [heartbeatTimer invalidate]; // Invalidate because we're disconnected
         heartbeatTimer = nil;
-        [ackTimer invalidate];
-        ackTimer = nil;
     });
     // Begin new session
     [self.websocket close];
@@ -1155,13 +1159,6 @@ NSTimer *ackTimer       = nil;
         @"d" : @(self.sequenceNumber)
     }];
     DBGLOG(@"Sending jitterbeat, starting heartbeat cycle");
-    dispatch_async(dispatch_get_main_queue(), ^{
-        ackTimer = [NSTimer scheduledTimerWithTimeInterval:8
-                                                    target:self
-                                                  selector:@selector(checkForReceivedHeartbeat:)
-                                                  userInfo:nil
-                                                   repeats:NO];
-    });
     // Begin heartbeat cycle
     float heartbeatInterval = [[timer.userInfo objectForKey:@"heartbeatInterval"] floatValue];
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1176,13 +1173,6 @@ NSTimer *ackTimer       = nil;
 - (void)sendHeartbeat:(NSTimer *)timer {
     // Check that we've recieved a response since the last heartbeat
     if (self.gotHeartbeat) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            ackTimer = [NSTimer scheduledTimerWithTimeInterval:8
-                                                        target:self
-                                                      selector:@selector(checkForReceivedHeartbeat:)
-                                                      userInfo:nil
-                                                       repeats:NO];
-        });
         [self sendJSON:@{
             @"op" : @(DCGatewayOpCodeHeartbeat),
             @"d" : @(self.sequenceNumber)
@@ -1192,27 +1182,8 @@ NSTimer *ackTimer       = nil;
     } else {
         // If we didnt get a response in between heartbeats, we've disconnected from the websocket
         // send a RESUME to reconnect
-        DBGLOG(@"Did not get heartbeat response, sending RESUME with sequence %li %@ (sendHeartbeat)", (long)self.sequenceNumber, self.sessionId);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [heartbeatTimer invalidate]; // Invalidate because we're disconnected
-            heartbeatTimer = nil;
-            [ackTimer invalidate];
-            ackTimer = nil;
-        });
+        DBGLOG(@"Did not get heartbeat response before next heartbeat, sending RESUME with sequence %li %@ (sendHeartbeat)", (long)self.sequenceNumber, self.sessionId);
         [self reconnect];
-    }
-}
-
-- (void)checkForReceivedHeartbeat:(NSTimer *)timer {
-    if (!self.gotHeartbeat) {
-        DBGLOG(@"Did not get heartbeat response, sending RESUME with sequence %li %@ (checkForReceivedHeartbeat)", (long)self.sequenceNumber, self.sessionId);
-        [self reconnect];
-    } else {
-        // just in case
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.alertView dismissWithClickedButtonIndex:0 animated:YES];
-            [self dismissNotification];
-        });
     }
 }
 
