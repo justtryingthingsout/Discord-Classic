@@ -284,27 +284,25 @@
     if ([segue.identifier isEqualToString:@"about to chat"]) {
         DCChatViewController *chatViewController =
             [segue destinationViewController];
-        if ([chatViewController isKindOfClass:DCChatViewController.class]) {
+        if ([chatViewController isKindOfClass:[DCChatViewController class]]) {
             DCChannel *privateChannel =
                 [self findPrivateChannelForUser:self.snowflake];
 
             if (privateChannel) {
                 DCServerCommunicator.sharedInstance.selectedChannel =
                     privateChannel;
-                // NSString *formattedChannelName = privateChannel.name;
 
                 [NSNotificationCenter.defaultCenter
                 postNotificationName:@"NUKE CHAT DATA"
                               object:nil];
 
                 [chatViewController getMessages:50 beforeMessage:nil];
-                [chatViewController setViewingPresentTime:true];
+                chatViewController.viewingPresentTime = true;
             } else {
             }
         }
     } else if ([segue.identifier isEqualToString:@"about to mutual friends"]) {
-        if ([segue.destinationViewController class] ==
-            [DCMutualFriendsViewController class]) {
+        if ([segue.destinationViewController isKindOfClass:[DCMutualFriendsViewController class]]) {
             DCMutualFriendsViewController *friendmutualVC =
                 (DCMutualFriendsViewController *)
                     segue.destinationViewController;
@@ -330,8 +328,9 @@
     }
     return nil;
 }
+
 - (IBAction)clickedDone:(id)sender {
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

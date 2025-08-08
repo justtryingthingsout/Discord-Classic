@@ -589,7 +589,7 @@
                 cell.unreadMessages.hidden = !guildAtRowIndex.unread;
 
                 // Guild name and icon
-                [cell.guildAvatar setImage:guildAtRowIndex.icon];
+                cell.guildAvatar.image = guildAtRowIndex.icon;
 
                 cell.guildAvatar.layer.cornerRadius =
                     cell.guildAvatar.frame.size.width / 6.0;
@@ -597,7 +597,7 @@
             } else if ([objectAtRowIndex isKindOfClass:[DCGuildFolder class]]) {
                 DCGuildFolder *folderAtRowIndex = objectAtRowIndex;
                 if (folderAtRowIndex.icon != nil) {
-                    [cell.guildAvatar setImage:folderAtRowIndex.icon];
+                    cell.guildAvatar.image = folderAtRowIndex.icon;
                     return cell;
                 }
                 UIImage *folderIcon   = [UIImage imageNamed:@"folder"];
@@ -618,7 +618,7 @@
                 UIImage *compositeImage = [self
                     compositeImageWithBaseImage:folderIcon
                                           icons:icons];
-                [cell.guildAvatar setImage:compositeImage];
+                cell.guildAvatar.image = compositeImage;
                 folderAtRowIndex.icon = compositeImage;
             }
         }
@@ -646,11 +646,11 @@
                 NSCAssert((NSNull *)channelAtRowIndex != [NSNull null], @"Channel at row index is NSNull");
 
                 cell.unreadMessages.hidden = !channelAtRowIndex.unread;
-                [cell.nameLabel setText:channelAtRowIndex.name];
+                cell.nameLabel.text = channelAtRowIndex.name;
 
                 if (channelAtRowIndex.icon != nil &&
-                    [channelAtRowIndex.icon class] == [UIImage class]) {
-                    [cell.pfp setImage:channelAtRowIndex.icon];
+                    [channelAtRowIndex.icon isKindOfClass:[UIImage class]]) {
+                    cell.pfp.image = channelAtRowIndex.icon;
                     cell.pfp.layer.cornerRadius  = cell.pfp.frame.size.width / 2.0;
                     cell.pfp.layer.masksToBounds = YES;
                 }
@@ -690,15 +690,15 @@
                           initWithStyle:UITableViewCellStyleDefault
                         reuseIdentifier:@"Category Cell"];
                     // make unclickable
-                    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-                    [cell setUserInteractionEnabled:NO];
-                    [cell.textLabel setEnabled:NO];
-                    [cell.textLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:15.0]];
-                    [cell.detailTextLabel setEnabled:NO];
-                    [cell setAlpha:0.5];
-                    [cell setAccessoryType:UITableViewCellAccessoryNone];
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                    cell.userInteractionEnabled = NO;
+                    cell.textLabel.enabled = NO;
+                    cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:15.0];
+                    cell.detailTextLabel.enabled = NO;
+                    cell.alpha = 0.5;
+                    cell.accessoryType = UITableViewCellAccessoryNone;
                 }
-                [cell.textLabel setText:channelAtRowIndex.name];
+                cell.textLabel.text = channelAtRowIndex.name;
                 return cell;
             }
 
@@ -709,7 +709,7 @@
                     reuseIdentifier:@"channel"];
             }
             cell.messageIndicator.hidden = !channelAtRowIndex.unread;
-            [cell.channelName setText:channelAtRowIndex.name];
+            cell.channelName.text = channelAtRowIndex.name;
 
             return cell;
         }
@@ -856,7 +856,7 @@
 
 // SEGUE
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.destinationViewController class] != [DCChatViewController class]) {
+    if (![segue.destinationViewController isKindOfClass:[DCChatViewController class]]) {
         return;
     }
     if (![segue.identifier isEqualToString:@"guilds to chat"]) {
@@ -865,7 +865,7 @@
     DCChatViewController *chatViewController =
         [segue destinationViewController];
 
-    if (![chatViewController isKindOfClass:DCChatViewController.class]) {
+    if (![chatViewController isKindOfClass:[DCChatViewController class]]) {
         return;
     }
     DCChannel *selectedChannel =
@@ -885,10 +885,9 @@
     } else {
         formattedChannelName = selectedChannel.name;
     }
-    [chatViewController.navigationItem
-        setTitle:formattedChannelName];
+    chatViewController.navigationItem.title = formattedChannelName;
     [chatViewController getMessages:50 beforeMessage:nil];
-    [chatViewController setViewingPresentTime:true];
+    chatViewController.viewingPresentTime = true;
 }
 // SEGUE END
 @end

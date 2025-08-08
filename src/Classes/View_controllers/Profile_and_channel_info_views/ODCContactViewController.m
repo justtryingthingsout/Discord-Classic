@@ -289,8 +289,7 @@
             }
         }
     } else if ([segue.identifier isEqualToString:@"about to mutual friends"]) {
-        if ([segue.destinationViewController class] ==
-            [DCMutualFriendsViewController class]) {
+        if ([segue.destinationViewController isKindOfClass:[DCMutualFriendsViewController class]]) {
             DCMutualFriendsViewController *friendmutualVC =
                 (DCMutualFriendsViewController *)
                     segue.destinationViewController;

@@ -32,14 +32,14 @@
 #import "UILazyImageView.h"
 
 @interface DCChatViewController ()
-@property (nonatomic, strong) NSMutableArray *messages;
-@property (nonatomic, assign) NSInteger numberOfMessagesLoaded;
-@property (nonatomic, strong) UIImage *selectedImage;
-@property (nonatomic, assign) BOOL oldMode;
-@property (nonatomic, strong) UIRefreshControl *refreshControl;
-@property (nonatomic, strong) UIView *typingIndicatorView;
-@property (nonatomic, strong) UILabel *typingLabel;
-@property (nonatomic, strong) NSMutableDictionary *typingUsers;
+@property (strong, nonatomic) NSMutableArray *messages;
+@property (assign, nonatomic) NSUInteger numberOfMessagesLoaded;
+@property (strong, nonatomic) UIImage *selectedImage;
+@property (assign, nonatomic) BOOL oldMode;
+@property (strong, nonatomic) UIRefreshControl *refreshControl;
+@property (strong, nonatomic) UIView *typingIndicatorView;
+@property (strong, nonatomic) UILabel *typingLabel;
+@property (strong, nonatomic) NSMutableDictionary *typingUsers;
 @property (assign, nonatomic) CGFloat keyboardHeight;
 @property (strong, nonatomic) DCMessage *replyingToMessage;
 @property (assign, nonatomic) BOOL disablePing;
@@ -67,6 +67,8 @@ static dispatch_queue_t chat_messages_queue;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    DBGLOG(@"%s: Loading chat view controller", __PRETTY_FUNCTION__);
 
     UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc]
         initWithTarget:self
@@ -300,7 +302,14 @@ static dispatch_queue_t chat_messages_queue;
     assertMainThread();
     DBGLOG(@"%s: Resetting chat data", __PRETTY_FUNCTION__);
     @autoreleasepool {
+        self.selectedMessage = nil;
+        self.selectedImage = nil;
+        self.typingUsers = [NSMutableDictionary dictionary];
+        self.replyingToMessage = nil;
+        self.editingMessage = nil;
         [self.messages removeAllObjects];
+        self.numberOfMessagesLoaded = 0;
+        self.disablePing = NO;
     }
     self.inputFieldPlaceholder.text     = DCServerCommunicator.sharedInstance.selectedChannel.writeable
             ? [NSString stringWithFormat:@"Message%@%@",
@@ -311,9 +320,8 @@ static dispatch_queue_t chat_messages_queue;
             : @"No Permission";
     self.toolbar.userInteractionEnabled = DCServerCommunicator.sharedInstance.selectedChannel.writeable;
     self.typingIndicatorView.hidden     = YES;
-    [self.chatTableView
-        setHeight:self.view.height - self.keyboardHeight - self.toolbar.height];
-    [self.typingIndicatorView setY:self.view.height - self.keyboardHeight - self.toolbar.height - 20];
+    self.chatTableView.height = self.view.height - self.keyboardHeight - self.toolbar.height;
+    self.typingIndicatorView.y = self.view.height - self.keyboardHeight - self.toolbar.height - 20;
     [self.chatTableView
         setContentOffset:CGPointMake(
                              0,
@@ -959,11 +967,11 @@ static dispatch_queue_t chat_messages_queue;
             // NSLog(@"%@", cell.subviews);
             for (UIView *subView in cell.subviews) {
                 @autoreleasepool {
-                    if ([subView isKindOfClass:[UIImageView class]]) {
-                        [subView removeFromSuperview];
-                    } else if ([subView isKindOfClass:[DCChatVideoAttachment class]]) {
-                        [subView removeFromSuperview];
-                    } else if ([subView isKindOfClass:[QLPreviewController class]]) {
+                    if ([subView isKindOfClass:[UILazyImageView class]]
+                     || [subView isKindOfClass:[DCChatVideoAttachment class]]
+                     || [subView isKindOfClass:[QLPreviewController class]]
+                     || [subView isKindOfClass:[UIActivityIndicatorView class]]
+                        ) {
                         [subView removeFromSuperview];
                     }
                 }
@@ -975,7 +983,7 @@ static dispatch_queue_t chat_messages_queue;
                 @autoreleasepool {
                     if ([attachment isKindOfClass:[UILazyImage class]]) {
                         UILazyImage *lazyImage     = attachment;
-                        UILazyImageView *imageView = UILazyImageView.new;
+                        UILazyImageView *imageView = [UILazyImageView new];
                         imageView.frame            = CGRectMake(
                             11, imageViewOffset,
                             self.chatTableView.width - 22, 200
@@ -1008,17 +1016,15 @@ static dispatch_queue_t chat_messages_queue;
                         [video.playButton addGestureRecognizer:singleTap];
                         video.playButton.userInteractionEnabled = YES;
 
-                        CGFloat aspectRatio = video.thumbnail.image.size.width
-                            / video.thumbnail.image.size.height;
+                        CGFloat aspectRatio = video.thumbnail.image.size.width /
+                            video.thumbnail.image.size.height;
                         int newWidth  = 200 * aspectRatio;
                         int newHeight = 200;
                         if (newWidth > self.chatTableView.width - 66) {
                             newWidth  = self.chatTableView.width - 66;
                             newHeight = newWidth / aspectRatio;
                         }
-                        [video setFrame:CGRectMake(
-                                            55, imageViewOffset, newWidth, newHeight
-                                        )];
+                        video.frame = CGRectMake(55, imageViewOffset, newWidth, newHeight);
 
                         imageViewOffset += newHeight;
 
@@ -1094,16 +1100,35 @@ static dispatch_queue_t chat_messages_queue;
             } else if (messageAtRowIndex.referencedMessage != nil) {
                 cell = [tableView
                     dequeueReusableCellWithIdentifier:@"Reply Message Cell"];
-                [cell.contentTextView setTextColor:[UIColor whiteColor]]; // green otherwise??
             } else if ([specialMessageTypes
                            containsObject:@(messageAtRowIndex.messageType)]) {
                 cell = [tableView dequeueReusableCellWithIdentifier:
                                       @"Universal Typehandler Cell"];
             } else {
-                cell =
-                    [tableView dequeueReusableCellWithIdentifier:@"Message Cell"];
+                cell = [tableView dequeueReusableCellWithIdentifier:@"Message Cell"];
             }
             // TOCK(init);
+
+            for (UIView *subView in cell.subviews) {
+                @autoreleasepool {
+                    if ([subView isKindOfClass:[UILazyImageView class]]) {
+                        [subView removeFromSuperview];
+                    }
+                    if ([subView isKindOfClass:[DCChatVideoAttachment class]]) {
+                        [subView removeFromSuperview];
+                    }
+                    if ([subView isKindOfClass:[QLPreviewController class]]) {
+                        [subView removeFromSuperview];
+                    }
+                }
+            }
+            for (UIView *subView in cell.contentTextView.subviews) {
+                @autoreleasepool {
+                    if ([subView isKindOfClass:[UIImageView class]]) { // emojis
+                        [subView removeFromSuperview];
+                    }
+                }
+            }
 
             if (messageAtRowIndex.referencedMessage != nil) {
                 cell.referencedAuthorLabel.text = messageAtRowIndex.referencedMessage.author.globalName;
@@ -1158,15 +1183,15 @@ static dispatch_queue_t chat_messages_queue;
                 );
             }
 
-            if (messageAtRowIndex.messageType == 1 || messageAtRowIndex.messageType == 7) {
+            if (messageAtRowIndex.messageType == DCMessageTypeRecipientAdd || messageAtRowIndex.messageType == DCMessageTypeUserJoin) {
                 cell.universalImageView.image = [UIImage imageNamed:@"U-Add"];
-            } else if (messageAtRowIndex.messageType == 2) {
+            } else if (messageAtRowIndex.messageType == DCMessageTypeRecipientRemove) {
                 cell.universalImageView.image = [UIImage imageNamed:@"U-Remove"];
-            } else if (messageAtRowIndex.messageType == 4 || messageAtRowIndex.messageType == 5) {
+            } else if (messageAtRowIndex.messageType == DCMessageTypeChannelNameChange || messageAtRowIndex.messageType == DCMessageTypeChannelIconChange) {
                 cell.universalImageView.image = [UIImage imageNamed:@"U-Pen"];
-            } else if (messageAtRowIndex.messageType == 6) {
+            } else if (messageAtRowIndex.messageType == DCMessageTypeChannelPinnedMessage) {
                 cell.universalImageView.image = [UIImage imageNamed:@"U-Pin"];
-            } else if (messageAtRowIndex.messageType == 8 || messageAtRowIndex.messageType == 18) {
+            } else if (messageAtRowIndex.messageType == DCMessageTypeGuildBoost || messageAtRowIndex.messageType == DCMessageTypeThreadCreated) {
                 cell.universalImageView.image = [UIImage imageNamed:@"U-Boost"];
             }
 
@@ -1178,26 +1203,6 @@ static dispatch_queue_t chat_messages_queue;
             cell.contentTextView.font            = [UIFont fontWithName:@"HelveticaNeue" size:14];
             cell.contentTextView.backgroundColor = [UIColor clearColor];
             cell.contentTextView.textAlignment   = NSTextAlignmentLeft;
-            for (UIView *subView in cell.subviews) {
-                @autoreleasepool {
-                    if ([subView isKindOfClass:[UIImageView class]]) {
-                        [subView removeFromSuperview];
-                    }
-                    if ([subView isKindOfClass:[DCChatVideoAttachment class]]) {
-                        [subView removeFromSuperview];
-                    }
-                    if ([subView isKindOfClass:[QLPreviewController class]]) {
-                        [subView removeFromSuperview];
-                    }
-                }
-            }
-            for (UIView *subView in cell.contentTextView.subviews) {
-                @autoreleasepool {
-                    if ([subView isKindOfClass:[UIImageView class]]) {
-                        [subView removeFromSuperview];
-                    }
-                }
-            }
 
             // TICK(content);
             if (VERSION_MIN(@"6.0") && messageAtRowIndex.attributedContent) {
@@ -1241,8 +1246,7 @@ static dispatch_queue_t chat_messages_queue;
 
             if (!messageAtRowIndex.isGrouped) {
                 if (messageAtRowIndex.author.avatarDecoration &&
-                    [messageAtRowIndex.author.avatarDecoration class] ==
-                        [UIImage class]) {
+                    [messageAtRowIndex.author.avatarDecoration isKindOfClass:[UIImage class]]) {
                     cell.avatarDecoration.image        = messageAtRowIndex.author.avatarDecoration;
                     cell.avatarDecoration.layer.hidden = NO;
                     cell.avatarDecoration.opaque       = NO;
@@ -1922,7 +1926,7 @@ static dispatch_queue_t chat_messages_queue;
 
 - (void)imagePickerController:(UIImagePickerController *)picker
     didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    [picker dismissModalViewControllerAnimated:YES];
+    [picker dismissViewControllerAnimated:YES completion:nil];
     [self.imagePopoverController dismissPopoverAnimated:YES];
     self.imagePopoverController = nil;
 
@@ -2006,8 +2010,9 @@ static dispatch_queue_t chat_messages_queue;
         }
     }
 }
+
 - (IBAction)dismissModalPVTONLY:(id)sender {
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)get50MoreMessages:(UIRefreshControl *)control {

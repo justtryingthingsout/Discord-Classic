@@ -71,25 +71,25 @@
                   initWithStyle:UITableViewCellStyleDefault
                 reuseIdentifier:@"Category Cell"];
             // make unclickable
-            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-            [cell setUserInteractionEnabled:NO];
-            [cell.textLabel setEnabled:NO];
-            [cell.textLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:15.0]];
-            [cell.detailTextLabel setEnabled:NO];
-            [cell setAlpha:0.5];
-            [cell setAccessoryType:UITableViewCellAccessoryNone];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.userInteractionEnabled = NO;
+            cell.textLabel.enabled = NO;
+            cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:15.0];
+            cell.detailTextLabel.enabled = NO;
+            cell.alpha = 0.5;
+            cell.accessoryType = UITableViewCellAccessoryNone;
         }
-        [cell.textLabel setText:channelAtRowIndex.name];
+        cell.textLabel.text = channelAtRowIndex.name;
         return cell;
     }
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Channel Cell"];
 
-    [cell setAccessoryType: channelAtRowIndex.unread
+    cell.accessoryType = channelAtRowIndex.unread
         ? UITableViewCellAccessoryDetailDisclosureButton
-        : UITableViewCellAccessoryDisclosureIndicator];
+        : UITableViewCellAccessoryDisclosureIndicator;
 
     // Channel name
-    [cell.textLabel setText:channelAtRowIndex.name];
+    cell.textLabel.text = channelAtRowIndex.name;
 
     return cell;
 }
@@ -137,23 +137,22 @@
         DCChatViewController *chatViewController =
             [segue destinationViewController];
 
-        if ([chatViewController isKindOfClass:DCChatViewController.class]) {
+        if ([chatViewController isKindOfClass:[DCChatViewController class]]) {
             // Initialize messages
             [NSNotificationCenter.defaultCenter
                 postNotificationName:@"NUKE CHAT DATA"
                               object:nil];
 
-            // Add a '#' if appropriate to the chanel name in the navigation bar
+            // Add a '#' if appropriate to the channel name in the navigation bar
             NSString *formattedChannelName;
             if (DCServerCommunicator.sharedInstance.selectedChannel.type == 0) {
                 formattedChannelName = [@"#"
                     stringByAppendingString:DCServerCommunicator.sharedInstance
                                                 .selectedChannel.name];
             } else {
-                formattedChannelName =
-                    DCServerCommunicator.sharedInstance.selectedChannel.name;
+                formattedChannelName = DCServerCommunicator.sharedInstance.selectedChannel.name;
             }
-            [chatViewController.navigationItem setTitle:formattedChannelName];
+            chatViewController.navigationItem.title = formattedChannelName;
 
             // Populate the message view with the last 50 messages
             [chatViewController getMessages:50 beforeMessage:nil];
@@ -162,12 +161,11 @@
             // new messages)
             [chatViewController setViewingPresentTime:true];
         }
-    }
-    if ([segue.identifier isEqualToString:@"Channels to RightSidebar"]) {
+    } else if ([segue.identifier isEqualToString:@"Channels to RightSidebar"]) {
         DCCInfoViewController *rightSidebar = [segue destinationViewController];
 
-        if ([rightSidebar isKindOfClass:DCChatViewController.class]) {
-            [rightSidebar.navigationItem setTitle:self.selectedGuild.name];
+        if ([rightSidebar isKindOfClass:[DCChatViewController class]]) {
+            rightSidebar.navigationItem.title = self.selectedGuild.name;
         }
     }
 }

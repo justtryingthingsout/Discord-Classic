@@ -30,8 +30,9 @@
     [self setScrollView:nil];
     [super viewDidUnload];
 }
+
 - (IBAction)done:(id)sender {
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)presentShareSheet:(id)sender {
