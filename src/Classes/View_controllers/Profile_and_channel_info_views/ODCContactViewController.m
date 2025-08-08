@@ -7,6 +7,7 @@
 //
 
 #import "ODCContactViewController.h"
+#include "DCUser.h"
 
 
 @interface ODCContactViewController ()
@@ -302,8 +303,8 @@
     for (DCGuild *guild in DCServerCommunicator.sharedInstance.guilds) {
         if ([guild.name isEqualToString:@"Direct Messages"]) {
             for (DCChannel *channel in guild.channels) {
-                for (NSDictionary *userDict in channel.users) {
-                    if ([userDict[@"snowflake"] isEqualToString:userId]) {
+                for (DCUser *user in channel.users) {
+                    if ([user.snowflake isEqualToString:userId]) {
                         return channel;
                     }
                 }

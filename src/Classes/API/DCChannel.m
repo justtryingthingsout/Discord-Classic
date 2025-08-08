@@ -113,7 +113,8 @@ static dispatch_queue_t channel_send_queue;
             timeoutInterval:10];
         [urlRequest setValue:@"no-store" forHTTPHeaderField:@"Cache-Control"];
 
-        NSString *escapedMessage = [message emojizedString];
+        // NSString *escapedMessage = [message emojizedString];
+        NSString *escapedMessage = message;
         CFStringRef transform = CFSTR("Any-Hex/Java");
         CFStringTransform((__bridge CFMutableStringRef)escapedMessage, NULL, transform, NO);
 
@@ -193,7 +194,8 @@ static dispatch_queue_t channel_send_queue;
             timeoutInterval:10];
         [urlRequest setValue:@"no-store" forHTTPHeaderField:@"Cache-Control"];
 
-        NSString *escapedMessage = [content emojizedString];
+        // NSString *escapedMessage = [content emojizedString];
+        NSString *escapedMessage = content;
 
         NSDictionary *dictionary = @{@"content" : escapedMessage};
         NSError *writeError      = nil;

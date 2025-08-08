@@ -243,12 +243,16 @@
     CGFloat aspectRatio = image.size.width / image.size.height;
     int newWidth        = 200 * aspectRatio;
     int newHeight       = 200;
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(newWidth, newHeight), NO, 0.0);
+    UIGraphicsBeginImageContextWithOptions(
+        CGSizeMake(newWidth, newHeight),
+        NO,
+        0.0
+    );
     [image drawInRect:CGRectMake(0, 0, newWidth, newHeight)];
     UILazyImage *newImage = [UILazyImage new];
     newImage.image        = UIGraphicsGetImageFromCurrentImageContext();
-    newImage.imageURL     = url;
     UIGraphicsEndImageContext();
+    newImage.imageURL     = url;
     return newImage;
 }
 
@@ -314,6 +318,9 @@
                     isKindOfClass:[NSString class]]) {
                 referencedMessage.content =
                     [referencedJsonMessage objectForKey:@"content"];
+                if ([referencedMessage.content isEqualToString:@""]) {
+                    referencedMessage.content = @"Click to view attachment";
+                }
             } else {
                 referencedMessage.content = @"";
             }

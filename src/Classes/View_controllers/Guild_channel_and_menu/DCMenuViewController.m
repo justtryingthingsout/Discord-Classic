@@ -185,6 +185,13 @@
     if (self.displayGuilds == nil || guild == nil) {
         return;
     }
+    if (self.displayGuilds.count != [self.guildTableView numberOfRowsInSection:0]) {
+        NSLog(@"Guilds count mismatch: %lu != %lu",
+              (unsigned long)self.displayGuilds.count,
+              (unsigned long)[self.guildTableView numberOfRowsInSection:0]);
+        [self.guildTableView reloadData];
+        return;
+    }
     [self.guildTableView beginUpdates];
     NSUInteger folderIdx = [self.displayGuilds
         indexOfObjectPassingTest:^BOOL(DCGuildFolder *folder, NSUInteger idx, BOOL *stop) {
@@ -212,8 +219,8 @@
         if (chan.type != 1 || chan.users.count != 2) {
             return NO;
         }
-        for (DCUser *userDict in chan.users) {
-            if ([userDict.snowflake isEqualToString:user.snowflake]) {
+        for (DCUser *user in chan.users) {
+            if ([user.snowflake isEqualToString:user.snowflake]) {
                 return YES;
             }
         }

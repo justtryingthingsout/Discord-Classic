@@ -322,8 +322,8 @@
     }
     DCGuild *privGuild = [DCServerCommunicator.sharedInstance.guilds objectAtIndex:idx];
     for (DCChannel *channel in privGuild.channels) {
-        for (NSDictionary *userDict in channel.users) {
-            if ([userDict[@"snowflake"] isEqualToString:userId]) {
+        for (DCUser *user in channel.users) {
+            if ([user.snowflake isEqualToString:userId]) {
                 return channel;
             }
         }

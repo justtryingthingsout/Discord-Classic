@@ -1154,6 +1154,7 @@ NSTimer *heartbeatTimer = nil;
 }
 
 - (void)jitterBeat:(NSTimer *)timer {
+    self.gotHeartbeat = false;
     [self sendJSON:@{
         @"op" : @(DCGatewayOpCodeHeartbeat),
         @"d" : @(self.sequenceNumber)
