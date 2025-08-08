@@ -111,8 +111,8 @@
                          cancelButtonTitle:@"Cancel"
                          otherButtonTitles:@"Join", nil];
 
-    [joinPrompt setAlertViewStyle:UIAlertViewStylePlainTextInput];
-    [joinPrompt setDelegate:self];
+    joinPrompt.alertViewStyle = UIAlertViewStylePlainTextInput;
+    joinPrompt.delegate = self;
     [joinPrompt show];
 }
 

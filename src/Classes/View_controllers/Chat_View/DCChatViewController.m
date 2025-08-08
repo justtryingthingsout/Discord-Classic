@@ -212,7 +212,7 @@ static dispatch_queue_t chat_messages_queue;
 
     lastTimeInterval = 0;
 
-    [self.inputField setDelegate:self];
+    self.inputField.delegate = self;
     self.inputFieldPlaceholder.text     = DCServerCommunicator.sharedInstance.selectedChannel.writeable
             ? [NSString stringWithFormat:@"Message%@%@",
                                      ![DCServerCommunicator.sharedInstance.selectedChannel.parentGuild.name isEqualToString:@"Direct Messages"]
@@ -1495,8 +1495,8 @@ static dispatch_queue_t chat_messages_queue;
                                                  @"Copy Message ID",
                                                  @"View Profile",
                                                  nil];
-        [messageActionSheet setTag:1];
-        [messageActionSheet setDelegate:self];
+        messageActionSheet.tag = 1;
+        messageActionSheet.delegate = self;
         [messageActionSheet showFromToolbar:self.toolbar];
     } else {
         UIActionSheet *messageActionSheet = [[UIActionSheet alloc]
@@ -1515,8 +1515,8 @@ static dispatch_queue_t chat_messages_queue;
         [messageActionSheet addButtonWithTitle:@"Copy Message ID"];
         [messageActionSheet addButtonWithTitle:@"View Profile"];
         messageActionSheet.cancelButtonIndex = [messageActionSheet addButtonWithTitle:@"Cancel"];
-        [messageActionSheet setTag:3];
-        [messageActionSheet setDelegate:self];
+        messageActionSheet.tag = 3;
+        messageActionSheet.delegate = self;
         [messageActionSheet showFromToolbar:self.toolbar];
     }
 }
@@ -1839,26 +1839,25 @@ static dispatch_queue_t chat_messages_queue;
         DCImageViewController *imageViewController =
             [segue destinationViewController];
 
-        if ([imageViewController isKindOfClass:DCImageViewController.class]) {
+        if ([imageViewController isKindOfClass:[DCImageViewController class]]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [imageViewController.imageView setImage:self.selectedImage];
             });
         }
-    }
-    if ([segue.identifier isEqualToString:@"Chat to Right Sidebar"]) {
+    } else if ([segue.identifier isEqualToString:@"Chat to Right Sidebar"]) {
         DCCInfoViewController *rightSidebar = [segue destinationViewController];
 
-        if ([rightSidebar isKindOfClass:DCCInfoViewController.class]) {
+        if ([rightSidebar isKindOfClass:[DCCInfoViewController class]]) {
             [rightSidebar.navigationItem setTitle:self.navigationItem.title];
         }
     }
 
-    if ([segue.destinationViewController class] ==
-        [DCContactViewController class]) {
-        [((DCContactViewController *)segue.destinationViewController) setSelectedUser:self.selectedMessage.author];
-    } else if ([segue.destinationViewController class] ==
-               [ODCContactViewController class]) {
-        [((ODCContactViewController *)segue.destinationViewController) setSelectedUser:self.selectedMessage.author];
+    if ([segue.destinationViewController isKindOfClass:[DCContactViewController class]]) {
+        [((DCContactViewController *)segue.destinationViewController)
+            setSelectedUser:self.selectedMessage.author];
+    } else if ([segue.destinationViewController isKindOfClass:[ODCContactViewController class]]) {
+        [((ODCContactViewController *)segue.destinationViewController)
+            setSelectedUser:self.selectedMessage.author];
     }
 }
 
